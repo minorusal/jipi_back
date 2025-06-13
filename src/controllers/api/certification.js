@@ -4427,9 +4427,16 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (tableName && rangos_bd && Array.isArray(rangos_bd[tableName])) {
             opciones = `<ul style="margin:0;padding-left:15px;">${
               rangos_bd[tableName]
-                .map(
-                  opt => `<li>${opt.nombre ?? ''} (${opt.valor_algoritmo ?? ''})</li>`
-                )
+                .map(opt => {
+                  const isSelected =
+                    descripcion &&
+                    opt.nombre &&
+                    opt.nombre.toLowerCase() === descripcion.toLowerCase()
+                  const nombre = isSelected
+                    ? `<strong>${opt.nombre ?? ''}</strong>`
+                    : opt.nombre ?? ''
+                  return `<li>${nombre} (${opt.valor_algoritmo ?? ''})</li>`
+                })
                 .join('')
             }</ul>`
           }
