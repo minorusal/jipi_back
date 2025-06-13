@@ -3504,6 +3504,7 @@ WHERE cer.certificacion_id = (
   }
 
   async deudaCortoPlazo(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       deuda_corto_plazo,
@@ -3512,25 +3513,28 @@ WHERE cer.certificacion_id = (
       periodo_anterior,
       periodo_previo_anterior
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id}
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    return result[0] || null
   }
 
   async utilidadOperativa(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       utilidad_operativa
     FROM certification_partidas_estado_resultados_contables
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id}
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    return result[0] || null
   }
 
   async getScorePayback(payback) {
