@@ -120,8 +120,8 @@ exports.getUserById = async (req, res, next) => {
 }
 
 exports.registerWithInvitation = async (req, res, next) => {
+  const fileMethod = `file: src/controllers/api/usuarios.js - method: registerWithInvitation`
   try {
-    const fileMethod = `file: src/controllers/api/usuarios.js - method: registerWithInvitation`
     const parsedData = typeof req.decryptedBody === 'string' ? JSON.parse(req.decryptedBody) : req.decryptedBody
     logger.info(`${fileMethod} | Datos recibidos: ${JSON.stringify(parsedData)}`)
     const { email, id_usuario, id_empresa, id_rol, nombre_usuario, apellido_usuario, perfil } = parsedData
