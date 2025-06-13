@@ -1593,70 +1593,56 @@ const resetCertificationsForTest = async (req, res, next) => {
 const getScoreEvolucionVentas = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreEvolucionVentas`
   try {
-    const ventasAnualesAnioAnterior = await certificationService.getVentasAnualesAnioAnterior(id_certification)
-    if (!ventasAnualesAnioAnterior || ventasAnualesAnioAnterior.length == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener las ventas anuales del estado de resultados contables del periordo anterior: ${JSON.stringify(ventasAnualesAnioAnterior)}`)
-      return {
-        error: true
-      }
+    const [ventasAnualesAnioAnterior, ventasAnualesAnioPrevioAnterior] = await Promise.all([
+      certificationService.getVentasAnualesAnioAnterior(id_certification),
+      certificationService.getVentasAnualesAnioPrevioAnterior(id_certification)
+    ])
+
+    if (!ventasAnualesAnioAnterior || !ventasAnualesAnioAnterior.length || !ventasAnualesAnioPrevioAnterior || !ventasAnualesAnioPrevioAnterior.length) {
+      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener ventas anuales para calcular la evolución`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} Las ventas anuales del estado de resultados contables del periordo anterior de la certificación ID: ${id_certification} es: ${JSON.stringify(ventasAnualesAnioAnterior)}`)
+    logger.info(`${fileMethod} | ${customUuid} Ventas anuales de certificación ID ${id_certification}: ${JSON.stringify({ ventasAnualesAnioAnterior, ventasAnualesAnioPrevioAnterior })}`)
 
-    const ventasAnualesAnioPrevioAnterior = await certificationService.getVentasAnualesAnioPrevioAnterior(id_certification)
-    if (ventasAnualesAnioPrevioAnterior.length == 0 || !ventasAnualesAnioPrevioAnterior) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener las ventas anuales del estado de resultados contables del periordo previo anterior: ${JSON.stringify(ventasAnualesAnioPrevioAnterior)}`)
-      return {
-        error: true
-      }
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} Las ventas anuales del estado de resultados contables del periordo previo anterior de la certificación ID: ${id_certification} es: ${JSON.stringify(ventasAnualesAnioPrevioAnterior)}`)
-    console.log(`((${ventasAnualesAnioAnterior.ventas_anuales} - ${ventasAnualesAnioPrevioAnterior.ventas_anuales}) / ${ventasAnualesAnioPrevioAnterior.ventas_anuales}) * 100`)
-    const evolucionVentas = ((parseFloat(ventasAnualesAnioAnterior.ventas_anuales) - parseFloat(ventasAnualesAnioPrevioAnterior.ventas_anuales)) / parseFloat(ventasAnualesAnioPrevioAnterior.ventas_anuales)) * 100;
+    const anterior = parseFloat(ventasAnualesAnioAnterior.ventas_anuales)
+    const previoAnterior = parseFloat(ventasAnualesAnioPrevioAnterior.ventas_anuales)
+    const evolucionVentas = ((anterior - previoAnterior) / previoAnterior) * 100
 
     logger.info(`${fileMethod} | ${customUuid} Las evolución de ventas de la certificación ID: ${id_certification} es: ${JSON.stringify(evolucionVentas)}`)
     if (!Number.isFinite(evolucionVentas)) {
       return {
         score: '0',
-        nombre: `((${ventasAnualesAnioAnterior.ventas_anuales} - ${ventasAnualesAnioPrevioAnterior.ventas_anuales}) / ${ventasAnualesAnioPrevioAnterior.ventas_anuales}) * 100`,
+        nombre: `(${anterior} - ${previoAnterior}) / ${previoAnterior} * 100`,
         rango_numerico: 'null',
-        ventas_anuales_periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.ventas_anuales,
+        ventas_anuales_periodo_anterior_estado_resultados: anterior,
         periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior,
-        ventas_anuales_periodo_previo_anterior_estado_resultados: ventasAnualesAnioPrevioAnterior.ventas_anuales,
+        ventas_anuales_periodo_previo_anterior_estado_resultados: previoAnterior,
         evolucion_ventas: evolucionVentas
       }
     }
 
     const getScore = await certificationService.getScoreEvolucionVentas(evolucionVentas)
-    if (getScore.length == 0 || !getScore) {
+    if (!getScore) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de evolucion de ventas: ${JSON.stringify(getScore)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} El score de evolución de ventas de la certificación ID: ${id_certification} es: ${JSON.stringify(getScore)}`)
 
-    logger.info(`${fileMethod} | ${customUuid} El score de evolución de ventas de certificación es: ${JSON.stringify({
+    const result = {
       score: getScore.valor_algoritmo,
       nombre: getScore.nombre,
       rango_numerico: getScore.rango_numerico,
-      ventas_anuales_periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.ventas_anuales,
+      ventas_anuales_periodo_anterior_estado_resultados: anterior,
       periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior,
-      ventas_anuales_periodo_previo_anterior_estado_resultados: ventasAnualesAnioPrevioAnterior.ventas_anuales,
-      evolucion_ventas: evolucionVentas
-    })}`)
-
-    return {
-      score: getScore.valor_algoritmo,
-      nombre: getScore.nombre,
-      rango_numerico: getScore.rango_numerico,
-      ventas_anuales_periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.ventas_anuales,
-      periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior,
-      ventas_anuales_periodo_previo_anterior_estado_resultados: ventasAnualesAnioPrevioAnterior.ventas_anuales,
+      ventas_anuales_periodo_previo_anterior_estado_resultados: previoAnterior,
       evolucion_ventas: evolucionVentas
     }
+
+    logger.info(`${fileMethod} | ${customUuid} El score de evolución de ventas de certificación es: ${JSON.stringify(result)}`)
+
+    return result
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return {
