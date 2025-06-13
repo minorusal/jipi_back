@@ -2964,27 +2964,40 @@ WHERE cer.certificacion_id = (
 
 
 
-  async getScoreEvolucionVentas(evolucionVentas) {
+  async getScoreEvolucionVentas (evolucionVentas) {
     const queryString = `
-   SELECT
-    nombre,
-    valor_algoritmo,
-    rango_numerico
-FROM cat_evolucion_ventas_algoritmo
-WHERE 
-    ${evolucionVentas} BETWEEN
-        CASE 
-            WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(rango_numerico, ', ', 1), '(', -1) = '-inf' THEN -9999999999 -- valor muy negativo para abarcar -inf
-            ELSE CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(rango_numerico, ', ', 1), '(', -1) AS DECIMAL(10,2)) 
-        END
-    AND 
-        CASE 
-            WHEN SUBSTRING_INDEX(SUBSTRING_INDEX(rango_numerico, ', ', -1), ')', 1) = 'inf' THEN 9999999999 -- valor muy positivo para abarcar inf
-            ELSE CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(rango_numerico, ', ', -1), ')', 1) AS DECIMAL(10,2))
-        END;
+      SELECT
+        nombre,
+        valor_algoritmo,
+        rango_numerico
+      FROM cat_evolucion_ventas_algoritmo
     `
+
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    const rows = Array.isArray(result) ? result : []
+
+    const toNumber = str => {
+      const clean = str.replace('%', '').trim()
+      if (clean === 'inf') return Infinity
+      if (clean === '-inf') return -Infinity
+      return parseFloat(clean)
+    }
+
+    const value = parseFloat(evolucionVentas)
+
+    for (const row of rows) {
+      const [a, b] = row.rango_numerico.replace(/[()\[\]]/g, '').split(',')
+      const start = toNumber(a)
+      const end = toNumber(b)
+      const lower = Math.min(start, end)
+      const upper = Math.max(start, end)
+
+      if (value >= lower && value <= upper) {
+        return row
+      }
+    }
+
+    return null
   }
 
   async getEstadoResultadoData(id_certification, periodo) {
