@@ -3469,6 +3469,25 @@ WHERE
     return result
   }
 
+  async getScoreIncidenciasLegales(nombre, algoritmo_v) {
+    const valor_algoritmo =
+      algoritmo_v.v_alritmo === 2
+        ? 'valor_algoritmo_v2 AS valor_algoritmo'
+        : 'valor_algoritmo'
+
+    const queryString = `
+    SELECT
+      nombre,
+      ${valor_algoritmo},
+      limite_inferior,
+      limite_superior
+    FROM cat_incidencias_legales_algoritmo
+    WHERE nombre = ${mysqlLib.escape(nombre)};
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0]
+  }
+
   async deudaCortoPlazo(id_certification) {
     const queryString = `
     SELECT
