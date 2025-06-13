@@ -52,7 +52,6 @@ const loadReferenciasCatalogo = async () => {
     referenciasCatalogo = {}
   }
 }
-
 let globalConfig = {}
 
 const loadGlobalConfig = async () => {
@@ -2126,7 +2125,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
             countRegular++
           }
         }
-
+        
         if (Boolean(item.porcentaje_deuda)) porcentaje_deuda = item.porcentaje_deuda
         if (Boolean(item.dias_atraso)) dias_atraso = item.dias_atraso
       }
@@ -2214,7 +2213,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
     const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
     respuesta = {
       score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-      descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
+      descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS
     }
 
     logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)

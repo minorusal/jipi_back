@@ -3532,7 +3532,6 @@ WHERE cer.certificacion_id = (
     const { result } = await mysqlLib.query(queryString)
     return result[0]
   }
-
   async getScoreResultadoReferencias(nombre, algoritmo_v) {
     const valor_algoritmo =
       algoritmo_v.v_alritmo === 2
