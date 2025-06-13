@@ -29,19 +29,29 @@ const mailjet = require('node-mailjet').apiConnect(key, secretKey)
 
 Object.freeze(cronosTypes)
 
-const REFERENCIAS_DESCRIPCIONES = Object.freeze({
-  MALAS:
-    'SE OBTUVO AL MENOS UNO O MAS PROVEEDORES CON MUY  MALAS REFERENCIAS SENSIBLES, ÚNICAMENTE  BAJO EL SIGUIENTE CRITÉRIO (ATRASO EN PAGOS > 90 DÍAS Y MONTOS > 20% DE DEUDA ORIGINAL O DEUDA VIGENTE )',
-  BUENAS_2_3:
-    'SE OBTUVO SOLAMENTE DE 2 Y HASTA 3 PROVEEDORES CON BUENAS REFERENCIAS',
-  BUENAS_4:
-    'SE OBTUVO SOLAMENTE  >= 4 PROVEEDORES CON  BUENAS REFERENCIAS',
-  MIXTAS:
-    ' A PESAR DE HABER BUENAS REFERENCIAS TAMBIEN EXISTEN AL MENOS 1 O MAS PROVEEDORES CON REGULARES O MALAS REFERENCIAS',
-  BUENA_1: 'SE OBTUVO SOLAMENTE 1 PROVEEDOR CON BUENA REFERENCIAS',
-  NINGUNA: 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
+const REFERENCIA_IDS = Object.freeze({
+  BUENAS_4: 1,
+  BUENAS_2_3: 2,
+  BUENA_1: 3,
+  MALAS: 4,
+  MIXTAS: 5,
+  NINGUNA: 6
 })
 
+let referenciasCatalogo = {}
+
+const loadReferenciasCatalogo = async () => {
+  try {
+    const catalogo = await certificationService.getCatResultadoReferenciasProveedores()
+    referenciasCatalogo = catalogo.reduce((acc, ref) => {
+      acc[ref.id_cat_resultado_referencias_proveedores] = ref
+      return acc
+    }, {})
+  } catch (error) {
+    console.error('Error al cargar el catalogo de referencias:', error)
+    referenciasCatalogo = {}
+  }
+}
 let globalConfig = {}
 
 const loadGlobalConfig = async () => {
@@ -54,6 +64,7 @@ const loadGlobalConfig = async () => {
 }
 
 loadGlobalConfig()
+loadReferenciasCatalogo()
 
 const duplicateRegister = async (body, certificacion_id) => {
   try {
@@ -2056,6 +2067,14 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
 
 const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreReferenciasComerciales`
+  const getCatalog = id => {
+    const ref = referenciasCatalogo[id]
+    if (!ref) return null
+    return {
+      score: algoritmo_v.v_alritmo === 2 ? ref.valor_algoritmo_v2 : ref.valor_algoritmo,
+      descripcion: ref.nombre
+    }
+  }
   try {
     let countBuena = 0
     let countMala = 0
@@ -2067,14 +2086,11 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
     const referencia_comercial = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
     logger.warn(`${fileMethod} | ${customUuid} Resultado de consulta de referencias comerciales: ${JSON.stringify(referencia_comercial)}`)
     if (!referencia_comercial) {
-    logger.warn(`${fileMethod} | ${customUuid} No se han podido consultar de las referencias: ${JSON.stringify(referencia_comercial)}`)
-      const getScore = await certificationService.getScoreResultadoReferencias(
-        REFERENCIAS_DESCRIPCIONES.NINGUNA,
-        algoritmo_v
-      )
+      logger.warn(`${fileMethod} | ${customUuid} No se han podido consultar de las referencias: ${JSON.stringify(referencia_comercial)}`)
+      const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
-        score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-        descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.NINGUNA
+        score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+        descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
       }
 
       logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2082,39 +2098,25 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       return respuesta
     }
     let calificaciones = []
-    for (let referencia of referencia_comercial) {
-      const [calificacion] = await certificationService.getCalificacionsReferencias(referencia.id_certification_referencia_comercial)
+    for (const referencia of referencia_comercial) {
+      const [calificacion] = await certificationService.getCalificacionsReferencias(
+        referencia.id_certification_referencia_comercial
+      )
       logger.warn(`${fileMethod} | ${customUuid} Las calificacion obtenida de la referencia es: ${JSON.stringify(calificacion)}`)
-      if (!calificaciones) {
-        logger.warn(`${fileMethod} | ${customUuid} La rreferencia con ID: ${referencia.id_certification_referencia_comercial} no tiene  ${JSON.stringify(calificaciones)}`)
-        return {
-          error: true
-        }
-      } else {
-        calificaciones.push(calificacion)
+      if (!calificacion) {
+        logger.warn(`${fileMethod} | ${customUuid} La referencia con ID: ${referencia.id_certification_referencia_comercial} no tiene calificaciones`)
+        return { error: true }
       }
+      calificaciones.push(calificacion)
     }
     console.log(JSON.stringify(calificaciones))
 
-    // if (!calificaciones) {
-    //   logger.warn(`${fileMethod} | ${customUuid} No se han podido consultar las calificaciones de las referencias: ${JSON.stringify(calificaciones)}`)
-    //   respuesta = {
-    //     score: algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-    //     descripcion: 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
-    //   }
-
-    //   logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-    //   return respuesta
-    // }
     logger.info(`${fileMethod} | ${customUuid} La información de la calificación de referencias comerciales de certificación con ID : ${id_certification} es: ${JSON.stringify(calificaciones)}`)
 
     if (calificaciones.length > 0) {
-      for (let i in calificaciones) {
-
-        if (typeof calificaciones[i].calificacion_referencia === 'string') {
-          let calificacionLowercase = calificaciones[i].calificacion_referencia.toLowerCase();
-
+      for (const item of calificaciones) {
+        if (typeof item.calificacion_referencia === 'string') {
+          const calificacionLowercase = item.calificacion_referencia.toLowerCase()
           if (calificacionLowercase === 'mala') {
             countMala++
           } else if (calificacionLowercase === 'buena') {
@@ -2123,9 +2125,9 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
             countRegular++
           }
         }
-
-        if (Boolean(calificaciones[i].porcentaje_deuda)) porcentaje_deuda = calificaciones[i].porcentaje_deuda
-        if (Boolean(calificaciones[i].dias_atraso)) dias_atraso = calificaciones[i].dias_atraso
+        
+        if (Boolean(item.porcentaje_deuda)) porcentaje_deuda = item.porcentaje_deuda
+        if (Boolean(item.dias_atraso)) dias_atraso = item.dias_atraso
       }
 
       console.log('Malas: ', countMala)
@@ -2140,13 +2142,10 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       console.log('dias_atraso: ', dias_atraso)
 
       if (countBuena == 0 && countMala > 0 && countRegular == 0 && porcentaje_deuda >= 20 && dias_atraso >= 90) {
-        const getScore = await certificationService.getScoreResultadoReferencias(
-          REFERENCIAS_DESCRIPCIONES.MALAS,
-          algoritmo_v
-        )
+        const catalogo = getCatalog(REFERENCIA_IDS.MALAS)
         respuesta = {
-          score: getScore ? getScore.valor_algoritmo : '-60',
-          descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.MALAS
+          score: catalogo ? catalogo.score : '-60',
+          descripcion: catalogo ? catalogo.descripcion : ''
         }
 
         logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2154,13 +2153,10 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       }
 
       if (countBuena >= 2 && countBuena <= 3 && countMala == 0 && countRegular == 0) {
-        const getScore = await certificationService.getScoreResultadoReferencias(
-          REFERENCIAS_DESCRIPCIONES.BUENAS_2_3,
-          algoritmo_v
-        )
+        const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_2_3)
         respuesta = {
-          score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '20' : '15',
-          descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.BUENAS_2_3
+          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '20' : '15',
+          descripcion: catalogo ? catalogo.descripcion : ''
         }
 
         logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2169,13 +2165,10 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       }
 
       if (countBuena >= 4 && countMala == 0 && countRegular == 0) {
-        const getScore = await certificationService.getScoreResultadoReferencias(
-          REFERENCIAS_DESCRIPCIONES.BUENAS_4,
-          algoritmo_v
-        )
+        const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_4)
         respuesta = {
-          score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '35' : '20',
-          descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.BUENAS_4
+          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '35' : '20',
+          descripcion: catalogo ? catalogo.descripcion : ''
         }
 
         logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2184,13 +2177,10 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       }
 
       if (countRegular > 0) {
-        const getScore = await certificationService.getScoreResultadoReferencias(
-          REFERENCIAS_DESCRIPCIONES.MIXTAS,
-          algoritmo_v
-        )
+        const catalogo = getCatalog(REFERENCIA_IDS.MIXTAS)
         respuesta = {
-          score: getScore ? getScore.valor_algoritmo : '-25',
-          descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.MIXTAS
+          score: catalogo ? catalogo.score : '-25',
+          descripcion: catalogo ? catalogo.descripcion : ''
         }
 
         logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2199,13 +2189,10 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       }
 
       if (countBuena >= 4 && countMala == 0) {
-        const getScore = await certificationService.getScoreResultadoReferencias(
-          REFERENCIAS_DESCRIPCIONES.BUENA_1,
-          algoritmo_v
-        )
+        const catalogo = getCatalog(REFERENCIA_IDS.BUENA_1)
         respuesta = {
-          score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '5' : '10',
-          descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.BUENA_1
+          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '5' : '10',
+          descripcion: catalogo ? catalogo.descripcion : ''
         }
 
         logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -2213,26 +2200,20 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
         return respuesta
       }
     } else {
-      const getScore = await certificationService.getScoreResultadoReferencias(
-        REFERENCIAS_DESCRIPCIONES.NINGUNA,
-        algoritmo_v
-      )
+      const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
-        score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-        descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.NINGUNA
+        score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+        descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
       }
 
       logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
 
       return respuesta
     }
-    const getScore = await certificationService.getScoreResultadoReferencias(
-      REFERENCIAS_DESCRIPCIONES.NINGUNA,
-      algoritmo_v
-    )
+    const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
     respuesta = {
-      score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-      descripcion: getScore ? getScore.nombre : REFERENCIAS_DESCRIPCIONES.NINGUNA
+      score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+      descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS
     }
 
     logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)

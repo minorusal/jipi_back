@@ -3506,6 +3506,7 @@ WHERE cer.certificacion_id = (
   async getCatResultadoReferenciasProveedores() {
     const queryString = `
     SELECT
+      id_cat_resultado_referencias_proveedores,
       nombre,
       valor_algoritmo,
       valor_algoritmo_v2
@@ -3515,6 +3516,22 @@ WHERE cer.certificacion_id = (
     return result
   }
 
+  async getResultadoReferenciaById(id, algoritmo_v) {
+    const valor_algoritmo =
+      algoritmo_v.v_alritmo === 2
+        ? 'valor_algoritmo_v2 AS valor_algoritmo'
+        : 'valor_algoritmo'
+
+    const queryString = `
+    SELECT
+      nombre,
+      ${valor_algoritmo}
+    FROM cat_resultado_referencias_proveedores_algoritmo
+    WHERE id_cat_resultado_referencias_proveedores = ${mysqlLib.escape(id)};
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0]
+  }
   async getScoreResultadoReferencias(nombre, algoritmo_v) {
     const valor_algoritmo =
       algoritmo_v.v_alritmo === 2
