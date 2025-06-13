@@ -4399,17 +4399,43 @@ ${JSON.stringify(info_email_error, null, 2)}
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
       const { scores = {}, rangos = {} } = info_email
+      const tableMap = {
+        _01_pais: 'cat_pais_algoritmo',
+        _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
+        _03_capital_contable: 'cat_capital_contable_algoritmo',
+        _04_plantilla_laboral: 'cat_plantilla_laboral_algoritmo',
+        _05_sector_cliente_final: 'cat_sector_clientes_finales_algoritmo',
+        _06_tiempo_actividad: 'cat_tiempo_actividad_comercial_algoritmo',
+        _08_ventas_anuales: 'cat_ventas_anuales_algoritmo',
+        _09_tipo_cifras: 'cat_tipo_cifras_algoritmo',
+        _10_incidencias_legales: 'cat_incidencias_legales_algoritmo',
+        _11_evolucion_ventas: 'cat_evolucion_ventas_algoritmo',
+        _12_apalancamiento: 'cat_apalancamiento_algoritmo',
+        _13_flujo_neto: 'cat_flujo_neto_caja_algoritmo',
+        _14_payback: 'cat_payback_algoritmo',
+        _15_rotacion_ctas_x_cobrar: 'cat_rotacion_cuentas_cobrar_algoritmo',
+        _16_referencias_comerciales: 'cat_resultado_referencias_proveedores_algoritmo'
+      }
+
       const detallesTabla = Object.entries(rangos)
         .filter(([_, val]) => val && typeof val === 'object')
         .map(([key, val]) => {
           const descripcion = val.descripcion ?? '-'
           const score = val.score ?? '-'
+          const tableName = tableMap[key]
+          let opciones = '-'
+          if (tableName && rangos_bd && Array.isArray(rangos_bd[tableName])) {
+            opciones = rangos_bd[tableName]
+              .map(opt => `${opt.nombre ?? ''} (${opt.valor_algoritmo ?? ''})`)
+              .join(', ')
+          }
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           return `
             <tr>
               <td style="padding: 8px; border: 1px solid #ccc;">${key}</td>
               <td style="padding: 8px; border: 1px solid #ccc;">${descripcion}</td>
               <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
+              <td style="padding: 8px; border: 1px solid #ccc;">${opciones}</td>
               <td style="padding: 8px; border: 1px solid #ccc;">${explicacion}</td>
             </tr>`
         })
@@ -4453,6 +4479,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <th style="padding: 8px; border: 1px solid #ccc;">Campo</th>
                 <th style="padding: 8px; border: 1px solid #ccc;">Descripción</th>
                 <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
+                <th style="padding: 8px; border: 1px solid #ccc;">Opciones</th>
                 <th style="padding: 8px; border: 1px solid #ccc;">Explicación</th>
               </tr>
             </thead>
