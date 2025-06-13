@@ -1715,47 +1715,33 @@ const getScoreVentasAnuales = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreVentasAnuales`
   try {
     const ventasAnualesAnioAnterior = await certificationService.getVentasAnualesAnioAnterior(id_certification)
-    if (!ventasAnualesAnioAnterior || ventasAnualesAnioAnterior.length == 0) {
+    if (!ventasAnualesAnioAnterior) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener las ventas anuales del estado de resultados del periodo previo anterior: ${JSON.stringify(ventasAnualesAnioAnterior)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} Las ventas anuales de la certificación ID: ${id_certification} es: ${JSON.stringify(ventasAnualesAnioAnterior)}`)
 
-    const getScore = await certificationService.getScoreVentasAnualesAnioAnterior(ventasAnualesAnioAnterior.ventas_anuales)
-    if (getScore.length == 0 || !getScore) {
-      logger.warn(`${fileMethod} | ${customUuid} El score de ventas anuales del estado de resultados del periodo previo anterior: ${JSON.stringify(getScore)}`)
-      return {
-        error: true
-      }
+    const scoreVentas = await certificationService.getScoreVentasAnualesAnioAnterior(ventasAnualesAnioAnterior.ventas_anuales)
+    if (!scoreVentas) {
+      logger.warn(`${fileMethod} | ${customUuid} El score de ventas anuales del estado de resultados del periodo previo anterior: ${JSON.stringify(scoreVentas)}`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El score de ventas anuales de la certificación ID: ${id_certification} es: ${JSON.stringify(getScore)}`)
-
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de certificación es: ${JSON.stringify({
-      score: getScore.valor_algoritmo,
-      descripcion: getScore.nombre,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
-      ventas_anuales: ventasAnualesAnioAnterior.ventas_anuales,
-      periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior
-    })}`)
-
-    return {
-      score: getScore.valor_algoritmo,
-      descripcion: getScore.nombre,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
+    const result = {
+      score: scoreVentas.valor_algoritmo,
+      descripcion: scoreVentas.nombre,
+      limite_inferior: scoreVentas.limite_inferior,
+      limite_superior: scoreVentas.limite_superior,
       ventas_anuales: ventasAnualesAnioAnterior.ventas_anuales,
       periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior
     }
+
+    logger.info(`${fileMethod} | ${customUuid} La información para el score de certificación es: ${JSON.stringify(result)}`)
+    return result
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      error: true
-    }
+    return { error: true }
   }
 }
 
