@@ -4210,7 +4210,10 @@ const getAlgoritmoResult = async (req, res, next) => {
     logger.info(`${fileMethod} | ${customUuid} C48: Monto de linea sugerida  ${c48}`)
     scores.c48 = c48
 
-    const emailReporteResumenEmail = sendEmailNodeMailer({ info_email: scores })
+    const emailReporteResumenEmail = sendEmailNodeMailer({ info_email: {
+      scores,
+      rangos: reporteCredito
+    } })
     logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
 
     reporteCredito.monto_solicitado = monto_solicitado
