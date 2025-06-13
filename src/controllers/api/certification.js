@@ -1928,7 +1928,7 @@ const getScoreCapitalContable = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreCapitalContable`
   try {
     const capitalContableEBPA = await certificationService.capitalContableEBPA(id_certification)
-    if (!capitalContableEBPA || capitalContableEBPA.length == 0) {
+    if (!capitalContableEBPA || !capitalContableEBPA.capital_contable) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el Capital contable del estado de balance previo anterior: ${JSON.stringify(capitalContableEBPA)}`)
       return {
         error: true
@@ -1938,8 +1938,10 @@ const getScoreCapitalContable = async (id_certification, customUuid) => {
     logger.info(`${fileMethod} | ${customUuid} La información de capital contable de estado de balance previo anterior de la certificación ID: ${id_certification} es: ${JSON.stringify(capitalContableEBPA)}`)
 
     const getScore = await certificationService.getScoreCapitalContableEBPA(capitalContableEBPA.capital_contable)
-    if (getScore.length == 0 || !getScore) return {
-      error: true
+    if (!getScore || Object.keys(getScore).length === 0) {
+      return {
+        error: true
+      }
     }
 
     logger.info(`${fileMethod} | ${customUuid} La información para el score de capital contable es: ${JSON.stringify({
