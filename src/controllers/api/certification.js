@@ -1965,81 +1965,50 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
     let dio = 0
     let dsoMayor90 = false
     let dioMayor90 = false
-    const saldoClienteCuentaXCobrar = await certificationService.saldoClienteCuentaXCobrar(id_certification)
-    if (!saldoClienteCuentaXCobrar || saldoClienteCuentaXCobrar.length == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el saldo del cliente en cuenta por cobrar: ${JSON.stringify(saldoClienteCuentaXCobrar)}`)
-      return {
-        error: true
-      }
+
+    const [saldoClienteCuentaXCobrar, ventasAnuales, saldoInventarios, costoVentasAnuales] = await Promise.all([
+      certificationService.saldoClienteCuentaXCobrar(id_certification),
+      certificationService.ventasAnuales(id_certification),
+      certificationService.saldoInventarios(id_certification),
+      certificationService.costoVentasAnuales(id_certification)
+    ])
+
+    if (!saldoClienteCuentaXCobrar || !ventasAnuales || !saldoInventarios || !costoVentasAnuales) {
+      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para calcular rotación: ${JSON.stringify({ saldoClienteCuentaXCobrar, ventasAnuales, saldoInventarios, costoVentasAnuales })}`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El saldo del cliente  de cuentas por cobrar de certificación con ID : ${id_certification} es: ${JSON.stringify(saldoClienteCuentaXCobrar)}`)
+    logger.info(`${fileMethod} | ${customUuid} Datos para rotación ID ${id_certification}: ${JSON.stringify({ saldoClienteCuentaXCobrar, ventasAnuales, saldoInventarios, costoVentasAnuales })}`)
 
-    const ventasAnuales = await certificationService.ventasAnuales(id_certification)
-    if (ventasAnuales.length == 0 || !ventasAnuales) {
-      logger.warn(`${fileMethod} | ${customUuid} No se han podido obtener las ventas anuales: ${JSON.stringify(ventasAnuales)}`)
-      return {
-        error: true
-      }
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} Las ventas anuales de certificación con ID : ${id_certification} es: ${JSON.stringify(ventasAnuales)}`)
-
-    if (parseFloat(ventasAnuales.ventas_anuales) == 0) {
+    if (parseFloat(ventasAnuales.ventas_anuales) === 0) {
       noDso = true
     } else {
       dso = (parseFloat(saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar) / parseFloat(ventasAnuales.ventas_anuales)) * 360
-      dsoMayor90 = (dso < 90) ? false : true
-      logger.info(`${fileMethod} | ${customUuid} ${parseFloat(saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar)}/${parseFloat(ventasAnuales.ventas_anuales)} * 360`)
+      dsoMayor90 = dso >= 90
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El calculo de DSO de certificación con ID : ${id_certification} es: ${JSON.stringify(dso)}`)
-
-    const saldoInventarios = await certificationService.saldoInventarios(id_certification)
-    if (saldoInventarios.length == 0 || !saldoInventarios) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el saldo de inventarios: ${JSON.stringify(saldoInventarios)}`)
-      return {
-        error: true
-      }
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} El saldo de inventario de certificación con ID : ${id_certification} es: ${JSON.stringify(saldoInventarios)}`)
-
-    const costoVentasAnuales = await certificationService.costoVentasAnuales(id_certification)
-    if (costoVentasAnuales.length == 0 || !costoVentasAnuales) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el costo de ventas anuales: ${JSON.stringify(costoVentasAnuales)}`)
-      return {
-        error: true
-      }
-    }
-
-    if (parseFloat(costoVentasAnuales.costo_ventas_anuales) == 0) {
+    if (parseFloat(costoVentasAnuales.costo_ventas_anuales) === 0) {
       noDio = true
     } else {
       dio = (parseFloat(saldoInventarios.saldo_inventarios) / parseFloat(costoVentasAnuales.costo_ventas_anuales)) * 360
-      dioMayor90 = (dio < 90) ? false : true
-      logger.info(`${fileMethod} | ${customUuid} ${parseFloat(saldoInventarios.saldo_inventarios)}/${parseFloat(costoVentasAnuales.costo_ventas_anuales)} * 360`)
+      dioMayor90 = dio >= 90
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El calculo de DIO de certificación con ID : ${id_certification} es: ${JSON.stringify(dio)}`)
+    logger.info(`${fileMethod} | ${customUuid} DSO ${dso} DIO ${dio}`)
 
     const getScore = await certificationService.getScoreRotacion(Math.round(dso), Math.round(dio))
-    if (getScore.length == 0 || !getScore) {
+    if (!getScore) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de rotacion por cuentas por cobrar: ${JSON.stringify(getScore)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
-
-    if (noDso && noDio) score = '-20'
 
     logger.info(`${fileMethod} | ${customUuid} La información para el score de rotación de cuentas por cobrar es: ${JSON.stringify({
       score: noDso && noDio ? '-20' : getScore.valor_algoritmo,
       descripcion: getScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       tipo: saldoClienteCuentaXCobrar.tipo,
-      dso: dso,
-      dio: dio,
+      dso,
+      dio,
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
@@ -2049,14 +2018,13 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
       dioMayor90
     })}`)
 
-
     return {
       score: noDso && noDio ? '-20' : getScore.valor_algoritmo,
       descripcion: getScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       tipo: saldoClienteCuentaXCobrar.tipo,
-      dso: dso,
-      dio: dio,
+      dso,
+      dio,
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
