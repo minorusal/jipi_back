@@ -1729,6 +1729,42 @@ WHERE cer.certificacion_id = (
     return result;
   }
 
+  async getAllAlgorithmRanges() {
+    const tables = [
+      'cat_pais_algoritmo',
+      'cat_sector_riesgo_sectorial_algoritmo',
+      'cat_sector_clientes_finales_algoritmo',
+      'cat_tiempo_actividad_comercial_algoritmo',
+      'cat_plantilla_laboral_algoritmo',
+      'cat_ventas_anuales_algoritmo',
+      'cat_apalancamiento_algoritmo',
+      'cat_flujo_neto_caja_algoritmo',
+      'cat_capital_contable_algoritmo',
+      'cat_incidencias_legales_algoritmo',
+      'cat_resultado_referencias_proveedores_algoritmo',
+      'cat_payback_algoritmo',
+      'cat_rotacion_cuentas_cobrar_algoritmo',
+      'cat_tipo_cifras_algoritmo',
+      'cat_evolucion_ventas_algoritmo',
+      'cat_score_descripcion_algoritmo'
+    ];
+
+    const results = {};
+
+    for (const table of tables) {
+      try {
+        const queryString = `SELECT * FROM ${table};`;
+        const { result } = await mysqlLib.query(queryString);
+        results[table] = result;
+      } catch (error) {
+        logger.error(`Error fetching ranges for table ${table}: ${error.message}`);
+        results[table] = [];
+      }
+    }
+
+    return results;
+  }
+
 
   async getCertificacion(id_certification) {
     const queryString = `

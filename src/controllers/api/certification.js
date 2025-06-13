@@ -4210,10 +4210,14 @@ const getAlgoritmoResult = async (req, res, next) => {
     logger.info(`${fileMethod} | ${customUuid} C48: Monto de linea sugerida  ${c48}`)
     scores.c48 = c48
 
-    const emailReporteResumenEmail = sendEmailNodeMailer({ info_email: {
-      scores,
-      rangos: reporteCredito
-    } })
+    const rangosBD = await certificationService.getAllAlgorithmRanges()
+    const emailReporteResumenEmail = sendEmailNodeMailer({
+      info_email: {
+        scores,
+        rangos: reporteCredito
+      },
+      rangos_bd: rangosBD
+    })
     logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
 
     reporteCredito.monto_solicitado = monto_solicitado
@@ -4337,7 +4341,7 @@ function serializeError(error) {
 }
 
 
-const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null }) => {
+const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null, rangos_bd = null }) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: sendEmailNodeMailer`
   try {
     const globalConfig = await utilitiesService.getParametros()
@@ -4456,6 +4460,10 @@ ${JSON.stringify(info_email_error, null, 2)}
               ${detallesTabla}
             </tbody>
           </table>
+          ${rangos_bd ? `<h4 style="color: #337ab7;">Rangos BD</h4>
+          <pre style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ddd; overflow-x: auto; white-space: pre;">
+${JSON.stringify(rangos_bd, null, 2)}
+          </pre>` : ''}
         </div>
       `
       logger.info(`${fileMethod} | La información del email es: ${JSON.stringify(info_email)}`)
