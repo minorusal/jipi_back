@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    html, body {
+      height: 70%;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      font-size: 1rem;
+      color: #575756;
+    }
+    .head {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 20% 75%;
+      grid-gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .info p {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      font-size: 8px;
+      color: #575756;
+    }
+    .info span {
+      font-weight: bolder;
+    }
+    .linea-naranja {
+      background-color: #FC871F;
+      height: 0.4rem;
+      align-self: center;
+      width: 100%;
+    }
+    .linea-naranja-texto {
+      background-color: #FC871F;
+      align-self: center;
+      width: 100%;
+      color: white;
+      padding: 0.1rem;
+      padding-top: 0.2rem;
+      font-size: 10px;
+      text-align: end;
+    }
+    .linea-naranja-texto p {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      padding-right: 1rem;
+    }
+    .titulo-cotizacion {
+      display: grid;
+      grid-template-columns: auto 40% 20%;
+      align-items: self-end;
+    }
+    .image {
+      background: url(<%= data.empresa_vendedora_logo %>) center / cover no-repeat;
+    }
+    .cuerpo {
+      max-width: 95%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 50% 50%;
+      margin-bottom: 0.5rem;
+      font-size: 9px;
+    }
+    .cuerpo .para {
+      display: grid;
+      grid-template-columns: 15% auto;
+    }
+    .cuerpo .para p {
+      color: #575756;
+      margin: 0.1rem 0rem;
+      /* justify-self: center; */
+    }
+    .cuerpo .para .datos .nombre-empresa {
+      color: #0a3d8e;
+    }
+    .cuerpo .para .datos p {
+      color: #9c9b9b;
+      margin: 0.1rem 0rem;
+    }
+    .cuerpo .fecha-cotizacion {
+      justify-self: end;
+      grid-template-columns: auto auto;
+      display: grid;
+      grid-gap: 1rem;
+    }
+    .cuerpo .fecha-cotizacion .titulos-fecha {
+      color: #FC871F;
+      text-align: end;
+    }
+    .cuerpo .fecha-cotizacion .titulos-fecha p {
+      margin: 0.1rem 0rem;
+      font-weight: bold;
+    }
+    .cuerpo .fecha-cotizacion .datos-fechas {
+      color: #575756;
+      text-align: end;
+    }
+    .cuerpo .fecha-cotizacion .datos-fechas p {
+      margin: 0.1rem 0rem;
+    }
+    .tabla {
+      max-width: 95%;
+      margin: 0 auto;
+    }
+    /*** Table Styles **/
+    table {
+      width: 100%;
+    }
+    .thead {
+      background:#0a3d8e;
+    }
+    th {
+      background:#0a3d8e;
+      color: white;
+      font-size: 10px;
+      padding: 0.1rem;
+    }
+    tr:nth-child(odd) td {
+      background:#EBEBEB;
+    }
+    td {
+      padding: 0.1rem;
+      vertical-align:middle;
+      font-size: 10px;
+      text-align: center;
+      color: #575756;
+    }
+    td.descripcion {
+      text-align: left;
+      width: 100px;
+    }
+    .terminos {
+      max-width: 95%;
+      margin: 0 auto;
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 40% auto;
+    }
+    .terminos p {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+    .terminos span {
+      color: #575756;
+      font-size: 9px;
+      font-weight: bold;
+    }
+    .detalle-pago {
+      justify-self: right;
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 1.5rem;
+    }
+    .detalle-terminos .termino p {
+      font-size: 8px;
+      color: #9c9b9b;
+    }
+    .detalle-pago .pagos p {
+      text-align: end;
+      font-size: 8px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      color: #575756;
+    }
+    .detalle-pago .totales p {
+      color: #575756;
+      text-align: left;
+      font-size: 8px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+    .gracias {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: auto auto;
+    }
+    .texto-gracias {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 0.4rem;
+      align-items: center;
+    }
+    .texto-gracias p {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      font-size: 12px;
+      color: #0a3d8e;
+      font-weight: bold;
+    }
+    .footer {
+      color: #575756;
+      margin-top: 1rem;
+      font-size: 7px;
+    }
+    .separador-footer {
+      width: 2px;
+      height: 10px;
+      background-color: orange;
+      margin-top: -0.2rem;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+    footer {
+      color: #777777;
+      width: 100%;
+      height: 30px;
+      bottom: 0;
+      padding: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div style="text-align: center;align-self: center;">
+      <img style="width: 10%;" src="<%= `data:image/jpg;base64, ${data.empresa_vendedora_logo}` %>" alt="Fondo">
+    </div>
+    <div class="texto">
+      <div class="info">
+        <p><span>Tel:</span><%= data.telefono.numero %></p>
+        <p><span>Dirección:</span> <%= data.domicilio_direccion %></p>
+        <p><span>Website:</span> <%= data.empresa_vendedora_website %></p>
+      </div>
+      <div class="titulo-cotizacion">
+        <div class="linea-naranja"></div>
+        <h1>Cotización</h1>
+        <div class="linea-naranja"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cuerpo">
+    <div class="para">
+      <p>Para:</p>
+      <div class="datos">
+        <p class="nombre-empresa"><%= data.empresa_vendedora_nombre %></p>
+        <p><%= data.usuario_vendedor_nombre %> <%= data.usuario_vendedor_apellido %></p>
+        <p><%= data.usuario_vendedor_puesto || '' %></p>
+      </div>
+    </div>
+    <div class="fecha-cotizacion">
+      <div class="titulos-fecha">
+        <p>Cotización#</p>
+        <p>Fecha de creacíon:</p>
+      </div>
+      <div class="datos-fechas">
+        <p><%= data.cotizacion_id %></p>
+        <p><%= data.cotizacion_fecha_creacion %></p>
+      </div>
+    </div>
+  </div>
+  <div class="tabla">
+    <table border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr>
+          <th>Art.</th>
+          <th>Descripciones de producto</th>
+          <th>P. Unitario</th>
+          <th>Cantidad</th>
+          <th>Descuento</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+
+      <% if(data.productos && data.productos.length > 0) { %>
+        <tbody>
+          <% data.productos.forEach((producto, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= producto.nombre %></td>
+              <td><%= producto.cotizacion_producto_precio %></td>
+              <td><%= producto.cotizacion_producto_cantidad %></td>
+              <td><%= producto.cotizacion_producto_mejor_precio %></td>
+              <td><%= producto.producto_id %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      <% } %>
+
+    </table>
+  </div>
+  <div class="terminos">
+    <div class="detalle-terminos">
+      <div class="termino">
+        <span>Términos y condiciones</span>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus beatae consequatur.</p>
+      </div>
+      <div class="termino">
+        <span>Información de pago:</span>
+        <p>Cuenta: #pago_cuenta#</p>
+        <p>Método de pago: <%= data.metodo_pago %></p>
+        <p>RFC: <%= data.empresa_vendedora_rfc %>></p>
+      </div>
+    </div>
+    <div class="detalle-pago">
+      <div class="pagos">
+        <p>Net. Total</p>
+        <p>Descuento(000%)</p>
+        <p>Envío y manejo</p>
+        <p>Impuesto IVA</p>
+      </div>
+      <div class="totales">
+        <p>$#total_neto#</p>
+        <p>$#total_descuento#</p>
+        <p>$#total_envio#</p>
+        <p>$#total_iva#</p>
+      </div>
+    </div>
+  </div>
+  <div class="gracias">
+    <div class="texto-gracias">
+      <div class="linea-naranja"></div>
+      <p>Gracias por tu compra</p>
+    </div>
+    <div class="total">
+      <div class="linea-naranja-texto">
+        <p>Total: $#total_total#</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer"> 
+      <div style="text-align: center;">https://marketchoiceb2b.com</div> 
+      <div style="text-align: end;">
+        <img style="margin-right: 2rem;width: 5rem;" src="https://genesis.marketchoiceb2b.com/assets/img/logo.svg" alt="Fondo">
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

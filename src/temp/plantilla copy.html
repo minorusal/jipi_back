@@ -1,0 +1,2447 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reporte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <section
+      style="
+        margin: 0 auto;
+        width: 816px;
+        max-width: 816px;
+        min-width: 816px;
+        padding: 30px 30px;
+        background: #ffff;        
+        font-family: 'Montserrat', sans-serif;
+      "
+    >
+      <header style="display: grid; grid-template-columns: 5fr 4fr;">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          "
+        >
+        <p>
+          <img 
+            src="data:image/png;base64,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" 
+            alt=""
+            style="width: 250px;"
+          >
+        </p>
+      </div>
+
+        <section
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: end;
+            padding-right: 20px;
+            gap: 5px;
+          "
+        >
+          <div style="display: flex; gap: 0.5rem;">
+            <span
+              style="
+                color: #0a3d8e;
+                font-weight: 700;
+                font-size: 14px;
+                margin: 0px !important;
+              "
+            >
+              Fecha de elaboración:
+            </span>
+            <span
+              style="
+                color: #2ba2af;
+                font-weight: 700;
+                font-size: 14px;
+                margin: 0px !important;
+              "
+            >
+              {_fecha_elaboracion_}
+            </span>
+          </div>
+        </section>
+      </header>
+
+      <section style="width: 100%; margin: 0px 0px; margin-top: 30px;">
+        <div style="display: flex; flex-direction: column;">
+          <h3
+            style="
+              font-size: 16px;
+              font-weight: 700;
+              color: #0a3d8e;
+              text-transform: uppercase;
+              margin: 0px !important;
+              margin-bottom: 5px !important;
+              text-transform: uppercase;
+            "
+          >
+            Datos generales
+          </h3>
+        </div>
+        <div style="display: flex; width: 100%; align-items: center;">
+          <hr
+            style="
+              background: #0a3d8e;
+              width: 97%;
+              height: 2px;
+              border: none;
+              margin: 0px !important;
+            "
+          />
+          <div
+            style="
+              height: 10px;
+              width: 10px;
+              border-radius: 50%;
+              padding: 1px;
+              background: #0a3d8e;
+            "
+          ></div>
+        </div>
+      </section>
+
+      <section
+        style="
+          display: flex;
+          align-items: start;
+          justify-content: start;
+          margin-top: 20px;
+          margin-left: 0px;
+        "
+      >
+        <h3
+          style="
+            color: #0a3d8e;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0px !important;
+            text-transform: uppercase;
+          "
+        >
+          {_razon_social_}
+        </h3>
+      </section>
+
+      <section
+        style="
+          display: grid;
+          grid-template-columns: 40% 60%;
+          margin-top: 0rem;
+          gap: 20px;
+          padding-right: 30px;
+        "
+      >
+        <section style="display: flex; flex-direction: column;">
+          <div
+            style="
+              display: flex;
+              align-items: start;
+              justify-content: start;
+              margin-top: 30px;
+            "
+          >
+            <p
+              style="
+                font-size: 15px;
+                font-weight: 700;
+                text-transform: uppercase;
+                margin: 0px !important;
+                text-transform: uppercase;
+              "
+            >
+              {_rfc_}
+            </p>
+          </div>
+          <section
+            style="
+              margin-top: 10px;
+              display: flex;
+              flex-direction: column;
+              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+              padding: 10px 10px 20px 10px;
+              border: 1px solid #787878;
+            "
+          >
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 500;
+                margin: 0px !important;
+                margin-bottom: 5px !important;
+              "
+            >
+              {_pais_}
+            </p>
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 500;
+                margin: 0px !important;
+                margin-bottom: 15px !important;
+              "
+            >
+              {_direccion_fiscal_}
+            </p>
+            <button
+              style="
+                cursor: pointer !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                margin: 0px 0rem;
+                margin-bottom: 10px;
+                width: fit-content;
+                padding: 8px 10px;
+                border: 1px solid #2eafc3;
+                background-color: transparent;
+                font-size: 12px;
+                border-radius: 5px;
+              "
+            >
+              <span
+                style="
+                  color: #2eafc3;
+                  font-size: 12px;
+                  font-weight: 500;
+                  text-align: center;
+                "
+              >
+                Google Maps
+              </span>
+            </button>
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 500;
+                margin: 0px !important;
+                margin-top: 15px !important;
+                margin-bottom: 5px !important;
+              "
+            >
+              {_telefono_}
+            </p>
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 500;
+                margin: 0px !important;
+                margin-bottom: 5px !important;
+              "
+            >
+              Correo: {_correo_}
+            </p>
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 500;
+                margin: 0px !important;
+                margin-bottom: 5px !important;
+              "
+            >
+              {_pagina_web_}
+            </p>
+          </section>
+        </section>
+        <section style="display: flex; flex-direction: column;">
+          <div
+            style="
+              align-items: start;
+              justify-content: start;
+              flex-direction: column;
+              margin-top: 30px;
+            "
+          >
+            <p
+              style="
+                font-size: 14px;
+                color: #0a3d8e;
+                font-weight: 700;
+                text-transform: uppercase;
+                margin: 0px !important;
+              "
+            >
+              resumen
+            </p>
+          </div>
+          <div style="margin-top: 20px; display: flex; flex-direction: column;">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 2fr;
+                border-bottom: 2px solid #0a3d8e;
+                padding: 7px 0px;
+                gap: 15px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Experiencia
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Plantilla Laboral
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Actividad Económica
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 2fr;
+                padding-top: 0px;
+                gap: 15px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="font-size: 12px; text-align: start; font-weight: 500;"
+                >
+                  {_resumen_experiencia_}
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="font-size: 12px; text-align: start; font-weight: 500;"
+                >
+                  {_resumen_plantilla_laboral_}
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="font-size: 12px; text-align: start; font-weight: 500;"
+                >
+                  {_resumen_actividad_economica_}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 0px; display: flex; flex-direction: column;">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1.4fr 2fr;
+                border-bottom: 2px solid #0a3d8e;
+                padding: 7px 0px;
+                gap: 15px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Sector o Industria
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Sector Mayoritario de Clientes Finales
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1.4fr 2fr;
+                padding-top: 0px;
+                gap: 15px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="font-size: 12px; text-align: start; font-weight: 500;"
+                >
+                  {_resumen_sector_}
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="font-size: 12px; text-align: start; font-weight: 500;"
+                >
+                  {_resumen_sector_cliente_final_}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 0px; display: flex; flex-direction: column;">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr;
+                border-bottom: 2px solid #0a3d8e;
+                padding: 7px 0px;
+                gap: 15px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    color: #0a3d8e;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin: 0px !important;
+                  "
+                >
+                  Empresa Controlante o Accionista Principal
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr;
+                padding-top: 0px;
+                gap: 0px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 12px;
+                    text-align: start;
+                    font-weight: 500;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0px;
+                    width: 61%;
+                    margin: 0px !important;
+                    margin: 5px 0px !important;
+                  "
+                >
+                  <span>
+                    Razon Social
+                  </span>
+                  <span>
+                    {_resumen_empresa_controlante_razon_social_}
+                  </span>
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 12px;
+                    text-align: start;
+                    font-weight: 500;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0px;
+                    width: 61%;
+                    margin: 0px !important;
+                    margin: 5px 0px !important;
+                  "
+                >
+                  <span>
+                    RFC
+                  </span>
+                  <span>
+                    {_resumen_empresa_controlante_rfc_}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 20px;
+              display: grid;
+              grid-template-columns: 3.5fr 2fr;
+              gap: 15px;
+            "
+          >
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 65% 35%;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+                border: 1px solid #787878;
+                padding: 10px 10px 10px 10px;
+              "
+            >
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #fc871f;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Capital Contable
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #fc871f;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Ventas Anuales
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #fc871f;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Caja y Bancos
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #fc871f;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Lineas de Creédito Activas y Visibles
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #2ba2af;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Plazo de pago DSO
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #2ba2af;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Ventas a Gobierno
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #2ba2af;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Empresas Relacionadas
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      color: #2ba2af;
+                      font-weight: 700;
+                      font-size: 8px;
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                    "
+                  >
+                    Fecha de Actualización 69 y 69B
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_capital_contable_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_ventas_anuales_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_caja_bancos_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_linea_credito_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_plazo_pago_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_ventas_gobierno_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_empresas_relacionadas_}
+                  </p>
+                </div>
+                <div style="display: flex; justify-items: flex-start;">
+                  <p
+                    style="
+                      margin: 0px !important;
+                      margin-bottom: 5px !important;
+                      font-size: 8px;
+                    "
+                  >
+                    {_resumen_fecha_actualizacion_69_69B_}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+                border: 1px solid #787878;
+                padding: 10px 10px 10px 10px;
+                height: fit-content;
+              "
+            >
+              <div class="display: flex; justify-content:flex-start">
+                <p
+                  style="
+                    font-size: 9px;
+                    font-weight: 700;
+                    color: #0a3d8e;
+                    margin: 0px;
+                    margin-bottom: 15px;
+                  "
+                >
+                  Datos Obtenidos
+                </p>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 10% 90%;
+                    gap: 10px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border: 2px solid #c6c6c5;
+                      padding: 0px;
+                      background: #269e38;
+                      border-radius: 50%;
+                    "
+                  ></div>
+                  <div style="display: flex; justify-content: flex-start;">
+                    <p
+                      style="
+                        font-size: 9px;
+                        font-weight: 600;
+                        color: #0a3d8e;
+                        margin: 0px;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      Referencias Comerciales
+                    </p>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 10% 90%;
+                    gap: 10px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border: 2px solid #c6c6c5;
+                      padding: 0px;
+                      background: #269e38;
+                      border-radius: 50%;
+                    "
+                  ></div>
+                  <div style="display: flex; justify-content: flex-start;">
+                    <p
+                      style="
+                        font-size: 9px;
+                        font-weight: 600;
+                        color: #0a3d8e;
+                        margin: 0px;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      Incidencias Mercantiles o Penales
+                    </p>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 10% 90%;
+                    gap: 10px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border: 2px solid #c6c6c5;
+                      padding: 0px;
+                      background: #269e38;
+                      border-radius: 50%;
+                    "
+                  ></div>
+                  <div style="display: flex; justify-content: flex-start;">
+                    <p
+                      style="
+                        font-size: 9px;
+                        font-weight: 600;
+                        color: #0a3d8e;
+                        margin: 0px;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      Contribuyente Incumplido
+                    </p>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 10% 90%;
+                    gap: 10px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 12px;
+                      height: 12px;
+                      border: 2px solid #c6c6c5;
+                      padding: 0px;
+                      background: #dd1212;
+                      border-radius: 50%;
+                    "
+                  ></div>
+                  <div style="display: flex; justify-content: flex-start;">
+                    <p
+                      style="
+                        font-size: 9px;
+                        font-weight: 600;
+                        color: #0a3d8e;
+                        margin: 0px;
+                        margin-bottom: 5px;
+                      "
+                    >
+                      Contribuyente Incumplido
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section style="width: 100%; margin: 0px 0px; margin-top: 40px;">
+        <div style="display: flex; flex-direction: column;">
+          <h3
+            style="
+              font-size: 16px;
+              font-weight: 700;
+              color: #0a3d8e;
+              text-transform: uppercase;
+              margin: 0px !important;
+              margin-bottom: 5px !important;
+              text-transform: uppercase;
+            "
+          >
+            CALIFICACIÓN
+          </h3>
+        </div>
+        <div style="display: flex; width: 100%; align-items: center;">
+          <hr
+            style="
+              background: #0a3d8e;
+              width: 97%;
+              height: 2px;
+              border: none;
+              margin: 0px !important;
+            "
+          />
+          <div
+            style="
+              height: 10px;
+              width: 10px;
+              border-radius: 50%;
+              padding: 1px;
+              background: #0a3d8e;
+            "
+          ></div>
+        </div>
+      </section>
+
+      <section
+        style="
+          display: grid;
+          grid-template-columns: 30% 70%;
+          padding-right: 15px;
+        "
+      >
+        <div></div>
+        <div style="display: flex; flex-direction: column;">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              margin-top: 0px;
+            "
+          >
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 700;
+                font-size: 18px;
+                text-transform: uppercase;
+              "
+            >
+              Linea de Crédito
+            </p>
+
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 500;
+                font-size: 16px;
+              "
+            >
+              Solicitada
+            </p>
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 700;
+                font-size: 25px;
+              "
+            >
+              {_resultados_linea_credito_solicitada_} K
+              <span
+                style="
+                  margin: 5px 0px;
+                  color: #0a3d8e;
+                  font-weight: 500;
+                  font-size: 12px;
+                "
+              >
+                MXN
+              </span>
+              
+            </p>
+          </div>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              margin-top: 40px;
+              border: 4px solid #2ba2af;
+              padding: 15px 0px;
+            "
+          >
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 700;
+                font-size: 25px;
+                text-transform: uppercase;
+              "
+            >
+              {_resultados_riesgo_}
+            </p>
+            <p style="margin: 5px 0px; font-weight: 500; font-size: 12px;">
+              {_resultados_riesgo_descripcion_}
+            </p>
+          </div>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              margin-top: 0px;
+            "
+          >
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 700;
+                font-size: 14px;
+                text-transform: uppercase;
+              "
+            >
+              Linea de Crédito
+            </p>
+            <p
+              style="
+                margin: 5px 0px;
+                color: #0a3d8e;
+                font-weight: 500;
+                font-size: 14px;
+                text-transform: uppercase;
+              "
+            >
+              Recomendada
+            </p>
+            <p
+              style="
+                margin: 5px 0px;
+                color: #ffb100;
+                font-weight: 700;
+                font-size: 25px;
+              "
+            >
+              {_resultados_linea_credito_recomendada_} K
+              <span
+                style="
+                  margin: 5px 0px;
+                  color: #ffb100;
+                  font-weight: 500;
+                  font-size: 12px;
+                "
+              >
+                MXN
+              </span>
+              
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top: 10px;">
+        <div style="display: flex; flex-direction: column; padding: 15px 0px;">
+          <p
+            style="
+              font-size: 11px;
+              color: #000;
+              font-weight: 600;
+              margin: 0px;
+              margin-bottom: 5px;
+            "
+          >
+            Estimado cliente, la línea de crédito sugerida es con base a
+            referencias de pago disponibles, EEFF internos y diferentes tipo de
+            riesgo evaluados
+          </p>
+          <p
+            style="
+              font-size: 11px;
+              color: #000;
+              font-weight: 600;
+              margin: 0px;
+              margin-bottom: 5px;
+            "
+          >
+            sobres la empresa investigada.
+          </p>
+          <p
+            style="
+              font-size: 11px;
+              color: #000;
+              font-weight: 600;
+              margin: 0px;
+              margin-bottom: 5px;
+            "
+          >
+            Para una complementaria toma de decisión se sugiere revisar las
+            observaciones siguientes:
+          </p>
+        </div>
+      </section>
+
+      <section style="margin-top: 15px;">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 80%;
+          "
+        >
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; margin-bottom: 10px;">
+              <p
+                style="
+                  margin: 2.5px 0px;
+                  color: #0a3d8e;
+                  font-weight: 700;
+                  font-size: 18px;
+                  text-transform: uppercase;
+                  margin-top: 20px;
+                "
+              >
+                ALERTA DE ENDEUDAMIENTO COMERCIAL
+              </p>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <p
+                style="
+                  font-size: 12px;
+                  color: #000;
+                  font-weight: 600;
+                  margin: 0px;
+                  margin-bottom: 5px;
+                "
+              >
+                De acuerdo a nuestras bases de información la empresa se sitúa
+                en un siguiente nivel de endeudamiento comercial en relación ala
+                facturación total anual de sus proveedores.
+              </p>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 5fr;
+                padding: 14px 0px;
+                border-bottom: 2px solid #0a3d8e;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    margin: 5px 0px;
+                    color: #ffb100;
+                    font-weight: 700;
+                    font-size: 25px;
+                  "
+                >
+                  {_resultados_porcentaje_endeudamiento_comercial_}
+                </p>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <p
+                  style="
+                    font-size: 12px;
+                    color: #000;
+                    font-weight: 600;
+                    margin: 0px;
+                    margin: 5px 0px;
+                  "
+                >
+                  {_resultados_porcentaje_endeudamiento_comercial_descripcion_}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 80%;
+            margin-top: 58px;
+          "
+        >
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; margin-bottom: 10px;">
+              <p
+                style="
+                  margin: 2.5px 0px;
+                  color: #0a3d8e;
+                  font-weight: 700;
+                  font-size: 18px;
+                  text-transform: uppercase;
+                "
+              >
+                RECOMENDACIÓN DE DSO SUGERIDO
+              </p>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <p
+                style="
+                  font-size: 12px;
+                  color: #000;
+                  font-weight: 600;
+                  margin: 0px;
+                  margin-bottom: 5px;
+                "
+              >
+                De acuerdo a nuestras bases de información la empresa de sitúa
+                en un siguiente nivel de endeudamiento comercial en relación a
+                la facturación total anual de sus proveedores.
+              </p>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 5fr;
+                padding: 14px 0px;
+                border-bottom: 2px solid #0a3d8e;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  flex-direction: column;
+                "
+              >
+                <p
+                  style="
+                    margin: 5px 0px;
+                    color: #0a3d8e;
+                    font-weight: 700;
+                    font-size: 25px;
+                  "
+                >
+                  {_resultados_dias_recomendacion_DSO_}
+                </p>
+                <p
+                  style="
+                    margin: 2.5px 0px;
+                    color: #0a3d8e;
+                    font-weight: 700;
+                    font-size: 14px;
+                  "
+                >
+                  dias
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 12px;
+                    color: #000;
+                    font-weight: 600;
+                    margin: 0px;
+                    margin: 5px 0px;
+                  "
+                >
+                  {_resultados_dias_recomendacion_DSO_descripcion_}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 80%;
+            margin-top: 58px;
+          "
+        >
+          <div style="display: flex; flex-direction: column;">
+            <div style="display: flex; margin-bottom: 10px;">
+              <p
+                style="
+                  margin: 2.5px 0px;
+                  color: #0a3d8e;
+                  font-weight: 700;
+                  font-size: 18px;
+                  text-transform: uppercase;
+                "
+              >
+                ALERTA DE ANTIGÜEDAD DE SALDOS DE CUENTAS POR PAGAR
+              </p>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <p
+                style="
+                  font-size: 12px;
+                  color: #000;
+                  font-weight: 600;
+                  margin: 0px;
+                  margin-bottom: 5px;
+                "
+              >
+                La empresa reporta el siguiente porcentaje de atrasos sobre el
+                total de líneas de crédito activas y visibles y días máximos de
+                atraso.
+              </p>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 5fr;
+                padding: 14px 0px;
+                border-bottom: 2px solid #0a3d8e;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                  flex-direction: column;
+                "
+              >
+                <p
+                  style="
+                    margin: 5px 0px;
+                    color: #269e38;
+                    font-weight: 700;
+                    font-size: 25px;
+                  "
+                >
+                  {-}
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  flex-direction: column;
+                "
+              >
+                <p
+                  style="
+                    margin: 5px 0px;
+                    color: #269e38;
+                    font-weight: 700;
+                    font-size: 25px;
+                  "
+                >
+                  {-}
+                </p>
+                <p
+                  style="
+                    margin: 2.5px 0px;
+                    color: #269e38;
+                    font-weight: 700;
+                    font-size: 14px;
+                  "
+                >
+                  {días}
+                </p>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <p
+                  style="
+                    font-size: 12px;
+                    color: #000;
+                    font-weight: 600;
+                    margin: 0px;
+                    margin: 5px 0px;
+                  "
+                >
+                  {-}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="width: 100%; margin: 0px 0px; margin-top: 60px;">
+        <div style="display: flex; flex-direction: column;">
+          <h3
+            style="
+              font-size: 16px;
+              font-weight: 700;
+              color: #0a3d8e;
+              text-transform: uppercase;
+              margin: 0px !important;
+              margin-bottom: 5px !important;
+              text-transform: uppercase;
+              
+            "
+          >
+            SITUACIÓN Y PERFORMANCE FINANCIERO
+          </h3>
+        </div>
+        <div style="display: flex; width: 100%; align-items: center;">
+          <hr
+            style="
+              background: #0a3d8e;
+              width: 97%;
+              height: 2px;
+              border: none;
+              margin: 0px !important;
+            "
+          />
+          <div
+            style="
+              height: 10px;
+              width: 10px;
+              border-radius: 50%;
+              padding: 1px;
+              background: #0a3d8e;
+            "
+          ></div>
+        </div>
+      </section>
+
+      <section style="width: 65%; margin-top: 40px;">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 20px;
+          "
+        >
+          <p
+            style="
+              color: #0a3d8e;
+              margin: 0px;
+              font-size: 14px;
+              font-weight: 700;
+            "
+          >
+            Estado de Balance
+          </p>
+        </div>
+        <div
+          style="
+            background: #ffff;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          "
+        >
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            "
+          >
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+                Indicador
+              </p>
+            </div>
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+                {_performance_financiero_balance_anio_anterior_indicador_}
+              </p>
+            </div>
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+              {_performance_financiero_balance_anio_previo_anterior_indicador_}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                  Caja y Bancos:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_caja_bancos_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_caja_bancos_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Saldo de Clientes:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_saldo_clientes_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_saldo_clientes_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Saldo de Inventarios:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_saldo_inventarios_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_saldo_inventarios_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Deuda Total: de Corto Plazo:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_deuda_corto_plazo_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Deuda Total:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_deuda_total_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_deuda_total_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Capital Contable:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_anterior_capital_contable_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_balance_anio_previo_anterior_capital_contable_}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="width: 65%; margin-top: 40px;">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 20px;
+          "
+        >
+          <p
+            style="
+              color: #0a3d8e;
+              margin: 0px;
+              font-size: 14px;
+              font-weight: 700;
+            "
+          >
+           Estado de Resultados
+          </p>
+        </div>
+        <div
+          style="
+            background: #ffff;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          "
+        >
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            "
+          >
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+                Indicador
+              </p>
+            </div>
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+              {_performance_financiero_estado_resultados_anio_anterior_indicador_}
+              </p>
+            </div>
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+              {_performance_financiero_estado_resultados_anio_previo_anterior_indicador_}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Ventas anuales:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_ventas_anuales_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_ventas_anuales_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Costo de Ventas:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_costo_ventas_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Utilidad Operativa:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_utilidad_operativa_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_operativa_}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="width: 65%; margin-top: 60px;">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 20px;            
+          "
+        >
+          <p
+            style="
+              color: #0a3d8e;
+              margin: 0px;
+              font-size: 14px;
+              font-weight: 700;
+              margin-top: 30px !important;
+            "
+          >
+            Ratio Financiero
+          </p>
+        </div>
+        <div
+          style="
+            background: #ffff;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          "
+        >
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 3fr 2fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            "
+          >
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+                Indicador
+              </p>
+            </div>
+            <div style="display: flex; align-items: flex-start;">
+              <p
+                style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 14px;
+                  font-weight: 700;
+                "
+              >
+                {_performance_financiero_ratio_financiero_indicador_}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Ventas anuales:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                  {_performance_financiero_ratio_financiero_ventas_anuales_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Evolución de ventas:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                  {_performance_financiero_ratio_financiero_evolucion_Ventas_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Payback:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_ratio_financiero_payback_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Apalancamiento:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_ratio_financiero_apalancamiento_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                DSO:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_ratio_financiero_DSO_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                DIO: 
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_ratio_financiero_DIO_}
+                </p>
+              </div>
+
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Flujo Neto de Caja después de Pago <br> de Deuda y CAPEX:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_ratio_financiero_flujo_caja_}
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section style="width: 100%; margin: 0px 0px; margin-top: 60px;">
+        <div style="display: flex; flex-direction: column;">
+          <h3 style="
+                    font-size: 16px;
+                    font-weight: 700;
+                    color: #0a3d8e;
+                    text-transform: uppercase;
+                    margin: 0px !important;
+                    margin-bottom: 5px !important;
+                    text-transform: uppercase;
+                    
+                  ">
+            ALERTAS PREVENTIVAS DE RESERVA
+          </h3>
+        </div>
+        <div style="display: flex; width: 100%; align-items: center;">
+          <hr style="
+                    background: #0a3d8e;
+                    width: 97%;
+                    height: 2px;
+                    border: none;
+                    margin: 0px !important;
+                  " />
+          <div style="
+                    height: 10px;
+                    width: 10px;
+                    border-radius: 50%;
+                    padding: 1px;
+                    background: #0a3d8e;
+                  "></div>
+        </div>
+      </section>
+      
+    </section>
+  </body>
+</html>
+
+
+    
