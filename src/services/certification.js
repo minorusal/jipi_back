@@ -3303,14 +3303,20 @@ WHERE
 
   async getScoreTiempoActividad(id_certification) {
     const queryString = `
-    SELECT
-      tac.nombre,  
-      tac.valor_algoritmo
-    FROM certification AS c
-    LEFT JOIN cat_tiempo_actividad_comercial_algoritmo AS tac ON tac.id_cat_tiempo_actividad_comercial = c.id_cat_tiempo_actividad_comercial
-    WHERE c.id_certification = ${id_certification};
+      SELECT
+        tac.nombre,
+        tac.valor_algoritmo
+      FROM certification AS c
+      LEFT JOIN cat_tiempo_actividad_comercial_algoritmo AS tac
+        ON tac.id_cat_tiempo_actividad_comercial = c.id_cat_tiempo_actividad_comercial
+      WHERE c.id_certification = @id_certification
+      LIMIT 1;
     `
-    const { result } = await mysqlLib.query(queryString)
+
+    const { result } = await mysqlLib.mysqlQuery('GET', queryString, {
+      id_certification
+    })
+
     return result[0]
   }
 
