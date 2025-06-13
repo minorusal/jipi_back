@@ -1206,25 +1206,25 @@ const guardaReferenciasComerciales = async (req, res, next) => {
 const getReferenciaComercialForm = async (req, res, next) => {
   try {
     const { id_certification } = req.params
-    const contactos_array = []
-    const empresas_clientes_array = []
     const referencias_comerciales = []
     const get_referencias_comerciales = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
     if (!get_referencias_comerciales) return next(boom.badRequest(`El ID de certificacion ${id_certification} no tiene referecias insertadas`))
 
     console.log(JSON.stringify(get_referencias_comerciales))
-    for (let referencia of get_referencias_comerciales) {
+    for (const referencia of get_referencias_comerciales) {
+      let contactos = await certificationService.getContactos(referencia.id_certification_referencia_comercial)
+      const seen = new Set()
+      contactos = contactos.filter(c => {
+        if (!seen.has(c.id_certification_contacto)) {
+          seen.add(c.id_certification_contacto)
+          return true
+        }
+        return false
+      })
+      referencia.contactos = contactos
 
-      const contactos = await certificationService.getContactos(referencia.id_certification_referencia_comercial)
-      for (let contacto of contactos) {
-        contactos_array.push(contacto)
-        referencia.contactos = contactos_array
-      }
       const empresas_cliente = await certificationService.getEmpresaClienteByIdCertification(referencia.id_certification_referencia_comercial)
-      for (let empresa of empresas_cliente) {
-        empresas_clientes_array.push(empresa)
-        referencia.empresa_cliente = empresas_clientes_array
-      }
+      referencia.empresa_cliente = empresas_cliente
       referencias_comerciales.push(referencia)
     }
 
