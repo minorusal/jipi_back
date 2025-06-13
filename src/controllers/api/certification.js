@@ -4425,6 +4425,10 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <td style="padding: 8px; border: 1px solid #ccc;">${scores.g51 ?? '-'}</td>
               </tr>
               <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Sumatoria de scores (G45)</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${scores.sumatoria_scors_g45 ?? '-'}</td>
+              </tr>
+              <tr>
                 <td style="padding: 8px; border: 1px solid #ccc;">Monto solicitado</td>
                 <td style="padding: 8px; border: 1px solid #ccc;">${rangos.monto_solicitado ?? '-'}</td>
               </tr>
