@@ -3411,6 +3411,7 @@ WHERE cer.certificacion_id = (
   }
 
   async cajaBancoPCA(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       caja_bancos,
@@ -3419,29 +3420,28 @@ WHERE cer.certificacion_id = (
       periodo_anterior,
       periodo_previo_anterior
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    return result[0] || null
   }
 
 
   async getScoreCajaBancoPCA(cajaBancos) {
+    const value = mysqlLib.escape(cajaBancos)
     const queryString = `
     SELECT
-      nombre,  
+      nombre,
       valor_algoritmo,
       limite_inferior,
       limite_superior
     FROM cat_flujo_neto_caja_algoritmo
-    WHERE ${cajaBancos} BETWEEN limite_inferior AND COALESCE(limite_superior, 9999999999);
-
-    ;
+    WHERE ${value} BETWEEN limite_inferior AND COALESCE(limite_superior, 9999999999);
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    return result[0] || null
   }
 
   async capitalContableEBPA(id_certification) {
