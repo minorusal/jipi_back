@@ -1928,39 +1928,36 @@ const getScoreCapitalContable = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreCapitalContable`
   try {
     const capitalContableEBPA = await certificationService.capitalContableEBPA(id_certification)
-    if (!capitalContableEBPA || !capitalContableEBPA.capital_contable) {
+    if (!capitalContableEBPA || capitalContableEBPA.capital_contable == null) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el Capital contable del estado de balance previo anterior: ${JSON.stringify(capitalContableEBPA)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} La información de capital contable de estado de balance previo anterior de la certificación ID: ${id_certification} es: ${JSON.stringify(capitalContableEBPA)}`)
 
-    const getScore = await certificationService.getScoreCapitalContableEBPA(capitalContableEBPA.capital_contable)
-    if (!getScore || Object.keys(getScore).length === 0) {
-      return {
-        error: true
-      }
+    const capitalContable = Number(capitalContableEBPA.capital_contable)
+    if (Number.isNaN(capitalContable)) {
+      logger.warn(`${fileMethod} | ${customUuid} El valor de capital contable obtenido no es numérico: ${capitalContableEBPA.capital_contable}`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de capital contable es: ${JSON.stringify({
+    const getScore = await certificationService.getScoreCapitalContableEBPA(capitalContable)
+    if (!getScore) {
+      return { error: true }
+    }
+
+    const scoreInfo = {
       error: false,
       score: getScore.valor_algoritmo,
       descripcion: getScore.nombre,
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior,
-      capital_contable_estado_balance_PA: capitalContableEBPA.capital_contable
-    })}`)
-
-    return {
-      error: false,
-      score: getScore.valor_algoritmo,
-      descripcion: getScore.nombre,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
-      capital_contable_estado_balance_PA: capitalContableEBPA.capital_contable
+      capital_contable_estado_balance_PA: capitalContable
     }
+
+    logger.info(`${fileMethod} | ${customUuid} La información para el score de capital contable es: ${JSON.stringify(scoreInfo)}`)
+
+    return scoreInfo
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return {
