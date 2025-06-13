@@ -2358,55 +2358,60 @@ const getScoreIncidenciasLegales = async (id_certification, algoritmo_v, customU
         }
       }
     } else {
+      const getScore = await certificationService.getScoreIncidenciasLegales('NINGUNA', algoritmo_v)
       respuesta = {
-        score: '0',
+        score: getScore ? getScore.valor_algoritmo : '0',
         tipo: null,
         fecha: null,
-        caso: 'NINGUNA'
+        caso: getScore ? getScore.nombre : 'NINGUNA'
       }
       logger.info(`${fileMethod} | ${customUuid} Incidencias legales obtenidas: ${JSON.stringify(respuesta)}`)
       return respuesta
     }
 
     if (countIncMerc == 0 && !incidenciaPenal) {
+      const getScore = await certificationService.getScoreIncidenciasLegales('NINGUNA', algoritmo_v)
       respuesta = {
-        score: '0',
+        score: getScore ? getScore.valor_algoritmo : '0',
         tipo: null,
         fecha: null,
-        caso: 'NINGUNA'
+        caso: getScore ? getScore.nombre : 'NINGUNA'
       }
       logger.info(`${fileMethod} | ${customUuid} Incidencias legales obtenidas: ${JSON.stringify(respuesta)}`)
       return respuesta
     }
 
     if (incidenciaPenal) {
+      const getScore = await certificationService.getScoreIncidenciasLegales('>= 1 INCIDENCIA PENAL ( no importando el año)', algoritmo_v)
       respuesta = {
-        score: '-250',
+        score: getScore ? getScore.valor_algoritmo : '-250',
         tipo: tipo,
         fecha: fecha,
-        caso: '>= 1 INCIDENCIA PENAL ( no importando el año)'
+        caso: getScore ? getScore.nombre : '>= 1 INCIDENCIA PENAL ( no importando el año)'
       }
       logger.info(`${fileMethod} | ${customUuid} >= 1 INCIDENCIA PENAL ( no importando el año) ${JSON.stringify(respuesta)}`)
       return respuesta
     }
 
     if (_1incidenciaMercantilUnAnio) {
+      const getScore = await certificationService.getScoreIncidenciasLegales('1 INCIDENCIA MERCANTIL <= 1 AÑO', algoritmo_v)
       respuesta = {
-        score: algoritmo_v.v_alritmo == 2 ? '-40' : '-50',
+        score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '-40' : '-50',
         tipo: tipo,
         fecha: fecha,
-        caso: '1 INCIDENCIA MERCANTIL <= 1 AÑO'
+        caso: getScore ? getScore.nombre : '1 INCIDENCIA MERCANTIL <= 1 AÑO'
       }
       logger.info(`${fileMethod} | ${customUuid} 1 INCIDENCIA MERCANTIL <= 1 AÑO ${JSON.stringify(respuesta)}`)
       return respuesta
     }
 
     if (_2incidenciaMercantilUnAnio) {
+      const getScore = await certificationService.getScoreIncidenciasLegales('2 INCIDENCIAS MERCANTILES <= 1 AÑO', algoritmo_v)
       respuesta = {
-        score: '-200',
+        score: getScore ? getScore.valor_algoritmo : '-200',
         tipo: tipo,
         fecha: fecha,
-        caso: '2 INCIDENCIAS MERCANTILES <= 1 AÑO'
+        caso: getScore ? getScore.nombre : '2 INCIDENCIAS MERCANTILES <= 1 AÑO'
       }
       logger.info(`${fileMethod} | ${customUuid} 2 INCIDENCIAS MERCANTILES <= 1 AÑO ${JSON.stringify(respuesta)}`)
       return respuesta
