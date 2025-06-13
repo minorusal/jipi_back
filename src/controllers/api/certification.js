@@ -4394,9 +4394,35 @@ ${JSON.stringify(info_email_error, null, 2)}
       `
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
+      const { scores = {}, rangos = {} } = info_email
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
-          <h3 style="color: #337ab7;">ℹ Información General</h3>
+          <h3 style="color: #337ab7;">ℹ Resumen de resultados</h3>
+          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
+            <tbody>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Clase</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${scores.g52 ?? '-'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Puntaje (G51)</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${scores.g51 ?? '-'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Monto solicitado</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.monto_solicitado ?? '-'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Monto sugerido</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.monto_sugerido ?? '-'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc;">Wording</td>
+                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.wording_underwriting ?? '-'}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h4 style="color: #337ab7;">Detalles</h4>
           <pre style="
             background-color: #eef5fb;
             padding: 10px;
@@ -4408,7 +4434,7 @@ ${JSON.stringify(info_email, null, 2)}
           </pre>
         </div>
       `
-      logger.info(`${fileMethod} | La información del email es: ${info_email}`)
+      logger.info(`${fileMethod} | La información del email es: ${JSON.stringify(info_email)}`)
     } else {
       logger.info(`${fileMethod} | No se proporcionó información para enviar correo`)
       return
