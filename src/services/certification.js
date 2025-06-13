@@ -3279,16 +3279,25 @@ WHERE
   }
 
   async getScoreClienteFinal(id_certification, algoritmo_v) {
-    let valor_algoritmo = algoritmo_v.v_alritmo == 2 ? 'scf.valor_algoritmo_v2 AS valor_algoritmo' : 'scf.valor_algoritmo'
+    const campoAlgoritmo =
+      algoritmo_v.v_alritmo === 2
+        ? 'scf.valor_algoritmo_v2'
+        : 'scf.valor_algoritmo'
+
     const queryString = `
-    SELECT
-      scf.nombre,
-      ${valor_algoritmo}
-    FROM certification AS c
-    LEFT JOIN cat_sector_clientes_finales_algoritmo AS scf ON scf.id_cat_sector_clientes_finales = c.id_cat_sector_clientes_finales
-    WHERE c.id_certification = ${id_certification};
+      SELECT
+        scf.nombre,
+        ${campoAlgoritmo} AS valor_algoritmo
+      FROM certification AS c
+      LEFT JOIN cat_sector_clientes_finales_algoritmo AS scf
+        ON scf.id_cat_sector_clientes_finales = c.id_cat_sector_clientes_finales
+      WHERE c.id_certification = @id_certification;
     `
-    const { result } = await mysqlLib.query(queryString)
+
+    const { result } = await mysqlLib.mysqlQuery('GET', queryString, {
+      id_certification
+    })
+
     return result[0]
   }
 
