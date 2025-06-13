@@ -3349,6 +3349,7 @@ WHERE cer.certificacion_id = (
   }
 
   async deudaTotalPCA(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       deuda_total,
@@ -3357,15 +3358,16 @@ WHERE cer.certificacion_id = (
       periodo_anterior,
       periodo_previo_anterior
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
   }
 
   async capitalContablePCA(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       capital_contable,
@@ -3374,9 +3376,9 @@ WHERE cer.certificacion_id = (
       periodo_anterior,
       periodo_previo_anterior
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3394,6 +3396,7 @@ WHERE cer.certificacion_id = (
   }
 
   async getScoreApalancamiento(apalancamiento) {
+    const apal = mysqlLib.escape(apalancamiento)
     const queryString = `
     SELECT
       nombre,
@@ -3401,8 +3404,7 @@ WHERE cer.certificacion_id = (
       limite_inferior,
       limite_superior
     FROM cat_apalancamiento_algoritmo
-    WHERE ${apalancamiento} BETWEEN limite_inferior AND limite_superior;
-    ;
+    WHERE ${apal} BETWEEN limite_inferior AND limite_superior;
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
