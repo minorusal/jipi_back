@@ -469,7 +469,7 @@ const startCronJobs = () => {
                     }
 
                     // Reenvíos continuos
-                    if (fecha_reenvio_email && diferencia_horas_reenvio_email >= horas_recordatorio_reenvio_referencias && !referencia_comercial.estatus == 'resent') {
+                    if (fecha_reenvio_email && diferencia_horas_reenvio_email >= horas_recordatorio_reenvio_referencias) {
                         logger.info(`Reenvío continuo: han pasado al menos ${horas_recordatorio_reenvio_referencias} horas desde el último reenvío.`)
                         await enviaCorreoReferenciasExternas(referencia_comercial.id_certification_referencia_comercial, contacto_referencia_comercial)
                         continue
