@@ -1,0 +1,5599 @@
+{
+  "info": {
+    "name": "MC API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth.ga",
+      "item": [
+        {
+          "name": "POST /login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /refresh",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "refresh"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /renewToken",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/renewToken",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "renewToken"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /logout",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addModulo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addModulo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addModulo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addSubModulo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addSubModulo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addSubModulo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addComponente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addComponente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addComponente"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addSubComponente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addSubComponente",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addSubComponente"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addRol",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addRol",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addRol"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addRolPermiso",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addRolPermiso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addRolPermiso"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPermisos/:id_rol",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPermisos/:id_rol",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPermisos",
+                ":id_rol"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /encuestaLogin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/encuestaLogin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "encuestaLogin"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /catMeGustaria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catMeGustaria",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catMeGustaria"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /catClientesCredito",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catClientesCredito",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catClientesCredito"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /catRangoVentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catRangoVentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catRangoVentas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /setTrueCronos/:id_empresa",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/setTrueCronos/:id_empresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "setTrueCronos",
+                ":id_empresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /catalogoCreditoClientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catalogoCreditoClientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catalogoCreditoClientes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /testCipher",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/testCipher",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "testCipher"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /caso1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/caso1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "caso1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /caso2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/caso2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "caso2"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /caso3",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/caso3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "caso3"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "blog.ga",
+      "item": [
+        {
+          "name": "POST /articles",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /articles/all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "all"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /articles/ids",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/ids",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "ids"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /articles/search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                "search"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /articles/:artId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:artId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                ":artId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /articles/:artId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/:artId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "articles",
+                ":artId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /comments/:artId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comments/:artId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                ":artId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comments",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comments/subcomments",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comments/subcomments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "subcomments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /stats",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stats"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "certification",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /documentosCertificacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documentosCertificacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documentosCertificacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /infoCertificacion/:idEmpresa/:idSeccion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/infoCertificacion/:idEmpresa/:idSeccion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "infoCertificacion",
+                ":idEmpresa",
+                ":idSeccion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/data",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "data"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /payment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /certificar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/certificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "certificar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /certificar-reset",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/certificar-reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "certificar-reset"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /iniciaCertificacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/iniciaCertificacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "iniciaCertificacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /guardaPartidasFinancieras",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/guardaPartidasFinancieras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "guardaPartidasFinancieras"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /guardaMercadoObjetivo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/guardaMercadoObjetivo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "guardaMercadoObjetivo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /guardaReferenciasComerciales",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/guardaReferenciasComerciales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "guardaReferenciasComerciales"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getReferenciaComercialForm/:id_certification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getReferenciaComercialForm/:id_certification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getReferenciaComercialForm",
+                ":id_certification"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getIndustria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getIndustria",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getIndustria"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPaisAlgoritmo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPaisAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPaisAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getSectorRiesgoSectorialAlgoritmo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getSectorRiesgoSectorialAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getSectorRiesgoSectorialAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getSectorClientesFinalesAlgoritmo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getSectorClientesFinalesAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getSectorClientesFinalesAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getTiempoActividadComercialAlgoritmo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getTiempoActividadComercialAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getTiempoActividadComercialAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getTipoCifrasAlgoritmo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getTipoCifrasAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getTipoCifrasAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /getResultAlgoritmo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getResultAlgoritmo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getResultAlgoritmo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /generaReporteInformativoCredito",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/generaReporteInformativoCredito",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "generaReporteInformativoCredito"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /validacionBloc",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/validacionBloc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "validacionBloc"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /consultaBloc/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consultaBloc/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "consultaBloc",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /checkInfoAlgoritmo/:id_certification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/checkInfoAlgoritmo/:id_certification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "checkInfoAlgoritmo",
+                ":id_certification"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPais/:tipo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPais/:tipo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPais",
+                ":tipo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getDenominaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getDenominaciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getDenominaciones"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPuestos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPuestos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPuestos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPoderes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPoderes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPoderes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getBienesAsegurados",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getBienesAsegurados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getBienesAsegurados"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updateCertificacion",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updateCertificacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateCertificacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updatePartidasFinancieras",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updatePartidasFinancieras",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updatePartidasFinancieras"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updateReferenciasComerciales",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updateReferenciasComerciales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateReferenciasComerciales"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getCertification/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getCertification/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getCertification",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getCertificationStatus/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getCertificationStatus/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getCertificationStatus",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /uploadDocumentoCertificacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploadDocumentoCertificacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploadDocumentoCertificacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /consultaDocumento/:id_empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consultaDocumento/:id_empresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "consultaDocumento",
+                ":id_empresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updateDocumento",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updateDocumento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateDocumento"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /deleteDocumento",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/deleteDocumento",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "deleteDocumento"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /consultaCronos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consultaCronos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "consultaCronos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /setStatusCertification",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/setStatusCertification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "setStatusCertification"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /downloadLogs",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/downloadLogs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "downloadLogs"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /informacionContacto/:id_contacto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/informacionContacto/:id_contacto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "informacionContacto",
+                ":id_contacto"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updateInformacionContacto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updateInformacionContacto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updateInformacionContacto"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getInfoContactoReferido/:id_contacto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getInfoContactoReferido/:id_contacto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getInfoContactoReferido",
+                ":id_contacto"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /solicitarCredito",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/solicitarCredito",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "solicitarCredito"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getMontoPlazo/:id_proveedor/:id_cliente/:id_solicitud_credito",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getMontoPlazo/:id_proveedor/:id_cliente/:id_solicitud_credito",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getMontoPlazo",
+                ":id_proveedor",
+                ":id_cliente",
+                ":id_solicitud_credito"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /seteaEstatusSolicitudCredito",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/seteaEstatusSolicitudCredito",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seteaEstatusSolicitudCredito"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /obtenerInfoReferenciaExterna/:hash",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/obtenerInfoReferenciaExterna/:hash",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "obtenerInfoReferenciaExterna",
+                ":hash"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /actualizaHashReferenciaExternas",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actualizaHashReferenciaExternas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actualizaHashReferenciaExternas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /consultaMailjet",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consultaMailjet",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "consultaMailjet"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /saveLog",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saveLog",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "saveLog"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getDataReporteGlobal/:id_emp",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getDataReporteGlobal/:id_emp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getDataReporteGlobal",
+                ":id_emp"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "companies",
+      "item": [
+        {
+          "name": "GET /actualizaListaContactos/",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actualizaListaContactos/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actualizaListaContactos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getEval:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getEval:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getEval:id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /favorites",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getCompanyById/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getCompanyById/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getCompanyById",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:id/schedules",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/schedules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "schedules"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/schedules",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/schedules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "schedules"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:id/addresses",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/addresses/:address",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses/:address",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses",
+                ":address"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:id/addresses",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/addresses/:address/corporate",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses/:address/corporate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses",
+                ":address",
+                "corporate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:id/addresses/:address/phones",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses/:address/phones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses",
+                ":address",
+                "phones"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:id/addresses/:address/phones",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses/:address/phones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses",
+                ":address",
+                "phones"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/addresses/:address/phones/:phone",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/addresses/:address/phones/:phone",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "addresses",
+                ":address",
+                "phones",
+                ":phone"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:id/users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:id/users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/users",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:id/users-invitations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users-invitations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users-invitations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:id/users-invitations",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users-invitations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users-invitations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:id/users-invitations",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users-invitations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users-invitations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/users-invitations",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users-invitations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users-invitations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:id/users-details",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/users-details",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "users-details"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:id/products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:companyID/events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:companyID/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":companyID",
+                "events"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /favorites",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:companyID/ratings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:companyID/ratings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":companyID",
+                "ratings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:companyID/videos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:companyID/videos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":companyID",
+                "videos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /addresses/createandupdate",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/addresses/createandupdate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "addresses",
+                "createandupdate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /invitacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/invitacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invitacion"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cotizacion",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /fecha/:id/:dias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fecha/:id/:dias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "fecha",
+                ":id",
+                ":dias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /comprobantes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comprobantes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comprobantes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /pdf",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pdf"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:cotId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /productos/:cotId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "productos",
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /crearCotizacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crearCotizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crearCotizacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /actualizaCotizacion",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actualizaCotizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actualizaCotizacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getEmpresas/:emp",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getEmpresas/:emp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getEmpresas",
+                ":emp"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getCotizacion/:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getCotizacion/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getCotizacion",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getProductos/:cotId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getProductos/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getProductos",
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getBitacora/:cotId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getBitacora/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getBitacora",
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getUsuarios/:cotizacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getUsuarios/:cotizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getUsuarios",
+                ":cotizacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /update/:cotId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/update/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "update",
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /bitacora/:cotId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bitacora/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bitacora",
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /reportes/pagos/:reporte",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes/pagos/:reporte",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes",
+                "pagos",
+                ":reporte"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reportes/pagos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes/pagos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes",
+                "pagos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /reportes/pagos",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes/pagos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes",
+                "pagos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /reportes/pagos/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes/pagos/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes",
+                "pagos",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reportes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /reportes",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /reportes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comentarios",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /comentarios",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /reportes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /reportes/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reportes/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reportes",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:cotId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:cotId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":cotId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /comentarios/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /comentarios/sin-leer/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/sin-leer/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                "sin-leer",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /comentarios/sin-leer/:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/sin-leer/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                "sin-leer",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /experiencias",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "experiencias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /experiencias/:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "experiencias",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /actualizacion/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actualizacion/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actualizacion",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /usuarios/:cotizacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/:cotizacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuarios",
+                ":cotizacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comprobantes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comprobantes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comprobantes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /por-pagar/:userID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/por-pagar/:userID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "por-pagar",
+                ":userID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /success/get",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/success/get",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "success",
+                "get"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "countries",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /:id/states",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:id/states",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":id",
+                "states"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "credit-reports",
+      "item": [
+        {
+          "name": "POST /ask",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ask",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ask"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /report/:reportID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/report/:reportID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "report",
+                ":reportID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /report/:reportID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/report/:reportID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "report",
+                ":reportID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /pay",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pay",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pay"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPaymentType",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPaymentType",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPaymentType"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "currencies",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /:eventoID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:eventoID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:eventID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:eventoID/invitations",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID/invitations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID",
+                "invitations"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:eventoID/favorite",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID/favorite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID",
+                "favorite"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:eventoID/schedules/:scheduleID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID/schedules/:scheduleID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID",
+                "schedules",
+                ":scheduleID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:eventoID/invitations/:usuarioID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID/invitations/:usuarioID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID",
+                "invitations",
+                ":usuarioID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:eventoID/invitations/:usuarioID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:eventoID/invitations/:usuarioID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":eventoID",
+                "invitations",
+                ":usuarioID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /groups",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /groups/company/:empresaID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/company/:empresaID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                "company",
+                ":empresaID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /groups/:groupID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/:groupID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                ":groupID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /groups/:groupID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/:groupID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                ":groupID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /groups/:groupID/members",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/:groupID/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "groups",
+                ":groupID",
+                "members"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "followers",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "friends",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /refuse",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/refuse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "refuse"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /check/:myId/:userId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/check/:myId/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "check",
+                ":myId",
+                ":userId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hades",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /company-certification",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company-certification",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company-certification"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /company-certification-test",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company-certification-test",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company-certification-test"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /credit-report",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/credit-report",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "credit-report"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /credit-report-test",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/credit-report-test",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "credit-report-test"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "industries",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "information",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "invitations",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/signup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "signup"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "konesh",
+      "item": [
+        {
+          "name": "POST /ValidaListaService",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ValidaListaService",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ValidaListaService"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /consultaEstatusKonesh/:rfc",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/consultaEstatusKonesh/:rfc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "consultaEstatusKonesh",
+                ":rfc"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /descifra",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/descifra",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "descifra"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /cifra",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cifra",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cifra"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "messages",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:roomUUID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:roomUUID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":roomUUID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:roomUUID/:messageUUID/:userID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:roomUUID/:messageUUID/:userID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":roomUUID",
+                ":messageUUID",
+                ":userID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:roomUUID/messages",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:roomUUID/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":roomUUID",
+                "messages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /message",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/message",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "message"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "metadata",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "money-exchange",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "notifications",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "DELETE /:uuid",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":uuid"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":uuid"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "payments",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /:user/intent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user",
+                "intent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /:user/card",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user/card",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user",
+                "card"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:user/card",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user/card",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user",
+                "card"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:user/card/:card",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:user/card/:card",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":user",
+                "card",
+                ":card"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:companyID/payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:companyID/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":companyID",
+                "payments"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "productos",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /categorias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:productId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:productId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":productId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /web/:productId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/web/:productId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "web",
+                ":productId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /search",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "search"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comentar/:productoID",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentar/:productoID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentar",
+                ":productoID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /comentar/:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentar/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentar",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /comentar/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentar/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentar",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /categorias",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reviews",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reviews"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "publicaciones",
+      "item": [
+        {
+          "name": "POST /crearPublicacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crearPublicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crearPublicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /editarPublicacion",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/editarPublicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "editarPublicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /uploadImageGaleriaPublicacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploadImageGaleriaPublicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploadImageGaleriaPublicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /crearComentario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crearComentario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crearComentario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /editarComentario",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/editarComentario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "editarComentario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /likePublicacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/likePublicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "likePublicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /disLikePublicacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/disLikePublicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "disLikePublicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /likeComentario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/likeComentario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "likeComentario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /disLikeComentario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/disLikeComentario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "disLikeComentario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPublicaciones/:id_empresa/:id_usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPublicaciones/:id_empresa/:id_usuario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPublicaciones",
+                ":id_empresa",
+                ":id_usuario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getComentarios/:id_publicacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getComentarios/:id_publicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getComentarios",
+                ":id_publicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /eliminarPublicacion/:id_publicacion",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/eliminarPublicacion/:id_publicacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "eliminarPublicacion",
+                ":id_publicacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /uploadVideCorporativo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploadVideCorporativo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploadVideCorporativo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /uploadBannerCorporativo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploadBannerCorporativo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploadBannerCorporativo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /uploadLogoCorporativo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/uploadLogoCorporativo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "uploadLogoCorporativo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:publicationId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:publicationId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":publicationId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /:publicationId",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:publicationId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":publicationId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /red/:usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/red/:usuario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "red",
+                ":usuario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /usuario/:usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usuario/:usuario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "usuario",
+                ":usuario"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /comentarios/:publicationId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/:publicationId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                ":publicationId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /comentarios/:id",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /comentarios/:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /comentarios/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comentarios/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comentarios",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /like",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/like",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "like"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /like/comment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/like/comment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "like",
+                "comment"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /subcomentarios",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcomentarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcomentarios"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /subcomentarios/:uuid",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcomentarios/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcomentarios",
+                ":uuid"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /subcomentarios/:uuid",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcomentarios/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcomentarios",
+                ":uuid"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /subcomentarios/:uuid/like",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcomentarios/:uuid/like",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcomentarios",
+                ":uuid",
+                "like"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /empresa/:companyID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/empresa/:companyID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "empresa",
+                ":companyID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /publicas/ultimas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/publicas/ultimas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "publicas",
+                "ultimas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /:usuID/:pubID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:usuID/:pubID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":usuID",
+                ":pubID"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "quotes",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /user/:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /user/:user/check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/:user/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                ":user",
+                "check"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "search",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /suggestions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/suggestions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "suggestions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /sugerenciasBusqueda",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sugerenciasBusqueda",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sugerenciasBusqueda"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "category"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /taxId/:taxId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/taxId/:taxId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "taxId",
+                ":taxId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /taxIdComplete/:taxId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/taxIdComplete/:taxId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "taxIdComplete",
+                ":taxId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /buscador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/buscador",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "buscador"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "sitemap",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /sub",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sub",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sub"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "solicitud-credito",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /saldo/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saldo/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "saldo",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /agregar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agregar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "agregar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /actualizar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actualizar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "actualizar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reintegrar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reintegrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reintegrar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /restar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/restar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "restar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getCodigos/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getCodigos/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getCodigos",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /asignar_codigo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/asignar_codigo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "asignar_codigo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /enviadas/:idEmpresa/",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/enviadas/:idEmpresa/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "enviadas",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /recibidas/:idEmpresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/recibidas/:idEmpresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "recibidas",
+                ":idEmpresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /invitacion",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/invitacion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invitacion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reenviar-solicitud",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reenviar-solicitud",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reenviar-solicitud"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /reenviar-solicitud-interna",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reenviar-solicitud-interna",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reenviar-solicitud-interna"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "statistics",
+      "item": [
+        {
+          "name": "GET /company/:empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/:empresa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                ":empresa"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /user/:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /homepage",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/homepage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "homepage"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /numbers/:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/numbers/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "numbers",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /numbers/:user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/numbers/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "numbers",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /numbers/:user",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/numbers/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "numbers",
+                ":user"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "stripe",
+      "item": [
+        {
+          "name": "POST /pagar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pagar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pagar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /confirmarPago",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/confirmarPago",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "confirmarPago"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /cancelarPago",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cancelarPago",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cancelarPago"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "support",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /suggestions",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/suggestions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "suggestions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /problems",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/problems",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "problems"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "tokens",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /user/:user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/:user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                ":user"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /token/:token/:type",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/token/:token/:type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "token",
+                ":token",
+                ":type"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "trade-names",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "DELETE /:tradeId",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:tradeId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":tradeId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "units",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "usuarios",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "GET /:userId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /verificarActualizacion/:userId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verificarActualizacion/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "verificarActualizacion",
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /verificar/reenviar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verificar/reenviar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "verificar",
+                "reenviar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /verificar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verificar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "verificar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /:userID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/:userID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ":userID"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /registro-caducidad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/registro-caducidad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registro-caducidad"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /request-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/request-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "request-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /change-password/:token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/change-password/:token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "change-password",
+                ":token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /admins/:usrId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admins/:usrId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admins",
+                ":usrId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /byId/:userId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/byId/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "byId",
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /registerWithInvitation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/registerWithInvitation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "registerWithInvitation"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /byIdCompanie/:id_companie",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/byIdCompanie/:id_companie",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "byIdCompanie",
+                ":id_companie"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPermisos/:userId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPermisos/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPermisos",
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /catalogo/getPermisos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/catalogo/getPermisos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "catalogo",
+                "getPermisos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /createPerfilPermisos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/createPerfilPermisos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "createPerfilPermisos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /getPerfilesPermisosByEmpresa/:emp_id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/getPerfilesPermisosByEmpresa/:emp_id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "getPerfilesPermisosByEmpresa",
+                ":emp_id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updatePermisos/:userId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updatePermisos/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updatePermisos",
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /updatePerfilPermisos/:id",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/updatePerfilPermisos/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "updatePerfilPermisos",
+                ":id"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "validation",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /sendEmail",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sendEmail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sendEmail"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /sendEmailTemplateRegister",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sendEmailTemplateRegister",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sendEmailTemplateRegister"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /validaToken/:token/:userId",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/validaToken/:token/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "validaToken",
+                ":token",
+                ":userId"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /estatusRegistro",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estatusRegistro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "estatusRegistro"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /sendEmailTemplate",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sendEmailTemplate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sendEmailTemplate"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "videos",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "visits",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
