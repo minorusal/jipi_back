@@ -4432,11 +4432,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           return `
             <tr>
-              <td style="padding: 8px; border: 1px solid #ccc;">${key}</td>
-              <td style="padding: 8px; border: 1px solid #ccc;">${descripcion}</td>
-              <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
-              <td style="padding: 8px; border: 1px solid #ccc;">${opciones}</td>
-              <td style="padding: 8px; border: 1px solid #ccc;">${explicacion}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${key}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${descripcion}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${score}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${opciones}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${explicacion}</td>
             </tr>`
         })
         .join('')
@@ -4447,28 +4447,28 @@ ${JSON.stringify(info_email_error, null, 2)}
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
             <tbody>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Clase</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${scores.g52 ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Clase</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.g52 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Puntaje (G51)</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${scores.g51 ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Puntaje (G51)</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.g51 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Sumatoria de scores (G45)</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${scores.sumatoria_scors_g45 ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Sumatoria de scores (G45)</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.sumatoria_scors_g45 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Monto solicitado</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.monto_solicitado ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto solicitado</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.monto_solicitado ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Monto sugerido</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.monto_sugerido ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto sugerido</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.monto_sugerido ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc;">Wording</td>
-                <td style="padding: 8px; border: 1px solid #ccc;">${rangos.wording_underwriting ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Wording</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
             </tbody>
           </table>
@@ -4476,11 +4476,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
               <tr>
-                <th style="padding: 8px; border: 1px solid #ccc;">Campo</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Descripción</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Opciones</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">Explicación</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Campo</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Descripción</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Score</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Opciones</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Explicación</th>
               </tr>
             </thead>
             <tbody>
