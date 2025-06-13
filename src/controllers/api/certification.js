@@ -4395,6 +4395,22 @@ ${JSON.stringify(info_email_error, null, 2)}
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
       const { scores = {}, rangos = {} } = info_email
+      const detallesTabla = Object.entries(rangos)
+        .filter(([_, val]) => val && typeof val === 'object')
+        .map(([key, val]) => {
+          const descripcion = val.descripcion ?? '-'
+          const score = val.score ?? '-'
+          const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
+          return `
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ccc;">${key}</td>
+              <td style="padding: 8px; border: 1px solid #ccc;">${descripcion}</td>
+              <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
+              <td style="padding: 8px; border: 1px solid #ccc;">${explicacion}</td>
+            </tr>`
+        })
+        .join('')
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
           <h3 style="color: #337ab7;">ℹ Resumen de resultados</h3>
@@ -4423,15 +4439,19 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tbody>
           </table>
           <h4 style="color: #337ab7;">Detalles</h4>
-          <pre style="
-            background-color: #eef5fb;
-            padding: 10px;
-            border: 1px solid #cce;
-            overflow-x: auto;
-            white-space: pre;
-          ">
-${JSON.stringify(info_email, null, 2)}
-          </pre>
+          <table style="border-collapse: collapse; width: 100%;">
+            <thead>
+              <tr>
+                <th style="padding: 8px; border: 1px solid #ccc;">Campo</th>
+                <th style="padding: 8px; border: 1px solid #ccc;">Descripción</th>
+                <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
+                <th style="padding: 8px; border: 1px solid #ccc;">Explicación</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${detallesTabla}
+            </tbody>
+          </table>
         </div>
       `
       logger.info(`${fileMethod} | La información del email es: ${JSON.stringify(info_email)}`)
