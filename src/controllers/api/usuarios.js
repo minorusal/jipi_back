@@ -22,6 +22,7 @@ const createTokenJWT = require('../../utils/createTokenJWT')
 const cipher = require('../../utils/cipherService')
 const utilitiesService = require('../../services/utilities')
 const axios = require('axios')
+const logger = require('../../utils/logs/logger')
 
 let globalConfig = {}
 
@@ -120,7 +121,9 @@ exports.getUserById = async (req, res, next) => {
 
 exports.registerWithInvitation = async (req, res, next) => {
   try {
+    const fileMethod = `file: src/controllers/api/usuarios.js - method: registerWithInvitation`
     const parsedData = typeof req.decryptedBody === 'string' ? JSON.parse(req.decryptedBody) : req.decryptedBody
+    logger.info(`${fileMethod} | Datos recibidos: ${JSON.stringify(parsedData)}`)
     const { email, id_usuario, id_empresa, id_rol, nombre_usuario, apellido_usuario, perfil } = parsedData
     let usuario = {}
 
@@ -135,7 +138,7 @@ exports.registerWithInvitation = async (req, res, next) => {
     const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     const lowerCase = 'abcdefghijklmnopqrstuvwxyz'
     const digits = '0123456789'
-    const specialChars = '!@#$%^&*()_+[]{}|;:,.<>?'
+    const specialChars = '!@#$%^&*()_+[]{};:,.<>?'
     const allChars = upperCase + lowerCase + digits + specialChars
     const passwordLength = Math.floor(Math.random() * 3) + 6
     let password = ''
@@ -153,6 +156,7 @@ exports.registerWithInvitation = async (req, res, next) => {
         }
       }
     }
+    logger.info(`${fileMethod} | Password generado: ${password}`)
 
     const passCipher = await encryptPassword(password)
     usuario.nombre = nombre_usuario,
@@ -165,6 +169,7 @@ exports.registerWithInvitation = async (req, res, next) => {
     usuario.token = token
 
     const nuevoUsuario = await userService.createUser(usuario, Number(perfil))
+    logger.info(`${fileMethod} | Usuario creado con id: ${nuevoUsuario.insertId}`)
     await userService.confirmUser(nuevoUsuario.insertId)
     await companiesService.addUserToCompany(id_empresa, nuevoUsuario.insertId, id_rol)
 
@@ -186,6 +191,7 @@ exports.registerWithInvitation = async (req, res, next) => {
     const contactListMailjetMultiusers = await globalConfig.find(item => item.nombre === 'contactListMailjetMultiusers').valor
     const mailjetHeaders = { headers: { "Content-Type": "application/json", "Authorization": `Basic ${secretKeyMailjet}` } }
     const envioEmail = await axios.post(`https://api.mailjet.com/v3/REST/contactslist/${contactListMailjetMultiusers}/managecontact`, request, mailjetHeaders)
+    logger.info(`${fileMethod} | Envío de email de invitación: ${envioEmail.status}`)
 
     const getUsuario = await userService.getUserById(nuevoUsuario.insertId)
 
@@ -199,6 +205,7 @@ exports.registerWithInvitation = async (req, res, next) => {
     return res.status(200).send(encryptedResponse)
 
   } catch (error) {
+    logger.error(`${fileMethod} | Error: ${typeof error === 'object' ? JSON.stringify(error) : error}`)
     next(error)
   }
 }
