@@ -4425,9 +4425,13 @@ ${JSON.stringify(info_email_error, null, 2)}
           const tableName = tableMap[key]
           let opciones = '-'
           if (tableName && rangos_bd && Array.isArray(rangos_bd[tableName])) {
-            opciones = rangos_bd[tableName]
-              .map(opt => `${opt.nombre ?? ''} (${opt.valor_algoritmo ?? ''})`)
-              .join(', ')
+            opciones = `<ul style="margin:0;padding-left:15px;">${
+              rangos_bd[tableName]
+                .map(
+                  opt => `<li>${opt.nombre ?? ''} (${opt.valor_algoritmo ?? ''})</li>`
+                )
+                .join('')
+            }</ul>`
           }
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           return `
