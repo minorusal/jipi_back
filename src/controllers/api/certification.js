@@ -1909,52 +1909,32 @@ const getScorePayback = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScorePayback`
   try {
     let score = null
-    const deudaCortoPlazo = await certificationService.deudaCortoPlazo(id_certification)
-    if (!deudaCortoPlazo || deudaCortoPlazo.length == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener la deuda a corto plazo: ${JSON.stringify(deudaCortoPlazo)}`)
-      return {
-        error: true
-      }
+
+    const [deudaCortoPlazo, utilidadOperativa] = await Promise.all([
+      certificationService.deudaCortoPlazo(id_certification),
+      certificationService.utilidadOperativa(id_certification)
+    ])
+
+    if (!deudaCortoPlazo || deudaCortoPlazo.length === 0 || !utilidadOperativa || utilidadOperativa.length === 0) {
+      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener la deuda a corto plazo o la utilidad operativa: ${JSON.stringify({ deudaCortoPlazo, utilidadOperativa })}`)
+      return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} La deuda a corto plazo de la certificación con ID : ${id_certification} es: ${JSON.stringify(deudaCortoPlazo)}`)
-
-    const utilidadOperativa = await certificationService.utilidadOperativa(id_certification)
-    if (utilidadOperativa.length == 0 || !utilidadOperativa) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener la utilidad operativa: ${JSON.stringify(utilidadOperativa)}`)
-      return {
-        error: true
-      }
-    }
-
     logger.info(`${fileMethod} | ${customUuid} La utilidad operativa de la certificación con ID : ${id_certification} es: ${JSON.stringify(utilidadOperativa)}`)
 
     if (utilidadOperativa.utilidad_operativa == 0) score = 'N/A'
+
     const payback = parseFloat(deudaCortoPlazo.deuda_corto_plazo) / parseFloat(utilidadOperativa.utilidad_operativa)
     const getScore = await certificationService.getScorePayback(payback)
-    if (getScore.length == 0 || !getScore) {
+    if (!getScore || getScore.length === 0) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el escore de payback: ${JSON.stringify(payback)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} La información del score de payback de certificación con ID : ${id_certification} es: ${JSON.stringify(getScore)}`)
 
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de payback es: ${JSON.stringify({
-      score: score == null ? getScore.valor_algoritmo : score,
-      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.deuda_corto_plazo,
-      periodo_actual: deudaCortoPlazo.periodo_actual,
-      periodo_anterior: deudaCortoPlazo.periodo_anterior,
-      periodo_previo_anterior: deudaCortoPlazo.periodo_previo_anterior,
-      utilida_operativa: utilidadOperativa.utilidad_operativa,
-      payback: payback,
-      descripcion: getScore.nombre,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior
-    })}`)
-
-    return {
+    const result = {
       score: score == null ? getScore.valor_algoritmo : score,
       deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.deuda_corto_plazo,
       periodo_actual: deudaCortoPlazo.periodo_actual,
@@ -1966,11 +1946,13 @@ const getScorePayback = async (id_certification, customUuid) => {
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior
     }
+
+    logger.info(`${fileMethod} | ${customUuid} La información para el score de payback es: ${JSON.stringify(result)}`)
+
+    return result
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      error: true
-    }
+    return { error: true }
   }
 }
 
