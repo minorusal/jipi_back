@@ -1735,25 +1735,27 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreApalancamiento`
   try {
     let valor_algoritmo = '0'
-    const deudaTotalPCA = await certificationService.deudaTotalPCA(id_certification)
-    if (!deudaTotalPCA || deudaTotalPCA.deuda_total == 0 || deudaTotalPCA.length == 0) {
+    const [deudaTotalPCA, capitalContable] = await Promise.all([
+      certificationService.deudaTotalPCA(id_certification),
+      certificationService.capitalContablePCA(id_certification)
+    ])
+
+    if (!deudaTotalPCA || !capitalContable) {
+      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información de balance para la certificación: ${id_certification}`)
+      return { error: true }
+    }
+
+    if (!deudaTotalPCA.deuda_total) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener deuda total de partida de balance del periodo contable anterior: ${JSON.stringify(deudaTotalPCA)}`)
       valor_algoritmo = '-30'
     }
 
-    const capitalContable = await certificationService.capitalContablePCA(id_certification)
-    if (capitalContable.length == 0 || !capitalContable) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener capital contable de estado de balance del periodo contable anterior: ${JSON.stringify(capitalContable)}`)
-      return {
-        error: true
-      }
-    }
+    const deuda = parseFloat(deudaTotalPCA.deuda_total)
+    const capital = parseFloat(capitalContable.capital_contable)
+    const apalancamiento = deuda / capital
+    logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${apalancamiento}`)
 
-    logger.info(`${fileMethod} | ${customUuid} El capital contable de apalancamiento de la certificación ID: ${id_certification} es: ${JSON.stringify(capitalContable)}`)
-
-    const apalancamiento = parseFloat(deudaTotalPCA.deuda_total) / parseFloat(capitalContable.capital_contable)
-    logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${JSON.stringify(apalancamiento)}`)
-    if (Number.isNaN(apalancamiento)) {
+    if (!Number.isFinite(apalancamiento)) {
       return {
         score: '0',
         descripcion_apalancamiento: '',
@@ -1765,36 +1767,18 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
         limite_inferior: '',
         limite_superior: '',
         capital_contable_estado_balance: capitalContable.capital_contable,
-        apalancamiento: apalancamiento
+        apalancamiento
       }
     }
 
     const getScore = await certificationService.getScoreApalancamiento(apalancamiento)
-    if (getScore.length == 0 || !getScore) {
+    if (!getScore) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de apalancamiento : ${JSON.stringify(getScore)}`)
-      return {
-        error: true
-      }
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El score de apalancamiento de la certificación ID: ${id_certification} es: ${JSON.stringify(getScore)}`)
-
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de certificación es: ${JSON.stringify({
-      score: valor_algoritmo != '0' ? valor_algoritmo : getScore.valor_algoritmo,
-      descripcion_apalancamiento: getScore.nombre,
-      deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
-      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
-      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
-      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
-      periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
-      capital_contable_estado_balance: capitalContable.capital_contable,
-      apalancamiento: apalancamiento
-    })}`)
-
     return {
-      score: valor_algoritmo != '0' ? valor_algoritmo : getScore.valor_algoritmo,
+      score: valor_algoritmo !== '0' ? valor_algoritmo : getScore.valor_algoritmo,
       descripcion_apalancamiento: getScore.nombre,
       deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
       periodo_estado_balance_tipo: deudaTotalPCA.tipo,
@@ -1804,13 +1788,11 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
-      apalancamiento: apalancamiento
+      apalancamiento
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      error: true
-    }
+    return { error: true }
   }
 }
 
