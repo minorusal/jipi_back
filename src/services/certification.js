@@ -5226,8 +5226,8 @@ WHERE
       cc.fecha_envio_email,
       cc.fecha_reenvio_email
     FROM certification_contacto AS cc
-    WHERE cc.estatus IN ('sent', 'resent')
-      AND cc.id_certification_referencia_comercial = ${id_referencia_comercial};
+    WHERE cc.id_certification_referencia_comercial = ${id_referencia_comercial}
+      AND cc.estatus IN ('sent', 'resent');
     `
     const { result } = await mysqlLib.query(queryString)
     return result
