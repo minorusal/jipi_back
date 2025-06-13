@@ -3553,6 +3553,7 @@ WHERE cer.certificacion_id = (
   }
 
   async saldoClienteCuentaXCobrar(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       saldo_cliente_cuenta_x_cobrar,
@@ -3561,9 +3562,9 @@ WHERE cer.certificacion_id = (
       periodo_anterior,
       periodo_previo_anterior
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3571,28 +3572,30 @@ WHERE cer.certificacion_id = (
 
 
   async ventasAnuales(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       ventas_anuales,
       tipo
     FROM certification_partidas_estado_resultados_contables
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
   }
 
   async saldoInventarios(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       saldo_inventarios,
       tipo
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3629,13 +3632,14 @@ WHERE cer.certificacion_id = (
   }
 
   async getTipoCifra(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       id_tipo_cifra
     FROM certification_partidas_estado_balance
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0].id_tipo_cifra
@@ -3643,26 +3647,28 @@ WHERE cer.certificacion_id = (
 
 
   async getScoreTipoCifra(id_cifra) {
+    const id = mysqlLib.escape(id_cifra)
     const queryString = `
     SELECT
       valor_algoritmo,
       nombre
     FROM cat_tipo_cifras_algoritmo
-    WHERE id_cat_tipo_cifras = ${id_cifra};
+    WHERE id_cat_tipo_cifras = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
   }
 
   async costoVentasAnuales(id_certification) {
+    const id = mysqlLib.escape(id_certification)
     const queryString = `
     SELECT
       costo_ventas_anuales,
       tipo
     FROM certification_partidas_estado_resultados_contables
-    WHERE 
+    WHERE
       tipo = 'anterior'
-      AND id_certification = ${id_certification};
+      AND id_certification = ${id};
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3671,6 +3677,8 @@ WHERE cer.certificacion_id = (
 
 
   async getScoreRotacion(dso, dio) {
+    const dsoEsc = mysqlLib.escape(dso)
+    const dioEsc = mysqlLib.escape(dio)
     const queryString = `
       SELECT
         nombre,
@@ -3679,8 +3687,8 @@ WHERE cer.certificacion_id = (
         limite_superior
       FROM cat_rotacion_cuentas_cobrar_algoritmo
       WHERE
-          ${dso} BETWEEN COALESCE(limite_inferior, -999999999) AND COALESCE(limite_superior, 999999999)
-          OR ${dio} BETWEEN COALESCE(limite_inferior, -999999999) AND COALESCE(limite_superior, 999999999)
+          ${dsoEsc} BETWEEN COALESCE(limite_inferior, -999999999) AND COALESCE(limite_superior, 999999999)
+          OR ${dioEsc} BETWEEN COALESCE(limite_inferior, -999999999) AND COALESCE(limite_superior, 999999999)
       LIMIT 1;
 
       `
