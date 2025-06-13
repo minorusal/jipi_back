@@ -1836,45 +1836,30 @@ const getScoreCajaBancos = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreCajaBancos`
   try {
     const cajaBancoPCA = await certificationService.cajaBancoPCA(id_certification)
-    if (!cajaBancoPCA || cajaBancoPCA.length == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener caja banco de estado de balance del periodo contable anterior: ${JSON.stringify(cajaBancoPCA)}`)
-      return {
-        error: true
-      }
+    if (!cajaBancoPCA) {
+      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener caja banco del periodo contable anterior`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} La información de caja bancos del estado de balance del periodo contable anterior de la certificación ID: ${id_certification} es: ${JSON.stringify(cajaBancoPCA)}`)
-
-    const getScore = await certificationService.getScoreCajaBancoPCA(cajaBancoPCA.caja_bancos)
-    if (!getScore || getScore.length == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de caja bancos: ${JSON.stringify(getScore)}`)
-      return {
-        error: true
-      }
+    const scoreInfo = await certificationService.getScoreCajaBancoPCA(cajaBancoPCA.caja_bancos)
+    if (!scoreInfo) {
+      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de caja bancos`)
+      return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El score de caja bancos de la certificación ID: ${id_certification} es: ${JSON.stringify(getScore)}`)
-
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de caja bancos es: ${JSON.stringify({
-      descripcion: getScore.nombre,
-      score: getScore.valor_algoritmo,
+    const response = {
+      descripcion: scoreInfo.nombre,
+      score: scoreInfo.valor_algoritmo,
       caja_bancos_periodo_anterior: cajaBancoPCA.caja_bancos,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior
-    })}`)
-
-    return {
-      descripcion: getScore.nombre,
-      score: getScore.valor_algoritmo,
-      caja_bancos_periodo_anterior: cajaBancoPCA.caja_bancos,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior
+      limite_inferior: scoreInfo.limite_inferior,
+      limite_superior: scoreInfo.limite_superior
     }
+
+    logger.info(`${fileMethod} | ${customUuid} Score de caja bancos: ${JSON.stringify(response)}`)
+    return response
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      error: true
-    }
+    return { error: true }
   }
 }
 
