@@ -1959,6 +1959,29 @@ const getScoreCapitalContable = async (id_certification, customUuid) => {
   }
 }
 
+const getPaisScoreFromSummary = async (id_certification, algoritmo_v, parametrosAlgoritmo, customUuid) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: getPaisScoreFromSummary`
+  try {
+    const pais = await certificationService.getPaisAlgoritmoByIdCertification(id_certification)
+    if (!pais) {
+      logger.warn(`${fileMethod} | ${customUuid} No se encontró el país para la certificación ${id_certification}`)
+      return { error: true }
+    }
+
+    const paisScore = parametrosAlgoritmo.paisScore.find(p => p.nombre === pais.nombre)
+    if (!paisScore) {
+      logger.warn(`${fileMethod} | ${customUuid} No se encontró configuración en parámetros para el país ${pais.nombre}`)
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? paisScore.v2 : paisScore.v1
+    return { nombre: pais.nombre, valor_algoritmo: score }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
 const getScorePayback = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScorePayback`
   try {
@@ -2981,6 +3004,7 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
     logger.info(`${fileMethod} | ${customUuid} Inicia proceso para ejecutar algoritmo`)
 
     const algoritmo_v = await obtienePartidasFinancieras(id_certification)
+    const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
 
     if (!id_certification || !monto_solicitado || !plazo || !algoritmo_v) {
       logger.warn(`${fileMethod} | ${customUuid} La información que proporcionas esta incompleta`)
@@ -2989,10 +3013,10 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     const reporteCredito = {}
 
-    const pais = await certificationService.getPaisAlgoritmoByIdCertification(id_certification)
-    if (pais.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener el país en la certificación con ID: ${JSON.stringify(pais)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener el país en la certificación con ID: ${JSON.stringify(pais)}`))
+    const pais = await getPaisScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
+    if (pais.error) {
+      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información del país en la certificación`)
+      return next(boom.badRequest(`No se pudo obtener información del país`))
     }
 
     logger.info(`${fileMethod} | ${customUuid} El país para el algoritmo es: ${JSON.stringify(pais)}`)
@@ -3849,10 +3873,10 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     const reporteCredito = {}
 
-    const pais = await certificationService.getPaisAlgoritmoByIdCertification(id_certification)
-    if (pais.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener el país en la certificación con ID: ${JSON.stringify(pais)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener el país en la certificación con ID: ${JSON.stringify(pais)}`))
+    const pais = await getPaisScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
+    if (pais.error) {
+      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información del país en la certificación`)
+      return next(boom.badRequest(`No se pudo obtener información del país`))
     }
 
     logger.info(`${fileMethod} | ${customUuid} El país para el algoritmo es: ${JSON.stringify(pais)}`)
