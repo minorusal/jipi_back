@@ -5,6 +5,6 @@ const router = express.Router()
 
 const algorithmController = require('../../controllers/api/algorithm')
 
-router.post('/result', algorithmController.getAlgorithmResultV2)
+router.post('/result', algorithmController.getAlgorithmResult)
 
 module.exports = router

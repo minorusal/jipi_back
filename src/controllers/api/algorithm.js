@@ -4,7 +4,7 @@ const boom = require('boom')
 const algorithmService = require('../../services/algorithm')
 const logger = require('../../utils/logs/logger')
 
-const getAlgorithmResultV2 = async (req, res, next) => {
+const getAlgorithmResult = async (req, res, next) => {
   const fileMethod = 'file: src/controllers/api/algorithm.js - method: getAlgorithmResultV2'
   try {
     const { id_cliente, id_reporte_credito, monto_solicitado, plazo } = req.body
@@ -61,5 +61,5 @@ const getAlgorithmResultV2 = async (req, res, next) => {
 }
 
 module.exports = {
-  getAlgorithmResultV2
+  getAlgorithmResult
 }
