@@ -2239,6 +2239,477 @@ const getScoreVentasAnualesFromSummary = async (
   }
 }
 
+const getScoreTipoCifrasFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreTipoCifrasFromSummary`
+  try {
+    const tipoCifraId = await certificationService.getTipoCifra(id_certification)
+    if (!tipoCifraId) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se ha podido obtener el tipo de cifra`
+      )
+      return { error: true }
+    }
+
+    const tipoInfo = await certificationService.getScoreTipoCifra(tipoCifraId)
+    if (!tipoInfo) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener la descripción del tipo cifra`
+      )
+      return { error: true }
+    }
+
+    const tipoScore = parametrosAlgoritmo.tipoCifrasScore.find(
+      t => t.nombre === tipoInfo.nombre
+    )
+    if (!tipoScore) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? tipoScore.v2 : tipoScore.v1
+    return { id_tipo_cifra: tipoCifraId, descripcion: tipoInfo.nombre, score }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreIncidenciasLegalesFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreIncidenciasLegalesFromSummary`
+  try {
+    const incidencias = await certificationService.getDemandas(id_certification)
+    if (!incidencias || !incidencias.result) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se han podido obtener incidencias legales`
+      )
+      return { error: true }
+    }
+
+    let tipo = null
+    let fecha = null
+    let caso = 'NINGUNA'
+    let countMerc = 0
+    let penal = false
+
+    for (const inc of incidencias.result) {
+      tipo = inc.tipo_demanda
+      fecha = inc.fecha_demanda
+      if (tipo === 'mercantil') {
+        const dif = (new Date() - new Date(fecha)) / (1000 * 60 * 60 * 24)
+        if (dif <= 365) countMerc++
+      } else if (tipo === 'penal') {
+        penal = true
+      }
+    }
+
+    if (penal) {
+      caso = '>= 1 INCIDENCIA PENAL ( no importando el año)'
+    } else if (countMerc === 1) {
+      caso = '1 INCIDENCIA MERCANTIL <= 1 AÑO'
+    } else if (countMerc >= 2) {
+      caso = '2 INCIDENCIAS MERCANTILES <= 1 AÑO'
+    }
+
+    const cat = parametrosAlgoritmo.incidenciasLegalesScore.find(
+      i => i.nombre === caso
+    )
+    if (!cat) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? cat.v2 : cat.v1
+
+    return {
+      score,
+      tipo: penal || countMerc ? tipo : null,
+      fecha: penal || countMerc ? fecha : null,
+      caso: cat.nombre
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreEvolucionVentasFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreEvolucionVentasFromSummary`
+  try {
+    const [anioAnterior, previoAnterior] = await Promise.all([
+      certificationService.getVentasAnualesAnioAnterior(id_certification),
+      certificationService.getVentasAnualesAnioPrevioAnterior(id_certification)
+    ])
+
+    if (!anioAnterior || !previoAnterior) return { error: true }
+
+    const anterior = parseFloat(anioAnterior.ventas_anuales)
+    const previo = parseFloat(previoAnterior.ventas_anuales)
+    const evolucion = ((anterior - previo) / previo) * 100
+
+    if (!Number.isFinite(evolucion)) {
+      return {
+        score: '0',
+        nombre: `(${anterior} - ${previo}) / ${previo} * 100`,
+        rango_numerico: 'null',
+        ventas_anuales_periodo_anterior_estado_resultados: anterior,
+        periodo_anterior_estado_resultados: anioAnterior.periodo_anterior,
+        ventas_anuales_periodo_previo_anterior_estado_resultados: previo,
+        evolucion_ventas: evolucion
+      }
+    }
+
+    const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
+      const sup = e.limite_superior == null ? 9999999999 : e.limite_superior
+      return evolucion >= e.limite_inferior && evolucion <= sup
+    })
+    if (!evoScore) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? evoScore.v2 : evoScore.v1
+
+    const result = {
+      score,
+      nombre: evoScore.nombre,
+      rango_numerico: evoScore.rango,
+      ventas_anuales_periodo_anterior_estado_resultados: anterior,
+      periodo_anterior_estado_resultados: anioAnterior.periodo_anterior,
+      ventas_anuales_periodo_previo_anterior_estado_resultados: previo,
+      evolucion_ventas: evolucion
+    }
+
+    return result
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreApalancamientoFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
+  try {
+    let valor_algoritmo = '0'
+    const [deudaTotalPCA, capitalContable] = await Promise.all([
+      certificationService.deudaTotalPCA(id_certification),
+      certificationService.capitalContablePCA(id_certification)
+    ])
+
+    if (!deudaTotalPCA || !capitalContable) return { error: true }
+
+    if (!deudaTotalPCA.deuda_total) valor_algoritmo = '-30'
+
+    const deuda = parseFloat(deudaTotalPCA.deuda_total)
+    const capital = parseFloat(capitalContable.capital_contable)
+    const apalancamiento = deuda / capital
+
+    if (algoritmo_v?.v_alritmo === 2) {
+      const def = parametrosAlgoritmo.apalancamientoScore.find(
+        a => a.nombre === 'DESCONOCIDO'
+      )
+      if (!def) return { error: true }
+      return {
+        score: def.v2,
+        descripcion_apalancamiento: 'algoritmo v2',
+        deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
+        periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+        periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+        periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+        periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
+        limite_inferior: def.limite_inferior,
+        limite_superior: def.limite_superior,
+        capital_contable_estado_balance: capitalContable.capital_contable,
+        apalancamiento
+      }
+    }
+
+    if (!Number.isFinite(apalancamiento)) {
+      const descripcion =
+        valor_algoritmo === '-30'
+          ? 'Indefinido por no reportar deuda total'
+          : 'DESCONOCIDO'
+
+      const scoreFinal = valor_algoritmo === '-30' ? '-30' : '0'
+
+      return {
+        score: scoreFinal,
+        descripcion_apalancamiento: descripcion,
+        deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
+        periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+        periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+        periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+        periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
+        limite_inferior: '',
+        limite_superior: '',
+        capital_contable_estado_balance: capitalContable.capital_contable,
+        apalancamiento
+      }
+    }
+
+    const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
+      const sup = a.limite_superior == null ? 9999999999 : a.limite_superior
+      return apalancamiento >= a.limite_inferior && apalancamiento <= sup
+    })
+    if (!apalScore) return { error: true }
+
+    return {
+      score: valor_algoritmo !== '0' ? valor_algoritmo : (algoritmo_v.v_alritmo === 2 ? apalScore.v2 : apalScore.v1),
+      descripcion_apalancamiento: apalScore.nombre,
+      deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
+      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+      periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
+      limite_inferior: apalScore.limite_inferior,
+      limite_superior: apalScore.limite_superior,
+      capital_contable_estado_balance: capitalContable.capital_contable,
+      apalancamiento
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreCajaBancosFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreCajaBancosFromSummary`
+  try {
+    const cajaBancoPCA = await certificationService.cajaBancoPCA(id_certification)
+    if (!cajaBancoPCA) return { error: true }
+
+    const cajaScore = parametrosAlgoritmo.flujoNetoScore.find(c => {
+      const sup = c.limite_superior == null ? 9999999999 : c.limite_superior
+      return cajaBancoPCA.caja_bancos >= c.limite_inferior && cajaBancoPCA.caja_bancos <= sup
+    })
+    if (!cajaScore) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? cajaScore.v2 : cajaScore.v1
+
+    return {
+      descripcion: cajaScore.nombre,
+      score,
+      caja_bancos_periodo_anterior: cajaBancoPCA.caja_bancos,
+      limite_inferior: cajaScore.limite_inferior,
+      limite_superior: cajaScore.limite_superior
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScorePaybackFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScorePaybackFromSummary`
+  try {
+    let scoreOverride = null
+    const [deudaCortoPlazo, utilidadOperativa] = await Promise.all([
+      certificationService.deudaCortoPlazo(id_certification),
+      certificationService.utilidadOperativa(id_certification)
+    ])
+
+    if (!deudaCortoPlazo || !utilidadOperativa) return { error: true }
+
+    if (utilidadOperativa.utilidad_operativa == 0) scoreOverride = 'N/A'
+
+    const payback =
+      parseFloat(deudaCortoPlazo.deuda_corto_plazo) /
+      parseFloat(utilidadOperativa.utilidad_operativa)
+
+    const paybackScore = parametrosAlgoritmo.paybackScore.find(p => {
+      const sup = p.limite_superior == null ? 9999999999 : p.limite_superior
+      return payback >= p.limite_inferior && payback <= sup
+    })
+    if (!paybackScore) return { error: true }
+
+    const score =
+      scoreOverride != null
+        ? scoreOverride
+        : algoritmo_v.v_alritmo === 2
+          ? paybackScore.v2
+          : paybackScore.v1
+
+    return {
+      score,
+      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.deuda_corto_plazo,
+      periodo_actual: deudaCortoPlazo.periodo_actual,
+      periodo_anterior: deudaCortoPlazo.periodo_anterior,
+      periodo_previo_anterior: deudaCortoPlazo.periodo_previo_anterior,
+      utilida_operativa: utilidadOperativa.utilidad_operativa,
+      payback,
+      descripcion: paybackScore.nombre,
+      limite_inferior: paybackScore.limite_inferior,
+      limite_superior: paybackScore.limite_superior
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreRotacionCtasXCobrasScoreFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreRotacionCtasXCobrasScoreFromSummary`
+  try {
+    let noDso = false
+    let noDio = false
+    let dso = 0
+    let dio = 0
+    let dsoMayor90 = false
+    let dioMayor90 = false
+
+    const [saldoClienteCuentaXCobrar, ventasAnuales, saldoInventarios, costoVentasAnuales] = await Promise.all([
+      certificationService.saldoClienteCuentaXCobrar(id_certification),
+      certificationService.ventasAnuales(id_certification),
+      certificationService.saldoInventarios(id_certification),
+      certificationService.costoVentasAnuales(id_certification)
+    ])
+
+    if (!saldoClienteCuentaXCobrar || !ventasAnuales || !saldoInventarios || !costoVentasAnuales) {
+      return { error: true }
+    }
+
+    if (parseFloat(ventasAnuales.ventas_anuales) === 0) {
+      noDso = true
+    } else {
+      dso = (parseFloat(saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar) / parseFloat(ventasAnuales.ventas_anuales)) * 360
+      dsoMayor90 = dso >= 90
+    }
+
+    if (parseFloat(costoVentasAnuales.costo_ventas_anuales) === 0) {
+      noDio = true
+    } else {
+      dio = (parseFloat(saldoInventarios.saldo_inventarios) / parseFloat(costoVentasAnuales.costo_ventas_anuales)) * 360
+      dioMayor90 = dio >= 90
+    }
+
+    const rotScore = parametrosAlgoritmo.rotacionCtasXCobrarScore.find(r => {
+      const sup = r.limite_superior == null ? 9999999999 : r.limite_superior
+      return (
+        (dso >= r.limite_inferior && dso <= sup) ||
+        (dio >= r.limite_inferior && dio <= sup)
+      )
+    })
+
+    if (!rotScore) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? rotScore.v2 : rotScore.v1
+
+    return {
+      score: noDso && noDio ? '-20' : score,
+      descripcion: rotScore.nombre,
+      saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
+      tipo: saldoClienteCuentaXCobrar.tipo,
+      dso,
+      dio,
+      limite_inferior: rotScore.limite_inferior,
+      limite_superior: rotScore.limite_superior,
+      periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
+      periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
+      periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
+      dsoMayor90,
+      dioMayor90
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
+const getScoreReferenciasComercialesFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreReferenciasComercialesFromSummary`
+  try {
+    let countBuena = 0
+    let countMala = 0
+    let countRegular = 0
+
+    const referencias = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
+    if (!referencias) return { error: true }
+
+    let porcentaje_deuda = 0
+    let dias_atraso = 0
+
+    for (const referencia of referencias) {
+      const [calificacion] = await certificationService.getCalificacionsReferencias(
+        referencia.id_certification_referencia_comercial
+      )
+      if (!calificacion) return { error: true }
+
+      const calif = String(calificacion.calificacion_referencia || '').toLowerCase()
+      if (calif === 'mala') countMala++
+      else if (calif === 'buena') countBuena++
+      else if (calif === 'regular') countRegular++
+
+      if (calificacion.porcentaje_deuda) porcentaje_deuda = calificacion.porcentaje_deuda
+      if (calificacion.dias_atraso) dias_atraso = calificacion.dias_atraso
+    }
+
+    let catalogoNombre = 'NINGUNA'
+
+    if (countBuena === 0 && countMala > 0 && countRegular === 0 && porcentaje_deuda >= 20 && dias_atraso >= 90) {
+      catalogoNombre = 'MALAS'
+    } else if (countBuena >= 2 && countBuena <= 3 && countMala === 0 && countRegular === 0) {
+      catalogoNombre = 'BUENAS_2_3'
+    } else if (countBuena >= 4 && countMala === 0 && countRegular === 0) {
+      catalogoNombre = 'BUENAS_4'
+    } else if (countRegular > 0) {
+      catalogoNombre = 'MIXTAS'
+    } else if (countBuena === 1 && countMala === 0 && countRegular === 0) {
+      catalogoNombre = 'BUENA_1'
+    }
+
+    const catalogo = parametrosAlgoritmo.referenciasProveedoresScore.find(r => r.nombre === catalogoNombre)
+    if (!catalogo) return { error: true }
+
+    const score = algoritmo_v.v_alritmo === 2 ? catalogo.v2 : catalogo.v1
+
+    return {
+      score,
+      descripcion: catalogo.nombre
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${error}`)
+    return { error: true }
+  }
+}
+
 const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
   if (capitalContable.error) {
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
@@ -3450,8 +3921,13 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 08: ${JSON.stringify(reporteCredito)}`)
 
-    const tipo_cifras = await getScoreTipoCifras(id_certification, customUuid)
-    if (tipo_cifras.error || algoritmo_v.v_alritmo == 2) {
+    const tipo_cifras = await getScoreTipoCifrasFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (tipo_cifras.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener tipo cifras en la certificación con ID: ${JSON.stringify(tipo_cifras)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
@@ -3463,14 +3939,19 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
       logger.info(`${fileMethod} | ${customUuid} Las tipo cifras para el algoritmo son: ${JSON.stringify(tipo_cifras)}`)
 
       reporteCredito._09_tipo_cifras = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : tipo_cifras.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : tipo_cifras.score
+        descripcion: tipo_cifras.descripcion,
+        score: tipo_cifras.score
       }
     }
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 09: ${JSON.stringify(reporteCredito)}`)
 
-    const incidencias_legales = await getScoreIncidenciasLegales(id_certification, algoritmo_v, customUuid)
+    const incidencias_legales = await getScoreIncidenciasLegalesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (incidencias_legales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`))
@@ -3486,7 +3967,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 10: ${JSON.stringify(reporteCredito)}`)
 
-    const evolucion_ventas = await getScoreEvolucionVentas(id_certification, customUuid)
+    const evolucion_ventas = await getScoreEvolucionVentasFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (evolucion_ventas.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener evolucion ventas en la certificación con ID: ${JSON.stringify(evolucion_ventas)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3510,7 +3996,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 11: ${JSON.stringify(reporteCredito)}`)
 
-    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid, algoritmo_v)
+    const apalancamiento = await getScoreApalancamientoFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3529,7 +4020,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 12: ${JSON.stringify(reporteCredito)}`)
 
-    const flujo_neto = await getScoreCajaBancos(id_certification, customUuid)
+    const flujo_neto = await getScoreCajaBancosFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (flujo_neto.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para flujo neto en la certificación con ID: ${JSON.stringify(flujo_neto)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3555,7 +4051,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 13: ${JSON.stringify(reporteCredito)}`)
 
-    const payback = await getScorePayback(id_certification, customUuid)
+    const payback = await getScorePaybackFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (payback.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para payback en la certificación con ID: ${JSON.stringify(payback)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3581,7 +4082,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 14: ${JSON.stringify(reporteCredito)}`)
 
-    const rotacion_ctas_x_cobrar = await getScoreRotacionCtasXCobrasScore(id_certification, customUuid)
+    const rotacion_ctas_x_cobrar = await getScoreRotacionCtasXCobrasScoreFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (rotacion_ctas_x_cobrar.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para rotacion de cuentas por cobrar en la certificación con ID: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3609,7 +4115,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 15: ${JSON.stringify(reporteCredito)}`)
 
-    const referencias_comerciales = await getScoreReferenciasComerciales(id_certification, algoritmo_v, customUuid)
+    const referencias_comerciales = await getScoreReferenciasComercialesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (referencias_comerciales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para referencias comerciales en la certificación con ID: ${JSON.stringify(referencias_comerciales)}`)
       //return next(boom.badRequest(`No se pudo obtener información para referencias comerciales en la certificación con ID: ${JSON.stringify(referencias_comerciales)}`))
@@ -4318,8 +4829,13 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 08: ${JSON.stringify(reporteCredito)}`)
 
-    const tipo_cifras = await getScoreTipoCifras(id_certification, customUuid)
-    if (tipo_cifras.error || algoritmo_v.v_alritmo == 2) {
+    const tipo_cifras = await getScoreTipoCifrasFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (tipo_cifras.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener tipo cifras en la certificación con ID: ${JSON.stringify(tipo_cifras)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
@@ -4331,14 +4847,19 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Las tipo cifras para el algoritmo son: ${JSON.stringify(tipo_cifras)}`)
 
       reporteCredito._09_tipo_cifras = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : tipo_cifras.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : tipo_cifras.score
+        descripcion: tipo_cifras.descripcion,
+        score: tipo_cifras.score
       }
     }
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 09: ${JSON.stringify(reporteCredito)}`)
 
-    const incidencias_legales = await getScoreIncidenciasLegales(id_certification, algoritmo_v, customUuid)
+    const incidencias_legales = await getScoreIncidenciasLegalesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (incidencias_legales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`))
@@ -4354,7 +4875,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 10: ${JSON.stringify(reporteCredito)}`)
 
-    const evolucion_ventas = await getScoreEvolucionVentas(id_certification, customUuid)
+    const evolucion_ventas = await getScoreEvolucionVentasFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (evolucion_ventas.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener evolucion ventas en la certificación con ID: ${JSON.stringify(evolucion_ventas)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4378,7 +4904,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 11: ${JSON.stringify(reporteCredito)}`)
 
-    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid, algoritmo_v)
+    const apalancamiento = await getScoreApalancamientoFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4397,7 +4928,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 12: ${JSON.stringify(reporteCredito)}`)
 
-    const flujo_neto = await getScoreCajaBancos(id_certification, customUuid)
+    const flujo_neto = await getScoreCajaBancosFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (flujo_neto.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para flujo neto en la certificación con ID: ${JSON.stringify(flujo_neto)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4423,7 +4959,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 13: ${JSON.stringify(reporteCredito)}`)
 
-    const payback = await getScorePayback(id_certification, customUuid)
+    const payback = await getScorePaybackFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (payback.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para payback en la certificación con ID: ${JSON.stringify(payback)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4449,7 +4990,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 14: ${JSON.stringify(reporteCredito)}`)
 
-    const rotacion_ctas_x_cobrar = await getScoreRotacionCtasXCobrasScore(id_certification, customUuid)
+    const rotacion_ctas_x_cobrar = await getScoreRotacionCtasXCobrasScoreFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (rotacion_ctas_x_cobrar.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para rotacion de cuentas por cobrar en la certificación con ID: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4483,7 +5029,12 @@ const getAlgoritmoResult = async (req, res, next) => {
     }
     reporteCredito.dpo = dpo
 
-    const referencias_comerciales = await getScoreReferenciasComerciales(id_certification, algoritmo_v, customUuid)
+    const referencias_comerciales = await getScoreReferenciasComercialesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (referencias_comerciales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para referencias comerciales en la certificación con ID: ${JSON.stringify(referencias_comerciales)}`)
     }
