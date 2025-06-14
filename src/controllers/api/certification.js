@@ -1982,6 +1982,29 @@ const getPaisScoreFromSummary = async (id_certification, algoritmo_v, parametros
   }
 }
 
+const getSectorRiesgoScoreFromSummary = async (id_certification, algoritmo_v, parametrosAlgoritmo, customUuid) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: getSectorRiesgoScoreFromSummary`
+  try {
+    const sectorRiesgo = await certificationService.getSectorRiesgoByIdCertification(id_certification, algoritmo_v)
+    if (!sectorRiesgo) {
+      logger.warn(`${fileMethod} | ${customUuid} No se encontró sector riesgo para la certificación ${id_certification}`)
+      return { error: true }
+    }
+
+    const sectorScore = parametrosAlgoritmo.sectorRiesgoScore.find(s => s.nombre === sectorRiesgo.nombre)
+    if (!sectorScore) {
+      logger.warn(`${fileMethod} | ${customUuid} No se encontró configuración en parámetros para el sector ${sectorRiesgo.nombre}`)
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? sectorScore.v2 : sectorScore.v1
+    return { nombre: sectorRiesgo.nombre, valor_algoritmo: score }
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
 const getScorePayback = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScorePayback`
   try {
@@ -3028,8 +3051,8 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 01: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_riesgo = await certificationService.getSectorRiesgoByIdCertification(id_certification, algoritmo_v)
-    if (sector_riesgo.length == 0) {
+    const sector_riesgo = await getSectorRiesgoScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
+    if (sector_riesgo.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`))
     }
@@ -3888,8 +3911,8 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 01: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_riesgo = await certificationService.getSectorRiesgoByIdCertification(id_certification, algoritmo_v)
-    if (sector_riesgo.length == 0) {
+    const sector_riesgo = await getSectorRiesgoScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
+    if (sector_riesgo.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`))
     }
