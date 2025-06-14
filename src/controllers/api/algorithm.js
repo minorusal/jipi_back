@@ -1,6 +1,10 @@
 'use strict'
 
 const boom = require('boom')
+const path = require('path')
+const ejs = require('ejs')
+const fsp = require('fs').promises
+const html_to_pdf = require('html-pdf-node')
 const algorithmService = require('../../services/algorithm')
 const logger = require('../../utils/logs/logger')
 
@@ -56,7 +60,36 @@ const getAlgorithmSummary = async (req, res, next) => {
   }
 }
 
+const getAlgorithmSummaryPdf = async (req, res, next) => {
+  const fileMethod = 'file: src/controllers/api/algorithm.js - method: getAlgorithmSummaryPdf'
+  try {
+    const resumenValores = await algorithmService.getGeneralSummary()
+
+    const templatePath = path.join(__dirname, '../../utils/pdfs/templates/algorithm-summary.ejs')
+    const html = await ejs.renderFile(templatePath, { resumenValores })
+
+    const options = {
+      format: 'A4',
+      printBackground: true,
+      margin: { top: 10, right: 10, bottom: 10, left: 10 }
+    }
+
+    const pdfBuffer = await html_to_pdf.generatePdf({ content: html }, options)
+
+    const base64 = pdfBuffer.toString('base64')
+
+    return res.json({
+      error: false,
+      pdf: base64
+    })
+  } catch (error) {
+    logger.error(`${fileMethod} | ${error.message}`)
+    next(error)
+  }
+}
+
 module.exports = {
   getAlgorithmResult,
-  getAlgorithmSummary
+  getAlgorithmSummary,
+  getAlgorithmSummaryPdf
 }
