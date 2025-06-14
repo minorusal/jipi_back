@@ -2713,8 +2713,9 @@ const getScoreReferenciasComercialesFromSummary = async (
         r => r.id === REFERENCIA_IDS.NINGUNA
       )
       if (!sinReferencia) return { error: true }
+      const version = Number(algoritmo_v?.v_alritmo)
       return {
-        score: algoritmo_v.v_alritmo === 2 ? sinReferencia.v2 : sinReferencia.v1,
+        score: version === 2 ? sinReferencia.v2 : sinReferencia.v1,
         descripcion: sinReferencia.nombre
       }
     }
@@ -2763,7 +2764,8 @@ const getScoreReferenciasComercialesFromSummary = async (
     const catalogo = parametrosAlgoritmo.referenciasProveedoresScore.find(r => r.nombre === catalogoNombre)
     if (!catalogo) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? catalogo.v2 : catalogo.v1
+    const version = Number(algoritmo_v?.v_alritmo)
+    const score = version === 2 ? catalogo.v2 : catalogo.v1
 
     return {
       score,
@@ -2950,8 +2952,9 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
   const getCatalog = id => {
     const ref = referenciasCatalogo[id]
     if (!ref) return null
+    const version = Number(algoritmo_v?.v_alritmo)
     return {
-      score: algoritmo_v.v_alritmo === 2 ? ref.valor_algoritmo_v2 : ref.valor_algoritmo,
+      score: version === 2 ? ref.valor_algoritmo_v2 : ref.valor_algoritmo,
       descripcion: ref.nombre
     }
   }
