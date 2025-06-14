@@ -17,6 +17,8 @@ const getAlgorithmResult = async (req, res, next) => {
       return next(boom.badRequest('Información incompleta'))
     }
 
+    const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
+
     const id_certification = await algorithmService.getLastCertificationId(id_cliente)
     if (!id_certification) {
       return next(boom.notFound('Certificación no encontrada'))
@@ -37,7 +39,8 @@ const getAlgorithmResult = async (req, res, next) => {
     return res.json({
       error: false,
       id_certification,
-      reporteCredito
+      reporteCredito,
+      parametrosAlgoritmo
     })
   } catch (error) {
     logger.error(`${fileMethod} | ${error.message}`)
