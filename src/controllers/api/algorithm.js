@@ -76,12 +76,9 @@ const getAlgorithmSummaryPdf = async (req, res, next) => {
 
     const pdfBuffer = await html_to_pdf.generatePdf({ content: html }, options)
 
-    const base64 = pdfBuffer.toString('base64')
-
-    return res.json({
-      error: false,
-      pdf: base64
-    })
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename=algorithm-summary.pdf')
+    return res.send(pdfBuffer)
   } catch (error) {
     logger.error(`${fileMethod} | ${error.message}`)
     next(error)
