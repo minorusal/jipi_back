@@ -40,6 +40,19 @@ class AlgorithmService {
     const { result } = await mysqlLib.query(query)
     return result[0]
   }
+
+  async getCountryByCertificationId (id_certification) {
+    const query = `
+      SELECT
+        pa.nombre,
+        pa.valor_algoritmo
+      FROM certification AS c
+      LEFT JOIN cat_pais_algoritmo AS pa ON pa.id_pais_algoritmo = c.id_pais
+      WHERE c.id_certification = ${mysqlLib.escape(id_certification)};
+    `
+    const { result } = await mysqlLib.query(query)
+    return result[0]
+  }
 }
 
 module.exports = new AlgorithmService()
