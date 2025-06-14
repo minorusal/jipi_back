@@ -1,6 +1,7 @@
 'use strict'
 
 const mysqlLib = require('../lib/db')
+const certificationService = require('./certification')
 
 class AlgorithmService {
   async getLastCertificationId (clientId) {
@@ -52,6 +53,38 @@ class AlgorithmService {
     `
     const { result } = await mysqlLib.query(query)
     return result[0]
+  }
+
+  async getCapitalContableScore (id_certification) {
+    const capital = await certificationService.capitalContableEBPA(id_certification)
+    if (!capital || capital.capital_contable == null) return null
+    const scoreRow = await certificationService.getScoreCapitalContableEBPA(parseFloat(capital.capital_contable))
+    return scoreRow ? scoreRow.valor_algoritmo : null
+  }
+
+  /**
+   * Return the generic score configuration for the 16 algorithm variables.
+   * These values are not tied to any particular certification.
+   */
+  getGeneralSummary () {
+    return {
+      paisScore: { v1: 'valor_algoritmo_pais', v2: 'valor_algoritmo_pais' },
+      sectorRiesgoScore: { v1: 'valor_algoritmo_sector_riesgo', v2: 'valor_algoritmo_sector_riesgo' },
+      capitalContableScore: { v1: 'score_capital_contable', v2: '0' },
+      plantillaLaboralScore: { v1: 'score_plantilla_laboral', v2: 'score_plantilla_laboral' },
+      sectorClienteFinalScore: { v1: 'valor_algoritmo_sector_cliente_final', v2: 'valor_algoritmo_sector_cliente_final' },
+      tiempoActividadScore: { v1: 'valor_algoritmo_tiempo_actividad', v2: 'valor_algoritmo_tiempo_actividad' },
+      influenciaControlanteScore: { v1: '0', v2: '0' },
+      ventasAnualesScore: { v1: 'score_ventas_anuales', v2: '0' },
+      tipoCifrasScore: { v1: 'score_tipo_cifras', v2: '0' },
+      incidenciasLegalesScore: { v1: 'score_incidencias_legales', v2: 'score_incidencias_legales' },
+      evolucionVentasScore: { v1: 'score_evolucion_ventas', v2: '0' },
+      apalancamientoScore: { v1: 'score_apalancamiento', v2: '0' },
+      flujoNetoScore: { v1: 'score_flujo_neto', v2: '0' },
+      paybackScore: { v1: 'score_payback', v2: '0' },
+      rotacionCtasXCobrarScore: { v1: 'score_rotacion_ctas_x_cobrar', v2: '0' },
+      referenciasProveedoresScore: { v1: 'score_referencias_proveedores', v2: 'score_referencias_proveedores' }
+    }
   }
 }
 
