@@ -28,6 +28,43 @@
               "raw": "{}"
             }
           }
+        },
+        {
+          "name": "GET /api/algorithm/summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dev}}/api/algorithm/summary",
+              "host": [
+                "{{dev}}"
+              ],
+              "path": [
+                "api",
+                "algorithm",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/algorithm/summary/pdf",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dev}}/api/algorithm/summary/pdf",
+              "host": [
+                "{{dev}}"
+              ],
+              "path": [
+                "api",
+                "algorithm",
+                "summary",
+                "pdf"
+              ]
+            }
+          }
         }
       ]
     },

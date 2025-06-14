@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+    h1 { color:#0a3d8e; text-align:center; }
+    h2 { background:#0a3d8e; color:#fff; padding:4px; font-size:14px; margin-top:20px; }
+    table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
+    th, td { border:1px solid #ccc; padding:6px; }
+    th { background:#f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Parámetros del Algoritmo</h1>
+  <% for (const [nombre, filas] of Object.entries(resumenValores)) { %>
+    <h2><%= nombre %></h2>
+    <% if (filas.length === 0) { %>
+      <p>No hay datos</p>
+    <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>V1</th>
+          <th>V2</th>
+          <% if ('limite_inferior' in filas[0]) { %>
+            <th>Límite inferior</th>
+            <th>Límite superior</th>
+          <% } %>
+          <% if ('rango' in filas[0]) { %>
+            <th>Rango</th>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% filas.forEach(row => { %>
+          <tr>
+            <td><%= row.nombre %></td>
+            <td><%= row.v1 %></td>
+            <td><%= row.v2 %></td>
+            <% if (row.limite_inferior !== undefined) { %>
+              <td><%= row.limite_inferior %></td>
+              <td><%= row.limite_superior %></td>
+            <% } %>
+            <% if (row.rango !== undefined) { %>
+              <td><%= row.rango %></td>
+            <% } %>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } %>
+  <% } %>
+</body>
+</html>
