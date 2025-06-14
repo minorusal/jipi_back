@@ -2005,6 +2005,48 @@ const getSectorRiesgoScoreFromSummary = async (id_certification, algoritmo_v, pa
   }
 }
 
+const getScoreCapitalContableFromSummary = async (id_certification, algoritmo_v, parametrosAlgoritmo, customUuid) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: getScoreCapitalContableFromSummary`
+  try {
+    const capitalContableEBPA = await certificationService.capitalContableEBPA(id_certification)
+    if (!capitalContableEBPA || capitalContableEBPA.capital_contable == null) {
+      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el Capital contable del estado de balance previo anterior: ${JSON.stringify(capitalContableEBPA)}`)
+      return { error: true }
+    }
+
+    const capitalContable = Number(capitalContableEBPA.capital_contable)
+    if (Number.isNaN(capitalContable)) {
+      logger.warn(`${fileMethod} | ${customUuid} El valor de capital contable obtenido no es numérico: ${capitalContableEBPA.capital_contable}`)
+      return { error: true }
+    }
+
+    const capitalScore = parametrosAlgoritmo.capitalContableScore.find(c => {
+      const limiteSuperior = c.limite_superior == null ? 9999999999 : c.limite_superior
+      return capitalContable >= c.limite_inferior && capitalContable <= limiteSuperior
+    })
+    if (!capitalScore) {
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? capitalScore.v2 : capitalScore.v1
+    const scoreInfo = {
+      error: false,
+      score,
+      descripcion: capitalScore.nombre,
+      limite_inferior: capitalScore.limite_inferior,
+      limite_superior: capitalScore.limite_superior,
+      capital_contable_estado_balance_PA: capitalContable
+    }
+
+    logger.info(`${fileMethod} | ${customUuid} La información para el score de capital contable es: ${JSON.stringify(scoreInfo)}`)
+
+    return scoreInfo
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
 const getScorePayback = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScorePayback`
   try {
@@ -3066,7 +3108,7 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 02: ${JSON.stringify(reporteCredito)}`)
 
-    const capital_contable = await getScoreCapitalContable(id_certification, customUuid)
+    const capital_contable = await getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (capital_contable.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capital_contable)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -3926,7 +3968,7 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 02: ${JSON.stringify(reporteCredito)}`)
 
-    const capital_contable = await getScoreCapitalContable(id_certification, customUuid)
+    const capital_contable = await getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (capital_contable.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capital_contable)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
