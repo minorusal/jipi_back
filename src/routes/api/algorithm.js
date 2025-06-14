@@ -25,7 +25,7 @@ router.get('/summary', algorithmController.getAlgorithmSummary)
  *     summary: Genera un reporte PDF con los valores del algoritmo
  *     responses:
  *       200:
- *         description: PDF generado en base64
+ *         description: PDF generado
  */
 router.get('/summary/pdf', algorithmController.getAlgorithmSummaryPdf)
 module.exports = router
