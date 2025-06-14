@@ -3980,15 +3980,7 @@ const getAlgoritmoResult = async (req, res, next) => {
     const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
     body.id_certification = id_certification
 
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-    const seconds = String(now.getSeconds()).padStart(2, '0')
-    const milliseconds = String(now.getMilliseconds()).padStart(3, '0')
-    const customUuid = `${year}${month}${day}${hours}${minutes}${seconds}${milliseconds}`
+    const customUuid = new Date().toISOString().replace(/\D/g, '')
 
     logger.info(`${fileMethod} | ${customUuid} Inicia proceso para ejecutar algoritmo: ${JSON.stringify(body)}`)
 
