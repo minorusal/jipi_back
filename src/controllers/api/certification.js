@@ -4433,7 +4433,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       const detallesTabla = Object.entries(rangos)
         .filter(([_, val]) => val && typeof val === 'object')
         .map(([key, val]) => {
-          const descripcion = val.descripcion ?? '-'
+          const descripcion = val.descripcion ?? val.caso ?? val.tipo ?? '-'
           const score = val.score ?? '-'
           const tableName = tableMap[key]
           let opciones = '-'
