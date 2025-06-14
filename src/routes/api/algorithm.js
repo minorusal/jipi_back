@@ -28,4 +28,6 @@ router.get('/summary', algorithmController.getAlgorithmSummary)
  *         description: PDF generado
  */
 router.get('/summary/pdf', algorithmController.getAlgorithmSummaryPdf)
+
+router.put('/ranges', algorithmController.updateAlgorithmRanges)
 module.exports = router
