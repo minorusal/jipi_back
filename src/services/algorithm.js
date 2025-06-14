@@ -111,6 +111,71 @@ class AlgorithmService {
       referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo')
     }
   }
+
+  /**
+   * Update the score and range configuration for the algorithm tables.
+   * The body must contain an object whose keys are the table names and the
+   * values are arrays of rows with the fields to update.
+   *
+   * Example body:
+   * {
+   *   cat_pais_algoritmo: [ { id_pais_algoritmo: 1, valor_algoritmo: 10 } ],
+   *   cat_plantilla_laboral_algoritmo: [
+   *     { id_cat_plantilla_laboral: 2, limite_inferior: 0, limite_superior: 10 }
+   *   ]
+   * }
+   */
+  async updateAlgorithmRanges (changes) {
+    if (!changes || typeof changes !== 'object') return
+
+    const tables = [
+      'cat_pais_algoritmo',
+      'cat_sector_riesgo_sectorial_algoritmo',
+      'cat_sector_clientes_finales_algoritmo',
+      'cat_tiempo_actividad_comercial_algoritmo',
+      'cat_plantilla_laboral_algoritmo',
+      'cat_ventas_anuales_algoritmo',
+      'cat_apalancamiento_algoritmo',
+      'cat_flujo_neto_caja_algoritmo',
+      'cat_capital_contable_algoritmo',
+      'cat_incidencias_legales_algoritmo',
+      'cat_resultado_referencias_proveedores_algoritmo',
+      'cat_payback_algoritmo',
+      'cat_rotacion_cuentas_cobrar_algoritmo',
+      'cat_tipo_cifras_algoritmo',
+      'cat_evolucion_ventas_algoritmo',
+      'cat_score_descripcion_algoritmo'
+    ]
+
+    for (const table of tables) {
+      const rows = changes[table]
+      if (!Array.isArray(rows)) continue
+
+      for (const row of rows) {
+        const idField = Object.keys(row).find(key => key.startsWith('id_'))
+        if (!idField) continue
+
+        const setFields = []
+        for (const field of [
+          'nombre',
+          'valor_algoritmo',
+          'valor_algoritmo_v2',
+          'limite_inferior',
+          'limite_superior',
+          'rango_numerico'
+        ]) {
+          if (Object.prototype.hasOwnProperty.call(row, field)) {
+            setFields.push(`${field} = ${mysqlLib.escape(row[field])}`)
+          }
+        }
+
+        if (setFields.length === 0) continue
+
+        const query = `UPDATE ${table} SET ${setFields.join(', ')} WHERE ${idField} = ${mysqlLib.escape(row[idField])};`
+        await mysqlLib.query(query)
+      }
+    }
+  }
 }
 
 module.exports = new AlgorithmService()
