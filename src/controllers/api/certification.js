@@ -1755,7 +1755,7 @@ const getScoreVentasAnuales = async (id_certification, customUuid) => {
   }
 }
 
-const getScoreApalancamiento = async (id_certification, customUuid) => {
+const getScoreApalancamiento = async (id_certification, customUuid, algoritmo_v) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreApalancamiento`
   try {
     let valor_algoritmo = '0'
@@ -1778,6 +1778,28 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
     const capital = parseFloat(capitalContable.capital_contable)
     const apalancamiento = deuda / capital
     logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${apalancamiento}`)
+
+    if (algoritmo_v?.v_alritmo === 2) {
+      const defaultScore = await certificationService.getScoreApalancamiento(0, algoritmo_v)
+      if (!defaultScore) {
+        logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de apalancamiento para algoritmo v2`)
+        return { error: true }
+      }
+
+      return {
+        score: defaultScore.valor_algoritmo,
+        descripcion_apalancamiento: 'algoritmo v2',
+        deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
+        periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+        periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+        periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+        periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
+        limite_inferior: defaultScore.limite_inferior,
+        limite_superior: defaultScore.limite_superior,
+        capital_contable_estado_balance: capitalContable.capital_contable,
+        apalancamiento
+      }
+    }
 
     if (!Number.isFinite(apalancamiento)) {
       const descripcion =
@@ -1802,7 +1824,7 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
       }
     }
 
-    const getScore = await certificationService.getScoreApalancamiento(apalancamiento)
+    const getScore = await certificationService.getScoreApalancamiento(apalancamiento, algoritmo_v)
     if (!getScore) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de apalancamiento : ${JSON.stringify(getScore)}`)
       return { error: true }
@@ -3156,7 +3178,7 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 11: ${JSON.stringify(reporteCredito)}`)
 
-    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid)
+    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid, algoritmo_v)
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4015,7 +4037,7 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 11: ${JSON.stringify(reporteCredito)}`)
 
-    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid)
+    const apalancamiento = await getScoreApalancamiento(id_certification, customUuid, algoritmo_v)
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
