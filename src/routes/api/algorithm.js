@@ -18,4 +18,14 @@ router.post('/result', algorithmController.getAlgorithmResult)
  */
 router.get('/summary', algorithmController.getAlgorithmSummary)
 
+/**
+ * @swagger
+ * /api/algorithm/summary/pdf:
+ *   get:
+ *     summary: Genera un reporte PDF con los valores del algoritmo
+ *     responses:
+ *       200:
+ *         description: PDF generado en base64
+ */
+router.get('/summary/pdf', algorithmController.getAlgorithmSummaryPdf)
 module.exports = router

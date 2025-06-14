@@ -46,6 +46,25 @@
               ]
             }
           }
+        },
+        {
+          "name": "GET /api/algorithm/summary/pdf",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dev}}/api/algorithm/summary/pdf",
+              "host": [
+                "{{dev}}"
+              ],
+              "path": [
+                "api",
+                "algorithm",
+                "summary",
+                "pdf"
+              ]
+            }
+          }
         }
       ]
     },
