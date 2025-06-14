@@ -5,6 +5,27 @@
   },
   "item": [
     {
+      "name": "algorithm",
+      "item": [
+        {
+          "name": "POST /result",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/result",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "result"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "auth.ga",
       "item": [
         {
