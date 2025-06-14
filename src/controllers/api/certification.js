@@ -67,6 +67,54 @@ const loadGlobalConfig = async () => {
 loadGlobalConfig()
 loadReferenciasCatalogo()
 
+let algorithmConstants = {
+  monto_mayor1500: 1500000,
+  monto_menor500: 500000,
+  dpo_mayor1500: { sin: 120, conUno: 90, conDos: 30 },
+  dpo_menor500: { sin: 30 },
+  dpo_entre500y1500: { sin: 90, conUno: 60, conDos: 30 },
+  logitFactor: 0.0784,
+  logitConstant: 2.9834,
+  ref_malas_porcentaje: 20,
+  ref_malas_dias: 90
+}
+
+const loadAlgorithmConstants = async () => {
+  try {
+    const params = await utilitiesService.getParametros()
+    const getVal = name => {
+      const p = params.find(it => it.nombre === name)
+      return p ? parseFloat(p.valor) : null
+    }
+
+    algorithmConstants = {
+      monto_mayor1500: getVal('monto_mayor1500') ?? algorithmConstants.monto_mayor1500,
+      monto_menor500: getVal('monto_menor500') ?? algorithmConstants.monto_menor500,
+      dpo_mayor1500: {
+        sin: getVal('dpo_mayor1500_sin') ?? algorithmConstants.dpo_mayor1500.sin,
+        conUno: getVal('dpo_mayor1500_con_uno') ?? algorithmConstants.dpo_mayor1500.conUno,
+        conDos: getVal('dpo_mayor1500_con_dos') ?? algorithmConstants.dpo_mayor1500.conDos
+      },
+      dpo_menor500: {
+        sin: getVal('dpo_menor500') ?? algorithmConstants.dpo_menor500.sin
+      },
+      dpo_entre500y1500: {
+        sin: getVal('dpo_entre500y1500_sin') ?? algorithmConstants.dpo_entre500y1500.sin,
+        conUno: getVal('dpo_entre500y1500_con_uno') ?? algorithmConstants.dpo_entre500y1500.conUno,
+        conDos: getVal('dpo_entre500y1500_con_dos') ?? algorithmConstants.dpo_entre500y1500.conDos
+      },
+      logitFactor: getVal('algoritmo_logit_factor') ?? algorithmConstants.logitFactor,
+      logitConstant: getVal('algoritmo_logit_constant') ?? algorithmConstants.logitConstant,
+      ref_malas_porcentaje: getVal('referencia_malas_porcentaje') ?? algorithmConstants.ref_malas_porcentaje,
+      ref_malas_dias: getVal('referencia_malas_dias') ?? algorithmConstants.ref_malas_dias
+    }
+  } catch (error) {
+    console.error('Error al cargar parametros de algoritmo:', error)
+  }
+}
+
+loadAlgorithmConstants()
+
 const duplicateRegister = async (body, certificacion_id) => {
   try {
     const latestCertification = await certificationService.duplicateCertification(body, certificacion_id)
@@ -1853,26 +1901,22 @@ const getScoreApalancamiento = async (id_certification, customUuid, algoritmo_v)
 const calculaDpo = async (idCertification, caja_bancos_periodo_anterior, dso, dio) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: calculaDpo`
   try {
-    let mayor1500 = caja_bancos_periodo_anterior > 1500000
     let dpo = 'N/A'
-    if (!dso && !dio && mayor1500) dpo = 120
-    if (!dso && dio && mayor1500) dpo = 90
-    if (dso && !dio && mayor1500) dpo = 90
-    if (dso && dio && mayor1500) dpo = 30
+    const mayor1500 = caja_bancos_periodo_anterior > algorithmConstants.monto_mayor1500
+    const menor500 = caja_bancos_periodo_anterior < algorithmConstants.monto_menor500
+    const rangoMedio = !mayor1500 && !menor500
 
-    let menor500 = caja_bancos_periodo_anterior < 500000
-
-    if (!dso && !dio && menor500) dpo = 30
-    if (!dso && dio && menor500) dpo = 30
-    if (dso && !dio && menor500) dpo = 30
-    if (dso && dio && menor500) dpo = 30
-
-    let mayor500hasta1500 = caja_bancos_periodo_anterior <= 500000 && caja_bancos_periodo_anterior <= 1500
-
-    if (!dso && !dio && mayor500hasta1500) dpo = 90
-    if (!dso && dio && mayor500hasta1500) dpo = 60
-    if (dso && !dio && mayor500hasta1500) dpo = 30
-    if (dso && dio && mayor500hasta1500) dpo = 30
+    if (mayor1500) {
+      if (!dso && !dio) dpo = algorithmConstants.dpo_mayor1500.sin
+      else if ((!dso && dio) || (dso && !dio)) dpo = algorithmConstants.dpo_mayor1500.conUno
+      else if (dso && dio) dpo = algorithmConstants.dpo_mayor1500.conDos
+    } else if (menor500) {
+      dpo = algorithmConstants.dpo_menor500.sin
+    } else if (rangoMedio) {
+      if (!dso && !dio) dpo = algorithmConstants.dpo_entre500y1500.sin
+      else if (!dso && dio) dpo = algorithmConstants.dpo_entre500y1500.conUno
+      else dpo = algorithmConstants.dpo_entre500y1500.conDos
+    }
 
     await certificationService.updateDpo(idCertification, dpo)
 
@@ -2698,7 +2742,13 @@ const getScoreReferenciasComercialesFromSummary = async (
 
     let catalogoNombre = 'NINGUNA'
 
-    if (countBuena === 0 && countMala > 0 && countRegular === 0 && porcentaje_deuda >= 20 && dias_atraso >= 90) {
+    if (
+      countBuena === 0 &&
+      countMala > 0 &&
+      countRegular === 0 &&
+      porcentaje_deuda >= algorithmConstants.ref_malas_porcentaje &&
+      dias_atraso >= algorithmConstants.ref_malas_dias
+    ) {
       catalogoNombre = 'MALAS'
     } else if (countBuena >= 2 && countBuena <= 3 && countMala === 0 && countRegular === 0) {
       catalogoNombre = 'BUENAS_2_3'
@@ -4713,8 +4763,8 @@ const getAlgoritmoResult = async (req, res, next) => {
     logger.info(`${fileMethod} | ${customUuid} C46: Monto solicitado: ${c46}`)
     scores.c46 = c46
 
-    const g46 = g45 * 0.0784 + 2.9834
-    logger.info(`${fileMethod} | ${customUuid} G46: Resultado de la operacion  G45 * 0.078 + 2.9834 ${g46}`)
+    const g46 = g45 * algorithmConstants.logitFactor + algorithmConstants.logitConstant
+    logger.info(`${fileMethod} | ${customUuid} G46: Resultado de la operacion  G45 * ${algorithmConstants.logitFactor} + ${algorithmConstants.logitConstant} ${g46}`)
     scores.g46 = g46
 
     const g49 = parseFloat((1 / (1 + Math.exp(-g46))).toFixed(4))
