@@ -2673,12 +2673,15 @@ const getScoreReferenciasComercialesFromSummary = async (
       if (!calificacion) return { error: true }
 
       const calif = String(calificacion.calificacion_referencia || '').toLowerCase()
-      if (calif === 'mala') countMala++
-      else if (calif === 'buena') countBuena++
+      if (calif === 'mala') {
+        countMala++
+        porcentaje_deuda = Math.max(
+          porcentaje_deuda,
+          calificacion.porcentaje_deuda || 0
+        )
+        dias_atraso = Math.max(dias_atraso, calificacion.dias_atraso || 0)
+      } else if (calif === 'buena') countBuena++
       else if (calif === 'regular') countRegular++
-
-      if (calificacion.porcentaje_deuda) porcentaje_deuda = calificacion.porcentaje_deuda
-      if (calificacion.dias_atraso) dias_atraso = calificacion.dias_atraso
     }
 
     let catalogoNombre = 'NINGUNA'
