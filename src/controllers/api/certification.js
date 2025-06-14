@@ -12,6 +12,7 @@ const utilitiesService = require('../../services/utilities')
 const companiesService = require('../../services/companies')
 const paymentsService = require('../../services/payments')
 const hadesService = require('../../services/hades')
+const algorithmService = require('../../services/algorithm')
 const cronosTypes = { certification: 'Certification', report: 'Report' }
 const uploadImageS3 = require('../../utils/uploadImageS3')
 const logger = require('../../utils/logs/logger')
@@ -3824,6 +3825,7 @@ const getAlgoritmoResult = async (req, res, next) => {
     if (!id_cliente || !id_reporte_credito || !monto_solicitado || !plazo) return next(boom.badRequest(`Información incompleta`))
 
     const id_certification = await certificationService.getLastIdCertification(id_cliente)
+    const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
     body.id_certification = id_certification
 
     const now = new Date()
@@ -4354,6 +4356,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       wu,
       c48,
       reporteCredito,
+      parametrosAlgoritmo,
       alertas: {
         porcentaje_endeudamiento_comercial,
         promedio_plazo_credito
