@@ -2575,20 +2575,33 @@ const cuentaCajaBancos = async (idCertification, customUuid) => {
     const caja_bancos_previo_anterior = await certificationService.obtieneCajaBancosPrevioAnterior(idCertification)
     logger.info(`${fileMethod} | ${customUuid} Caja bancos previo anterior obtenido es: ${JSON.stringify(caja_bancos_previo_anterior)}`)
 
+    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(idCertification)
+    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(idCertification)
+
     const caja_banco_anterior = caja_bancos_anterior[0].caja_bancos
     const caja_banco_previo_anterior = caja_bancos_previo_anterior[0].caja_bancos
 
-    if (caja_banco_anterior == '0.00' || caja_banco_anterior == undefined || caja_banco_previo_anterior == '0.00' || caja_banco_previo_anterior == undefined) {
+    const inventario_anterior = inventarios_anterior[0].inventarios
+    const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
+
+    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
+
+    if ((isEmpty(caja_banco_anterior) && isEmpty(inventario_anterior)) ||
+      (isEmpty(caja_banco_previo_anterior) && isEmpty(inventario_previo_anterior))) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
+      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
+      logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
       return false
-    } else {
-      logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
-      logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
-      return true
     }
+
+    logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
+    logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
+    logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
+    logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
+    logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
+    return true
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Se retorna false por error catch: ${error}`)
     return false
@@ -2618,16 +2631,14 @@ const cuentaClienteCuentasXCobrar = async (idCertification, customUuid) => {
     const inventario_anterior = inventarios_anterior[0].inventarios
     const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
 
-    if (clientes_cuentas_x_cobrar_anterior == '0.00' || clientes_cuentas_x_cobrar_anterior == undefined && inventario_anterior == '0.00' || inventario_anterior == undefined) {
+    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
+
+    if ((isEmpty(clientes_cuentas_x_cobrar_anterior) && isEmpty(inventario_anterior)) ||
+      (isEmpty(clientes_cuentas_x_cobrar_previo_anterior) && isEmpty(inventario_previo_anterior))) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_anterior: ${clientes_cuentas_x_cobrar_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
-      return false
-    }
-
-    if (clientes_cuentas_x_cobrar_previo_anterior == '0.00' || clientes_cuentas_x_cobrar_previo_anterior == undefined && inventario_previo_anterior == '0.00' || inventario_previo_anterior == undefined) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_previo_anterior: ${clientes_cuentas_x_cobrar_previo_anterior}`)
+      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
       return false
     }
@@ -2654,7 +2665,9 @@ const cuentaInventarios = async (id_certification, customUuid) => {
     const inventario_anterior = inventarios_anterior[0].inventarios
     const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
 
-    if (inventario_anterior == '0.00' || inventario_anterior == undefined && inventario_previo_anterior == '0.00' || inventario_previo_anterior == undefined) {
+    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
+
+    if (isEmpty(inventario_anterior) && isEmpty(inventario_previo_anterior)) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
