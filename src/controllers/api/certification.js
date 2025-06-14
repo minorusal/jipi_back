@@ -2663,6 +2663,18 @@ const getScoreReferenciasComercialesFromSummary = async (
     const referencias = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
     if (!referencias) return { error: true }
 
+    // Si no existen referencias contestadas retornar el valor por defecto
+    if (referencias.length === 0) {
+      const sinReferencia = parametrosAlgoritmo.referenciasProveedoresScore.find(
+        r => r.id === REFERENCIA_IDS.NINGUNA
+      )
+      if (!sinReferencia) return { error: true }
+      return {
+        score: algoritmo_v.v_alritmo === 2 ? sinReferencia.v2 : sinReferencia.v1,
+        descripcion: sinReferencia.nombre
+      }
+    }
+
     let porcentaje_deuda = 0
     let dias_atraso = 0
 
@@ -2908,7 +2920,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
         score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-        descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
+        descripcion: catalogo ? catalogo.descripcion : ''
       }
 
       logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -3021,7 +3033,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
         score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-        descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
+        descripcion: catalogo ? catalogo.descripcion : ''
       }
 
       logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
@@ -3031,7 +3043,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
     const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
     respuesta = {
       score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
-      descripcion: catalogo ? catalogo.descripcion : 'NO SE OBTUVO NINGÚN PROVEEDOR CON BUENAS O MALAS REFERENCIAS'
+      descripcion: catalogo ? catalogo.descripcion : ''
     }
 
     logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
