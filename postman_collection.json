@@ -65,6 +65,28 @@
               ]
             }
           }
+        },
+        {
+          "name": "PUT /api/algorithm/ranges",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{dev}}/api/algorithm/ranges",
+              "host": [
+                "{{dev}}"
+              ],
+              "path": [
+                "api",
+                "algorithm",
+                "ranges"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cat_resultado_referencias_proveedores_algoritmo\": [\n    {\n      \"id_cat_resultado_referencias_proveedores\": 6,\n      \"valor_algoritmo\": \"0\",\n      \"valor_algoritmo_v2\": \"-8\"\n    }\n  ]\n}"
+            }
+          }
         }
       ]
     },
