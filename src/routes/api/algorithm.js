@@ -28,5 +28,4 @@ router.get('/summary', algorithmController.getAlgorithmSummary)
  *         description: PDF generado en base64
  */
 router.get('/summary/pdf', algorithmController.getAlgorithmSummaryPdf)
-
 module.exports = router
