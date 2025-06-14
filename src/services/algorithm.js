@@ -66,24 +66,49 @@ class AlgorithmService {
    * Return the generic score configuration for the 16 algorithm variables.
    * These values are not tied to any particular certification.
    */
-  getGeneralSummary () {
+  async getGeneralSummary () {
+    const ranges = await certificationService.getAllAlgorithmRanges()
+
+    const mapTable = (table) => {
+      const rows = ranges[table]
+      if (!Array.isArray(rows)) return []
+      return rows.map(r => {
+        const entry = { nombre: r.nombre, v1: r.valor_algoritmo }
+        if (Object.prototype.hasOwnProperty.call(r, 'valor_algoritmo_v2')) {
+          entry.v2 = r.valor_algoritmo_v2
+        } else {
+          entry.v2 = r.valor_algoritmo
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'limite_inferior')) {
+          entry.limite_inferior = r.limite_inferior
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'limite_superior')) {
+          entry.limite_superior = r.limite_superior
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'rango_numerico')) {
+          entry.rango = r.rango_numerico
+        }
+        return entry
+      })
+    }
+
     return {
-      paisScore: { v1: 'valor_algoritmo_pais', v2: 'valor_algoritmo_pais' },
-      sectorRiesgoScore: { v1: 'valor_algoritmo_sector_riesgo', v2: 'valor_algoritmo_sector_riesgo' },
-      capitalContableScore: { v1: 'score_capital_contable', v2: '0' },
-      plantillaLaboralScore: { v1: 'score_plantilla_laboral', v2: 'score_plantilla_laboral' },
-      sectorClienteFinalScore: { v1: 'valor_algoritmo_sector_cliente_final', v2: 'valor_algoritmo_sector_cliente_final' },
-      tiempoActividadScore: { v1: 'valor_algoritmo_tiempo_actividad', v2: 'valor_algoritmo_tiempo_actividad' },
-      influenciaControlanteScore: { v1: '0', v2: '0' },
-      ventasAnualesScore: { v1: 'score_ventas_anuales', v2: '0' },
-      tipoCifrasScore: { v1: 'score_tipo_cifras', v2: '0' },
-      incidenciasLegalesScore: { v1: 'score_incidencias_legales', v2: 'score_incidencias_legales' },
-      evolucionVentasScore: { v1: 'score_evolucion_ventas', v2: '0' },
-      apalancamientoScore: { v1: 'score_apalancamiento', v2: '0' },
-      flujoNetoScore: { v1: 'score_flujo_neto', v2: '0' },
-      paybackScore: { v1: 'score_payback', v2: '0' },
-      rotacionCtasXCobrarScore: { v1: 'score_rotacion_ctas_x_cobrar', v2: '0' },
-      referenciasProveedoresScore: { v1: 'score_referencias_proveedores', v2: 'score_referencias_proveedores' }
+      paisScore: mapTable('cat_pais_algoritmo'),
+      sectorRiesgoScore: mapTable('cat_sector_riesgo_sectorial_algoritmo'),
+      capitalContableScore: mapTable('cat_capital_contable_algoritmo'),
+      plantillaLaboralScore: mapTable('cat_plantilla_laboral_algoritmo'),
+      sectorClienteFinalScore: mapTable('cat_sector_clientes_finales_algoritmo'),
+      tiempoActividadScore: mapTable('cat_tiempo_actividad_comercial_algoritmo'),
+      influenciaControlanteScore: [],
+      ventasAnualesScore: mapTable('cat_ventas_anuales_algoritmo'),
+      tipoCifrasScore: mapTable('cat_tipo_cifras_algoritmo'),
+      incidenciasLegalesScore: mapTable('cat_incidencias_legales_algoritmo'),
+      evolucionVentasScore: mapTable('cat_evolucion_ventas_algoritmo'),
+      apalancamientoScore: mapTable('cat_apalancamiento_algoritmo'),
+      flujoNetoScore: mapTable('cat_flujo_neto_caja_algoritmo'),
+      paybackScore: mapTable('cat_payback_algoritmo'),
+      rotacionCtasXCobrarScore: mapTable('cat_rotacion_cuentas_cobrar_algoritmo'),
+      referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo')
     }
   }
 }
