@@ -2188,7 +2188,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
         return respuesta
       }
 
-      if (countBuena >= 4 && countMala == 0) {
+      if (countBuena === 1 && countMala == 0 && countRegular == 0) {
         const catalogo = getCatalog(REFERENCIA_IDS.BUENA_1)
         respuesta = {
           score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '5' : '10',
