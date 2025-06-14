@@ -2131,6 +2131,48 @@ const getScoreClienteFinalFromSummary = async (
   }
 }
 
+const getScoreTiempoActividadFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreTiempoActividadFromSummary`
+  try {
+    const tiempoActividad = await certificationService.getScoreTiempoActividad(
+      id_certification,
+      algoritmo_v
+    )
+
+    if (!tiempoActividad) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontró tiempo actividad para la certificación ${id_certification}`
+      )
+      return { error: true }
+    }
+
+    const tiempoScore = parametrosAlgoritmo.tiempoActividadScore.find(
+      t => t.nombre === tiempoActividad.nombre
+    )
+
+    if (!tiempoScore) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontró configuración en parámetros para el tiempo actividad ${tiempoActividad.nombre}`
+      )
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? tiempoScore.v2 : tiempoScore.v1
+    return { nombre: tiempoActividad.nombre, valor_algoritmo: score }
+  } catch (error) {
+    logger.error(
+      `${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`
+    )
+    return { error: true }
+  }
+}
+
 const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
   if (capitalContable.error) {
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
@@ -3285,10 +3327,21 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 05: ${JSON.stringify(reporteCredito)}`)
 
-    const tiempo_actividad = await certificationService.getScoreTiempoActividad(id_certification, algoritmo_v)
-    if (tiempo_actividad.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`))
+    const tiempo_actividad = await getScoreTiempoActividadFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (tiempo_actividad.error) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`
+      )
+      return next(
+        boom.badRequest(
+          `No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`
+        )
+      )
     }
 
     logger.info(`${fileMethod} | ${customUuid} El tiempo de actividas para el algoritmo es: ${JSON.stringify(tiempo_actividad)}`)
@@ -4137,10 +4190,21 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 05: ${JSON.stringify(reporteCredito)}`)
 
-    const tiempo_actividad = await certificationService.getScoreTiempoActividad(id_certification, algoritmo_v)
-    if (tiempo_actividad.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`))
+    const tiempo_actividad = await getScoreTiempoActividadFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (tiempo_actividad.error) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`
+      )
+      return next(
+        boom.badRequest(
+          `No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`
+        )
+      )
     }
 
     logger.info(`${fileMethod} | ${customUuid} El tiempo de actividas para el algoritmo es: ${JSON.stringify(tiempo_actividad)}`)
