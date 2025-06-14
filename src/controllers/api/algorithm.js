@@ -88,8 +88,25 @@ const getAlgorithmSummaryPdf = async (req, res, next) => {
   }
 }
 
+const updateAlgorithmRanges = async (req, res, next) => {
+  const fileMethod = 'file: src/controllers/api/algorithm.js - method: updateAlgorithmRanges'
+  try {
+    const { body } = req
+    await algorithmService.updateAlgorithmRanges(body)
+
+    return res.json({
+      error: false,
+      message: 'Valores actualizados'
+    })
+  } catch (error) {
+    logger.error(`${fileMethod} | ${error.message}`)
+    next(error)
+  }
+}
+
 module.exports = {
   getAlgorithmResult,
   getAlgorithmSummary,
-  getAlgorithmSummaryPdf
+  getAlgorithmSummaryPdf,
+  updateAlgorithmRanges
 }
