@@ -3443,7 +3443,64 @@ WHERE cer.certificacion_id = (
     WHERE ${apal} BETWEEN limite_inferior AND limite_superior;
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0]
+    const row = result && result[0]
+
+    if (row) return row
+
+    const value = parseFloat(apalancamiento)
+    if (!Number.isFinite(value)) return null
+
+    if (value < 0) {
+      return {
+        nombre: 'Negativo',
+        valor_algoritmo: '-55',
+        limite_inferior: Number.NEGATIVE_INFINITY,
+        limite_superior: 0
+      }
+    }
+
+    if (value >= 1 && value <= 4) {
+      return {
+        nombre: 'De 1 a 4',
+        valor_algoritmo: '0',
+        limite_inferior: 1,
+        limite_superior: 4
+      }
+    }
+
+    if (value > 4 && value <= 6) {
+      return {
+        nombre: '> 4 a 6',
+        valor_algoritmo: '-10',
+        limite_inferior: 4,
+        limite_superior: 6
+      }
+    }
+
+    if (value > 6 && value <= 8) {
+      return {
+        nombre: '> 6 a 8',
+        valor_algoritmo: '-20',
+        limite_inferior: 6,
+        limite_superior: 8
+      }
+    }
+
+    if (value > 8) {
+      return {
+        nombre: '> 8',
+        valor_algoritmo: '-35',
+        limite_inferior: 8,
+        limite_superior: Number.POSITIVE_INFINITY
+      }
+    }
+
+    return {
+      nombre: 'DESCONOCIDO',
+      valor_algoritmo: '0',
+      limite_inferior: 0,
+      limite_superior: 1
+    }
   }
 
   async cajaBancoPCA(id_certification) {

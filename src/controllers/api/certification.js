@@ -1780,9 +1780,16 @@ const getScoreApalancamiento = async (id_certification, customUuid) => {
     logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${apalancamiento}`)
 
     if (!Number.isFinite(apalancamiento)) {
+      const descripcion =
+        valor_algoritmo === '-30'
+          ? 'Indefinido por no reportar deuda total'
+          : 'DESCONOCIDO'
+
+      const scoreFinal = valor_algoritmo === '-30' ? '-30' : '0'
+
       return {
-        score: '0',
-        descripcion_apalancamiento: '',
+        score: scoreFinal,
+        descripcion_apalancamiento: descripcion,
         deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
         periodo_estado_balance_tipo: deudaTotalPCA.tipo,
         periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
