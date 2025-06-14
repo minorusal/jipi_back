@@ -3112,13 +3112,21 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     const reporteCredito = {}
 
-    const pais = await getPaisScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
-    if (pais.error) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información del país en la certificación`)
-      return next(boom.badRequest(`No se pudo obtener información del país`))
+    const pais = await getPaisScoreFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (!pais || pais.error) {
+      const msg = 'No se pudo obtener información del país'
+      logger.warn(`${fileMethod} | ${customUuid} ${msg} en la certificación`)
+      return next(boom.badRequest(msg))
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El país para el algoritmo es: ${JSON.stringify(pais)}`)
+    logger.info(
+      `${fileMethod} | ${customUuid} El país para el algoritmo es: ${pais.nombre}`
+    )
 
     reporteCredito._01_pais = {
       descripcion: pais.nombre,
@@ -3951,13 +3959,21 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     const reporteCredito = {}
 
-    const pais = await getPaisScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
-    if (pais.error) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información del país en la certificación`)
-      return next(boom.badRequest(`No se pudo obtener información del país`))
+    const pais = await getPaisScoreFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (!pais || pais.error) {
+      const msg = 'No se pudo obtener información del país'
+      logger.warn(`${fileMethod} | ${customUuid} ${msg} en la certificación`)
+      return next(boom.badRequest(msg))
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El país para el algoritmo es: ${JSON.stringify(pais)}`)
+    logger.info(
+      `${fileMethod} | ${customUuid} El país para el algoritmo es: ${pais.nombre}`
+    )
 
     reporteCredito._01_pais = {
       descripcion: pais.nombre,
