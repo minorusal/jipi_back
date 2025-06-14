@@ -6370,9 +6370,15 @@ const validacionesReferenciasComercialesValidas = async (data, empresa_referenci
     } else {
       const rfcCompleto = `${rfc_contacto}`
       const match = rfcCompleto.match(/^([A-ZÑ&]{3,4})(\d{2})(\d{2})(\d{2})/i)
+      if (!match) {
+        const mensaje_razon_social_no_cumple_tiempo_inscripcion_sat = await globalConfig.find(item => item.nombre === 'mensaje_razon_social_no_cumple_tiempo_inscripcion_sat').valor
+        causa_referencia_invalida.push(mensaje_razon_social_no_cumple_tiempo_inscripcion_sat)
+        referencia_valida = false
 
-      let [, , yy, mm, dd] = match
-      let year = parseInt(yy, 10)
+        logger.info(`${fileMethod} | RFC sin fecha valida, se omite calculo de antigüedad: ${JSON.stringify(causa_referencia_invalida)}`)
+      } else {
+        let [, , yy, mm, dd] = match
+        let year = parseInt(yy, 10)
 
       const hoy = new Date()
       const añoActual = hoy.getFullYear()
