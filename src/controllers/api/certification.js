@@ -2089,6 +2089,48 @@ const getScorePlantillaLaboralFromSummary = async (id_certification, algoritmo_v
   }
 }
 
+const getScoreClienteFinalFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreClienteFinalFromSummary`
+  try {
+    const sectorClienteFinal = await certificationService.getScoreClienteFinal(
+      id_certification,
+      algoritmo_v
+    )
+
+    if (!sectorClienteFinal) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontró sector cliente final para la certificación ${id_certification}`
+      )
+      return { error: true }
+    }
+
+    const sectorScore = parametrosAlgoritmo.sectorClienteFinalScore.find(
+      s => s.nombre === sectorClienteFinal.nombre
+    )
+
+    if (!sectorScore) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontró configuración en parámetros para el sector cliente final ${sectorClienteFinal.nombre}`
+      )
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? sectorScore.v2 : sectorScore.v1
+    return { nombre: sectorClienteFinal.nombre, valor_algoritmo: score }
+  } catch (error) {
+    logger.error(
+      `${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`
+    )
+    return { error: true }
+  }
+}
+
 const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
   if (capitalContable.error) {
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
@@ -3215,13 +3257,26 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 04: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_cliente_final = await certificationService.getScoreClienteFinal(id_certification, algoritmo_v)
-    if (sector_cliente_final.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`))
+    const sector_cliente_final = await getScoreClienteFinalFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (sector_cliente_final.error) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`
+      )
+      return next(
+        boom.badRequest(
+          `No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`
+        )
+      )
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El sector cliente final para el algoritmo es: ${JSON.stringify(sector_cliente_final)}`)
+    logger.info(
+      `${fileMethod} | ${customUuid} El sector cliente final para el algoritmo es: ${JSON.stringify(sector_cliente_final)}`
+    )
 
     reporteCredito._05_sector_cliente_final = {
       descripcion: sector_cliente_final.nombre,
@@ -4054,13 +4109,26 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 04: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_cliente_final = await certificationService.getScoreClienteFinal(id_certification, algoritmo_v)
-    if (sector_cliente_final.lenth == 0) {
-      logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`)
-      return next(boom.badRequest(`No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`))
+    const sector_cliente_final = await getScoreClienteFinalFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
+    if (sector_cliente_final.error) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`
+      )
+      return next(
+        boom.badRequest(
+          `No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`
+        )
+      )
     }
 
-    logger.info(`${fileMethod} | ${customUuid} El sector cliente final para el algoritmo es: ${JSON.stringify(sector_cliente_final)}`)
+    logger.info(
+      `${fileMethod} | ${customUuid} El sector cliente final para el algoritmo es: ${JSON.stringify(sector_cliente_final)}`
+    )
 
     reporteCredito._05_sector_cliente_final = {
       descripcion: sector_cliente_final.nombre,
