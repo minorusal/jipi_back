@@ -44,7 +44,7 @@ const getAlgorithmResult = async (req, res, next) => {
 const getAlgorithmSummary = async (req, res, next) => {
   const fileMethod = 'file: src/controllers/api/algorithm.js - method: getAlgorithmSummary'
   try {
-    const resumenValores = algorithmService.getGeneralSummary()
+    const resumenValores = await algorithmService.getGeneralSummary()
 
     return res.json({
       error: false,
