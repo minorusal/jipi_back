@@ -2173,6 +2173,72 @@ const getScoreTiempoActividadFromSummary = async (
   }
 }
 
+const getScoreVentasAnualesFromSummary = async (
+  id_certification,
+  algoritmo_v,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getScoreVentasAnualesFromSummary`
+  try {
+    const ventasAnualesAnioAnterior =
+      await certificationService.getVentasAnualesAnioAnterior(id_certification)
+
+    if (
+      !ventasAnualesAnioAnterior ||
+      ventasAnualesAnioAnterior.ventas_anuales == null
+    ) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se ha podido obtener las ventas anuales del estado de resultados del periodo previo anterior: ${JSON.stringify(
+          ventasAnualesAnioAnterior
+        )}`
+      )
+      return { error: true }
+    }
+
+    const ventasAnuales = Number(ventasAnualesAnioAnterior.ventas_anuales)
+    if (Number.isNaN(ventasAnuales)) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} El valor de ventas anuales obtenido no es numérico: ${ventasAnualesAnioAnterior.ventas_anuales}`
+      )
+      return { error: true }
+    }
+
+    const ventaScore = parametrosAlgoritmo.ventasAnualesScore.find(v => {
+      const limiteSuperior =
+        v.limite_superior == null ? 9999999999 : v.limite_superior
+      return ventasAnuales >= v.limite_inferior && ventasAnuales <= limiteSuperior
+    })
+
+    if (!ventaScore) {
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? ventaScore.v2 : ventaScore.v1
+
+    const result = {
+      score,
+      descripcion: ventaScore.nombre,
+      limite_inferior: ventaScore.limite_inferior,
+      limite_superior: ventaScore.limite_superior,
+      ventas_anuales: ventasAnuales,
+      periodo_anterior_estado_resultados: ventasAnualesAnioAnterior.periodo_anterior
+    }
+
+    logger.info(
+      `${fileMethod} | ${customUuid} La información para el score de ventas anuales es: ${JSON.stringify(
+        result
+      )}`
+    )
+
+    return result
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
 const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
   if (capitalContable.error) {
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
@@ -3353,7 +3419,12 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 06: ${JSON.stringify(reporteCredito)}`)
 
-    const ventas_anuales = await getScoreVentasAnuales(id_certification, customUuid)
+    const ventas_anuales = await getScoreVentasAnualesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (ventas_anuales.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener ventas anuales en la certificación con ID: ${JSON.stringify(ventas_anuales)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4216,7 +4287,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 06: ${JSON.stringify(reporteCredito)}`)
 
-    const ventas_anuales = await getScoreVentasAnuales(id_certification, customUuid)
+    const ventas_anuales = await getScoreVentasAnualesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
     if (ventas_anuales.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener ventas anuales en la certificación con ID: ${JSON.stringify(ventas_anuales)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
