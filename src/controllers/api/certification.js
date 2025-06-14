@@ -2047,6 +2047,40 @@ const getScoreCapitalContableFromSummary = async (id_certification, algoritmo_v,
   }
 }
 
+const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
+  if (capitalContable.error) {
+    logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
+    logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
+    return {
+      descripcion: 'algoritmo v2',
+      score: '0',
+      parametro: 'null',
+      limite_inferior: 'null',
+      limite_superior: 'null'
+    }
+  }
+
+  logger.info(`${fileMethod} | ${customUuid} El capital contable para el algoritmo es: ${JSON.stringify(capitalContable)}`)
+
+  if (algoritmo_v.v_alritmo === 2) {
+    return {
+      descripcion: 'version 2 algoritmo',
+      score: '0',
+      parametro: 0.0,
+      limite_inferior: 0,
+      limite_superior: 0
+    }
+  }
+
+  return {
+    descripcion: capitalContable.descripcion,
+    score: capitalContable.score,
+    parametro: capitalContable.capital_contable_estado_balance_PA,
+    limite_inferior: capitalContable.limite_inferior ?? 'null',
+    limite_superior: capitalContable.limite_superior ?? 'null'
+  }
+}
+
 const getScorePayback = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScorePayback`
   try {
@@ -3109,28 +3143,7 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 02: ${JSON.stringify(reporteCredito)}`)
 
     const capital_contable = await getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
-    if (capital_contable.error) {
-      logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capital_contable)}`)
-      logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
-
-      reporteCredito._03_capital_contable = {
-        descripcion: 'algoritmo v2',
-        score: '0',
-        parametro: 'null',
-        limite_inferior: 'null',
-        limite_superior: 'null'
-      }
-    } else {
-      logger.info(`${fileMethod} | ${customUuid} El capital contable para el algoritmo es: ${JSON.stringify(capital_contable)}`)
-
-      reporteCredito._03_capital_contable = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : capital_contable.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : capital_contable.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 0.00 : capital_contable.capital_contable_estado_balance_PA,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : capital_contable.limite_inferior == null ? 'null' : capital_contable.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : capital_contable.limite_superior == null ? 'null' : capital_contable.limite_superior
-      }
-    }
+    reporteCredito._03_capital_contable = buildCapitalContableReport(capital_contable, algoritmo_v, fileMethod, customUuid)
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 03: ${JSON.stringify(reporteCredito)}`)
 
@@ -3969,28 +3982,7 @@ const getAlgoritmoResult = async (req, res, next) => {
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 02: ${JSON.stringify(reporteCredito)}`)
 
     const capital_contable = await getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
-    if (capital_contable.error) {
-      logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capital_contable)}`)
-      logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
-
-      reporteCredito._03_capital_contable = {
-        descripcion: 'algoritmo v2',
-        score: '0',
-        parametro: 'null',
-        limite_inferior: 'null',
-        limite_superior: 'null'
-      }
-    } else {
-      logger.info(`${fileMethod} | ${customUuid} El capital contable para el algoritmo es: ${JSON.stringify(capital_contable)}`)
-
-      reporteCredito._03_capital_contable = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : capital_contable.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : capital_contable.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 0.00 : capital_contable.capital_contable_estado_balance_PA,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : capital_contable.limite_inferior == null ? 'null' : capital_contable.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : capital_contable.limite_superior == null ? 'null' : capital_contable.limite_superior
-      }
-    }
+    reporteCredito._03_capital_contable = buildCapitalContableReport(capital_contable, algoritmo_v, fileMethod, customUuid)
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 03: ${JSON.stringify(reporteCredito)}`)
 
