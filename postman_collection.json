@@ -28,6 +28,24 @@
               "raw": "{}"
             }
           }
+        },
+        {
+          "name": "GET /api/algorithm/summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{dev}}/api/algorithm/summary",
+              "host": [
+                "{{dev}}"
+              ],
+              "path": [
+                "api",
+                "algorithm",
+                "summary"
+              ]
+            }
+          }
         }
       ]
     },

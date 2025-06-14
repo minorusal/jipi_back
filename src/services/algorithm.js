@@ -1,6 +1,7 @@
 'use strict'
 
 const mysqlLib = require('../lib/db')
+const certificationService = require('./certification')
 
 class AlgorithmService {
   async getLastCertificationId (clientId) {
@@ -52,6 +53,63 @@ class AlgorithmService {
     `
     const { result } = await mysqlLib.query(query)
     return result[0]
+  }
+
+  async getCapitalContableScore (id_certification) {
+    const capital = await certificationService.capitalContableEBPA(id_certification)
+    if (!capital || capital.capital_contable == null) return null
+    const scoreRow = await certificationService.getScoreCapitalContableEBPA(parseFloat(capital.capital_contable))
+    return scoreRow ? scoreRow.valor_algoritmo : null
+  }
+
+  /**
+   * Return the generic score configuration for the 16 algorithm variables.
+   * These values are not tied to any particular certification.
+   */
+  async getGeneralSummary () {
+    const ranges = await certificationService.getAllAlgorithmRanges()
+
+    const mapTable = (table) => {
+      const rows = ranges[table]
+      if (!Array.isArray(rows)) return []
+      return rows.map(r => {
+        const entry = { nombre: r.nombre, v1: r.valor_algoritmo }
+        if (Object.prototype.hasOwnProperty.call(r, 'valor_algoritmo_v2')) {
+          entry.v2 = r.valor_algoritmo_v2
+        } else {
+          entry.v2 = r.valor_algoritmo
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'limite_inferior')) {
+          entry.limite_inferior = r.limite_inferior
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'limite_superior')) {
+          entry.limite_superior = r.limite_superior
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'rango_numerico')) {
+          entry.rango = r.rango_numerico
+        }
+        return entry
+      })
+    }
+
+    return {
+      paisScore: mapTable('cat_pais_algoritmo'),
+      sectorRiesgoScore: mapTable('cat_sector_riesgo_sectorial_algoritmo'),
+      capitalContableScore: mapTable('cat_capital_contable_algoritmo'),
+      plantillaLaboralScore: mapTable('cat_plantilla_laboral_algoritmo'),
+      sectorClienteFinalScore: mapTable('cat_sector_clientes_finales_algoritmo'),
+      tiempoActividadScore: mapTable('cat_tiempo_actividad_comercial_algoritmo'),
+      influenciaControlanteScore: [],
+      ventasAnualesScore: mapTable('cat_ventas_anuales_algoritmo'),
+      tipoCifrasScore: mapTable('cat_tipo_cifras_algoritmo'),
+      incidenciasLegalesScore: mapTable('cat_incidencias_legales_algoritmo'),
+      evolucionVentasScore: mapTable('cat_evolucion_ventas_algoritmo'),
+      apalancamientoScore: mapTable('cat_apalancamiento_algoritmo'),
+      flujoNetoScore: mapTable('cat_flujo_neto_caja_algoritmo'),
+      paybackScore: mapTable('cat_payback_algoritmo'),
+      rotacionCtasXCobrarScore: mapTable('cat_rotacion_cuentas_cobrar_algoritmo'),
+      referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo')
+    }
   }
 }
 

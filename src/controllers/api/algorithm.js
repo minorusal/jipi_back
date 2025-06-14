@@ -41,6 +41,22 @@ const getAlgorithmResult = async (req, res, next) => {
   }
 }
 
+const getAlgorithmSummary = async (req, res, next) => {
+  const fileMethod = 'file: src/controllers/api/algorithm.js - method: getAlgorithmSummary'
+  try {
+    const resumenValores = await algorithmService.getGeneralSummary()
+
+    return res.json({
+      error: false,
+      resumenValores
+    })
+  } catch (error) {
+    logger.error(`${fileMethod} | ${error.message}`)
+    next(error)
+  }
+}
+
 module.exports = {
-  getAlgorithmResult
+  getAlgorithmResult,
+  getAlgorithmSummary
 }
