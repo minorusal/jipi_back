@@ -3431,76 +3431,49 @@ WHERE cer.certificacion_id = (
     return result
   }
 
-  async getScoreApalancamiento(apalancamiento) {
-    const apal = mysqlLib.escape(apalancamiento)
+  async getScoreApalancamiento(apalancamiento, algoritmo_v) {
+    const table = 'cat_apalancamiento_algoritmo'
+
+    if (algoritmo_v?.v_alritmo === 2) {
+      const queryDefault = `
+      SELECT
+        nombre,
+        valor_algoritmo,
+        limite_inferior,
+        limite_superior
+      FROM ${table}
+      WHERE nombre = 'DESCONOCIDO'
+      LIMIT 1;
+      `
+      const { result } = await mysqlLib.query(queryDefault)
+      return result[0] || null
+    }
+
+    const value = parseFloat(apalancamiento)
+    if (!Number.isFinite(value)) {
+      const { result } = await mysqlLib.query(
+        `SELECT nombre, valor_algoritmo, limite_inferior, limite_superior FROM ${table} WHERE nombre = 'DESCONOCIDO' LIMIT 1;`
+      )
+      return result[0] || null
+    }
+
+    const apal = mysqlLib.escape(value)
     const queryString = `
     SELECT
       nombre,
       valor_algoritmo,
       limite_inferior,
       limite_superior
-    FROM cat_apalancamiento_algoritmo
+    FROM ${table}
     WHERE ${apal} BETWEEN limite_inferior AND limite_superior;
     `
     const { result } = await mysqlLib.query(queryString)
-    const row = result && result[0]
+    if (result && result[0]) return result[0]
 
-    if (row) return row
-
-    const value = parseFloat(apalancamiento)
-    if (!Number.isFinite(value)) return null
-
-    if (value < 0) {
-      return {
-        nombre: 'Negativo',
-        valor_algoritmo: '-55',
-        limite_inferior: Number.NEGATIVE_INFINITY,
-        limite_superior: 0
-      }
-    }
-
-    if (value >= 1 && value <= 4) {
-      return {
-        nombre: 'De 1 a 4',
-        valor_algoritmo: '0',
-        limite_inferior: 1,
-        limite_superior: 4
-      }
-    }
-
-    if (value > 4 && value <= 6) {
-      return {
-        nombre: '> 4 a 6',
-        valor_algoritmo: '-10',
-        limite_inferior: 4,
-        limite_superior: 6
-      }
-    }
-
-    if (value > 6 && value <= 8) {
-      return {
-        nombre: '> 6 a 8',
-        valor_algoritmo: '-20',
-        limite_inferior: 6,
-        limite_superior: 8
-      }
-    }
-
-    if (value > 8) {
-      return {
-        nombre: '> 8',
-        valor_algoritmo: '-35',
-        limite_inferior: 8,
-        limite_superior: Number.POSITIVE_INFINITY
-      }
-    }
-
-    return {
-      nombre: 'DESCONOCIDO',
-      valor_algoritmo: '0',
-      limite_inferior: 0,
-      limite_superior: 1
-    }
+    const { result: fallback } = await mysqlLib.query(
+      `SELECT nombre, valor_algoritmo, limite_inferior, limite_superior FROM ${table} WHERE nombre = 'DESCONOCIDO' LIMIT 1;`
+    )
+    return fallback[0] || null
   }
 
   async cajaBancoPCA(id_certification) {
