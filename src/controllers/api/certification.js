@@ -2047,6 +2047,48 @@ const getScoreCapitalContableFromSummary = async (id_certification, algoritmo_v,
   }
 }
 
+const getScorePlantillaLaboralFromSummary = async (id_certification, algoritmo_v, parametrosAlgoritmo, customUuid) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: getScorePlantillaLaboralFromSummary`
+  try {
+    const plantillaCertification = await certificationService.getPlantillaCertification(id_certification)
+    if (!plantillaCertification || plantillaCertification.plantilla_laboral == null) {
+      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener la plantilla de la empresa: ${JSON.stringify(plantillaCertification)}`)
+      return { error: true }
+    }
+
+    const plantillaLaboral = Number(plantillaCertification.plantilla_laboral)
+    if (Number.isNaN(plantillaLaboral)) {
+      logger.warn(`${fileMethod} | ${customUuid} El valor de plantilla laboral obtenido no es numérico: ${plantillaCertification.plantilla_laboral}`)
+      return { error: true }
+    }
+
+    const plantillaScore = parametrosAlgoritmo.plantillaLaboralScore.find(p => {
+      const limiteSuperior = p.limite_superior == null ? 9999999999 : p.limite_superior
+      return plantillaLaboral >= p.limite_inferior && plantillaLaboral <= limiteSuperior
+    })
+
+    if (!plantillaScore) {
+      return { error: true }
+    }
+
+    const score = algoritmo_v.v_alritmo === 2 ? plantillaScore.v2 : plantillaScore.v1
+    const result = {
+      score,
+      descripcion: plantillaScore.nombre,
+      limite_inferior: plantillaScore.limite_inferior,
+      limite_superior: plantillaScore.limite_superior,
+      plantilla_laboral: plantillaLaboral
+    }
+
+    logger.info(`${fileMethod} | ${customUuid} La información para el score de plantilla laboral es: ${JSON.stringify(result)}`)
+
+    return result
+  } catch (error) {
+    logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
+    return { error: true }
+  }
+}
+
 const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, customUuid) => {
   if (capitalContable.error) {
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
@@ -3155,7 +3197,7 @@ const dataReporteCredito = async (id_certification, monto_solicitado, plazo) => 
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 03: ${JSON.stringify(reporteCredito)}`)
 
-    const plantilla_laboral = await getScorePlantillaLaboral(id_certification, algoritmo_v, customUuid)
+    const plantilla_laboral = await getScorePlantillaLaboralFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (plantilla_laboral.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`))
@@ -4002,7 +4044,7 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 03: ${JSON.stringify(reporteCredito)}`)
 
-    const plantilla_laboral = await getScorePlantillaLaboral(id_certification, algoritmo_v, customUuid)
+    const plantilla_laboral = await getScorePlantillaLaboralFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (plantilla_laboral.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`))
