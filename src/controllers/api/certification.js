@@ -2427,9 +2427,10 @@ const getScoreEvolucionVentasFromSummary = async (
 
     const toNumber = (val) => {
       if (val === undefined || val === null) return NaN
-      const clean = String(val).replace('%', '').trim().toLowerCase()
-      if (clean === 'inf') return Infinity
-      if (clean === '-inf') return -Infinity
+      const str = String(val).trim().toLowerCase()
+      if (str === 'inf') return Infinity
+      if (str === '-inf') return -Infinity
+      const clean = str.replace(/[^0-9.-]/g, '')
       return parseFloat(clean)
     }
 
@@ -2538,9 +2539,10 @@ const getScoreApalancamientoFromSummary = async (
 
     const toNumber = (val) => {
       if (val === undefined || val === null) return NaN
-      const clean = String(val).replace('%', '').trim().toLowerCase()
-      if (clean === 'inf') return Infinity
-      if (clean === '-inf') return -Infinity
+      const str = String(val).trim().toLowerCase()
+      if (str === 'inf') return Infinity
+      if (str === '-inf') return -Infinity
+      const clean = str.replace(/[^0-9.-]/g, '')
       return parseFloat(clean)
     }
 
@@ -2598,9 +2600,10 @@ const getScoreCajaBancosFromSummary = async (
 
     const toNumber = (val) => {
       if (val === undefined || val === null) return NaN
-      const clean = String(val).replace('%', '').trim().toLowerCase()
-      if (clean === 'inf') return Infinity
-      if (clean === '-inf') return -Infinity
+      const str = String(val).trim().toLowerCase()
+      if (str === 'inf') return Infinity
+      if (str === '-inf') return -Infinity
+      const clean = str.replace(/[^0-9.-]/g, '')
       return parseFloat(clean)
     }
 
@@ -4467,11 +4470,16 @@ const getAlgoritmoResult = async (req, res, next) => {
     if (flujo_neto.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para flujo neto en la certificación con ID: ${JSON.stringify(flujo_neto)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
-
+      const desconocido = parametrosAlgoritmo.flujoNetoScore.find(
+        f => f.nombre && f.nombre.toUpperCase() === 'DESCONOCIDO'
+      )
       reporteCredito._13_flujo_neto = {
-        descripcion:
-          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
-        score: '0',
+        descripcion: desconocido ? desconocido.nombre : 'DESCONOCIDO',
+        score: desconocido
+          ? Number(algoritmo_v?.v_alritmo) === 2
+            ? desconocido.v2
+            : desconocido.v1
+          : '0',
         parametro: 'null',
         limite_inferior: 'null',
         limite_superior: 'null'
@@ -4483,8 +4491,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : flujo_neto.descripcion,
         score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : flujo_neto.score,
         parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : flujo_neto.caja_bancos_periodo_anterior,
-        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
-        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_superior == '' ? 'null' : apalancamiento.limite_superior
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_inferior == '' ? 'null' : flujo_neto.limite_inferior,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_superior == '' ? 'null' : flujo_neto.limite_superior
       }
     }
 
