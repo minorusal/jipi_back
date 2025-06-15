@@ -4842,7 +4842,11 @@ ${JSON.stringify(info_email_error, null, 2)}
                   const nombre = isSelected
                     ? `<strong>${opt.nombre ?? ''}</strong>`
                     : opt.nombre ?? ''
-                  return `<li>${nombre} (${opt.valor_algoritmo ?? ''})</li>`
+                  const valor =
+                    Number(version_algoritmo) === 2
+                      ? opt.valor_algoritmo_v2 ?? opt.valor_algoritmo ?? ''
+                      : opt.valor_algoritmo ?? ''
+                  return `<li>${nombre} (${valor})</li>`
                 })
                 .join('')
             }</ul>`
