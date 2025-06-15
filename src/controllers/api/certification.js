@@ -3445,7 +3445,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     return resp
   }
   const isEmpty = (value) =>
-    value === null || value === undefined || value === '0.00' || value === 0
+    value === null || value === undefined || value === ''
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
