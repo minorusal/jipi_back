@@ -2425,9 +2425,31 @@ const getScoreEvolucionVentasFromSummary = async (
       evolucion_ventas: evolucion
     }
 
+    const toNumber = (val) => {
+      if (val === undefined || val === null) return NaN
+      const clean = String(val).replace('%', '').trim().toLowerCase()
+      if (clean === 'inf') return Infinity
+      if (clean === '-inf') return -Infinity
+      return parseFloat(clean)
+    }
+
+    const getLimits = (entry) => {
+      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
+        const inf = toNumber(entry.limite_inferior)
+        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
+        return [inf, sup]
+      }
+      if (entry.rango) {
+        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
+        const start = toNumber(a)
+        const end = toNumber(b)
+        return [Math.min(start, end), Math.max(start, end)]
+      }
+      return [NaN, NaN]
+    }
+
     const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
-      const inf = parseFloat(e.limite_inferior)
-      const sup = e.limite_superior == null ? Infinity : parseFloat(e.limite_superior)
+      const [inf, sup] = getLimits(e)
       return evolucion >= inf && evolucion <= sup
     })
     if (!evoScore) return { error: true }
@@ -2514,9 +2536,32 @@ const getScoreApalancamientoFromSummary = async (
       }
     }
 
+    const toNumber = (val) => {
+      if (val === undefined || val === null) return NaN
+      const clean = String(val).replace('%', '').trim().toLowerCase()
+      if (clean === 'inf') return Infinity
+      if (clean === '-inf') return -Infinity
+      return parseFloat(clean)
+    }
+
+    const getLimits = (entry) => {
+      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
+        const inf = toNumber(entry.limite_inferior)
+        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
+        return [inf, sup]
+      }
+      if (entry.rango) {
+        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
+        const start = toNumber(a)
+        const end = toNumber(b)
+        return [Math.min(start, end), Math.max(start, end)]
+      }
+      return [NaN, NaN]
+    }
+
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
-      const sup = a.limite_superior == null ? 9999999999 : a.limite_superior
-      return apalancamiento >= a.limite_inferior && apalancamiento <= sup
+      const [inf, sup] = getLimits(a)
+      return apalancamiento >= inf && apalancamiento <= sup
     })
     if (!apalScore) return { error: true }
 
@@ -2551,9 +2596,32 @@ const getScoreCajaBancosFromSummary = async (
     const cajaBancoPCA = await certificationService.cajaBancoPCA(id_certification)
     if (!cajaBancoPCA) return { error: true }
 
+    const toNumber = (val) => {
+      if (val === undefined || val === null) return NaN
+      const clean = String(val).replace('%', '').trim().toLowerCase()
+      if (clean === 'inf') return Infinity
+      if (clean === '-inf') return -Infinity
+      return parseFloat(clean)
+    }
+
+    const getLimits = (entry) => {
+      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
+        const inf = toNumber(entry.limite_inferior)
+        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
+        return [inf, sup]
+      }
+      if (entry.rango) {
+        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
+        const start = toNumber(a)
+        const end = toNumber(b)
+        return [Math.min(start, end), Math.max(start, end)]
+      }
+      return [NaN, NaN]
+    }
+
     const cajaScore = parametrosAlgoritmo.flujoNetoScore.find(c => {
-      const sup = c.limite_superior == null ? 9999999999 : c.limite_superior
-      return cajaBancoPCA.caja_bancos >= c.limite_inferior && cajaBancoPCA.caja_bancos <= sup
+      const [inf, sup] = getLimits(c)
+      return cajaBancoPCA.caja_bancos >= inf && cajaBancoPCA.caja_bancos <= sup
     })
     if (!cajaScore) return { error: true }
 
