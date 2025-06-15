@@ -2425,10 +2425,6 @@ const getScoreEvolucionVentasFromSummary = async (
       evolucion_ventas: evolucion
     }
 
-    if (!Number.isFinite(evolucion) || Number(algoritmo_v?.v_alritmo) === 2) {
-      return { ...base, score: '0', nombre: 'DESCONOCIDO', rango_numerico: 'null' }
-    }
-
     const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
       const inf = parseFloat(e.limite_inferior)
       const sup = e.limite_superior == null ? Infinity : parseFloat(e.limite_superior)
@@ -2437,7 +2433,8 @@ const getScoreEvolucionVentasFromSummary = async (
     if (!evoScore) return { error: true }
 
     const result = {
-      score: evoScore.v1,
+      score:
+        Number(algoritmo_v?.v_alritmo) === 2 ? evoScore.v2 : evoScore.v1,
       nombre: evoScore.nombre,
       rango_numerico: evoScore.rango,
       ...base
