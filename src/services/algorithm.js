@@ -112,7 +112,8 @@ class AlgorithmService {
       flujoNetoScore: mapTable('cat_flujo_neto_caja_algoritmo'),
       paybackScore: mapTable('cat_payback_algoritmo'),
       rotacionCtasXCobrarScore: mapTable('cat_rotacion_cuentas_cobrar_algoritmo'),
-      referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo')
+      referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo'),
+      scoreDescripcion: mapTable('cat_score_descripcion_algoritmo')
     }
   }
 
