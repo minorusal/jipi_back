@@ -2741,7 +2741,7 @@ const getScoreReferenciasComercialesFromSummary = async (
       else if (calif === 'regular') countRegular++
     }
 
-    let catalogoNombre = 'NINGUNA'
+    let catalogoId = REFERENCIA_IDS.NINGUNA
 
     if (
       countBuena === 0 &&
@@ -2750,18 +2750,18 @@ const getScoreReferenciasComercialesFromSummary = async (
       porcentaje_deuda >= algorithmConstants.ref_malas_porcentaje &&
       dias_atraso >= algorithmConstants.ref_malas_dias
     ) {
-      catalogoNombre = 'MALAS'
+      catalogoId = REFERENCIA_IDS.MALAS
     } else if (countBuena >= 2 && countBuena <= 3 && countMala === 0 && countRegular === 0) {
-      catalogoNombre = 'BUENAS_2_3'
+      catalogoId = REFERENCIA_IDS.BUENAS_2_3
     } else if (countBuena >= 4 && countMala === 0 && countRegular === 0) {
-      catalogoNombre = 'BUENAS_4'
+      catalogoId = REFERENCIA_IDS.BUENAS_4
     } else if (countRegular > 0) {
-      catalogoNombre = 'MIXTAS'
+      catalogoId = REFERENCIA_IDS.MIXTAS
     } else if (countBuena === 1 && countMala === 0 && countRegular === 0) {
-      catalogoNombre = 'BUENA_1'
+      catalogoId = REFERENCIA_IDS.BUENA_1
     }
 
-    const catalogo = parametrosAlgoritmo.referenciasProveedoresScore.find(r => r.nombre === catalogoNombre)
+    const catalogo = parametrosAlgoritmo.referenciasProveedoresScore.find(r => r.id === catalogoId)
     if (!catalogo) return { error: true }
 
     const version = Number(algoritmo_v?.v_alritmo)
@@ -2949,159 +2949,21 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
 
 const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: getScoreReferenciasComerciales`
-  const getCatalog = id => {
-    const ref = referenciasCatalogo[id]
-    if (!ref) return null
-    const version = Number(algoritmo_v?.v_alritmo)
-    return {
-      score: version === 2 ? ref.valor_algoritmo_v2 : ref.valor_algoritmo,
-      descripcion: ref.nombre
-    }
-  }
   try {
-    let countBuena = 0
-    let countMala = 0
-    let countRegular = 0
-    let respuesta = {}
-    let porcentaje_deuda = 0
-    let dias_atraso = 0
-
-    const referencia_comercial = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
-    logger.warn(`${fileMethod} | ${customUuid} Resultado de consulta de referencias comerciales: ${JSON.stringify(referencia_comercial)}`)
-    if (!referencia_comercial) {
-      logger.warn(`${fileMethod} | ${customUuid} No se han podido consultar de las referencias: ${JSON.stringify(referencia_comercial)}`)
-      const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
-      respuesta = {
-        score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
-        descripcion: catalogo ? catalogo.descripcion : ''
-      }
-
-      logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-      return respuesta
+    const parametrosAlgoritmo = {
+      referenciasProveedoresScore: Object.values(referenciasCatalogo).map(r => ({
+        id: r.id_cat_resultado_referencias_proveedores,
+        nombre: r.nombre,
+        v1: r.valor_algoritmo,
+        v2: r.valor_algoritmo_v2
+      }))
     }
-    let calificaciones = []
-    for (const referencia of referencia_comercial) {
-      const [calificacion] = await certificationService.getCalificacionsReferencias(
-        referencia.id_certification_referencia_comercial
-      )
-      logger.warn(`${fileMethod} | ${customUuid} Las calificacion obtenida de la referencia es: ${JSON.stringify(calificacion)}`)
-      if (!calificacion) {
-        logger.warn(`${fileMethod} | ${customUuid} La referencia con ID: ${referencia.id_certification_referencia_comercial} no tiene calificaciones`)
-        return { error: true }
-      }
-      calificaciones.push(calificacion)
-    }
-    console.log(JSON.stringify(calificaciones))
-
-    logger.info(`${fileMethod} | ${customUuid} La información de la calificación de referencias comerciales de certificación con ID : ${id_certification} es: ${JSON.stringify(calificaciones)}`)
-
-    if (calificaciones.length > 0) {
-      for (const item of calificaciones) {
-        if (typeof item.calificacion_referencia === 'string') {
-          const calificacionLowercase = item.calificacion_referencia.toLowerCase()
-          if (calificacionLowercase === 'mala') {
-            countMala++
-          } else if (calificacionLowercase === 'buena') {
-            countBuena++
-          } else if (calificacionLowercase === 'regular') {
-            countRegular++
-          }
-        }
-        
-        if (Boolean(item.porcentaje_deuda)) porcentaje_deuda = item.porcentaje_deuda
-        if (Boolean(item.dias_atraso)) dias_atraso = item.dias_atraso
-      }
-
-      console.log('Malas: ', countMala)
-      console.log('Buenas: ', countBuena)
-      console.log('Regulares: ', countRegular)
-
-      logger.info(`${fileMethod} | ${customUuid} Malas: ${countMala}}`)
-      logger.info(`${fileMethod} | ${customUuid} Buenas: ${countBuena}}`)
-      logger.info(`${fileMethod} | ${customUuid} Regulares: ${countRegular}}`)
-
-      console.log('porcentaje_deuda: ', porcentaje_deuda)
-      console.log('dias_atraso: ', dias_atraso)
-
-      if (countBuena == 0 && countMala > 0 && countRegular == 0 && porcentaje_deuda >= 20 && dias_atraso >= 90) {
-        const catalogo = getCatalog(REFERENCIA_IDS.MALAS)
-        respuesta = {
-          score: catalogo ? catalogo.score : '-60',
-          descripcion: catalogo ? catalogo.descripcion : ''
-        }
-
-        logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-        return respuesta
-      }
-
-      if (countBuena >= 2 && countBuena <= 3 && countMala == 0 && countRegular == 0) {
-        const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_2_3)
-        respuesta = {
-          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '20' : '15',
-          descripcion: catalogo ? catalogo.descripcion : ''
-        }
-
-        logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-        return respuesta
-      }
-
-      if (countBuena >= 4 && countMala == 0 && countRegular == 0) {
-        const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_4)
-        respuesta = {
-          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '35' : '20',
-          descripcion: catalogo ? catalogo.descripcion : ''
-        }
-
-        logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-        return respuesta
-      }
-
-      if (countRegular > 0) {
-        const catalogo = getCatalog(REFERENCIA_IDS.MIXTAS)
-        respuesta = {
-          score: catalogo ? catalogo.score : '-25',
-          descripcion: catalogo ? catalogo.descripcion : ''
-        }
-
-        logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-        return respuesta
-      }
-
-      if (countBuena === 1 && countMala == 0 && countRegular == 0) {
-        const catalogo = getCatalog(REFERENCIA_IDS.BUENA_1)
-        respuesta = {
-          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '5' : '10',
-          descripcion: catalogo ? catalogo.descripcion : ''
-        }
-
-        logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-        return respuesta
-      }
-    } else {
-      const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
-      respuesta = {
-        score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
-        descripcion: catalogo ? catalogo.descripcion : ''
-      }
-
-      logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-      return respuesta
-    }
-    const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
-    respuesta = {
-      score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
-      descripcion: catalogo ? catalogo.descripcion : ''
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} Referencias buenas: ${countBuena}, referencias malas: ${countMala} ${JSON.stringify(respuesta)}`)
-
-    return respuesta
+    return await getScoreReferenciasComercialesFromSummary(
+      id_certification,
+      algoritmo_v,
+      parametrosAlgoritmo,
+      customUuid
+    )
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${error}`)
     return {
