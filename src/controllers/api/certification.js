@@ -2418,22 +2418,29 @@ const getScoreEvolucionVentasFromSummary = async (
       }
     }
 
-    const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
-      const sup = e.limite_superior == null ? 9999999999 : e.limite_superior
-      return evolucion >= e.limite_inferior && evolucion <= sup
-    })
-    if (!evoScore) return { error: true }
-
-    const score = Number(algoritmo_v?.v_alritmo) === 2 ? evoScore.v2 : evoScore.v1
-
-    const result = {
-      score,
-      nombre: evoScore.nombre,
-      rango_numerico: evoScore.rango,
+    const base = {
       ventas_anuales_periodo_anterior_estado_resultados: anterior,
       periodo_anterior_estado_resultados: anioAnterior.periodo_anterior,
       ventas_anuales_periodo_previo_anterior_estado_resultados: previo,
       evolucion_ventas: evolucion
+    }
+
+    if (!Number.isFinite(evolucion) || Number(algoritmo_v?.v_alritmo) === 2) {
+      return { ...base, score: '0', nombre: 'DESCONOCIDO', rango_numerico: 'null' }
+    }
+
+    const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
+      const inf = parseFloat(e.limite_inferior)
+      const sup = e.limite_superior == null ? Infinity : parseFloat(e.limite_superior)
+      return evolucion >= inf && evolucion <= sup
+    })
+    if (!evoScore) return { error: true }
+
+    const result = {
+      score: evoScore.v1,
+      nombre: evoScore.nombre,
+      rango_numerico: evoScore.rango,
+      ...base
     }
 
     return result
