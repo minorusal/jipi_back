@@ -1837,7 +1837,8 @@ const getScoreApalancamiento = async (id_certification, customUuid, algoritmo_v)
 
       return {
         score: defaultScore.valor_algoritmo,
-        descripcion_apalancamiento: 'algoritmo v2',
+        descripcion_apalancamiento:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
         periodo_estado_balance_tipo: deudaTotalPCA.tipo,
         periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
@@ -2472,7 +2473,8 @@ const getScoreApalancamientoFromSummary = async (
       if (!def) return { error: true }
       return {
         score: def.v2,
-        descripcion_apalancamiento: 'algoritmo v2',
+        descripcion_apalancamiento:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
         periodo_estado_balance_tipo: deudaTotalPCA.tipo,
         periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
@@ -2785,7 +2787,8 @@ const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, cu
     logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener capital contable en la certificación con ID: ${JSON.stringify(capitalContable)}`)
     logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
     return {
-      descripcion: 'algoritmo v2',
+      descripcion:
+        Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
       score: '0',
       parametro: 'null',
       limite_inferior: 'null',
@@ -4256,7 +4259,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._08_ventas_anuales = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0',
         parametro: 'null',
         limite_inferior: 'null',
@@ -4287,7 +4291,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._09_tipo_cifras = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0'
       }
     } else {
@@ -4333,7 +4338,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._11_evolucion_ventas = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0',
         parametro: 'null',
         rango: 'null'
@@ -4386,7 +4392,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._13_flujo_neto = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0',
         parametro: 'null',
         limite_inferior: 'null',
@@ -4417,7 +4424,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._14_payback = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0',
         parametro: 'null',
         limite_inferior: 'null',
@@ -4448,7 +4456,8 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
 
       reporteCredito._15_rotacion_ctas_x_cobrar = {
-        descripcion: 'algoritmo v2',
+        descripcion:
+          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
         score: '0',
         parametro_dso: 'null',
         parametro_dio: 'null',
