@@ -1828,7 +1828,7 @@ const getScoreApalancamiento = async (id_certification, customUuid, algoritmo_v)
     const apalancamiento = deuda / capital
     logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${apalancamiento}`)
 
-    if (algoritmo_v?.v_alritmo === 2) {
+    if (Number(algoritmo_v?.v_alritmo) === 2) {
       const defaultScore = await certificationService.getScoreApalancamiento(0, algoritmo_v)
       if (!defaultScore) {
         logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de apalancamiento para algoritmo v2`)
@@ -2018,7 +2018,7 @@ const getPaisScoreFromSummary = async (id_certification, algoritmo_v, parametros
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? paisScore.v2 : paisScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? paisScore.v2 : paisScore.v1
     return { nombre: pais.nombre, valor_algoritmo: score }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -2041,7 +2041,7 @@ const getSectorRiesgoScoreFromSummary = async (id_certification, algoritmo_v, pa
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? sectorScore.v2 : sectorScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? sectorScore.v2 : sectorScore.v1
     return { nombre: sectorRiesgo.nombre, valor_algoritmo: score }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -2072,7 +2072,7 @@ const getScoreCapitalContableFromSummary = async (id_certification, algoritmo_v,
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? capitalScore.v2 : capitalScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? capitalScore.v2 : capitalScore.v1
     const scoreInfo = {
       error: false,
       score,
@@ -2115,7 +2115,7 @@ const getScorePlantillaLaboralFromSummary = async (id_certification, algoritmo_v
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? plantillaScore.v2 : plantillaScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? plantillaScore.v2 : plantillaScore.v1
     const result = {
       score,
       descripcion: plantillaScore.nombre,
@@ -2165,7 +2165,7 @@ const getScoreClienteFinalFromSummary = async (
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? sectorScore.v2 : sectorScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? sectorScore.v2 : sectorScore.v1
     return { nombre: sectorClienteFinal.nombre, valor_algoritmo: score }
   } catch (error) {
     logger.error(
@@ -2207,7 +2207,7 @@ const getScoreTiempoActividadFromSummary = async (
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? tiempoScore.v2 : tiempoScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? tiempoScore.v2 : tiempoScore.v1
     return { nombre: tiempoActividad.nombre, valor_algoritmo: score }
   } catch (error) {
     logger.error(
@@ -2259,7 +2259,7 @@ const getScoreVentasAnualesFromSummary = async (
       return { error: true }
     }
 
-    const score = algoritmo_v.v_alritmo === 2 ? ventaScore.v2 : ventaScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? ventaScore.v2 : ventaScore.v1
 
     const result = {
       score,
@@ -2313,7 +2313,7 @@ const getScoreTipoCifrasFromSummary = async (
     )
     if (!tipoScore) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? tipoScore.v2 : tipoScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? tipoScore.v2 : tipoScore.v1
     return { id_tipo_cifra: tipoCifraId, descripcion: tipoInfo.nombre, score }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -2368,7 +2368,7 @@ const getScoreIncidenciasLegalesFromSummary = async (
     )
     if (!cat) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? cat.v2 : cat.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? cat.v2 : cat.v1
 
     return {
       score,
@@ -2420,7 +2420,7 @@ const getScoreEvolucionVentasFromSummary = async (
     })
     if (!evoScore) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? evoScore.v2 : evoScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? evoScore.v2 : evoScore.v1
 
     const result = {
       score,
@@ -2462,7 +2462,7 @@ const getScoreApalancamientoFromSummary = async (
     const capital = parseFloat(capitalContable.capital_contable)
     const apalancamiento = deuda / capital
 
-    if (algoritmo_v?.v_alritmo === 2) {
+    if (Number(algoritmo_v?.v_alritmo) === 2) {
       const def = parametrosAlgoritmo.apalancamientoScore.find(
         a => a.nombre === 'DESCONOCIDO'
       )
@@ -2512,7 +2512,7 @@ const getScoreApalancamientoFromSummary = async (
     if (!apalScore) return { error: true }
 
     return {
-      score: valor_algoritmo !== '0' ? valor_algoritmo : (algoritmo_v.v_alritmo === 2 ? apalScore.v2 : apalScore.v1),
+      score: valor_algoritmo !== '0' ? valor_algoritmo : (Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1),
       descripcion_apalancamiento: apalScore.nombre,
       deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
       periodo_estado_balance_tipo: deudaTotalPCA.tipo,
@@ -2548,7 +2548,7 @@ const getScoreCajaBancosFromSummary = async (
     })
     if (!cajaScore) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? cajaScore.v2 : cajaScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? cajaScore.v2 : cajaScore.v1
 
     return {
       descripcion: cajaScore.nombre,
@@ -2595,7 +2595,7 @@ const getScorePaybackFromSummary = async (
     const score =
       scoreOverride != null
         ? scoreOverride
-        : algoritmo_v.v_alritmo === 2
+        : Number(algoritmo_v?.v_alritmo) === 2
           ? paybackScore.v2
           : paybackScore.v1
 
@@ -2668,7 +2668,7 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
 
     if (!rotScore) return { error: true }
 
-    const score = algoritmo_v.v_alritmo === 2 ? rotScore.v2 : rotScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? rotScore.v2 : rotScore.v1
 
     return {
       score: noDso && noDio ? '-20' : score,
@@ -2792,7 +2792,7 @@ const buildCapitalContableReport = (capitalContable, algoritmo_v, fileMethod, cu
 
   logger.info(`${fileMethod} | ${customUuid} El capital contable para el algoritmo es: ${JSON.stringify(capitalContable)}`)
 
-  if (algoritmo_v.v_alritmo === 2) {
+  if (Number(algoritmo_v?.v_alritmo) === 2) {
     return {
       descripcion: 'version 2 algoritmo',
       score: '0',
@@ -2972,7 +2972,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       logger.warn(`${fileMethod} | ${customUuid} No se han podido consultar de las referencias: ${JSON.stringify(referencia_comercial)}`)
       const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
-        score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+        score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
         descripcion: catalogo ? catalogo.descripcion : ''
       }
 
@@ -3038,7 +3038,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       if (countBuena >= 2 && countBuena <= 3 && countMala == 0 && countRegular == 0) {
         const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_2_3)
         respuesta = {
-          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '20' : '15',
+          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '20' : '15',
           descripcion: catalogo ? catalogo.descripcion : ''
         }
 
@@ -3050,7 +3050,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       if (countBuena >= 4 && countMala == 0 && countRegular == 0) {
         const catalogo = getCatalog(REFERENCIA_IDS.BUENAS_4)
         respuesta = {
-          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '35' : '20',
+          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '35' : '20',
           descripcion: catalogo ? catalogo.descripcion : ''
         }
 
@@ -3074,7 +3074,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
       if (countBuena === 1 && countMala == 0 && countRegular == 0) {
         const catalogo = getCatalog(REFERENCIA_IDS.BUENA_1)
         respuesta = {
-          score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '5' : '10',
+          score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '5' : '10',
           descripcion: catalogo ? catalogo.descripcion : ''
         }
 
@@ -3085,7 +3085,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
     } else {
       const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
       respuesta = {
-        score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+        score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
         descripcion: catalogo ? catalogo.descripcion : ''
       }
 
@@ -3095,7 +3095,7 @@ const getScoreReferenciasComerciales = async (id_certification, algoritmo_v, cus
     }
     const catalogo = getCatalog(REFERENCIA_IDS.NINGUNA)
     respuesta = {
-      score: catalogo ? catalogo.score : algoritmo_v.v_alritmo == 2 ? '-8' : '0',
+      score: catalogo ? catalogo.score : Number(algoritmo_v?.v_alritmo) === 2 ? '-8' : '0',
       descripcion: catalogo ? catalogo.descripcion : ''
     }
 
@@ -3197,7 +3197,7 @@ const getScoreIncidenciasLegales = async (id_certification, algoritmo_v, customU
     if (_1incidenciaMercantilUnAnio) {
       const getScore = await certificationService.getScoreIncidenciasLegales('1 INCIDENCIA MERCANTIL <= 1 AÑO', algoritmo_v)
       respuesta = {
-        score: getScore ? getScore.valor_algoritmo : algoritmo_v.v_alritmo == 2 ? '-40' : '-50',
+        score: getScore ? getScore.valor_algoritmo : Number(algoritmo_v?.v_alritmo) === 2 ? '-40' : '-50',
         tipo: tipo,
         fecha: fecha,
         caso: getScore ? getScore.nombre : '1 INCIDENCIA MERCANTIL <= 1 AÑO'
@@ -4472,11 +4472,11 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Ventas anuales para el algoritmo es: ${JSON.stringify(ventas_anuales)}`)
 
       reporteCredito._08_ventas_anuales = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : ventas_anuales.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : ventas_anuales.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 0.00 : ventas_anuales.ventas_anuales,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : ventas_anuales.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : ventas_anuales.limite_superior
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : ventas_anuales.descripcion,
+        score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : ventas_anuales.score,
+        parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 0.00 : ventas_anuales.ventas_anuales,
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : ventas_anuales.limite_inferior,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : ventas_anuales.limite_superior
       }
     }
 
@@ -4548,10 +4548,10 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Evolucion de ventas para el algoritmo son: ${JSON.stringify(evolucion_ventas)}`)
 
       reporteCredito._11_evolucion_ventas = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : evolucion_ventas.nombre,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : evolucion_ventas.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : evolucion_ventas.evolucion_ventas,
-        rango: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : evolucion_ventas.rango_numerico
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.nombre,
+        score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : evolucion_ventas.score,
+        parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.evolucion_ventas,
+        rango: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.rango_numerico
       }
     }
 
@@ -4602,11 +4602,11 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} flujo neto para el algoritmo es: ${JSON.stringify(flujo_neto)}`)
 
       reporteCredito._13_flujo_neto = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : flujo_neto.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : flujo_neto.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : flujo_neto.caja_bancos_periodo_anterior,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : flujo_neto.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : flujo_neto.limite_superior == '' ? 'null' : apalancamiento.limite_superior
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : flujo_neto.descripcion,
+        score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : flujo_neto.score,
+        parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : flujo_neto.caja_bancos_periodo_anterior,
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : flujo_neto.limite_superior == '' ? 'null' : apalancamiento.limite_superior
       }
     }
 
@@ -4633,11 +4633,11 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} payback para el algoritmo es: ${JSON.stringify(payback)}`)
 
       reporteCredito._14_payback = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : payback.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : payback.score,
-        parametro: algoritmo_v.v_alritmo == 2 ? 0 : payback.payback,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : payback.limite_inferior == null ? 'null' : payback.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : payback.limite_superior == null ? 'null' : payback.limite_superior
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : payback.descripcion,
+        score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : payback.score,
+        parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.payback,
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.limite_inferior == null ? 'null' : payback.limite_inferior,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.limite_superior == null ? 'null' : payback.limite_superior
       }
     }
 
@@ -4665,19 +4665,19 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Rotacion de cuentas por cobrar para el algoritmo es: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
 
       reporteCredito._15_rotacion_ctas_x_cobrar = {
-        descripcion: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.descripcion,
-        score: algoritmo_v.v_alritmo == 2 ? '0' : rotacion_ctas_x_cobrar.score,
-        parametro_dso: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dso,
-        parametro_dio: algoritmo_v.v_alritmo == 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dio,
-        limite_inferior: algoritmo_v.v_alritmo == 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
-        limite_superior: algoritmo_v.v_alritmo == 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.descripcion,
+        score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : rotacion_ctas_x_cobrar.score,
+        parametro_dso: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dso,
+        parametro_dio: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dio,
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior
       }
     }
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 15: ${JSON.stringify(reporteCredito)}`)
 
     let dpo = 'N/A'
-    if (algoritmo_v.v_alritmo != 2) {
+    if (Number(algoritmo_v?.v_alritmo) !== 2) {
       dpo = await calculaDpo(id_certification, flujo_neto.caja_bancos_periodo_anterior, rotacion_ctas_x_cobrar.dsoMayor90, rotacion_ctas_x_cobrar.dioMayor90)
     }
     reporteCredito.dpo = dpo
@@ -4730,19 +4730,19 @@ const getAlgoritmoResult = async (req, res, next) => {
     const scores = {
       paisScore: pais.valor_algoritmo,
       sectorRiesgoScore: sector_riesgo.valor_algoritmo,
-      capitalContableScore: algoritmo_v.v_alritmo == 2 ? '0' : capital_contable.score,
+      capitalContableScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : capital_contable.score,
       plantillaLaboralScore: plantilla_laboral.score,
       sectorClienteFinalScore: sector_cliente_final.valor_algoritmo,
       tiempoActividadScore: tiempo_actividad.valor_algoritmo,
       influenciaControlanteScore: '0',//'Pendiente de consumo de api con información de investigacion ante el SAT'// Influencia de empresa controlante (PENDIENTE)
-      ventasAnualesScore: algoritmo_v.v_alritmo == 2 ? '0' : ventas_anuales.score,
-      tipoCifrasScore: algoritmo_v.v_alritmo == 2 ? '0' : tipo_cifras.score,
+      ventasAnualesScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : ventas_anuales.score,
+      tipoCifrasScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : tipo_cifras.score,
       incidenciasLegalesScore: incidencias_legales.score,
-      evolucionVentasScore: algoritmo_v.v_alritmo == 2 ? '0' : evolucion_ventas.score,
-      apalancamientoScore: algoritmo_v.v_alritmo == 2 ? '0' : apalancamiento.score,
-      flujoNetoScore: algoritmo_v.v_alritmo == 2 ? '0' : flujo_neto.score,
-      paybackScore: algoritmo_v.v_alritmo == 2 ? '0' : payback.score,
-      rotacionCtasXCobrarScore: algoritmo_v.v_alritmo == 2 ? '0' : rotacion_ctas_x_cobrar.score,
+      evolucionVentasScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : evolucion_ventas.score,
+      apalancamientoScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : apalancamiento.score,
+      flujoNetoScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : flujo_neto.score,
+      paybackScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : payback.score,
+      rotacionCtasXCobrarScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : rotacion_ctas_x_cobrar.score,
       referenciasProveedoresScore: referencias_comerciales.score,
     }
     

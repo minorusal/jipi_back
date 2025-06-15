@@ -3287,7 +3287,7 @@ WHERE cer.certificacion_id = (
   }
 
   async getSectorRiesgoByIdCertification(id_certification, algoritmo_v) {
-    let valor_algritmo = algoritmo_v.v_alritmo == 2 ? 'srs.valor_algoritmo_v2 AS valor_algoritmo' : 'srs.valor_algoritmo'
+    let valor_algritmo = Number(algoritmo_v?.v_alritmo) === 2 ? 'srs.valor_algoritmo_v2 AS valor_algoritmo' : 'srs.valor_algoritmo'
     let queryString = `
     SELECT
       srs.nombre,
@@ -3313,7 +3313,7 @@ WHERE cer.certificacion_id = (
   }
 
   async getScorePlantillaLaboral(plantillaLaboral, algoritmo_v) {
-    let valor_algoritmo = algoritmo_v.v_alritmo == 2 ? 'valor_algoritmo_v2 AS valor_algoritmo' : 'valor_algoritmo'
+    let valor_algoritmo = Number(algoritmo_v?.v_alritmo) === 2 ? 'valor_algoritmo_v2 AS valor_algoritmo' : 'valor_algoritmo'
     const queryString = `
     SELECT
       nombre,  
@@ -3329,7 +3329,7 @@ WHERE cer.certificacion_id = (
 
   async getScoreClienteFinal(id_certification, algoritmo_v) {
     const campoAlgoritmo =
-      algoritmo_v.v_alritmo === 2
+      Number(algoritmo_v?.v_alritmo) === 2
         ? 'scf.valor_algoritmo_v2'
         : 'scf.valor_algoritmo'
 
@@ -3434,7 +3434,7 @@ WHERE cer.certificacion_id = (
   async getScoreApalancamiento(apalancamiento, algoritmo_v) {
     const table = 'cat_apalancamiento_algoritmo'
 
-    if (algoritmo_v?.v_alritmo === 2) {
+    if (Number(algoritmo_v?.v_alritmo) === 2) {
       const queryDefault = `
       SELECT
         nombre,
@@ -3552,7 +3552,7 @@ WHERE cer.certificacion_id = (
 
   async getScoreIncidenciasLegales(nombre, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      Number(algoritmo_v?.v_alritmo) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
@@ -3584,7 +3584,7 @@ WHERE cer.certificacion_id = (
 
   async getResultadoReferenciaById(id, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      Number(algoritmo_v?.v_alritmo) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
@@ -3600,7 +3600,7 @@ WHERE cer.certificacion_id = (
   }
   async getScoreResultadoReferencias(nombre, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      Number(algoritmo_v?.v_alritmo) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
