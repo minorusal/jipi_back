@@ -3295,11 +3295,10 @@ const cuentaConCapital = async (idCertification, customUuid) => {
 
     const capital_previo_anterior = await certificationService.obtieneCapitalPrevioAnterior(idCertification)
     logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_previo_anterior)}`)
+    
+    const isEmpty = (value) => value === '0.00' || value === '0' || value === undefined || value === null || value === 0
 
-    const capitalAnteriorValue = capital_anterior.length > 0 ? capital_anterior[0].capital : undefined
-    const capitalPrevioAnteriorValue = capital_previo_anterior.length > 0 ? capital_previo_anterior[0].capital : undefined
-
-    if (!capitalAnteriorValue || capitalAnteriorValue === '0.00' || !capitalPrevioAnteriorValue || capitalPrevioAnteriorValue === '0.00') {
+    if (isEmpty(capital_anterior[0].capital) || isEmpty(capital_previo_anterior[0].capital)) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       return false
     } else {
