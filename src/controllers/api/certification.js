@@ -3403,10 +3403,10 @@ const cuentaInventarios = async (id_certification, customUuid) => {
   try {
     logger.info(`${fileMethod} | ${customUuid} Validación 4: Se evalua [Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2]`)
 
-    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(idCertification)
+    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(id_certification)
     logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_anterior)}`)
 
-    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(idCertification)
+    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(id_certification)
     logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_previo_anterior)}`)
 
     const inventario_anterior = inventarios_anterior[0].inventarios
@@ -4609,6 +4609,7 @@ const getAlgoritmoResult = async (req, res, next) => {
         scores,
         rangos: reporteCredito,
         razon_algoritmo: algoritmo_v.reason,
+        version_algoritmo: algoritmo_v.v_alritmo,
         customUuid
       },
       rangos_bd: rangosBD
@@ -4795,7 +4796,13 @@ ${JSON.stringify(info_email_error, null, 2)}
       `
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
-      const { scores = {}, rangos = {}, razon_algoritmo = '', customUuid: uuid = '' } = info_email
+      const {
+        scores = {},
+        rangos = {},
+        razon_algoritmo = '',
+        version_algoritmo = '',
+        customUuid: uuid = ''
+      } = info_email
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -4879,9 +4886,13 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
               <tr>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Versión algoritmo</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${version_algoritmo || '-'}</td>
+              </tr>
+              ${Number(version_algoritmo) === 2 ? `<tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Razón algoritmo</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${razon_algoritmo || '-'}</td>
-              </tr>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">UUID</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${uuid || '-'}</td>
