@@ -2618,9 +2618,9 @@ WHERE cer.certificacion_id = (
         periodo_previo_anterior) 
       VALUES 
         (${body.id_certification},
-        ${body.id_tipo_cifra},
+        ${body.id_tipo_cifra ?? null},
         '${body.compartir}',
-        ${body.compartir_info_empresa},
+        ${body.compartir_info_empresa ?? null},
         'previo_anterior',
         ${body.partida_estado_balance_periodo_contable_previo_anterior.caja_bancos ?? null},
         ${body.partida_estado_balance_periodo_contable_previo_anterior.saldo_cliente_cuenta_x_cobrar ?? null},
