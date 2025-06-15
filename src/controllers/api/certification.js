@@ -2293,7 +2293,7 @@ const getScoreTipoCifrasFromSummary = async (
     `file: src/controllers/api/certification.js - method: getScoreTipoCifrasFromSummary`
   try {
     const tipoCifraId = await certificationService.getTipoCifra(id_certification)
-    if (!tipoCifraId) {
+    if (tipoCifraId === null || tipoCifraId === undefined) {
       logger.warn(
         `${fileMethod} | ${customUuid} No se ha podido obtener el tipo de cifra`
       )
