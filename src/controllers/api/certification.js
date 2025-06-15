@@ -4592,7 +4592,7 @@ const getAlgoritmoResult = async (req, res, next) => {
     scores.c48 = c48
 
     const rangosBD = await certificationService.getAllAlgorithmRanges()
-    const emailReporteResumenEmail = sendEmailNodeMailer({
+    const emailReporteResumenEmail = await sendEmailNodeMailer({
       info_email: {
         scores,
         rangos: reporteCredito,
@@ -4602,6 +4602,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       },
       rangos_bd: rangosBD
     })
+    logger.info(`${fileMethod} | ${customUuid} | Resultado del envío de correo: ${JSON.stringify(emailReporteResumenEmail)}`)
     logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
 
     reporteCredito.monto_solicitado = monto_solicitado
