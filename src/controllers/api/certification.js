@@ -4609,6 +4609,7 @@ const getAlgoritmoResult = async (req, res, next) => {
         scores,
         rangos: reporteCredito,
         razon_algoritmo: algoritmo_v.reason,
+        version_algoritmo: algoritmo_v.v_alritmo,
         customUuid
       },
       rangos_bd: rangosBD
@@ -4795,7 +4796,13 @@ ${JSON.stringify(info_email_error, null, 2)}
       `
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
-      const { scores = {}, rangos = {}, razon_algoritmo = '', customUuid: uuid = '' } = info_email
+      const {
+        scores = {},
+        rangos = {},
+        razon_algoritmo = '',
+        version_algoritmo = '',
+        customUuid: uuid = ''
+      } = info_email
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -4879,9 +4886,13 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
               <tr>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Versión algoritmo</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${version_algoritmo || '-'}</td>
+              </tr>
+              ${Number(version_algoritmo) === 2 ? `<tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Razón algoritmo</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${razon_algoritmo || '-'}</td>
-              </tr>
+              </tr>` : ''}
               <tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">UUID</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${uuid || '-'}</td>
