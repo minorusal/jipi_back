@@ -3437,8 +3437,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
   const buildResponse = (message, v) => {
     const resp = { message, v_alritmo: v }
     if (v === 2) {
-      resp.reason =
-        'El método obtienePartidasFinancieras regresó versión 2 del algoritmo.'
+      resp.reason = message
     }
     return resp
   }
