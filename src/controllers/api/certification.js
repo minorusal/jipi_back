@@ -4592,18 +4592,6 @@ const getAlgoritmoResult = async (req, res, next) => {
     scores.c48 = c48
 
     const rangosBD = await certificationService.getAllAlgorithmRanges()
-    const emailReporteResumenEmail = await sendEmailNodeMailer({
-      info_email: {
-        scores,
-        rangos: reporteCredito,
-        razon_algoritmo: algoritmo_v.reason,
-        version_algoritmo: algoritmo_v.v_alritmo,
-        customUuid
-      },
-      rangos_bd: rangosBD
-    })
-    logger.info(`${fileMethod} | ${customUuid} | Resultado del envío de correo: ${JSON.stringify(emailReporteResumenEmail)}`)
-    logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
 
     reporteCredito.monto_solicitado = monto_solicitado
     reporteCredito.plazo = plazo
@@ -4622,6 +4610,19 @@ const getAlgoritmoResult = async (req, res, next) => {
     reporteCredito.calculos_estado_balance = calculos_estado_balance
     reporteCredito.calculos_estado_resultados = calculos_estado_resultados
     reporteCredito.ratio_financiero = ratio_financiero
+
+    const emailReporteResumenEmail = await sendEmailNodeMailer({
+      info_email: {
+        scores,
+        rangos: reporteCredito,
+        razon_algoritmo: algoritmo_v.reason,
+        version_algoritmo: algoritmo_v.v_alritmo,
+        customUuid
+      },
+      rangos_bd: rangosBD
+    })
+    logger.info(`${fileMethod} | ${customUuid} | Resultado del envío de correo: ${JSON.stringify(emailReporteResumenEmail)}`)
+    logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
 
     await certificationService.updateSolicitudCredito(monto_solicitado, plazo, id_reporte_credito)
 
