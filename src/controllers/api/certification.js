@@ -3294,8 +3294,8 @@ const cuentaConCapital = async (idCertification, customUuid) => {
     logger.info(`${fileMethod} | ${customUuid} El capital anterior obtenido es: ${JSON.stringify(capital_anterior)}`)
 
     const capital_previo_anterior = await certificationService.obtieneCapitalPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_anterior)}`)
-
+    logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_previo_anterior)}`)
+    
     const isEmpty = (value) => value === '0.00' || value === '0' || value === undefined || value === null || value === 0
 
     if (isEmpty(capital_anterior[0].capital) || isEmpty(capital_previo_anterior[0].capital)) {
