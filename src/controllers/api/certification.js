@@ -4343,11 +4343,16 @@ const getAlgoritmoResult = async (req, res, next) => {
     if (evolucion_ventas.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener evolucion ventas en la certificación con ID: ${JSON.stringify(evolucion_ventas)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
-
+      const desconocido = parametrosAlgoritmo.evolucionVentasScore.find(
+        e => e.nombre && e.nombre.toUpperCase() === 'DESCONOCIDO'
+      )
       reporteCredito._11_evolucion_ventas = {
-        descripcion:
-          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
-        score: '0',
+        descripcion: desconocido ? desconocido.nombre : 'DESCONOCIDO',
+        score: desconocido
+          ? Number(algoritmo_v?.v_alritmo) === 2
+            ? desconocido.v2
+            : desconocido.v1
+          : '0',
         parametro: 'null',
         rango: 'null'
       }
