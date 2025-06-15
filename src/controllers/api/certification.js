@@ -3294,7 +3294,7 @@ const cuentaConCapital = async (idCertification, customUuid) => {
     logger.info(`${fileMethod} | ${customUuid} El capital anterior obtenido es: ${JSON.stringify(capital_anterior)}`)
 
     const capital_previo_anterior = await certificationService.obtieneCapitalPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_anterior)}`)
+    logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_previo_anterior)}`)
 
     if (capital_anterior[0].capital == '0.00' || capital_anterior[0].capital == undefined || capital_previo_anterior[0].capital == '0.00' || capital_previo_anterior[0].capital == undefined) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
