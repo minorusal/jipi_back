@@ -5,6 +5,12 @@ const mysqlLib = require('../lib/db')
 const logger = require('../utils/logs/logger');
 const cipher = require('../utils/cipherService')
 
+const getAlgoritmoVersion = alg => {
+  if (alg == null) return NaN
+  if (typeof alg === 'object') return Number(alg.v_alritmo)
+  return Number(alg)
+}
+
 
 class CertificationService {
   constructor() {
@@ -3287,7 +3293,8 @@ WHERE cer.certificacion_id = (
   }
 
   async getSectorRiesgoByIdCertification(id_certification, algoritmo_v) {
-    let valor_algritmo = algoritmo_v.v_alritmo == 2 ? 'srs.valor_algoritmo_v2 AS valor_algoritmo' : 'srs.valor_algoritmo'
+    const version = getAlgoritmoVersion(algoritmo_v)
+    let valor_algritmo = version === 2 ? 'srs.valor_algoritmo_v2 AS valor_algoritmo' : 'srs.valor_algoritmo'
     let queryString = `
     SELECT
       srs.nombre,
@@ -3313,7 +3320,7 @@ WHERE cer.certificacion_id = (
   }
 
   async getScorePlantillaLaboral(plantillaLaboral, algoritmo_v) {
-    let valor_algoritmo = algoritmo_v.v_alritmo == 2 ? 'valor_algoritmo_v2 AS valor_algoritmo' : 'valor_algoritmo'
+    let valor_algoritmo = getAlgoritmoVersion(algoritmo_v) === 2 ? 'valor_algoritmo_v2 AS valor_algoritmo' : 'valor_algoritmo'
     const queryString = `
     SELECT
       nombre,  
@@ -3329,7 +3336,7 @@ WHERE cer.certificacion_id = (
 
   async getScoreClienteFinal(id_certification, algoritmo_v) {
     const campoAlgoritmo =
-      algoritmo_v.v_alritmo === 2
+      getAlgoritmoVersion(algoritmo_v) === 2
         ? 'scf.valor_algoritmo_v2'
         : 'scf.valor_algoritmo'
 
@@ -3434,7 +3441,7 @@ WHERE cer.certificacion_id = (
   async getScoreApalancamiento(apalancamiento, algoritmo_v) {
     const table = 'cat_apalancamiento_algoritmo'
 
-    if (algoritmo_v?.v_alritmo === 2) {
+    if (getAlgoritmoVersion(algoritmo_v) === 2) {
       const queryDefault = `
       SELECT
         nombre,
@@ -3552,7 +3559,7 @@ WHERE cer.certificacion_id = (
 
   async getScoreIncidenciasLegales(nombre, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      getAlgoritmoVersion(algoritmo_v) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
@@ -3584,7 +3591,7 @@ WHERE cer.certificacion_id = (
 
   async getResultadoReferenciaById(id, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      getAlgoritmoVersion(algoritmo_v) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
@@ -3600,7 +3607,7 @@ WHERE cer.certificacion_id = (
   }
   async getScoreResultadoReferencias(nombre, algoritmo_v) {
     const valor_algoritmo =
-      algoritmo_v.v_alritmo === 2
+      getAlgoritmoVersion(algoritmo_v) === 2
         ? 'valor_algoritmo_v2 AS valor_algoritmo'
         : 'valor_algoritmo'
 
