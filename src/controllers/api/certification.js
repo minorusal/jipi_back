@@ -2709,13 +2709,13 @@ const getScoreReferenciasComercialesFromSummary = async (
 
     // Si no existen referencias contestadas retornar el valor por defecto
     if (referencias.length === 0) {
-      const sinReferencia = parametrosAlgoritmo.referenciasProveedoresScore.find(
-        r => r.id === REFERENCIA_IDS.NINGUNA
+      const sinReferencia = await certificationService.getResultadoReferenciaById(
+        REFERENCIA_IDS.NINGUNA,
+        algoritmo_v
       )
       if (!sinReferencia) return { error: true }
-      const version = Number(algoritmo_v?.v_alritmo)
       return {
-        score: version === 2 ? sinReferencia.v2 : sinReferencia.v1,
+        score: sinReferencia.valor_algoritmo,
         descripcion: sinReferencia.nombre
       }
     }
@@ -2761,14 +2761,14 @@ const getScoreReferenciasComercialesFromSummary = async (
       catalogoId = REFERENCIA_IDS.BUENA_1
     }
 
-    const catalogo = parametrosAlgoritmo.referenciasProveedoresScore.find(r => r.id === catalogoId)
+    const catalogo = await certificationService.getResultadoReferenciaById(
+      catalogoId,
+      algoritmo_v
+    )
     if (!catalogo) return { error: true }
 
-    const version = Number(algoritmo_v?.v_alritmo)
-    const score = version === 2 ? catalogo.v2 : catalogo.v1
-
     return {
-      score,
+      score: catalogo.valor_algoritmo,
       descripcion: catalogo.nombre
     }
   } catch (error) {
