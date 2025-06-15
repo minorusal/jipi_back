@@ -3431,55 +3431,45 @@ const cuentaInventarios = async (id_certification, customUuid) => {
 
 const obtienePartidasFinancieras = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: obtienePartidasFinancieras`
+  const buildResponse = (message, v) => {
+    const resp = { message, v_alritmo: v }
+    if (v === 2) resp.reason = message
+    return resp
+  }
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
     const no_partidas = await certificationService.obtenerPartidasFinancieras(id_certification)
     if (no_partidas[0].bandera == 'false' || no_partidas[0].bandera == undefined) {
-      return {
-        message: 'Algoritmo 2',
-        v_alritmo: 2
-      }
+      return buildResponse('No existen partidas financieras', 2)
     }
 
     // Capital -> Con al menos no tener un periodo contable se va a algoritmo v2
     const capital = await cuentaConCapital(id_certification, customUuid)
     logger.info(`${fileMethod} | ${customUuid} | Capital -> Con al menos no tener un periodo contable se va a algoritmo v2: ${JSON.stringify(capital)}`)
     if (!capital) {
-      return {
-        message: 'Algoritmo 2',
-        v_alritmo: 2
-      }
+      return buildResponse('Falta capital contable', 2)
     }
 
     // Caja y bancos -> Con no tener caja bancos en cualquier periodo contable se va a algoritmo v2
     const caja_bancos = await cuentaCajaBancos(id_certification, customUuid)
     logger.info(`${fileMethod} | ${customUuid} | Caja y bancos -> Con no tener caja bancos en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(caja_bancos)}`)
     if (!caja_bancos) {
-      return {
-        message: 'Algoritmo 2',
-        v_alritmo: 2
-      }
+      return buildResponse('Falta caja y bancos', 2)
     }
 
     // Clientes y cuentas por cobrar -> Con no tener clientes y cuentas por cobrar mas inventarios en cualquier periodo contable se va a algoritmo v2
     const clientes_cuentas_cobrar = await cuentaClienteCuentasXCobrar(id_certification, customUuid)
     logger.info(`${fileMethod} | ${customUuid} | Clientes y cuentas por cobrar -> Con no tener clientes y cuentas por cobrar mas inventarios en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(clientes_cuentas_cobrar)}`)
     if (!clientes_cuentas_cobrar) {
-      return {
-        message: 'Algoritmo 2',
-        v_alritmo: 2
-      }
+      return buildResponse('Faltan clientes y cuentas por cobrar', 2)
     }
 
     // Inventarios -> Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2
     const inventarios = await cuentaInventarios(id_certification, customUuid)
     logger.info(`${fileMethod} | ${customUuid} | Inventarios -> Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(inventarios)}`)
     if (!inventarios) {
-      return {
-        message: 'Algoritmo 2',
-        v_alritmo: 2
-      }
+      return buildResponse('Faltan inventarios', 2)
     }
 
     const periodoActualSys = new Date().getFullYear()
@@ -3531,10 +3521,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       logger.info(`${fileMethod} | ${customUuid} | Segunda condición: No tener saldo_inventarios_estado_balance en el periodo anterior o previo anterior, pero tener saldo_cliente_cuenta_x_cobrar_estado_balance en cualquier periodo: ${JSON.stringify(condition2)}`)
 
       if (condition1 || condition2) {
-        return {
-          message: 'Algoritmo 2',
-          v_alritmo: 2
-        }
+        return buildResponse('Algoritmo 2', 2)
       } else {
         return {
           message: 'Algoritmo 1',
@@ -3545,17 +3532,11 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
     if (partidasEstadoBalanceAnteriorFlag) {
       if (!partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance || partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance == '0.00' || partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance == null) {
-        return {
-          message: 'No se pudo obtener capital contable de estado de balance de periodo anterior',
-          v_alritmo: 2
-        }
+        return buildResponse('No se pudo obtener capital contable de estado de balance de periodo anterior', 2)
       }
 
       if (!partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance || partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance == '0.00' || partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance == null) {
-        return {
-          message: 'No se pudo obtener caja bancos de estado de balance de periodo anterior',
-          v_alritmo: 2
-        }
+        return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo anterior', 2)
       }
 
       if (!partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance ||
@@ -3574,10 +3555,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     if (partidasEstadoBalancePrevioAnteriorFlag) {
 
       if (!partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance || partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance == '0.00' || partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance == null) {
-        return {
-          message: 'No se pudo obtener capital contable de estado de balance de periodo previo anterior',
-          v_alritmo: 2
-        }
+        return buildResponse('No se pudo obtener capital contable de estado de balance de periodo previo anterior', 2)
       }
 
       if (!partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance ||
@@ -3594,60 +3572,33 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     }
 
     if ((!condicionante_cta_x_cobrar_anterior || !condicionante_cta_x_cobrar_previo_anterior) && (!condicionante_inventarios_anterior || !condicionante_inventarios_previo_anterior)) {
-      return {
-        message: 'Partidas financieras incompletas (Cientes o cuentas por cobrar o inventarios)',
-        v_alritmo: 2
-      }
+      return buildResponse('Partidas financieras incompletas (Cientes o cuentas por cobrar o inventarios)', 2)
     }
 
     if (!partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance || partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance == '0.00' || partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance == null) {
-      return {
-        message: 'No se pudo obtener caja bancos de estado de balance de periodo previo_anterior',
-        v_alritmo: 2
-      }
+      return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo previo_anterior', 2)
     }
 
     const partidasFinancieras = await certificationService.partidasFinancierasCertificacion(id_certification)
     console.log(JSON.stringify(partidasFinancieras))
     if (partidasFinancieras.result.length == 0) {
-      return {
-        message: 'La consulta de partidas financieras no trajo resultados para esta certificación',
-        v_alritmo: 2
-      }
+      return buildResponse('La consulta de partidas financieras no trajo resultados para esta certificación', 2)
     }
 
 
     for (let i = 0; i < partidasFinancieras.result.length; i++) {
       let obj = partidasFinancieras.result[i]
-      if (obj.capital_contable_estado_balance == '0.00' || obj.capital_contable_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.capital_contable_estado_balance == '0.00' || obj.capital_contable_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.caja_bancos_estado_balance == '0.00' || obj.caja_bancos_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.caja_bancos_estado_balance == '0.00' || obj.caja_bancos_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_inventarios_estado_balance == '0.00' || obj.saldo_inventarios_estado_balance == null) return {
-        message: 'Partidas financieras incompletas',
-        v_alritmo: 2
-      }
+      if (obj.saldo_inventarios_estado_balance == '0.00' || obj.saldo_inventarios_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
 
       let allZeroOrNull = true;
 
@@ -3662,23 +3613,14 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
       if (allZeroOrNull) {
         hasIncomplete = true;
-        return {
-          message: 'Partidas financieras incompletas',
-          v_alritmo: 2
-        }
+        return buildResponse('Partidas financieras incompletas', 2)
       }
     }
-    return {
-      message: 'Partidas financieras completas',
-      v_alritmo: 1
-    }
+    return buildResponse('Partidas financieras completas', 1)
 
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      message: JSON.stringify(error),
-      v_alritmo: 2
-    }
+    return buildResponse(JSON.stringify(error), 2)
   }
 }
 
@@ -4665,7 +4607,9 @@ const getAlgoritmoResult = async (req, res, next) => {
     const emailReporteResumenEmail = sendEmailNodeMailer({
       info_email: {
         scores,
-        rangos: reporteCredito
+        rangos: reporteCredito,
+        razon_algoritmo: algoritmo_v.reason,
+        customUuid
       },
       rangos_bd: rangosBD
     })
@@ -4772,6 +4716,7 @@ const getAlgoritmoResult = async (req, res, next) => {
   } catch (error) {
     const errorJSON = serializeError(error)
     errorJSON.origenError = `Error en catch del metodo: ${fileMethod}`
+    errorJSON.customUuid = customUuid
     const emailError = await sendEmailNodeMailer({ info_email_error: errorJSON })
     logger.info(`${fileMethod} | Error al enviar correo electronico: ${JSON.stringify(emailError)}`)
     logger.error(`${fileMethod} | Error reporte de credito final: ${JSON.stringify(error)}`)
@@ -4850,7 +4795,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       `
     } else if (info_email) {
       subject = '📄 Información del reporte de crédito'
-      const { scores = {}, rangos = {} } = info_email
+      const { scores = {}, rangos = {}, razon_algoritmo = '', customUuid: uuid = '' } = info_email
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -4933,6 +4878,14 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Wording</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Razón algoritmo</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${razon_algoritmo || '-'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">UUID</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${uuid || '-'}</td>
+              </tr>
             </tbody>
           </table>
           <h4 style="color: #337ab7;">Detalles</h4>
@@ -4950,10 +4903,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               ${detallesTabla}
             </tbody>
           </table>
-          ${rangos_bd ? `<h4 style="color: #337ab7;">Rangos BD</h4>
-          <pre style="background-color: #f5f5f5; padding: 10px; border: 1px solid #ddd; overflow-x: auto; white-space: pre;">
-${JSON.stringify(rangos_bd, null, 2)}
-          </pre>` : ''}
+          ${rangos_bd ? '' : ''}
         </div>
       `
       logger.info(`${fileMethod} | La información del email es: ${JSON.stringify(info_email)}`)
