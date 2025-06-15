@@ -3403,10 +3403,10 @@ const cuentaInventarios = async (id_certification, customUuid) => {
   try {
     logger.info(`${fileMethod} | ${customUuid} Validación 4: Se evalua [Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2]`)
 
-    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(idCertification)
+    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(id_certification)
     logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_anterior)}`)
 
-    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(idCertification)
+    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(id_certification)
     logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_previo_anterior)}`)
 
     const inventario_anterior = inventarios_anterior[0].inventarios
