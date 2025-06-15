@@ -2396,7 +2396,10 @@ const getScoreEvolucionVentasFromSummary = async (
       certificationService.getVentasAnualesAnioPrevioAnterior(id_certification)
     ])
 
-    if (!anioAnterior || !previoAnterior) return { error: true }
+    if (anioAnterior === null || anioAnterior === undefined ||
+        previoAnterior === null || previoAnterior === undefined) {
+      return { error: true }
+    }
 
     const anterior = parseFloat(anioAnterior.ventas_anuales)
     const previo = parseFloat(previoAnterior.ventas_anuales)
