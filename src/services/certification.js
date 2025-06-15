@@ -3096,11 +3096,11 @@ WHERE cer.certificacion_id = (
     SELECT
       c.id_certification
     FROM empresa AS e
-    LEFT JOIN certification AS c ON c.id_empresa = e.emp_id 
+    LEFT JOIN certification AS c ON c.id_empresa = e.emp_id
     WHERE e.emp_rfc = '${rfc}' AND c.estatus_certificacion = 'inicial';
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0].id_certification
+    return result.length > 0 ? result[0].id_certification : null
   }
 
 
@@ -3115,7 +3115,7 @@ WHERE cer.certificacion_id = (
     LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
-    return result[0].id_certification
+    return result.length > 0 ? result[0].id_certification : null
   }
 
   async guardaRelacionCompradorVendedor(data) {
