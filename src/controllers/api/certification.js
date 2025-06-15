@@ -3436,9 +3436,14 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: obtienePartidasFinancieras`
   const buildResponse = (message, v) => {
     const resp = { message, v_alritmo: v }
-    if (v === 2) resp.reason = message
+    if (v === 2) {
+      resp.reason =
+        'El método obtienePartidasFinancieras regresó versión 2 del algoritmo.'
+    }
     return resp
   }
+  const isEmpty = (value) =>
+    value === null || value === undefined || value === '0.00' || value === 0
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
@@ -3447,37 +3452,21 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       return buildResponse('No existen partidas financieras', 2)
     }
 
-    // Capital -> Con al menos no tener un periodo contable se va a algoritmo v2
-    const capital = await cuentaConCapital(id_certification, customUuid)
-    logger.info(`${fileMethod} | ${customUuid} | Capital -> Con al menos no tener un periodo contable se va a algoritmo v2: ${JSON.stringify(capital)}`)
-    if (!capital) {
-      return buildResponse('Falta capital contable', 2)
+    const checks = [
+      { fn: cuentaConCapital, msg: 'Falta capital contable' },
+      { fn: cuentaCajaBancos, msg: 'Falta caja y bancos e inventarios' },
+      { fn: cuentaClienteCuentasXCobrar, msg: 'Faltan clientes y cuentas por cobrar e inventarios' },
+      { fn: cuentaInventarios, msg: 'Faltan inventarios' }
+    ]
+
+    for (const { fn, msg } of checks) {
+      const ok = await fn(id_certification, customUuid)
+      logger.info(`${fileMethod} | ${customUuid} | ${msg}: ${JSON.stringify(ok)}`)
+      if (!ok) {
+        return buildResponse(msg, 2)
+      }
     }
 
-    // Caja y bancos -> Con no tener caja bancos en cualquier periodo contable se va a algoritmo v2
-    const caja_bancos = await cuentaCajaBancos(id_certification, customUuid)
-    logger.info(`${fileMethod} | ${customUuid} | Caja y bancos -> Con no tener caja bancos en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(caja_bancos)}`)
-    if (!caja_bancos) {
-      return buildResponse('Falta caja y bancos', 2)
-    }
-
-    // Clientes y cuentas por cobrar -> Con no tener clientes y cuentas por cobrar mas inventarios en cualquier periodo contable se va a algoritmo v2
-    const clientes_cuentas_cobrar = await cuentaClienteCuentasXCobrar(id_certification, customUuid)
-    logger.info(`${fileMethod} | ${customUuid} | Clientes y cuentas por cobrar -> Con no tener clientes y cuentas por cobrar mas inventarios en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(clientes_cuentas_cobrar)}`)
-    if (!clientes_cuentas_cobrar) {
-      return buildResponse('Faltan clientes y cuentas por cobrar', 2)
-    }
-
-    // Inventarios -> Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2
-    const inventarios = await cuentaInventarios(id_certification, customUuid)
-    logger.info(`${fileMethod} | ${customUuid} | Inventarios -> Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2: ${JSON.stringify(inventarios)}`)
-    if (!inventarios) {
-      return buildResponse('Faltan inventarios', 2)
-    }
-
-    const periodoActualSys = new Date().getFullYear()
-    const periodoAnteriorSys = periodoActualSys - 1
-    const periodoPrevioSys = periodoAnteriorSys - 1
 
     let condicionante_cta_x_cobrar_anterior = false
     let condicionante_cta_x_cobrar_previo_anterior = false
@@ -3512,8 +3501,6 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       inventarios_anterior = partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance
       inventarios_previo_anterior = partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance
 
-      // Función para verificar si el valor es nulo, indefinido o '0.00'
-      const isEmpty = (value) => value === null || value === undefined || value === '0.00' || value === 0;
 
       // Primera condición: No tener saldo_cliente_cuenta_x_cobrar_estado_balance en el periodo anterior o previo anterior, pero tener saldo_inventarios_estado_balance en cualquier periodo
       const condition1 = (isEmpty(cta_x_cobrar_anterior_value) && isEmpty(cta_x_cobrar_previo_anterior_value)) && (!isEmpty(inventarios_anterior) || !isEmpty(inventarios_previo_anterior))
@@ -3523,53 +3510,55 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       const condition2 = (isEmpty(inventarios_anterior) && isEmpty(inventarios_previo_anterior)) && (!isEmpty(cta_x_cobrar_anterior_value) || !isEmpty(cta_x_cobrar_previo_anterior_value))
       logger.info(`${fileMethod} | ${customUuid} | Segunda condición: No tener saldo_inventarios_estado_balance en el periodo anterior o previo anterior, pero tener saldo_cliente_cuenta_x_cobrar_estado_balance en cualquier periodo: ${JSON.stringify(condition2)}`)
 
-      if (condition1 || condition2) {
-        return buildResponse('Algoritmo 2', 2)
-      } else {
-        return {
-          message: 'Algoritmo 1',
-          v_alritmo: 1
-        }
+      if (condition1) {
+        return buildResponse(
+          'Sin saldo de clientes y cuentas por cobrar en periodos anteriores pero sí inventarios',
+          2
+        )
+      }
+
+      if (condition2) {
+        return buildResponse(
+          'Sin saldo de inventarios en periodos anteriores pero sí clientes y cuentas por cobrar',
+          2
+        )
+      }
+
+      return {
+        message: 'Algoritmo 1',
+        v_alritmo: 1
       }
     }
 
     if (partidasEstadoBalanceAnteriorFlag) {
-      if (!partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance || partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance == '0.00' || partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance)) {
         return buildResponse('No se pudo obtener capital contable de estado de balance de periodo anterior', 2)
       }
 
-      if (!partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance || partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance == '0.00' || partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance)) {
         return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo anterior', 2)
       }
 
-      if (!partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance ||
-        partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' ||
-        partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance)) {
         condicionante_cta_x_cobrar_anterior = true
       }
 
-      if (!partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance ||
-        partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance == '0.00' ||
-        partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance)) {
         condicionante_inventarios_anterior = true
       }
     }
 
     if (partidasEstadoBalancePrevioAnteriorFlag) {
 
-      if (!partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance || partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance == '0.00' || partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance)) {
         return buildResponse('No se pudo obtener capital contable de estado de balance de periodo previo anterior', 2)
       }
 
-      if (!partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance ||
-        partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' ||
-        partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance)) {
         condicionante_cta_x_cobrar_previo_anterior = true
       }
 
-      if (!partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance ||
-        partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance == '0.00' ||
-        partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance == null) {
+      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance)) {
         condicionante_inventarios_previo_anterior = true
       }
     }
@@ -3578,30 +3567,28 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       return buildResponse('Partidas financieras incompletas (Cientes o cuentas por cobrar o inventarios)', 2)
     }
 
-    if (!partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance || partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance == '0.00' || partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance == null) {
+    if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance)) {
       return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo previo_anterior', 2)
     }
 
     const partidasFinancieras = await certificationService.partidasFinancierasCertificacion(id_certification)
-    console.log(JSON.stringify(partidasFinancieras))
     if (partidasFinancieras.result.length == 0) {
       return buildResponse('La consulta de partidas financieras no trajo resultados para esta certificación', 2)
     }
 
 
-    for (let i = 0; i < partidasFinancieras.result.length; i++) {
-      let obj = partidasFinancieras.result[i]
-      if (obj.capital_contable_estado_balance == '0.00' || obj.capital_contable_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
+    for (const obj of partidasFinancieras.result) {
+      if (isEmpty(obj.capital_contable_estado_balance))
+        return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.caja_bancos_estado_balance == '0.00' || obj.caja_bancos_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
+      if (isEmpty(obj.caja_bancos_estado_balance))
+        return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
+      if (isEmpty(obj.saldo_cliente_cuenta_x_cobrar_estado_balance))
+        return buildResponse('Partidas financieras incompletas', 2)
 
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
-
-      if (obj.saldo_cliente_cuenta_x_cobrar_estado_balance == '0.00' || obj.saldo_cliente_cuenta_x_cobrar_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
-
-      if (obj.saldo_inventarios_estado_balance == '0.00' || obj.saldo_inventarios_estado_balance == null) return buildResponse('Partidas financieras incompletas', 2)
+      if (isEmpty(obj.saldo_inventarios_estado_balance))
+        return buildResponse('Partidas financieras incompletas', 2)
 
       let allZeroOrNull = true;
 
@@ -3615,7 +3602,6 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       }
 
       if (allZeroOrNull) {
-        hasIncomplete = true;
         return buildResponse('Partidas financieras incompletas', 2)
       }
     }
