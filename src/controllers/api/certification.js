@@ -4974,7 +4974,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               '_08_ventas_anuales',
               '_03_capital_contable',
               '_09_tipo_cifras',
-              '_11_evolucion_ventas',
               '_12_apalancamiento',
               '_13_flujo_neto',
               '_14_payback',
@@ -4989,6 +4988,13 @@ ${JSON.stringify(info_email_error, null, 2)}
             if (key === '_14_payback' && val.deuda_corto_plazo_periodo_anterior !== undefined && val.utilida_operativa !== undefined) {
               detalle += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
             }
+          } else if (
+            key === '_11_evolucion_ventas' &&
+            val.parametro !== undefined &&
+            val.rango !== undefined
+          ) {
+            const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
+            detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nRango: ${val.rango}`
           }
           return `
             <tr>
