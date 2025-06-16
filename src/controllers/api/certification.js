@@ -4910,6 +4910,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         _08_ventas_anuales: 'Ventas anuales'
       }
 
+      const moneyFormatter = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN'
+      })
+      const formatMoney = value => {
+        const num = Number(value)
+        return isNaN(num) ? value : moneyFormatter.format(num)
+      }
+
       const detallesTabla = Object.entries(rangos)
         .filter(([_, val]) => val && typeof val === 'object')
         .map(([key, val]) => {
@@ -4946,7 +4955,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_superior !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            detalle = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
+            detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
           }
           return `
             <tr>
@@ -4979,11 +4988,11 @@ ${JSON.stringify(info_email_error, null, 2)}
               </tr>
               <tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto solicitado</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.monto_solicitado ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatMoney(rangos.monto_solicitado ?? '-')}</td>
               </tr>
               <tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto sugerido</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.monto_sugerido ?? '-'}</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatMoney(rangos.monto_sugerido ?? '-')}</td>
               </tr>
               <tr>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Wording</td>
