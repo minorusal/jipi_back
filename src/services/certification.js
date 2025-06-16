@@ -3100,10 +3100,15 @@ WHERE cer.certificacion_id = (
     WHERE e.emp_rfc = '${rfc}' AND c.estatus_certificacion = 'inicial';
     `
     try {
-      const { result } = await mysqlLib.query(queryString)
-      if (Array.isArray(result) && result.length > 0 && result[0]) {
+      const queryResult = await mysqlLib.query(queryString)
+      const result = Array.isArray(queryResult?.result)
+        ? queryResult.result
+        : []
+
+      if (result.length > 0 && result[0]) {
         return result[0].id_certification
       }
+
       return null
     } catch (error) {
       logger.error(`getLastIdCertification | ${error.message}`)
@@ -3123,9 +3128,12 @@ WHERE cer.certificacion_id = (
     LIMIT 1;
     `
     try {
-      const { result } = await mysqlLib.query(queryString)
+      const queryResult = await mysqlLib.query(queryString)
+      const result = Array.isArray(queryResult?.result)
+        ? queryResult.result
+        : []
 
-      if (Array.isArray(result) && result.length > 0 && result[0]) {
+      if (result.length > 0 && result[0]) {
         return result[0].id_certification
       }
 
