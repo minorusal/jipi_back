@@ -4940,7 +4940,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_inferior !== undefined &&
             val.limite_superior !== undefined
           ) {
-            detalle = `${val.parametro} \u2265 ${val.limite_inferior} y ${val.parametro} \u2264 ${val.limite_superior}`
+            detalle = `Par\u00E1metro: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
           }
           return `
             <tr>
