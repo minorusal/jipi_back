@@ -4927,6 +4927,20 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
             .join('')
         : ''
+
+      const scoreClassData = await certificationService.getAllScoreClasses().catch(() => [])
+      const scoreClassRows = Array.isArray(scoreClassData)
+        ? scoreClassData
+            .map(
+              ({ score_min, score_max, class: clase }) => `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;">${score_min}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${score_max}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
+          </tr>`
+            )
+            .join('')
+        : ''
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -5108,12 +5122,25 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Explicación</th>
               </tr>
             </thead>
-            <tbody>
+          <tbody>
               ${detallesTabla}
-            </tbody>
-          </table>
-          <h4 style="color: #337ab7;">Score vs % LC</h4>
-          <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score vs Clases</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; border: 1px solid #ccc;">Score min</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Score max</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreClassRows}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score vs % LC</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
             <thead>
               <tr>
                 <th style="padding: 8px; border: 1px solid #ccc;">Score</th>

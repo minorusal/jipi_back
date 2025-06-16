@@ -3902,6 +3902,20 @@ WHERE cer.certificacion_id = (
     return result
   }
 
+  async getAllScoreClasses() {
+    const queryString = `
+      SELECT
+          score_min,
+          score_max,
+          class
+      FROM
+          score_classes_a
+      ORDER BY score_min ASC;
+      `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
   async saveAlgoritm(id_certification, scores, g45, c46, g46, g49, g48, g51, g52, wu, c48, porcentajeLc) {
     const queryString = `
         INSERT INTO algoritmo_resultado (
