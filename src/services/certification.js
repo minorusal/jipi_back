@@ -3145,6 +3145,9 @@ WHERE cer.certificacion_id = (
       const result = Array.isArray(queryResult?.result)
         ? queryResult.result
         : []
+      logger.info(
+        `getLastIdCertification | Query ejecutada: ${queryString.trim()} | Resultado: ${JSON.stringify(result)}`
+      )
 
       if (result.length > 0 && result[0]) {
         return result[0].id_certification
