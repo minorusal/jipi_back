@@ -4197,10 +4197,17 @@ const getAlgoritmoResult = async (req, res, next) => {
     if (!id_cliente || !id_reporte_credito || !monto_solicitado || !plazo) return next(boom.badRequest(`Información incompleta`))
 
     const id_certification = await certificationService.getLastIdCertification(id_cliente)
+    const customUuid = new Date().toISOString().replace(/\D/g, '')
+
+    if (!id_certification) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontró una certificación válida para el cliente ${id_cliente}`
+      )
+      return next(boom.badRequest(`No se encontró certificación para el cliente ${id_cliente}`))
+    }
+
     const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
     body.id_certification = id_certification
-
-    const customUuid = new Date().toISOString().replace(/\D/g, '')
 
     logger.info(`${fileMethod} | ${customUuid} Inicia proceso para ejecutar algoritmo: ${JSON.stringify(body)}`)
 
