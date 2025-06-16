@@ -4907,7 +4907,13 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const labelMap = {
         _03_capital_contable: 'Capital contable',
-        _08_ventas_anuales: 'Ventas anuales'
+        _08_ventas_anuales: 'Ventas anuales',
+        _09_tipo_cifras: 'Tipo de cifras',
+        _11_evolucion_ventas: 'Evoluci\u00F3n ventas',
+        _12_apalancamiento: 'Apalancamiento',
+        _13_flujo_neto: 'Flujo neto',
+        _14_payback: 'Payback',
+        _15_rotacion_ctas_x_cobrar: 'Rotaci\u00F3n ctas x cobrar'
       }
 
       const moneyFormatter = new Intl.NumberFormat('es-MX', {
@@ -4949,7 +4955,16 @@ ${JSON.stringify(info_email_error, null, 2)}
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           let detalle = '-'
           if (
-            (key === '_08_ventas_anuales' || key === '_03_capital_contable') &&
+            [
+              '_08_ventas_anuales',
+              '_03_capital_contable',
+              '_09_tipo_cifras',
+              '_11_evolucion_ventas',
+              '_12_apalancamiento',
+              '_13_flujo_neto',
+              '_14_payback',
+              '_15_rotacion_ctas_x_cobrar'
+            ].includes(key) &&
             val.parametro !== undefined &&
             val.limite_inferior !== undefined &&
             val.limite_superior !== undefined
