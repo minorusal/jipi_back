@@ -4927,7 +4927,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
             .join('')
         : ''
-
+      
       const scoreClassData = await certificationService
         .getAllScoreClasses()
         .catch(() => ({ table1: [], table2: [] }))
@@ -5133,15 +5133,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score min</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score max</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
-            </tr>
-          </thead>
-          <tbody>
+
+        <h4 style="color: #337ab7;">Score vs Clases</h4>
             ${scoreClassRowsA}
           </tbody>
         </table>
@@ -5156,6 +5149,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             ${scoreClassRowsB}
+
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs % LC</h4>

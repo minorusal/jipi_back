@@ -5,8 +5,10 @@ const mysqlLib = require('../lib/db')
 const logger = require('../utils/logs/logger')
 const cipher = require('../utils/cipherService')
 
+
 // Tablas locales de score y clases para los correos de reporte de crédito
 const SCORE_CLASSES_DATA_A = [
+
   { score_min: 0, score_max: 9.725915398, class: 10 },
   { score_min: 9.713098427, score_max: 7.88034726, class: 9 },
   { score_min: 7.831715491, score_max: 6.782972613, class: 8 },
@@ -18,6 +20,7 @@ const SCORE_CLASSES_DATA_A = [
   { score_min: 2.268914882, score_max: 0.764434256, class: 2 },
   { score_min: 0.748495599, score_max: 100, class: 1 }
 ]
+
 
 const SCORE_CLASSES_DATA_B = [
   { score_min: 0, score_max: 0.005971215, class: 10 },
@@ -3879,6 +3882,7 @@ WHERE cer.certificacion_id = (
 
 
   async getClass(value) {
+
     let resultClass = null
     try {
       const { result: tableExists } = await mysqlLib.query(
@@ -3909,6 +3913,7 @@ WHERE cer.certificacion_id = (
     }
 
     return resultClass
+
   }
 
   async getWordingUnderwriting(clase) {
