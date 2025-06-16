@@ -2,8 +2,22 @@
 
 const debug = require('debug')('old-api:certification-service')
 const mysqlLib = require('../lib/db')
-const logger = require('../utils/logs/logger');
+const logger = require('../utils/logs/logger')
 const cipher = require('../utils/cipherService')
+
+// Tabla para score y clases requerida en los correos de reporte de crédito
+const SCORE_CLASSES_DATA = [
+  { score_min: 0, score_max: 9.725915398, class: 10 },
+  { score_min: 9.713098427, score_max: 7.88034726, class: 9 },
+  { score_min: 7.831715491, score_max: 6.782972613, class: 8 },
+  { score_min: 6.755250475, score_max: 5.650838683, class: 7 },
+  { score_min: 5.635277269, score_max: 4.682780276, class: 6 },
+  { score_min: 4.673229116, score_max: 3.899932539, class: 5 },
+  { score_min: 3.893451896, score_max: 3.102750063, class: 4 },
+  { score_min: 3.09834002, score_max: 2.271915396, class: 3 },
+  { score_min: 2.268914882, score_max: 0.764434256, class: 2 },
+  { score_min: 0.748495599, score_max: 100, class: 1 }
+]
 
 
 class CertificationService {
@@ -3852,16 +3866,13 @@ WHERE cer.certificacion_id = (
 
 
   async getClass(value) {
-    const queryString = `
-      SELECT
-        class
-      FROM score_classes_a
-      WHERE ${value} BETWEEN score_min AND COALESCE(score_max, ${value})
-      ORDER BY score_min ASC
-      LIMIT 1;
-      `
-    const { result } = await mysqlLib.query(queryString)
-    return result[0].class
+    const numericValue = Number(value)
+    const found = SCORE_CLASSES_DATA.find(
+      ({ score_min, score_max }) =>
+        numericValue >= score_min &&
+        (score_max === null || numericValue <= score_max)
+    )
+    return found ? found.class : null
   }
 
   async getWordingUnderwriting(clase) {
@@ -3900,6 +3911,10 @@ WHERE cer.certificacion_id = (
       `
     const { result } = await mysqlLib.query(queryString)
     return result
+  }
+
+  async getAllScoreClasses() {
+    return SCORE_CLASSES_DATA
   }
 
   async saveAlgoritm(id_certification, scores, g45, c46, g46, g49, g48, g51, g52, wu, c48, porcentajeLc) {
