@@ -5040,7 +5040,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
             <tbody>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Clase</td>
+                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Score</td>
                 <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.g52 ?? '-'}</td>
               </tr>
               <tr>
