@@ -4935,7 +4935,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           let detalle = '-'
           if (
-            key === '_08_ventas_anuales' &&
+            (key === '_08_ventas_anuales' || key === '_03_capital_contable') &&
             val.parametro !== undefined &&
             val.limite_inferior !== undefined &&
             val.limite_superior !== undefined
