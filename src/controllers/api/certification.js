@@ -4976,14 +4976,22 @@ ${JSON.stringify(info_email_error, null, 2)}
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           let detalle = '-'
           if (
+            key === '_15_rotacion_ctas_x_cobrar' &&
+            val.parametro_dso !== undefined &&
+            val.parametro_dio !== undefined &&
+            val.limite_inferior !== undefined &&
+            val.limite_superior !== undefined
+          ) {
+            const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
+            detalle = `${etiqueta}:\nDSO = (Saldo clientes / Ventas anuales) * 360 = ${formatMoney(val.parametro_dso)}\nDIO = (Saldo inventarios / Costo ventas anuales) * 360 = ${formatMoney(val.parametro_dio)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+          } else if (
             [
               '_08_ventas_anuales',
               '_03_capital_contable',
               '_09_tipo_cifras',
               '_12_apalancamiento',
               '_13_flujo_neto',
-              '_14_payback',
-              '_15_rotacion_ctas_x_cobrar'
+              '_14_payback'
             ].includes(key) &&
             val.parametro !== undefined &&
             val.limite_inferior !== undefined &&
