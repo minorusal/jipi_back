@@ -3100,7 +3100,12 @@ WHERE cer.certificacion_id = (
     WHERE e.emp_rfc = '${rfc}' AND c.estatus_certificacion = 'inicial';
     `
     const { result } = await mysqlLib.query(queryString)
-    return result.length > 0 ? result[0].id_certification : null
+
+    if (Array.isArray(result) && result.length > 0 && result[0]) {
+      return result[0].id_certification
+    }
+
+    return null
   }
 
 
@@ -3115,7 +3120,12 @@ WHERE cer.certificacion_id = (
     LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
-    return result.length > 0 ? result[0].id_certification : null
+
+    if (Array.isArray(result) && result.length > 0 && result[0]) {
+      return result[0].id_certification
+    }
+
+    return null
   }
 
   async guardaRelacionCompradorVendedor(data) {
