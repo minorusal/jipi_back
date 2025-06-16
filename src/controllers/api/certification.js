@@ -4938,7 +4938,9 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 ({ score_min, score_max, class: clase }) => `
           <tr>
+
             <td style="padding: 8px; border: 1px solid #ccc;">${score_min} - ${score_max}</td>
+
             <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
           </tr>`
               )

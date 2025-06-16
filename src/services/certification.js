@@ -8,6 +8,36 @@ const cipher = require('../utils/cipherService')
 // Utilidades y servicios
 
 
+// Tablas locales de score y clases para los correos de reporte de crédito
+const SCORE_CLASSES_DATA_A = [
+
+  { score_min: 0, score_max: 9.725915398, class: 10 },
+  { score_min: 9.713098427, score_max: 7.88034726, class: 9 },
+  { score_min: 7.831715491, score_max: 6.782972613, class: 8 },
+  { score_min: 6.755250475, score_max: 5.650838683, class: 7 },
+  { score_min: 5.635277269, score_max: 4.682780276, class: 6 },
+  { score_min: 4.673229116, score_max: 3.899932539, class: 5 },
+  { score_min: 3.893451896, score_max: 3.102750063, class: 4 },
+  { score_min: 3.09834002, score_max: 2.271915396, class: 3 },
+  { score_min: 2.268914882, score_max: 0.764434256, class: 2 },
+  { score_min: 0.748495599, score_max: 100, class: 1 }
+]
+
+
+const SCORE_CLASSES_DATA_B = [
+  { score_min: 0, score_max: 0.005971215, class: 10 },
+  { score_min: 0.006048235, score_max: 0.037795883, class: 9 },
+  { score_min: 0.039678644, score_max: 0.113162019, class: 8 },
+  { score_min: 0.1163393, score_max: 0.3502259, class: 7 },
+  { score_min: 0.355698999, score_max: 0.916841386, class: 6 },
+  { score_min: 0.925558799, score_max: 1.984161767, class: 5 },
+  { score_min: 1.996804571, score_max: 4.299395997, class: 4 },
+  { score_min: 4.317577944, score_max: 9.347577891, class: 3 },
+  { score_min: 9.373034696, score_max: 31.76843163, class: 2 },
+  { score_min: 32.11491905, score_max: 100, class: 1 }
+]
+
+
 class CertificationService {
   constructor() {
     if (CertificationService.instance == null) {
@@ -3854,6 +3884,7 @@ WHERE cer.certificacion_id = (
 
 
   async getClass(value) {
+
     try {
       const { result: tableExists } = await mysqlLib.query(
         "SHOW TABLES LIKE 'score_classes_a';"
@@ -3870,10 +3901,12 @@ WHERE cer.certificacion_id = (
         logger.info(`getClass | No class found for value ${value}`)
       } else {
         logger.info('getClass | Table score_classes_a not found')
+
       }
     } catch (err) {
       logger.info(`getClass | Error buscando clase en DB: ${err.message}`)
     }
+
 
     return null
   }
