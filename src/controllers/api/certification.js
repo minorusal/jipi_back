@@ -4948,9 +4948,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 ({ score_min, score_max, class: clase }) => `
           <tr>
-
             <td style="padding: 8px; border: 1px solid #ccc;">${score_min} - ${score_max}</td>
-
             <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
           </tr>`
               )
@@ -4958,6 +4956,28 @@ ${JSON.stringify(info_email_error, null, 2)}
           : ''
       const scoreClassRowsA = buildRows(scoreClassA)
       const scoreClassRowsB = buildRows(scoreClassB)
+
+      const referenciasData = await certificationService
+        .getCatResultadoReferenciasProveedores()
+        .catch(() => [])
+      const referenciasRows = Array.isArray(referenciasData)
+        ? referenciasData
+            .map(
+              ({
+                id_cat_resultado_referencias_proveedores: id,
+                nombre,
+                valor_algoritmo,
+                valor_algoritmo_v2
+              }) => `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;">${id}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${nombre}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${valor_algoritmo}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${valor_algoritmo_v2}</td>
+          </tr>`
+            )
+            .join('')
+        : ''
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -5165,6 +5185,20 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             ${scoreClassRowsB}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Referencias comerciales</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; border: 1px solid #ccc;">ID</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Nombre</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Valor V1</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Valor V2</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${referenciasRows}
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs % LC</h4>
