@@ -2626,7 +2626,12 @@ const getScoreCajaBancosFromSummary = async (
       const [inf, sup] = getLimits(c)
       return cajaBancoPCA.caja_bancos >= inf && cajaBancoPCA.caja_bancos <= sup
     })
-    if (!cajaScore) return { error: true }
+    if (!cajaScore) {
+      return {
+        error: true,
+        caja_bancos_periodo_anterior: cajaBancoPCA.caja_bancos
+      }
+    }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? cajaScore.v2 : cajaScore.v1
 
@@ -4480,7 +4485,7 @@ const getAlgoritmoResult = async (req, res, next) => {
             ? desconocido.v2
             : desconocido.v1
           : '0',
-        parametro: 'null',
+        parametro: flujo_neto.caja_bancos_periodo_anterior ?? 'null',
         limite_inferior: 'null',
         limite_superior: 'null'
       }
