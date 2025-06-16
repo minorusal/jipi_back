@@ -4905,6 +4905,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         _16_referencias_comerciales: 'cat_resultado_referencias_proveedores_algoritmo'
       }
 
+      const labelMap = {
+        _03_capital_contable: 'Capital contable',
+        _08_ventas_anuales: 'Ventas anuales'
+      }
+
       const detallesTabla = Object.entries(rangos)
         .filter(([_, val]) => val && typeof val === 'object')
         .map(([key, val]) => {
@@ -4940,7 +4945,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_inferior !== undefined &&
             val.limite_superior !== undefined
           ) {
-            detalle = `Par\u00E1metro: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
+            const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
+            detalle = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
           }
           return `
             <tr>
