@@ -4529,7 +4529,10 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : payback.score,
         parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.payback,
         limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.limite_inferior == null ? 'null' : payback.limite_inferior,
-        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.limite_superior == null ? 'null' : payback.limite_superior
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : payback.limite_superior == null ? 'null' : payback.limite_superior,
+        deuda_corto_plazo_periodo_anterior: payback.deuda_corto_plazo_periodo_anterior,
+        utilida_operativa: payback.utilida_operativa,
+        operacion: `${payback.deuda_corto_plazo_periodo_anterior} / ${payback.utilida_operativa}`
       }
     }
 
@@ -4976,6 +4979,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
             detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+            if (key === '_14_payback' && val.deuda_corto_plazo_periodo_anterior !== undefined && val.utilida_operativa !== undefined) {
+              detalle += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+            }
           }
           return `
             <tr>
