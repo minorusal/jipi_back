@@ -3889,6 +3889,19 @@ WHERE cer.certificacion_id = (
     return result[0].porcentaje_lc
   }
 
+  async getAllScoreLc() {
+    const queryString = `
+      SELECT
+          score,
+          porcentaje_lc
+      FROM
+          cat_score_lc
+      ORDER BY score ASC;
+      `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
   async saveAlgoritm(id_certification, scores, g45, c46, g46, g49, g48, g51, g52, wu, c48, porcentajeLc) {
     const queryString = `
         INSERT INTO algoritmo_resultado (

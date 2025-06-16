@@ -4915,6 +4915,18 @@ ${JSON.stringify(info_email_error, null, 2)}
         version_algoritmo = '',
         customUuid: uuid = ''
       } = info_email
+      const scoreLcData = await certificationService.getAllScoreLc().catch(() => [])
+      const scoreLcRows = Array.isArray(scoreLcData)
+        ? scoreLcData
+            .map(
+              ({ score, porcentaje_lc }) => `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${porcentaje_lc}%</td>
+          </tr>`
+            )
+            .join('')
+        : ''
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -5098,6 +5110,18 @@ ${JSON.stringify(info_email_error, null, 2)}
             </thead>
             <tbody>
               ${detallesTabla}
+            </tbody>
+          </table>
+          <h4 style="color: #337ab7;">Score vs % LC</h4>
+          <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+            <thead>
+              <tr>
+                <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
+                <th style="padding: 8px; border: 1px solid #ccc;">% LC</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scoreLcRows}
             </tbody>
           </table>
           ${rangos_bd ? '' : ''}
