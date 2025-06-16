@@ -5,6 +5,8 @@ const mysqlLib = require('../lib/db')
 const logger = require('../utils/logs/logger')
 const cipher = require('../utils/cipherService')
 
+// Utilidades y servicios
+
 
 // Tablas locales de score y clases para los correos de reporte de crédito
 const SCORE_CLASSES_DATA_A = [
@@ -3883,7 +3885,6 @@ WHERE cer.certificacion_id = (
 
   async getClass(value) {
 
-    let resultClass = null
     try {
       const { result: tableExists } = await mysqlLib.query(
         "SHOW TABLES LIKE 'score_classes_a';"
@@ -3896,24 +3897,18 @@ WHERE cer.certificacion_id = (
           ORDER BY score_min ASC
           LIMIT 1;`
         const { result } = await mysqlLib.query(queryString)
-        if (result.length) resultClass = result[0].class
+        if (result.length) return result[0].class
+        logger.info(`getClass | No class found for value ${value}`)
+      } else {
+        logger.info('getClass | Table score_classes_a not found')
+
       }
     } catch (err) {
       logger.info(`getClass | Error buscando clase en DB: ${err.message}`)
     }
 
-    if (resultClass == null) {
-      const numericValue = Number(value)
-      const found = SCORE_CLASSES_DATA_A.find(
-        ({ score_min, score_max }) =>
-          numericValue >= score_min &&
-          (score_max === null || numericValue <= score_max)
-      )
-      resultClass = found ? found.class : null
-    }
 
-    return resultClass
-
+    return null
   }
 
   async getWordingUnderwriting(clase) {
@@ -3955,7 +3950,7 @@ WHERE cer.certificacion_id = (
   }
 
   async getAllScoreClasses() {
-    const fetchTable = async (name, fallback) => {
+    const fetchTable = async name => {
       try {
         const { result: exists } = await mysqlLib.query(
           `SHOW TABLES LIKE '${name}';`
@@ -3966,14 +3961,15 @@ WHERE cer.certificacion_id = (
           )
           return result
         }
+        logger.info(`getAllScoreClasses | Table ${name} not found`)
       } catch (err) {
         logger.info(`getAllScoreClasses | Error obteniendo ${name}: ${err.message}`)
       }
-      return fallback
+      return []
     }
 
-    const table1 = await fetchTable('score_classes_a', SCORE_CLASSES_DATA_A)
-    const table2 = await fetchTable('score_classes_b', SCORE_CLASSES_DATA_B)
+    const table1 = await fetchTable('score_classes_a')
+    const table2 = await fetchTable('score_classes_b')
 
     return { table1, table2 }
   }

@@ -4927,7 +4927,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
             .join('')
         : ''
-      
+
       const scoreClassData = await certificationService
         .getAllScoreClasses()
         .catch(() => ({ table1: [], table2: [] }))
@@ -4938,8 +4938,9 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 ({ score_min, score_max, class: clase }) => `
           <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">${score_min}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">${score_max}</td>
+
+            <td style="padding: 8px; border: 1px solid #ccc;">${score_min} - ${score_max}</td>
+
             <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
           </tr>`
               )
@@ -5133,8 +5134,14 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
-
-        <h4 style="color: #337ab7;">Score vs Clases</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
+            </tr>
+          </thead>
+          <tbody>
             ${scoreClassRowsA}
           </tbody>
         </table>
@@ -5142,14 +5149,12 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score min</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score max</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
               <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
             </tr>
           </thead>
           <tbody>
             ${scoreClassRowsB}
-
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs % LC</h4>
