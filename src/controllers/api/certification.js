@@ -4933,12 +4933,22 @@ ${JSON.stringify(info_email_error, null, 2)}
             }</ul>`
           }
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
+          let detalle = '-'
+          if (
+            key === '_08_ventas_anuales' &&
+            val.parametro !== undefined &&
+            val.limite_inferior !== undefined &&
+            val.limite_superior !== undefined
+          ) {
+            detalle = `${val.parametro} \u2265 ${val.limite_inferior} y ${val.parametro} \u2264 ${val.limite_superior}`
+          }
           return `
             <tr>
               <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${key}</td>
               <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${descripcion}</td>
               <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${score}</td>
               <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${opciones}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${detalle}</td>
               <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${explicacion}</td>
             </tr>`
         })
@@ -4995,6 +5005,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Descripción</th>
                 <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Score</th>
                 <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Opciones</th>
+                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Detalle</th>
                 <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Explicación</th>
               </tr>
             </thead>
