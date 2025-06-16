@@ -4927,20 +4927,26 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
             .join('')
         : ''
-
-      const scoreClassData = await certificationService.getAllScoreClasses().catch(() => [])
-      const scoreClassRows = Array.isArray(scoreClassData)
-        ? scoreClassData
-            .map(
-              ({ score_min, score_max, class: clase }) => `
+      
+      const scoreClassData = await certificationService
+        .getAllScoreClasses()
+        .catch(() => ({ table1: [], table2: [] }))
+      const { table1: scoreClassA, table2: scoreClassB } = scoreClassData
+      const buildRows = data =>
+        Array.isArray(data)
+          ? data
+              .map(
+                ({ score_min, score_max, class: clase }) => `
           <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">${score_min}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">${score_max}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
           </tr>`
-            )
-            .join('')
-        : ''
+              )
+              .join('')
+          : ''
+      const scoreClassRowsA = buildRows(scoreClassA)
+      const scoreClassRowsB = buildRows(scoreClassB)
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -5126,7 +5132,13 @@ ${JSON.stringify(info_email_error, null, 2)}
               ${detallesTabla}
           </tbody>
         </table>
+        <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
+
         <h4 style="color: #337ab7;">Score vs Clases</h4>
+            ${scoreClassRowsA}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score vs Clases (Tabla 2)</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
@@ -5136,7 +5148,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tr>
           </thead>
           <tbody>
-            ${scoreClassRows}
+            ${scoreClassRowsB}
+
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Score vs % LC</h4>
