@@ -2,8 +2,10 @@
 
 const debug = require('debug')('old-api:certification-service')
 const mysqlLib = require('../lib/db')
-const logger = require('../utils/logs/logger');
+const logger = require('../utils/logs/logger')
 const cipher = require('../utils/cipherService')
+
+// Utilidades y servicios
 
 
 class CertificationService {
@@ -3852,16 +3854,28 @@ WHERE cer.certificacion_id = (
 
 
   async getClass(value) {
-    const queryString = `
-      SELECT
-        class
-      FROM score_classes_a
-      WHERE ${value} BETWEEN score_min AND COALESCE(score_max, ${value})
-      ORDER BY score_min ASC
-      LIMIT 1;
-      `
-    const { result } = await mysqlLib.query(queryString)
-    return result[0].class
+    try {
+      const { result: tableExists } = await mysqlLib.query(
+        "SHOW TABLES LIKE 'score_classes_a';"
+      )
+      if (tableExists.length) {
+        const queryString = `
+          SELECT class
+          FROM score_classes_a
+          WHERE ${value} BETWEEN score_min AND COALESCE(score_max, ${value})
+          ORDER BY score_min ASC
+          LIMIT 1;`
+        const { result } = await mysqlLib.query(queryString)
+        if (result.length) return result[0].class
+        logger.info(`getClass | No class found for value ${value}`)
+      } else {
+        logger.info('getClass | Table score_classes_a not found')
+      }
+    } catch (err) {
+      logger.info(`getClass | Error buscando clase en DB: ${err.message}`)
+    }
+
+    return null
   }
 
   async getWordingUnderwriting(clase) {
@@ -3900,6 +3914,31 @@ WHERE cer.certificacion_id = (
       `
     const { result } = await mysqlLib.query(queryString)
     return result
+  }
+
+  async getAllScoreClasses() {
+    const fetchTable = async name => {
+      try {
+        const { result: exists } = await mysqlLib.query(
+          `SHOW TABLES LIKE '${name}';`
+        )
+        if (exists.length) {
+          const { result } = await mysqlLib.query(
+            `SELECT score_min, score_max, class FROM ${name} ORDER BY score_min ASC;`
+          )
+          return result
+        }
+        logger.info(`getAllScoreClasses | Table ${name} not found`)
+      } catch (err) {
+        logger.info(`getAllScoreClasses | Error obteniendo ${name}: ${err.message}`)
+      }
+      return []
+    }
+
+    const table1 = await fetchTable('score_classes_a')
+    const table2 = await fetchTable('score_classes_b')
+
+    return { table1, table2 }
   }
 
   async saveAlgoritm(id_certification, scores, g45, c46, g46, g49, g48, g51, g52, wu, c48, porcentajeLc) {
