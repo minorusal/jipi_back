@@ -4443,7 +4443,13 @@ const getAlgoritmoResult = async (req, res, next) => {
         descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.nombre,
         score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : evolucion_ventas.score,
         parametro: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.evolucion_ventas,
-        rango: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.rango_numerico
+        rango: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : evolucion_ventas.rango_numerico,
+        ventas_anuales_periodo_anterior_estado_resultados:
+          evolucion_ventas.ventas_anuales_periodo_anterior_estado_resultados,
+        ventas_anuales_periodo_previo_anterior_estado_resultados:
+          evolucion_ventas.ventas_anuales_periodo_previo_anterior_estado_resultados,
+        operacion:
+          `(${evolucion_ventas.ventas_anuales_periodo_anterior_estado_resultados} - ${evolucion_ventas.ventas_anuales_periodo_previo_anterior_estado_resultados}) / ${evolucion_ventas.ventas_anuales_periodo_previo_anterior_estado_resultados} * 100`
       }
     }
 
@@ -4974,7 +4980,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               '_08_ventas_anuales',
               '_03_capital_contable',
               '_09_tipo_cifras',
-              '_11_evolucion_ventas',
               '_12_apalancamiento',
               '_13_flujo_neto',
               '_14_payback',
@@ -4988,6 +4993,25 @@ ${JSON.stringify(info_email_error, null, 2)}
             detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
             if (key === '_14_payback' && val.deuda_corto_plazo_periodo_anterior !== undefined && val.utilida_operativa !== undefined) {
               detalle += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+            }
+          } else if (
+            key === '_11_evolucion_ventas' &&
+            val.parametro !== undefined &&
+            val.rango !== undefined
+          ) {
+            const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
+            detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nRango: ${val.rango}`
+            if (
+              val.ventas_anuales_periodo_anterior_estado_resultados !== undefined &&
+              val.ventas_anuales_periodo_previo_anterior_estado_resultados !== undefined
+            ) {
+              detalle += `\nOperaci\u00F3n: (${formatMoney(
+                val.ventas_anuales_periodo_anterior_estado_resultados
+              )} - ${formatMoney(
+                val.ventas_anuales_periodo_previo_anterior_estado_resultados
+              )}) / ${formatMoney(
+                val.ventas_anuales_periodo_previo_anterior_estado_resultados
+              )} * 100`
             }
           }
           return `
