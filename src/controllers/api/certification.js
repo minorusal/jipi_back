@@ -4945,8 +4945,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       const buildRows = data =>
         Array.isArray(data)
           ? data
-              .map(
-                ({ score_min, score_max, class: clase }) => `
+            .map(
+              ({ score_min, score_max, class: clase }) => `
           <tr>
             <td style="padding: 8px; border: 1px solid #ccc;">${score_min} - ${score_max}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
@@ -4974,6 +4974,21 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 8px; border: 1px solid #ccc;">${nombre}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">${valor_algoritmo}</td>
             <td style="padding: 8px; border: 1px solid #ccc;">${valor_algoritmo_v2}</td>
+          </tr>`
+            )
+            .join('')
+        : ''
+
+      const scoreDescripcionData =
+        (rangos_bd && rangos_bd.cat_score_descripcion_algoritmo) || []
+      const scoreDescripcionRows = Array.isArray(scoreDescripcionData)
+        ? scoreDescripcionData
+            .map(
+              ({ score, wording_underwriting, porcentaje_lc }) => `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${wording_underwriting}</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">${porcentaje_lc}%</td>
           </tr>`
             )
             .join('')
@@ -5194,6 +5209,19 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             ${scoreClassRowsB}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score descripción algoritmo</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Wording underwriting</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">% LC</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreDescripcionRows}
           </tbody>
         </table>
         <h4 style="color: #337ab7;">Referencias comerciales</h4>
