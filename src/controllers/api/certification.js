@@ -5016,8 +5016,17 @@ ${JSON.stringify(info_email_error, null, 2)}
         return isNaN(num) ? value : moneyFormatter.format(num)
       }
 
+      const excludedKeys = [
+        'alertas',
+        'alerta_preventiva_reserva',
+        'calculos_estado_balance',
+        'calculos_estado_resultados',
+        'ratio_financiero'
+      ]
       const detallesTabla = Object.entries(rangos)
-        .filter(([_, val]) => val && typeof val === 'object')
+        .filter(([key, val]) =>
+          !excludedKeys.includes(key) && val && typeof val === 'object'
+        )
         .map(([key, val]) => {
           const descripcion = val.descripcion ?? val.caso ?? val.tipo ?? '-'
           const score = val.score ?? '-'
