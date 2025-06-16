@@ -3099,13 +3099,16 @@ WHERE cer.certificacion_id = (
     LEFT JOIN certification AS c ON c.id_empresa = e.emp_id
     WHERE e.emp_rfc = '${rfc}' AND c.estatus_certificacion = 'inicial';
     `
-    const { result } = await mysqlLib.query(queryString)
-
-    if (Array.isArray(result) && result.length > 0 && result[0]) {
-      return result[0].id_certification
+    try {
+      const { result } = await mysqlLib.query(queryString)
+      if (Array.isArray(result) && result.length > 0 && result[0]) {
+        return result[0].id_certification
+      }
+      return null
+    } catch (error) {
+      logger.error(`getLastIdCertification | ${error.message}`)
+      return null
     }
-
-    return null
   }
 
 
@@ -3119,13 +3122,18 @@ WHERE cer.certificacion_id = (
     c.id_certification DESC
     LIMIT 1;
     `
-    const { result } = await mysqlLib.query(queryString)
+    try {
+      const { result } = await mysqlLib.query(queryString)
 
-    if (Array.isArray(result) && result.length > 0 && result[0]) {
-      return result[0].id_certification
+      if (Array.isArray(result) && result.length > 0 && result[0]) {
+        return result[0].id_certification
+      }
+
+      return null
+    } catch (error) {
+      logger.error(`getLastIdCertification | ${error.message}`)
+      return null
     }
-
-    return null
   }
 
   async guardaRelacionCompradorVendedor(data) {
