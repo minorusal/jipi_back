@@ -2759,6 +2759,9 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       score: noDso && noDio ? '-20' : score,
       descripcion: rotScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
+      ventas_anuales: ventasAnuales.ventas_anuales,
+      saldo_inventarios: saldoInventarios.saldo_inventarios,
+      costo_ventas_anuales: costoVentasAnuales.costo_ventas_anuales,
       tipo: saldoClienteCuentaXCobrar.tipo,
       dso,
       dio,
@@ -4578,6 +4581,10 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : rotacion_ctas_x_cobrar.score,
         parametro_dso: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dso,
         parametro_dio: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dio,
+        ventas_anuales: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.ventas_anuales,
+        saldo_inventarios: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.saldo_inventarios,
+        costo_ventas_anuales: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.costo_ventas_anuales,
+        saldo_cliente_cuenta_x_cobrar: rotacion_ctas_x_cobrar.saldo_cliente_cuenta_x_cobrar,
         limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
         limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior
       }
@@ -4976,14 +4983,22 @@ ${JSON.stringify(info_email_error, null, 2)}
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           let detalle = '-'
           if (
+            key === '_15_rotacion_ctas_x_cobrar' &&
+            val.parametro_dso !== undefined &&
+            val.parametro_dio !== undefined &&
+            val.limite_inferior !== undefined &&
+            val.limite_superior !== undefined
+          ) {
+            const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
+            detalle = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatMoney(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatMoney(val.parametro_dio)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+          } else if (
             [
               '_08_ventas_anuales',
               '_03_capital_contable',
               '_09_tipo_cifras',
               '_12_apalancamiento',
               '_13_flujo_neto',
-              '_14_payback',
-              '_15_rotacion_ctas_x_cobrar'
+              '_14_payback'
             ].includes(key) &&
             val.parametro !== undefined &&
             val.limite_inferior !== undefined &&
