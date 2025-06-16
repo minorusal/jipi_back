@@ -2873,8 +2873,21 @@ WHERE cer.certificacion_id = (
     ORDER BY c.id_certification DESC
     LIMIT 1;
     `
-    const { result } = await mysqlLib.query(queryString)
-    return result
+    try {
+      const queryResult = await mysqlLib.query(queryString)
+      const result = Array.isArray(queryResult?.result)
+        ? queryResult.result
+        : []
+
+      if (result.length > 0 && result[0]) {
+        return result[0].id_certification
+      }
+
+      return null
+    } catch (error) {
+      logger.error(`getLastIdCertificationCancel | ${error.message}`)
+      return null
+    }
   }
 
   async getIdEmpresaByIdCertification(id_certification) {
