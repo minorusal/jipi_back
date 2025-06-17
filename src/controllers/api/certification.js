@@ -4973,6 +4973,58 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
             .join('')
         : ''
+
+      const scoreTables = `
+        <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreClassRowsA}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score vs Clases (Tabla 2)</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreClassRowsB}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score descripción algoritmo</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Wording underwriting</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreDescripcionRows}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Score vs % LC</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreLcRows}
+          </tbody>
+        </table>
+      `
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
         _02_sector_riesgo: 'cat_sector_riesgo_sectorial_algoritmo',
@@ -5583,55 +5635,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               ${detallesTabla}
           </tbody>
         </table>
-        <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${scoreClassRowsA}
-          </tbody>
-        </table>
-        <h4 style="color: #337ab7;">Score vs Clases (Tabla 2)</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${scoreClassRowsB}
-          </tbody>
-        </table>
-        <h4 style="color: #337ab7;">Score descripción algoritmo</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-          <thead>
-            <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Wording underwriting</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${scoreDescripcionRows}
-          </tbody>
-        </table>
-        <h4 style="color: #337ab7;">Score vs % LC</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-            <thead>
-              <tr>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${scoreLcRows}
-            </tbody>
-        </table>
         <h4 style="color: #337ab7;">Ratios financieros</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -5677,6 +5680,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${resultsRows}
           </tbody>
         </table>
+        ${scoreTables}
           ${rangos_bd ? '' : ''}
         </div>
       `
