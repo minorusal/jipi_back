@@ -2145,7 +2145,7 @@ WHERE cer.certificacion_id = (
   async getReferenciasComercialesByIdCertificationScore(id_certification) {
     const queryString = `
      SELECT
-      crc.id_certification_referencia_comercial,
+      MIN(crc.id_certification_referencia_comercial) AS id_certification_referencia_comercial,
       crc.razon_social,
       crc.denominacion,
       crc.rfc,
@@ -2154,7 +2154,8 @@ WHERE cer.certificacion_id = (
     LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
     LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
     WHERE crc.id_certification = ${id_certification} AND crc.contestada = 'si' AND crc.referencia_valida = 'true'
-    ORDER BY crc.id_certification_referencia_comercial DESC;
+    GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal
+    ORDER BY id_certification_referencia_comercial DESC;
     `
     const { result } = await mysqlLib.query(queryString)
     return result
@@ -2163,7 +2164,7 @@ WHERE cer.certificacion_id = (
   async getReferenciasComercialesByIdCertification(id_certification) {
     const queryString = `
      SELECT
-      crc.id_certification_referencia_comercial,
+      MIN(crc.id_certification_referencia_comercial) AS id_certification_referencia_comercial,
       crc.razon_social,
       crc.denominacion,
       crc.rfc,
@@ -2172,8 +2173,9 @@ WHERE cer.certificacion_id = (
     FROM certification_referencia_comercial AS crc
     LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
     LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
-    WHERE crc.id_certification = ${id_certification} 
-    ORDER BY crc.id_certification_referencia_comercial DESC;
+    WHERE crc.id_certification = ${id_certification}
+    GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal, crc.id_pais
+    ORDER BY id_certification_referencia_comercial DESC;
     `
     const { result } = await mysqlLib.query(queryString)
     return result
