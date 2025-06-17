@@ -2251,17 +2251,21 @@ WHERE cer.certificacion_id = (
 
   async getCertificacionReferenciasComerciales(id_certification) {
     const queryString = `
-      
-    SELECT 
-    crc.*, 
+
+    SELECT
+    crc.*,
     cecc.*
-      FROM 
+      FROM
     certification_referencia_comercial crc
-      INNER JOIN 
+      INNER JOIN
     certification_empresa_cliente_contacto cecc
     ON crc.id_certification_referencia_comercial = cecc.id_referencia_comercial
-      WHERE 
+      LEFT JOIN
+    certification_referencia_comercial_external_invitation crcei
+    ON crcei.id_referencia = crc.id_certification_referencia_comercial
+      WHERE
     crc.id_certification = ${id_certification} AND contestada = 'si'
+      AND (crcei.estatus_referencia IS NULL OR crcei.estatus_referencia <> 'vencida')
       `;
     const result = await mysqlLib.query(queryString);
     return result;
