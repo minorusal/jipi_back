@@ -5238,6 +5238,102 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
+      const formatCalcValue = v => (v === null || v === undefined ? '-' : formatMoney(v))
+
+      const balanceMap = [
+        ['total_activo_circulante', 'Total activo circulante', 'total_activo_circulante_anterior', 'total_activo_circulante_previo_anterior'],
+        ['total_activo', 'Total activo', 'total_activo_anterior', 'total_activo_previo_anterior'],
+        ['total_pasivo_circulante', 'Total pasivo circulante', 'total_pasivo_circulante_anterior', 'total_pasivo_circulante_previo_anterior'],
+        ['total_pasivo_largo_plazo', 'Total pasivo largo plazo', 'total_pasivo_largo_plazo_anterior', 'total_pasivo_previo_anterior'],
+        ['total_capital_contable', 'Total capital contable', 'total_capital_contable_anterior', 'total_capital_contable_previo_anterior']
+      ]
+
+      const balanceOps = {
+        total_activo_circulante: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withLabel('Caja/bancos', a.caja_bancos_anterior)} + ${withLabel('Clientes', a.cliente_anterior)} + ${withLabel('Inventarios', a.inventarios_anterior)} + ${withLabel('Deudores diversos', a.deudores_diversos_anterior)} + ${withLabel('Otros activos', a.otros_activos_anterior)}<br/>Previo: ${withLabel('Caja/bancos', p.caja_bancos_previo_anterior)} + ${withLabel('Clientes', p.cliente_previo_anterior)} + ${withLabel('Inventarios', p.inventarios_previo_anterior)} + ${withLabel('Deudores diversos', p.deudores_diversos_previo_anterior)} + ${withLabel('Otros activos', p.otros_activos_previo_anterior)}`
+        },
+        total_activo: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const afA = Number(a.activo_fijo_anterior || 0) + Number(a.activo_intangible_anterior || 0) + Number(a.activo_diferido_anterior || 0) + Number(a.otros_activos_fijos_largo_plazo_anterior || 0)
+          const afP = Number(p.activo_fijo_previo_anterior || 0) + Number(p.activo_intangible_previo_anterior || 0) + Number(p.activo_diferido_previo_anterior || 0) + Number(p.otros_activos_fijos_largo_plazo_previo_anterior || 0)
+          return `Anterior: ${withLabel('Activo circulante', acA)} + ${withLabel('Activo fijo', afA)}<br/>Previo: ${withLabel('Activo circulante', acP)} + ${withLabel('Activo fijo', afP)}`
+        },
+        total_pasivo_circulante: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withLabel('Proveedores', a.proveedores_anterior)} + ${withLabel('Acreedores', a.acreedores_anterior)} + ${withLabel('Impuestos por pagar', a.inpuestos_x_pagar_anterior)} + ${withLabel('Otros pasivos', a.otros_pasivos_anterior)}<br/>Previo: ${withLabel('Proveedores', p.proveedores_previo_anterior)} + ${withLabel('Acreedores', p.acreedores_previo_anterior)} + ${withLabel('Impuestos por pagar', p.inpuestos_x_pagar_previo_anterior)} + ${withLabel('Otros pasivos', p.otros_pasivos_previo_anterior)}`
+        },
+        total_pasivo_largo_plazo: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${withLabel('Pasivo largo plazo', a.pasivo_largo_plazo_anterior)} + ${withLabel('Pasivo diferido', a.pasivo_diferido_anterior)} + ${withLabel('Pasivo circulante', pcA)}<br/>Previo: ${withLabel('Pasivo largo plazo', p.pasivo_largo_plazo_previo_anterior)} + ${withLabel('Pasivo diferido', p.pasivo_diferido_previo_anterior)} + ${withLabel('Pasivo circulante', pcP)}`
+        },
+        total_capital_contable: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withLabel('Capital social', a.capital_social_anterior)} + ${withLabel('Result. ejer. anteriores', a.resultado_ejercicios_anteriores_anterior)} + ${withLabel('Resultado ejercicios', a.resultado_ejercicios_anterior)} + ${withLabel('Otro capital', a.otro_capital_anterior)}<br/>Previo: ${withLabel('Capital social', p.capital_social_previo_anterior)} + ${withLabel('Result. ejer. anteriores', p.resultado_ejercicios_anteriores_previo_anterior)} + ${withLabel('Resultado ejercicios', p.resultado_ejercicios_previo_anterior)} + ${withLabel('Otro capital', p.otro_capital_previo_anterior)}`
+        }
+      }
+
+      const balanceRows = balanceMap
+        .map(([key, label, a, p], idx) => {
+          const item = balanceData[key] || {}
+          const op = balanceOps[key] ? balanceOps[key]() : '-'
+          return `
+            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[a])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[p])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
+            </tr>`
+        })
+        .join('')
+
+      const resultsMap = [
+        ['utilidad_bruta', 'Utilidad bruta', 'operacion_utilidad_bruta_anterior', 'operacion_utilidad_bruta_previo_anterior'],
+        ['utilidad_operacion', 'Utilidad de operación', 'operacion_utilidad_operacion_anterior', 'operacion_utilidad_operacion_previo_anterior'],
+        ['utilidad_neta', 'Utilidad neta', 'utilidad_neta_anterior', 'utilidad_neta_previo_anterior']
+      ]
+
+      const resultOps = {
+        utilidad_bruta: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withLabel('Ventas anuales', a.ventas_anuales_anterior)} - ${withLabel('Costo ventas anuales', a.costo_ventas_anuales_anterior)}<br/>Previo: ${withLabel('Ventas anuales', p.ventas_anuales_previo_anterior)} - ${withLabel('Costo ventas anuales', p.costo_ventas_anuales_previo_anterior)}`
+        },
+        utilidad_operacion: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withLabel('Utilidad bruta', a.utilidad_bruta_anterior)} - ${withLabel('Gastos administración', a.gastos_administracion_anterior)}<br/>Previo: ${withLabel('Utilidad bruta', p.utilidad_bruta_previo_anterior)} - ${withLabel('Gastos administración', p.gastos_administracion_previo_anterior)}`
+        },
+        utilidad_neta: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withLabel('Utilidad operativa', a.utilidad_operativa_anterior)} - ${withLabel('Gastos prod. financieros', a.gastos_productos_financieros_anterior)} - ${withLabel('Depreciación amortización', a.depreciacion_amortizacion_anterior)} + ${withLabel('Otros ingresos', a.otros_ingresos_anterior)} - ${withLabel('Otros egresos', a.otros_egresos_anterior)} - ${withLabel('Otros gastos', a.otros_gastos_anterior)}<br/>Previo: ${withLabel('Utilidad operativa', p.utilidad_operativa_previo_anterior)} - ${withLabel('Gastos prod. financieros', p.gastos_productos_financieros_previo_anterior)} - ${withLabel('Depreciación amortización', p.depreciacion_amortizacion_previo_anterior)} + ${withLabel('Otros ingresos', p.otros_ingresos_previo_anterior)} - ${withLabel('Otros egresos', p.otros_egresos_previo_anterior)} - ${withLabel('Otros gastos', p.otros_gastos_previo_anterior)}`
+        }
+      }
+
+      const resultsRows = resultsMap
+        .map(([key, label, a, p], idx) => {
+          const item = resultsData[key] || {}
+          const op = resultOps[key] ? resultOps[key]() : '-'
+          return `
+            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[a])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[p])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
+            </tr>`
+        })
+        .join('')
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
           <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
@@ -5358,6 +5454,34 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             ${ratioRows}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Cálculos Estado de Balance</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${balanceRows}
+          </tbody>
+        </table>
+        <h4 style="color: #337ab7;">Cálculos Estado de Resultados</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${resultsRows}
           </tbody>
         </table>
           ${rangos_bd ? '' : ''}
