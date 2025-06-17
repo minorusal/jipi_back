@@ -4903,7 +4903,7 @@ const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null,
     if (info_email_error) {
       subject = '🚨 Error en el reporte de crédito'
       htmlContent = `
-        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #333;">
+        <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
           <h3 style="color: #d9534f; margin: 0 0 8px 0;">⚠ Información de Error</h3>
           <pre style="
             background-color: #f5f5f5;
@@ -4929,10 +4929,10 @@ ${JSON.stringify(info_email_error, null, 2)}
       const scoreLcRows = Array.isArray(scoreLcData)
         ? scoreLcData
             .map(
-              ({ score, porcentaje_lc }) => `
-          <tr>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score}</td>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${porcentaje_lc}%</td>
+              ({ score, porcentaje_lc }, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${score}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${porcentaje_lc}%</td>
           </tr>`
             )
             .join('')
@@ -4945,11 +4945,11 @@ ${JSON.stringify(info_email_error, null, 2)}
       const buildRows = data =>
         Array.isArray(data)
           ? data
-            .map(
-              ({ score_min, score_max, class: clase }) => `
-          <tr>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score_min} - ${score_max}</td>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${clase}</td>
+              .map(
+                ({ score_min, score_max, class: clase }, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${score_min} - ${score_max}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${clase}</td>
           </tr>`
               )
               .join('')
@@ -4963,11 +4963,11 @@ ${JSON.stringify(info_email_error, null, 2)}
       const scoreDescripcionRows = Array.isArray(scoreDescripcionData)
         ? scoreDescripcionData
             .map(
-              ({ score, wording_underwriting, porcentaje_lc }) => `
-          <tr>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score}</td>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${wording_underwriting}</td>
-            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${porcentaje_lc}%</td>
+              ({ score, wording_underwriting, porcentaje_lc }, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${score}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${wording_underwriting}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${porcentaje_lc}%</td>
           </tr>`
             )
             .join('')
@@ -5021,7 +5021,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         .filter(([key, val]) =>
           !excludedKeys.includes(key) && val && typeof val === 'object'
         )
-        .map(([key, val]) => {
+        .map(([key, val], idx) => {
           const descripcion = val.descripcion ?? val.caso ?? val.tipo ?? '-'
           const score = val.score ?? '-'
           const tableName = tableMap[key]
@@ -5096,13 +5096,13 @@ ${JSON.stringify(info_email_error, null, 2)}
             }
           }
           return `
-            <tr>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${key}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${descripcion}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${score}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${opciones}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${detalle}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${explicacion}</td>
+            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${key}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${descripcion}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${score}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${opciones}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${detalle}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${explicacion}</td>
             </tr>`
         })
         .join('')
@@ -5125,57 +5125,57 @@ ${JSON.stringify(info_email_error, null, 2)}
       ]
       const formatRatioValue = v => (v === null || v === undefined ? '-' : v)
       const ratioRows = ratioMap
-        .map(([key, label, a, p]) => {
+        .map(([key, label, a, p], idx) => {
           const item = ratioData[key] || {}
           return `
-            <tr>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${label}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatRatioValue(item[a])}</td>
-              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatRatioValue(item[p])}</td>
+            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[a])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[p])}</td>
             </tr>`
         })
         .join('')
 
       htmlContent = `
-        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #333;">
+        <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
           <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 14px;">
             <tbody>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.g52 ?? '-'}</td>
+              <tr style="background-color:#ffffff;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Score</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${scores.g52 ?? '-'}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Puntaje (G51)</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.g51 ?? '-'}</td>
+              <tr style="background-color:#f5f5f5;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Puntaje (G51)</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${scores.g51 ?? '-'}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Sumatoria de scores (G45)</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.sumatoria_scors_g45 ?? '-'}</td>
+              <tr style="background-color:#ffffff;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Sumatoria de scores (G45)</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${scores.sumatoria_scors_g45 ?? '-'}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Monto solicitado</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatMoney(rangos.monto_solicitado ?? '-')}</td>
+              <tr style="background-color:#f5f5f5;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Monto solicitado</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatMoney(rangos.monto_solicitado ?? '-')}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Monto sugerido</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatMoney(rangos.monto_sugerido ?? '-')}</td>
+              <tr style="background-color:#ffffff;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Monto sugerido</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatMoney(rangos.monto_sugerido ?? '-')}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Wording</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
+              <tr style="background-color:#f5f5f5;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Wording</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Versión algoritmo</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${version_algoritmo || '-'}</td>
+              <tr style="background-color:#ffffff;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Versión algoritmo</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${version_algoritmo || '-'}</td>
               </tr>
-              ${Number(version_algoritmo) === 2 ? `<tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Razón algoritmo</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${razon_algoritmo || '-'}</td>
+              ${Number(version_algoritmo) === 2 ? `<tr style="background-color:#f5f5f5;">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Razón algoritmo</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${razon_algoritmo || '-'}</td>
               </tr>` : ''}
-              <tr>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">UUID</td>
-                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${uuid || '-'}</td>
+              <tr style="background-color:${Number(version_algoritmo) === 2 ? '#ffffff' : '#f5f5f5'};">
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">UUID</td>
+                <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${uuid || '-'}</td>
               </tr>
             </tbody>
           </table>
