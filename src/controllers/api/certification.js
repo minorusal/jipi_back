@@ -5690,20 +5690,36 @@ ${JSON.stringify(info_email_error, null, 2)}
       return
     }
 
-    const pdfOptions = { format: 'A4', printBackground: true }
-    const file = { content: htmlContent }
+    const pdfOptions = {
+      format: 'A4',
+      printBackground: true,
+      margin: { top: 10, right: 10, bottom: 10, left: 10 }
+    }
+    const styles = `
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
+        table { font-size: 12px; page-break-inside: avoid; width: 100%; border-collapse: collapse; }
+        thead { display: table-header-group; }
+        h3, h4 { page-break-after: avoid; }
+      </style>
+    `
+    const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
     const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
 
     const mailOptions = {
       from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
       to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
       subject,
-      text: 'Se adjunta reporte de crédito en formato PDF.',
+      html: `
+        <p>Se adjunta reporte de crédito en formato PDF.</p>
+        <object data="cid:reporte_credito_cid" type="application/pdf" width="100%" height="800px"></object>
+      `,
       attachments: [
         {
           filename: 'reporte_credito.pdf',
           content: pdfBuffer,
-          contentType: 'application/pdf'
+          contentType: 'application/pdf',
+          cid: 'reporte_credito_cid'
         }
       ]
     }
