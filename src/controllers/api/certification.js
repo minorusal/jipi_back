@@ -5702,7 +5702,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       attachments: [
         {
           filename: 'reporte_credito.pdf',
-          content: pdfBuffer
+          content: pdfBuffer,
+          contentType: 'application/pdf'
         }
       ]
     }
