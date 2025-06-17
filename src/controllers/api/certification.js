@@ -5107,6 +5107,35 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
+      const ratioData = rangos.ratio_financiero || {}
+      const ratioMap = [
+        ['r1_capital_trabajo_numero_veces', 'Capital de trabajo (veces)', 'razon_circulante_anterior', 'razon_circulante_previo_anterior'],
+        ['r2_capital_trabajo_valor_nominal', 'Capital de trabajo (valor nominal)', 'capital_trabajo_anterior', 'capital_trabajo_previo_anterior'],
+        ['r3_prueba_acida_numero_veces', 'Prueba ácida (veces)', 'prueba_acida_numero_veces_anterior', 'prueba_acida_numero_veces_previo_anterior'],
+        ['r4_grado_general_endeudamiento_numero_veces', 'Grado de endeudamiento', 'grado_general_endeudamiento_anterior', 'grado_general_endeudamiento_previo_anterior'],
+        ['r5_apalancamiento_financiero_numero_veces', 'Apalancamiento financiero', 'apalancamiento_anterior', 'apalancamiento_previo_anterior'],
+        ['r6_rotacion_inventarios_numero_veces', 'Rotación inventarios (veces)', 'rotacion_inventarios_numero_veces_anterior', 'rotacion_inventarios_numero_veces_previo_anterior'],
+        ['r7_rotacion_inventarios_dias', 'Rotación inventarios (días)', 'rotacion_inventarios_dias_anterior', 'rotacion_inventarios_dias_previo_anterior'],
+        ['r8_rotacion_cuentas_x_cobrar_dias', 'Rotación cuentas por cobrar (días)', 'rotacion_cuentas_x_cobrar_dias_anterior', 'rotacion_cuentas_x_cobrar_dias_previo_anterior'],
+        ['r9_rotacion_pagos_dias', 'Rotación de pagos (días)', 'rotacion_pagos_dias_anterior', 'rotacion_pagos_dias_previo_anterior'],
+        ['r10_solvencia_deuda_total_sobre_capital', 'Solvencia deuda total sobre capital', 'solvencia_deuda_total_sobre_capital_anterior', 'solvencia_deuda_total_sobre_capital_previo_anterior'],
+        ['r11_retorno_sobre_capital_acciones', 'Retorno sobre capital', 'retorno_sobre_capital_acciones_anterior', 'retorno_sobre_capital_acciones_previo_anterior'],
+        ['r12_rendimiento_capital', 'Rendimiento sobre capital', 'rendimiento_capital_anterior', 'rendimiento_capital_previo_anterior'],
+        ['r13_rendimiento_activos', 'Rendimiento sobre activos', 'rendimiento_activos_anterior', 'rendimiento_activos_previo_anterior']
+      ]
+      const formatRatioValue = v => (v === null || v === undefined ? '-' : v)
+      const ratioRows = ratioMap
+        .map(([key, label, a, p]) => {
+          const item = ratioData[key] || {}
+          return `
+            <tr>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${label}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatRatioValue(item[a])}</td>
+              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatRatioValue(item[p])}</td>
+            </tr>`
+        })
+        .join('')
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
           <h3 style="color: #337ab7;">ℹ Resumen de resultados</h3>
@@ -5214,7 +5243,20 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tbody>
               ${scoreLcRows}
             </tbody>
-          </table>
+        </table>
+        <h4 style="color: #337ab7;">Ratios financieros</h4>
+        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px; border: 1px solid #ccc;">Ratio</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Periodo anterior</th>
+              <th style="padding: 8px; border: 1px solid #ccc;">Previo anterior</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ratioRows}
+          </tbody>
+        </table>
           ${rangos_bd ? '' : ''}
         </div>
       `
