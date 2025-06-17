@@ -5127,6 +5127,9 @@ ${JSON.stringify(info_email_error, null, 2)}
       ]
       const formatRatioValue = v => (v === null || v === undefined ? '-' : v)
       const withLabel = (label, value) => `${label}: ${formatMoney(value)}`
+      const withValue = value => formatMoney(value)
+      const mathStyle =
+        "font-family: 'Courier New', monospace; background:#f8f8f8; padding:2px 4px; border-radius:3px;"
       const ratioOps = {
         r1_capital_trabajo_numero_veces: () => {
           const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
@@ -5224,16 +5227,132 @@ ${JSON.stringify(info_email_error, null, 2)}
           return `Anterior: ${withLabel('Utilidad neta', unA)} / ${withLabel('Total activo', taA)} * 100<br/>Previo: ${withLabel('Utilidad neta', unP)} / ${withLabel('Total activo', taP)} * 100`
         }
       }
+
+      const ratioOpsValues = {
+        r1_capital_trabajo_numero_veces: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${withValue(acA)} / ${withValue(pcA)}<br/>Previo: ${withValue(acP)} / ${withValue(pcP)}`
+        },
+        r2_capital_trabajo_valor_nominal: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${withValue(acA)} - ${withValue(pcA)}<br/>Previo: ${withValue(acP)} - ${withValue(pcP)}`
+        },
+        r3_prueba_acida_numero_veces: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: (${withValue(acA)} - ${withValue(invA)}) / ${withValue(pcA)}<br/>Previo: (${withValue(acP)} - ${withValue(invP)}) / ${withValue(pcP)}`
+        },
+        r4_grado_general_endeudamiento_numero_veces: () => {
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          return `Anterior: ${withValue(taA)} / ${withValue(plA)}<br/>Previo: ${withValue(taP)} / ${withValue(plP)}`
+        },
+        r5_apalancamiento_financiero_numero_veces: () => {
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          return `Anterior: ${withValue(plA)} / ${withValue(taA)}<br/>Previo: ${withValue(plP)} / ${withValue(taP)}`
+        },
+        r6_rotacion_inventarios_numero_veces: () => {
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          return `Anterior: ${withValue(cvA)} / ${withValue(invA)}<br/>Previo: ${withValue(cvP)} / ${withValue(invP)}`
+        },
+        r7_rotacion_inventarios_dias: () => {
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          return `Anterior: (${withValue(invA)} / ${withValue(cvA)}) * 360<br/>Previo: (${withValue(invP)} / ${withValue(cvP)}) * 360`
+        },
+        r8_rotacion_cuentas_x_cobrar_dias: () => {
+          const cliA = balanceData.estado_balance_anterior?.cliente_anterior
+          const vtaA = resultsData.estado_resultado_anterior?.ventas_anuales_anterior
+          const cliP = balanceData.estado_balance_previo_anterior?.cliente_previo_anterior
+          const vtaP = resultsData.estado_resultado_previo_anterior?.ventas_anuales_previo_anterior
+          return `Anterior: (${withValue(cliA)} / ${withValue(vtaA)}) * 360<br/>Previo: (${withValue(cliP)} / ${withValue(vtaP)}) * 360`
+        },
+        r9_rotacion_pagos_dias: () => {
+          const provA = balanceData.estado_balance_anterior?.proveedores_anterior
+          const acreA = balanceData.estado_balance_anterior?.acreedores_anterior
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const provP = balanceData.estado_balance_previo_anterior?.proveedores_previo_anterior
+          const acreP = balanceData.estado_balance_previo_anterior?.acreedores_previo_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          return `Anterior: (${withValue(provA)} + ${withValue(acreA)}) / ${withValue(cvA)} * 360<br/>Previo: (${withValue(provP)} + ${withValue(acreP)}) / ${withValue(cvP)} * 360`
+        },
+        r10_solvencia_deuda_total_sobre_capital: () => {
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${withValue(plA)} / ${withValue(ccA)}<br/>Previo: ${withValue(plP)} / ${withValue(ccP)}`
+        },
+        r11_retorno_sobre_capital_acciones: () => {
+          const uoA = resultsData.utilidad_operacion?.operacion_utilidad_operacion_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const uoP = resultsData.utilidad_operacion?.operacion_utilidad_operacion_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${withValue(uoA)} / ${withValue(ccA)} * 100<br/>Previo: ${withValue(uoP)} / ${withValue(ccP)} * 100`
+        },
+        r12_rendimiento_capital: () => {
+          const unA = resultsData.utilidad_neta?.utilidad_neta_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const unP = resultsData.utilidad_neta?.utilidad_neta_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${withValue(unA)} / ${withValue(ccA)} * 100<br/>Previo: ${withValue(unP)} / ${withValue(ccP)} * 100`
+        },
+        r13_rendimiento_activos: () => {
+          const unA = resultsData.utilidad_neta?.utilidad_neta_anterior
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const unP = resultsData.utilidad_neta?.utilidad_neta_previo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          return `Anterior: ${withValue(unA)} / ${withValue(taA)} * 100<br/>Previo: ${withValue(unP)} / ${withValue(taP)} * 100`
+        }
+      }
+
+      const ratioFormulas = {
+        r1_capital_trabajo_numero_veces: 'Activo circulante / Pasivo circulante',
+        r2_capital_trabajo_valor_nominal: 'Activo circulante - Pasivo circulante',
+        r3_prueba_acida_numero_veces: '(Activo circulante - Inventarios) / Pasivo circulante',
+        r4_grado_general_endeudamiento_numero_veces: 'Total activo / Pasivo largo plazo',
+        r5_apalancamiento_financiero_numero_veces: 'Pasivo largo plazo / Total activo',
+        r6_rotacion_inventarios_numero_veces: 'Costo ventas anuales / Inventarios',
+        r7_rotacion_inventarios_dias: '(Inventarios / Costo ventas anuales) * 360',
+        r8_rotacion_cuentas_x_cobrar_dias: '(Clientes / Ventas anuales) * 360',
+        r9_rotacion_pagos_dias: '(Proveedores + Acreedores) / Costo ventas anuales * 360',
+        r10_solvencia_deuda_total_sobre_capital: 'Pasivo largo plazo / Capital contable',
+        r11_retorno_sobre_capital_acciones: 'Utilidad operación / Capital contable * 100',
+        r12_rendimiento_capital: 'Utilidad neta / Capital contable * 100',
+        r13_rendimiento_activos: 'Utilidad neta / Total activo * 100'
+      }
       const ratioRows = ratioMap
         .map(([key, label, a, p], idx) => {
           const item = ratioData[key] || {}
-          const op = ratioOps[key] ? ratioOps[key]() : '-'
+          const op = ratioOpsValues[key] ? ratioOpsValues[key]() : '-'
+          const formula = ratioFormulas[key] || '-'
           return `
             <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[a])}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[p])}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${formula}</code></td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${op}</code></td>
             </tr>`
         })
         .join('')
@@ -5282,16 +5401,60 @@ ${JSON.stringify(info_email_error, null, 2)}
         }
       }
 
+      const balanceOpsValues = {
+        total_activo_circulante: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withValue(a.caja_bancos_anterior)} + ${withValue(a.cliente_anterior)} + ${withValue(a.inventarios_anterior)} + ${withValue(a.deudores_diversos_anterior)} + ${withValue(a.otros_activos_anterior)}<br/>Previo: ${withValue(p.caja_bancos_previo_anterior)} + ${withValue(p.cliente_previo_anterior)} + ${withValue(p.inventarios_previo_anterior)} + ${withValue(p.deudores_diversos_previo_anterior)} + ${withValue(p.otros_activos_previo_anterior)}`
+        },
+        total_activo: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const afA = Number(a.activo_fijo_anterior || 0) + Number(a.activo_intangible_anterior || 0) + Number(a.activo_diferido_anterior || 0) + Number(a.otros_activos_fijos_largo_plazo_anterior || 0)
+          const afP = Number(p.activo_fijo_previo_anterior || 0) + Number(p.activo_intangible_previo_anterior || 0) + Number(p.activo_diferido_previo_anterior || 0) + Number(p.otros_activos_fijos_largo_plazo_previo_anterior || 0)
+          return `Anterior: ${withValue(acA)} + ${withValue(afA)}<br/>Previo: ${withValue(acP)} + ${withValue(afP)}`
+        },
+        total_pasivo_circulante: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withValue(a.proveedores_anterior)} + ${withValue(a.acreedores_anterior)} + ${withValue(a.inpuestos_x_pagar_anterior)} + ${withValue(a.otros_pasivos_anterior)}<br/>Previo: ${withValue(p.proveedores_previo_anterior)} + ${withValue(p.acreedores_previo_anterior)} + ${withValue(p.inpuestos_x_pagar_previo_anterior)} + ${withValue(p.otros_pasivos_previo_anterior)}`
+        },
+        total_pasivo_largo_plazo: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${withValue(a.pasivo_largo_plazo_anterior)} + ${withValue(a.pasivo_diferido_anterior)} + ${withValue(pcA)}<br/>Previo: ${withValue(p.pasivo_largo_plazo_previo_anterior)} + ${withValue(p.pasivo_diferido_previo_anterior)} + ${withValue(pcP)}`
+        },
+        total_capital_contable: () => {
+          const a = balanceData.estado_balance_anterior || {}
+          const p = balanceData.estado_balance_previo_anterior || {}
+          return `Anterior: ${withValue(a.capital_social_anterior)} + ${withValue(a.resultado_ejercicios_anteriores_anterior)} + ${withValue(a.resultado_ejercicios_anterior)} + ${withValue(a.otro_capital_anterior)}<br/>Previo: ${withValue(p.capital_social_previo_anterior)} + ${withValue(p.resultado_ejercicios_anteriores_previo_anterior)} + ${withValue(p.resultado_ejercicios_previo_anterior)} + ${withValue(p.otro_capital_previo_anterior)}`
+        }
+      }
+
+      const balanceFormulas = {
+        total_activo_circulante: 'Caja/bancos + Clientes + Inventarios + Deudores diversos + Otros activos',
+        total_activo: 'Activo circulante + Activo fijo',
+        total_pasivo_circulante: 'Proveedores + Acreedores + Impuestos por pagar + Otros pasivos',
+        total_pasivo_largo_plazo: 'Pasivo largo plazo + Pasivo diferido + Pasivo circulante',
+        total_capital_contable: 'Capital social + Result. ejer. anteriores + Resultado ejercicios + Otro capital'
+      }
+
       const balanceRows = balanceMap
         .map(([key, label, a, p], idx) => {
           const item = balanceData[key] || {}
-          const op = balanceOps[key] ? balanceOps[key]() : '-'
+          const op = balanceOpsValues[key] ? balanceOpsValues[key]() : '-'
+          const formula = balanceFormulas[key] || '-'
           return `
             <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[a])}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[p])}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${formula}</code></td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${op}</code></td>
             </tr>`
         })
         .join('')
@@ -5320,16 +5483,42 @@ ${JSON.stringify(info_email_error, null, 2)}
         }
       }
 
+      const resultOpsValues = {
+        utilidad_bruta: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withValue(a.ventas_anuales_anterior)} - ${withValue(a.costo_ventas_anuales_anterior)}<br/>Previo: ${withValue(p.ventas_anuales_previo_anterior)} - ${withValue(p.costo_ventas_anuales_previo_anterior)}`
+        },
+        utilidad_operacion: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withValue(a.utilidad_bruta_anterior)} - ${withValue(a.gastos_administracion_anterior)}<br/>Previo: ${withValue(p.utilidad_bruta_previo_anterior)} - ${withValue(p.gastos_administracion_previo_anterior)}`
+        },
+        utilidad_neta: () => {
+          const a = resultsData.estado_resultado_anterior || {}
+          const p = resultsData.estado_resultado_previo_anterior || {}
+          return `Anterior: ${withValue(a.utilidad_operativa_anterior)} - ${withValue(a.gastos_productos_financieros_anterior)} - ${withValue(a.depreciacion_amortizacion_anterior)} + ${withValue(a.otros_ingresos_anterior)} - ${withValue(a.otros_egresos_anterior)} - ${withValue(a.otros_gastos_anterior)}<br/>Previo: ${withValue(p.utilidad_operativa_previo_anterior)} - ${withValue(p.gastos_productos_financieros_previo_anterior)} - ${withValue(p.depreciacion_amortizacion_previo_anterior)} + ${withValue(p.otros_ingresos_previo_anterior)} - ${withValue(p.otros_egresos_previo_anterior)} - ${withValue(p.otros_gastos_previo_anterior)}`
+        }
+      }
+
+      const resultFormulas = {
+        utilidad_bruta: 'Ventas anuales - Costo ventas anuales',
+        utilidad_operacion: 'Utilidad bruta - Gastos administración',
+        utilidad_neta: 'Utilidad operativa - Gastos prod. financieros - Depreciación amortización + Otros ingresos - Otros egresos - Otros gastos'
+      }
+
       const resultsRows = resultsMap
         .map(([key, label, a, p], idx) => {
           const item = resultsData[key] || {}
-          const op = resultOps[key] ? resultOps[key]() : '-'
+          const op = resultOpsValues[key] ? resultOpsValues[key]() : '-'
+          const formula = resultFormulas[key] || '-'
           return `
             <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[a])}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatCalcValue(item[p])}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${formula}</code></td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;"><code style="${mathStyle}">${op}</code></td>
             </tr>`
         })
         .join('')
@@ -5449,6 +5638,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
             </tr>
           </thead>
@@ -5463,6 +5653,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
             </tr>
           </thead>
@@ -5477,6 +5668,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
             </tr>
           </thead>
