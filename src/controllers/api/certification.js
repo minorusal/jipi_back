@@ -1185,9 +1185,9 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       if (referencias_comerciales[i].contactos.length > 0) {
         for (const contacto of referencias_comerciales[i].contactos) {
           const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
-          const [last_id_certification] = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
+          const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
 
-          const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification.id_certification)
+          const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification)
           if (exist_email) {
             const contactoInsertSi = await certificationService.insertaContacto(contacto, 'enviado', rc.insertId)
             if (!contactoInsertSi) {
