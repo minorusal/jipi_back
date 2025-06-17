@@ -5713,11 +5713,11 @@ ${JSON.stringify(info_email_error, null, 2)}
     const styles = `
       <style>
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
-        table { font-size: 12px; page-break-inside: avoid; width: 100%; border-collapse: collapse; }
+        table { font-size: 12px; page-break-inside: avoid; break-inside: avoid; width: 100%; border-collapse: collapse; }
         thead { display: table-header-group; }
-        tr, th, td { page-break-inside: avoid; }
-        h3, h4 { page-break-after: avoid; }
-        .table-section { page-break-inside: avoid; }
+        tr, th, td { page-break-inside: avoid; break-inside: avoid; }
+        h3, h4 { page-break-after: avoid; break-after: avoid; }
+        .table-section { page-break-inside: avoid; break-inside: avoid; }
       </style>
     `
     const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
