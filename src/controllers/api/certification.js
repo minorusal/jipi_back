@@ -4904,7 +4904,7 @@ const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null,
     if (info_email_error) {
       subject = '🚨 Error en el reporte de crédito'
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
+        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
           <h3 style="color: #d9534f; margin: 0 0 8px 0;">⚠ Información de Error</h3>
           <pre style="
             background-color: #f5f5f5;
@@ -5577,9 +5577,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
+        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
           <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
-          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 14px;">
+          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 12px;">
             <tbody>
               <tr style="background-color:#ffffff;">
                 <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Score</td>
@@ -5700,6 +5700,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
         table { font-size: 12px; page-break-inside: avoid; width: 100%; border-collapse: collapse; }
         thead { display: table-header-group; }
+        tr, th, td { page-break-inside: avoid; }
         h3, h4 { page-break-after: avoid; }
       </style>
     `
@@ -8426,7 +8427,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </h5>
       </div>
       <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
           <thead>
             <tr style="background-color: #2ba2af; color: white; text-align: left;">
               <th style="padding: 8px; border: 1px solid #ddd;">Razón Social</th>
@@ -8465,7 +8466,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
          border-radius: 10px;
          ">
-            <p style="color: #b71c1c; font-size: 14px; font-weight: bold; margin-top: 10px; text-align: center;">
+            <p style="color: #b71c1c; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
               ⚠️ Detectamos que el RFC ingresado no coincide con su razón social investigada. Por lo anterior, no podemos emitir una recomendación de crédito. Si tienes dudas, verifica los datos con la documentación oficial de la empresa.
             </p>
           </div>
@@ -8487,7 +8488,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
               style="
                 color: #0a3d8e;
                 margin: 0px;
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 700;
               "
             >
@@ -8495,7 +8496,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             </p>
           </div>
           <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th> <!-- Campo 1 más pequeño -->
@@ -8528,7 +8529,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -8536,7 +8537,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           </p>
         </div>
         <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th>
@@ -8567,7 +8568,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
          border-radius: 10px;
          ">
-            <p style="color: #0a3d8e; font-size: 14px; font-weight: bold; margin-top: 10px; text-align: center;">
+            <p style="color: #0a3d8e; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
               ⚠️ Estimado cliente, le observamos que su comprador rechazo manera clara  no compartir información financiera.
             </p>
         </div>
@@ -8589,7 +8590,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
               style="
                 color: #0a3d8e;
                 margin: 0px;
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 700;
               "
             >
@@ -8618,7 +8619,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -8631,7 +8632,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -8644,7 +8645,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -8955,7 +8956,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
               style="
                 color: #0a3d8e;
                 margin: 0px;
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 700;
               "
             >
@@ -8984,7 +8985,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -8997,7 +8998,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -9010,7 +9011,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -9180,7 +9181,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -9188,7 +9189,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           </p>
         </div>
         <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th>
@@ -9221,7 +9222,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -9229,7 +9230,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           </p>
         </div>
         <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th>
@@ -9262,7 +9263,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -9270,7 +9271,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           </p>
         </div>
         <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th>
@@ -9303,7 +9304,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -9311,7 +9312,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           </p>
         </div>
         <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%; margin-top: 1rem;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
               <tbody>
                 <tr style="background-color: #2ba2af; color: white; text-align: left;">
                   <th style="padding: 8px; border: 1px solid #ddd; width: 30%;">Campo 1</th>
@@ -9344,7 +9345,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -9373,7 +9374,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -9386,7 +9387,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -9399,7 +9400,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -9412,7 +9413,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -9469,7 +9470,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </h3>
       </div>
       <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
           <thead>
             <tr style="background-color: #2ba2af; color: white; text-align: left;">
               <th style="padding: 8px; border: 1px solid #ddd;">RFC</th>
@@ -9502,7 +9503,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           style="
             color: #0a3d8e;
             margin: 0px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           Importaciones
@@ -9521,7 +9522,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             margin: 0px;
             margin-bottom: 5px;
             color: #2ba2af;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           País
@@ -9533,7 +9534,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             margin: 0px;
             margin-bottom: 5px;
             color: #2ba2af;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           Porcentaje 
@@ -9562,7 +9563,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
           style="
             color: #0a3d8e;
             margin: 0px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           Exportaciones
@@ -9581,7 +9582,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             margin: 0px;
             margin-bottom: 5px;
             color: #2ba2af;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           País
@@ -9593,7 +9594,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             margin: 0px;
             margin-bottom: 5px;
             color: #2ba2af;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;"
         >
           Porcentaje 
@@ -9853,7 +9854,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     const empresas_info_basica =
       `
-        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
           </h4>
@@ -9900,13 +9901,13 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
     /* Inicio ccionistas mayoritarios */
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
           </h4>
 
-          <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+          <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
             <div>Nombre</div>
             <div>Legal TAX ID</div>
           </div>
@@ -9921,13 +9922,13 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
       </h4>
 
-      <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+      <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
         <div>Nombre</div>
         <div>Legal TAX ID</div>
       </div>
@@ -9948,13 +9949,13 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Principales Directores */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
         </h4>
 
-        <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+        <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
           <div>Nombre</div>
           <div>Puesto</div>
           <div>Poder</div>
@@ -9980,7 +9981,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -10004,7 +10005,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -10017,7 +10018,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -10030,7 +10031,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -10095,19 +10096,19 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Inicio Transporte */
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
               <div style="background: #ffff; padding: 12px 12px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
                   <div style="display: flex; align-items: flex-start;">
-                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">
+                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">
                       Flotilla carga especializada:
                     </p>
                   </div>
                   <div style="display: flex; align-items: flex-start;">
-                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">
+                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">
                       Otros vehículos:
                     </p>
                   </div>
@@ -10156,16 +10157,16 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         `;
 
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
           
         <div style="background: #fff; padding: 12px;">
           <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Nombre de aseguradora</p></div>
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Bien asegurado</p></div>
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Monto asegurado</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Nombre de aseguradora</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Bien asegurado</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Monto asegurado</p></div>
           </div>
           ${_seguros_}
         </div>
@@ -11063,7 +11064,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -12108,7 +12109,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     margin: 2.5px 0px;
                     color: #0a3d8e;
                     font-weight: 700;
-                    font-size: 14px;
+                    font-size: 12px;
                   "
                 >
                   dias
@@ -12190,7 +12191,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
          border-radius: 10px;
          margin-bottom: 1rem;
          ">
-            <p style="color: #0a3d8e; font-size: 14px; font-weight: bold; margin-top: 10px; text-align: center;">
+            <p style="color: #0a3d8e; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
               ⚠️ Estimado cliente, le observamos que su comprador rechazo manera clara  no compartir información financiera.
             </p>
         </div>
@@ -12250,7 +12251,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -12279,7 +12280,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12292,7 +12293,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12305,7 +12306,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12616,7 +12617,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
@@ -12645,7 +12646,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12658,7 +12659,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12671,7 +12672,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
-                  font-size: 14px;
+                  font-size: 12px;
                   font-weight: 700;
                 "
               >
@@ -12829,14 +12830,14 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const m_o_p_c = mercado_objetivo_principales_clientes.length > 0 ? `
       <section style="width: 100%; margin-top: 40px;">
         <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-bottom: 20px;">
-          <p style="color: #0a3d8e; margin: 0px; font-size: 14px; font-weight: 700;">Principales Clientes</p>
+          <p style="color: #0a3d8e; margin: 0px; font-size: 12px; font-weight: 700;">Principales Clientes</p>
         </div>
         <div style="background: #fff; padding: 12px;">
           <div style="display: grid; grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
-            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Nombre de Empresa</p></div>
-            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Años de Relación</p></div>
-            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">País</p></div>
-            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Sector al que pertenece</p></div>
+            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Nombre de Empresa</p></div>
+            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Años de Relación</p></div>
+            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">País</p></div>
+            <div><p style="margin: 0px 0px 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Sector al que pertenece</p></div>
           </div>
 
           {_mercado_objetivo_clientes_}
@@ -12880,7 +12881,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </h3>
       </div>
       <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
           <thead>
             <tr style="background-color: #2ba2af; color: white; text-align: left;">
               <th style="padding: 8px; border: 1px solid #ddd;">RFC</th>
@@ -12904,21 +12905,21 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const cuerpoImportaciones = mercado_objetivo_importaciones.map(im => `
     <div
       style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #ccc;">
-      <div><p style="margin: 0px; font-size: 14px;">${im.pais}</p></div>
-      <div><p style="margin: 0px; font-size: 14px;">${im.porcentaje}%</p></div>
+      <div><p style="margin: 0px; font-size: 12px;">${im.pais}</p></div>
+      <div><p style="margin: 0px; font-size: 12px;">${im.porcentaje}%</p></div>
     </div>
     `).join('');
 
     const imPortaciones = mercado_objetivo_importaciones?.length > 0 ? `
       <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-bottom: 20px;">
-        <p style="color: #0a3d8e; margin: 0px; font-size: 14px; font-weight: 700;">Importaciones</p>
+        <p style="color: #0a3d8e; margin: 0px; font-size: 12px; font-weight: 700;">Importaciones</p>
       </div>
       <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
         <div style="display: flex; align-items: flex-start;">
-          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">País</p>
+          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">País</p>
         </div>
         <div style="display: flex; align-items: flex-start;">
-          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Porcentaje</p>
+          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Porcentaje</p>
         </div>
       </div>
       ${cuerpoImportaciones}
@@ -12927,21 +12928,21 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const cuerpoExportaciones = mercado_objetivo_exportaciones.map(im => `
     <div
       style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #ccc;">
-      <div><p style="margin: 0px; font-size: 14px;">${im.pais}</p></div>
-      <div><p style="margin: 0px; font-size: 14px;">${im.porcentaje}%</p></div>
+      <div><p style="margin: 0px; font-size: 12px;">${im.pais}</p></div>
+      <div><p style="margin: 0px; font-size: 12px;">${im.porcentaje}%</p></div>
     </div>
     `).join('');
 
     const imExportaciones = mercado_objetivo_exportaciones?.length > 0 ? `
       <div style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start; margin-bottom: 20px; margin-top: 20px">
-        <p style="color: #0a3d8e; margin: 0px; font-size: 14px; font-weight: 700;">Exportaciones</p>
+        <p style="color: #0a3d8e; margin: 0px; font-size: 12px; font-weight: 700;">Exportaciones</p>
       </div>
       <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
         <div style="display: flex; align-items: flex-start;">
-          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">País</p>
+          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">País</p>
         </div>
         <div style="display: flex; align-items: flex-start;">
-          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Porcentaje</p>
+          <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Porcentaje</p>
         </div>
       </div>
       ${cuerpoExportaciones}
@@ -13030,7 +13031,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </h5>
       </div>
       <div style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
           <thead>
             <tr style="background-color: #2ba2af; color: white; text-align: left;">
               <th style="padding: 8px; border: 1px solid #ddd;">Razón Social</th>
@@ -13046,7 +13047,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       : '';
 
     const empresas_info_basica =
-      `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
   
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
@@ -13092,13 +13093,13 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
           </h4>
 
-          <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+          <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
             <div>Nombre</div>
             <div>Legal TAX ID</div>
           </div>
@@ -13113,13 +13114,13 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
       </h4>
 
-      <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+      <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
         <div>Nombre</div>
         <div>Legal TAX ID</div>
       </div>
@@ -13139,13 +13140,13 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     /* Fin Accionistas mayoritarios */
     /* Principales Directores  */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
         </h4>
 
-        <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 14px;">
+        <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878; font-weight: 700; color: #2ba2af; font-size: 12px;">
           <div>Nombre</div>
           <div>Puesto</div>
           <div>Poder</div>
@@ -13171,7 +13172,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto; page-break-before: always;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto; page-break-before: always;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -13195,7 +13196,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -13208,7 +13209,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -13221,7 +13222,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #2ba2af;
-                    font-size: 14px;
+                    font-size: 12px;
                     font-weight: 700;
                   "
                 >
@@ -13288,19 +13289,19 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const tiene_transporte = equipo_transporte.carga > 0 || equipo_transporte.otros > 0;
 
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
               <div style="background: #ffff; padding: 12px 12px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
                   <div style="display: flex; align-items: flex-start;">
-                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">
+                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">
                       Flotilla carga especializada:
                     </p>
                   </div>
                   <div style="display: flex; align-items: flex-start;">
-                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">
+                    <p style="margin: 0px; margin-bottom: 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">
                       Otros vehículos:
                     </p>
                   </div>
@@ -13348,16 +13349,16 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
           </div>
         `;
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
           
         <div style="background: #fff; padding: 12px;">
           <div style="display: grid; grid-template-columns: 3fr 1.5fr 1.5fr; padding: 2.5px 0px; border-bottom: 1px solid #787878;">
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Nombre de aseguradora</p></div>
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Bien asegurado</p></div>
-            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 14px; font-weight: 700;">Monto asegurado</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Nombre de aseguradora</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Bien asegurado</p></div>
+            <div><p style="margin: 0 0 5px; color: #2ba2af; font-size: 12px; font-weight: 700;">Monto asegurado</p></div>
           </div>
           ${_seguros_}
         </div>
@@ -13680,7 +13681,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
               margin-top: 30px !important;
             "
@@ -13696,25 +13697,25 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         <!-- Veces -->
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
-          <div style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Veces</div>
+          <div style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Veces</div>
         </div>
       
         <!-- Moneda -->
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABt0lEQVR4nNWUP0hVcRTHf5Lge+dcCad6JErec54WuDxcdCgdA0fBocWlwDEwGt8WNAgKDv6751yVlhZzkKYwHIUgF4empiAQh0KM0mf87v09r9RT+Okt8sBdLofv55zfOedrzP8UILyByseo4eAVA2hnAeNwCJQ/JgDhF8ES38lFGyN6Akpf08p/+4Tf4MLtGxcWB+WndTFQfgfCE0FE46gUo/JR8l9o23borz5XAlD65ipd/KMzKY+ewGN+7K1fWAr76wLFxe6+RjmotJUWQKvegCDmeycVSlhpCBCacznvvQHXX3a0odIPV6GavxGgNJkNmd7arsyxacqPUL3fDEIzKFzL1pM+2TtA6e7NjQMSVlBpFoT3Tt1ADYXXijHfyg1kpqkliGgEldYzEH0uzlO7yTsgomFU/u66WfYXUH5kDyiI6O45OVPpGvMXf4DQrhvq87NzeMJ1cOANsAN0XrPT0GtemWugtOmK+OANKEg4gEo/ncAWxOUHsNJTsu5prTtx0swIx7wBSRdKD1F5v6FVp09zCEJVc5kA7bwJQs9Q+fWp1Vy1Vt4qXWzyDHSAXEX/KeAi8QsNVdYgk4IumgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
-          <div style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Moneda</div>
+          <div style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Moneda</div>
         </div>
       
         <!-- Porcentaje -->
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
-          <div style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Porcentaje</div>
+          <div style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Porcentaje</div>
         </div>
       
         <!-- Días -->
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2aQQ6DMAwE/QxvX9RT/19zakLfQRVRUEVBjSgIJ+xKPkCEk9EGO4eIZEqbcNV7iLDYpdB7COld7vdH5x+VEg+TfE4mheQfNSRfevaevzyQS/O4qcXn1N5pTCfaOiQzf1prWvMXSA6EJxD0MO1Pa3ezfqP8WBo/DYg6K79YDdI3rLBzQwy5+VeDeBMIUpojKCykehApRCCIM+H0jsDLz/yvI9WBiIOxJIKAjkRuLbBqGctvx/Jr7CMdOztqOqKglkMjagERB2NJBAEdidxaYNWyE5RfbwJBnAnVO6IW26N+6LWhcxcG3lc4ioFRi+3sFQ5KfOgF0BbNq3WbIGwAAAAASUVORK5CYII=" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
-          <div style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Días</div>
+          <div style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Días</div>
         </div>
       
       </div>
@@ -13731,7 +13732,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             </thead>
             <tbody>
                 <tr style="background-color: #ffffff;">
-                    <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Capital de Trabajo</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Capital de Trabajo</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -13739,7 +13740,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_capital_trabajo_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #ffffff;">
-                    <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;"></td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;"></td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABt0lEQVR4nNWUP0hVcRTHf5Lge+dcCad6JErec54WuDxcdCgdA0fBocWlwDEwGt8WNAgKDv6751yVlhZzkKYwHIUgF4empiAQh0KM0mf87v09r9RT+Okt8sBdLofv55zfOedrzP8UILyByseo4eAVA2hnAeNwCJQ/JgDhF8ES38lFGyN6Akpf08p/+4Tf4MLtGxcWB+WndTFQfgfCE0FE46gUo/JR8l9o23borz5XAlD65ipd/KMzKY+ewGN+7K1fWAr76wLFxe6+RjmotJUWQKvegCDmeycVSlhpCBCacznvvQHXX3a0odIPV6GavxGgNJkNmd7arsyxacqPUL3fDEIzKFzL1pM+2TtA6e7NjQMSVlBpFoT3Tt1ADYXXijHfyg1kpqkliGgEldYzEH0uzlO7yTsgomFU/u66WfYXUH5kDyiI6O45OVPpGvMXf4DQrhvq87NzeMJ1cOANsAN0XrPT0GtemWugtOmK+OANKEg4gEo/ncAWxOUHsNJTsu5prTtx0swIx7wBSRdKD1F5v6FVp09zCEJVc5kA7bwJQs9Q+fWp1Vy1Vt4qXWzyDHSAXEX/KeAi8QsNVdYgk4IumgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -13747,7 +13748,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_capital_trabajo_previo_anterior2_}</td>
                 </tr>
                 <tr style="background-color: #f2f8fc;">
-                    <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Prueba Ácida</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Prueba Ácida</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -13755,7 +13756,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_prueba_acida_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #ffffff;">
-                    <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Grado de Endeudamiento</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Grado de Endeudamiento</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -13763,7 +13764,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_grado_general_endeudamiento_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #f2f8fc;">
-                    <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Apalancamiento</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Apalancamiento</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -13771,7 +13772,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_apalancamiento_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación de Inventarios</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación de Inventarios</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13779,7 +13780,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_formula_1_inventarios_rotacion_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;"></td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;"></td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2aQQ6DMAwE/QxvX9RT/19zakLfQRVRUEVBjSgIJ+xKPkCEk9EGO4eIZEqbcNV7iLDYpdB7COld7vdH5x+VEg+TfE4mheQfNSRfevaevzyQS/O4qcXn1N5pTCfaOiQzf1prWvMXSA6EJxD0MO1Pa3ezfqP8WBo/DYg6K79YDdI3rLBzQwy5+VeDeBMIUpojKCykehApRCCIM+H0jsDLz/yvI9WBiIOxJIKAjkRuLbBqGctvx/Jr7CMdOztqOqKglkMjagERB2NJBAEdidxaYNWyE5RfbwJBnAnVO6IW26N+6LWhcxcG3lc4ioFRi+3sFQ5KfOgF0BbNq3WbIGwAAAAASUVORK5CYII=" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13788,7 +13789,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
               </tr>
               
               <tr style="background-color: #f2f8fc;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación Cuentas por Cobrar</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación Cuentas por Cobrar</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2aQQ6DMAwE/QxvX9RT/19zakLfQRVRUEVBjSgIJ+xKPkCEk9EGO4eIZEqbcNV7iLDYpdB7COld7vdH5x+VEg+TfE4mheQfNSRfevaevzyQS/O4qcXn1N5pTCfaOiQzf1prWvMXSA6EJxD0MO1Pa3ezfqP8WBo/DYg6K79YDdI3rLBzQwy5+VeDeBMIUpojKCykehApRCCIM+H0jsDLz/yvI9WBiIOxJIKAjkRuLbBqGctvx/Jr7CMdOztqOqKglkMjagERB2NJBAEdidxaYNWyE5RfbwJBnAnVO6IW26N+6LWhcxcG3lc4ioFRi+3sFQ5KfOgF0BbNq3WbIGwAAAAASUVORK5CYII=" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13796,7 +13797,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_rotacion_ctas_x_cobrar_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación de Pagos</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación de Pagos</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2aQQ6DMAwE/QxvX9RT/19zakLfQRVRUEVBjSgIJ+xKPkCEk9EGO4eIZEqbcNV7iLDYpdB7COld7vdH5x+VEg+TfE4mheQfNSRfevaevzyQS/O4qcXn1N5pTCfaOiQzf1prWvMXSA6EJxD0MO1Pa3ezfqP8WBo/DYg6K79YDdI3rLBzQwy5+VeDeBMIUpojKCykehApRCCIM+H0jsDLz/yvI9WBiIOxJIKAjkRuLbBqGctvx/Jr7CMdOztqOqKglkMjagERB2NJBAEdidxaYNWyE5RfbwJBnAnVO6IW26N+6LWhcxcG3lc4ioFRi+3sFQ5KfOgF0BbNq3WbIGwAAAAASUVORK5CYII=" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13804,7 +13805,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_rotacion_pagos_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #f2f8fc;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Solvencia</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Solvencia</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13812,7 +13813,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_solvencia_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Retorno sobre Capital</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Retorno sobre Capital</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13820,7 +13821,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_retorno_capital_acciones_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #f2f8fc;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Capital</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Capital</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13828,7 +13829,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_rendimiento_capital_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Activos</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Activos</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -13889,7 +13890,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           border-radius: 10px;
           ">
-           <p style="color: #0a3d8e; font-size: 14px; font-weight: bold; margin-top: 10px; text-align: center;">
+           <p style="color: #0a3d8e; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
              ⚠️ Estimado cliente, este apartado contiene información adicional de validaciones realizadas por Credibusiness. Le sugerimos considerarlas antes de tomar su decisión final sobre el crédito.
            </p>
       </div>
@@ -13910,67 +13911,67 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             </thead>
             <tbody>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de caja y bancos >200%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_caja_bancos_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de Ventas anuales > 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_ventas_anuales_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
                   de costo de ventas anual > 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_decremento_costo_ventas_anuales_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
                   de Gatos de Administración >60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_decremento_gastos_administracion_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de Utilidad Operativa > 50%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_utilidad_operativa_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de Activo total >60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_total_activo_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
                   de Pasivo Total >60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_decremento_total_pasivo_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de Capital Social > 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_capital_social_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
                   de Capital social > 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_decremento_capital_social_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Incremento
                   de Total de capital contable o patrimonio> 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_incremento_capital_contable_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                <td style="color: #0a3d8e; font-size: 14px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
+                <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Decremento
                   de Total de capital contable o patrimonio> 60%</td>
                 <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">
                   {_decremento_capital_contable_}</td>
@@ -14892,7 +14893,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             style="
               color: #0a3d8e;
               margin: 0px;
-              font-size: 14px;
+              font-size: 12px;
               font-weight: 700;
             "
           >
