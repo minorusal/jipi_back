@@ -4975,6 +4975,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         : ''
 
       const scoreTables = `
+        <div class="table-section">
         <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -4987,6 +4988,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${scoreClassRowsA}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Score vs Clases (Tabla 2)</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -4999,6 +5002,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${scoreClassRowsB}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Score descripción algoritmo</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -5012,6 +5017,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${scoreDescripcionRows}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Score vs % LC</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -5024,6 +5031,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${scoreLcRows}
           </tbody>
         </table>
+        </div>
       `
       const tableMap = {
         _01_pais: 'cat_pais_algoritmo',
@@ -5619,6 +5627,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               </tr>
             </tbody>
           </table>
+          <div class="table-section">
           <h4 style="color: #337ab7;">Detalles</h4>
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
@@ -5635,12 +5644,14 @@ ${JSON.stringify(info_email_error, null, 2)}
               ${detallesTabla}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Ratios financieros</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
-            <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <tr>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
@@ -5650,6 +5661,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${ratioRows}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Cálculos Estado de Balance</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -5665,6 +5678,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ${balanceRows}
           </tbody>
         </table>
+        </div>
+        <div class="table-section">
         <h4 style="color: #337ab7;">Cálculos Estado de Resultados</h4>
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
@@ -5702,6 +5717,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         thead { display: table-header-group; }
         tr, th, td { page-break-inside: avoid; }
         h3, h4 { page-break-after: avoid; }
+        .table-section { page-break-inside: avoid; }
       </style>
     `
     const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
