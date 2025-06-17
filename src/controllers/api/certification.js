@@ -5716,6 +5716,7 @@ const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_e
       error: false,
       r1_capital_trabajo_numero_veces,
       r2_capital_trabajo_valor_nominal,
+      r3_prueba_acida_numero_veces,
       r4_grado_general_endeudamiento_numero_veces,
       r5_apalancamiento_financiero_numero_veces,
       r6_rotacion_inventarios_numero_veces,
