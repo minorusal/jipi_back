@@ -5690,11 +5690,21 @@ ${JSON.stringify(info_email_error, null, 2)}
       return
     }
 
+    const pdfOptions = { format: 'A4', printBackground: true }
+    const file = { content: htmlContent }
+    const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
+
     const mailOptions = {
       from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
       to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
       subject,
-      html: htmlContent
+      text: 'Se adjunta reporte de crédito en formato PDF.',
+      attachments: [
+        {
+          filename: 'reporte_credito.pdf',
+          content: pdfBuffer
+        }
+      ]
     }
 
     logger.info(`${fileMethod} |Información del correo: ${JSON.stringify(mailOptions)}`)
