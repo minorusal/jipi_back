@@ -4903,8 +4903,8 @@ const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null,
     if (info_email_error) {
       subject = '🚨 Error en el reporte de crédito'
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
-          <h3 style="color: #d9534f;">⚠ Información de Error</h3>
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #333;">
+          <h3 style="color: #d9534f; margin: 0 0 8px 0;">⚠ Información de Error</h3>
           <pre style="
             background-color: #f5f5f5;
             padding: 10px;
@@ -4931,8 +4931,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             .map(
               ({ score, porcentaje_lc }) => `
           <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">${porcentaje_lc}%</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score}</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${porcentaje_lc}%</td>
           </tr>`
             )
             .join('')
@@ -4948,8 +4948,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             .map(
               ({ score_min, score_max, class: clase }) => `
           <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">${score_min} - ${score_max}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">${clase}</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score_min} - ${score_max}</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${clase}</td>
           </tr>`
               )
               .join('')
@@ -4965,9 +4965,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             .map(
               ({ score, wording_underwriting, porcentaje_lc }) => `
           <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">${score}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">${wording_underwriting}</td>
-            <td style="padding: 8px; border: 1px solid #ccc;">${porcentaje_lc}%</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${score}</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${wording_underwriting}</td>
+            <td style="padding: 6px 8px; border: 1px solid #e0e0e0;">${porcentaje_lc}%</td>
           </tr>`
             )
             .join('')
@@ -5097,12 +5097,12 @@ ${JSON.stringify(info_email_error, null, 2)}
           }
           return `
             <tr>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${key}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${descripcion}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${score}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${opciones}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${detalle}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${explicacion}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${key}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${descripcion}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${score}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${opciones}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${detalle}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${explicacion}</td>
             </tr>`
         })
         .join('')
@@ -5129,53 +5129,53 @@ ${JSON.stringify(info_email_error, null, 2)}
           const item = ratioData[key] || {}
           return `
             <tr>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${label}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatRatioValue(item[a])}</td>
-              <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatRatioValue(item[p])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${label}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatRatioValue(item[a])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatRatioValue(item[p])}</td>
             </tr>`
         })
         .join('')
 
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
-          <h3 style="color: #337ab7;">ℹ Resumen de resultados</h3>
-          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px;">
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #333;">
+          <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
+          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 14px;">
             <tbody>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Score</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.g52 ?? '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.g52 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Puntaje (G51)</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.g51 ?? '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Puntaje (G51)</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.g51 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Sumatoria de scores (G45)</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${scores.sumatoria_scors_g45 ?? '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Sumatoria de scores (G45)</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${scores.sumatoria_scors_g45 ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto solicitado</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatMoney(rangos.monto_solicitado ?? '-')}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Monto solicitado</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatMoney(rangos.monto_solicitado ?? '-')}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Monto sugerido</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${formatMoney(rangos.monto_sugerido ?? '-')}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Monto sugerido</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${formatMoney(rangos.monto_sugerido ?? '-')}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Wording</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Wording</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${rangos.wording_underwriting ?? '-'}</td>
               </tr>
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Versión algoritmo</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${version_algoritmo || '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Versión algoritmo</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${version_algoritmo || '-'}</td>
               </tr>
               ${Number(version_algoritmo) === 2 ? `<tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Razón algoritmo</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${razon_algoritmo || '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Razón algoritmo</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${razon_algoritmo || '-'}</td>
               </tr>` : ''}
               <tr>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">UUID</td>
-                <td style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">${uuid || '-'}</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">UUID</td>
+                <td style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">${uuid || '-'}</td>
               </tr>
             </tbody>
           </table>
@@ -5183,12 +5183,12 @@ ${JSON.stringify(info_email_error, null, 2)}
           <table style="border-collapse: collapse; width: 100%;">
             <thead>
               <tr>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Campo</th>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Descripción</th>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Score</th>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Opciones</th>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Detalle</th>
-                <th style="padding: 8px; border: 1px solid #ccc; white-space: pre-line;">Explicación</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Campo</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Descripción</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Opciones</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Detalle</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Explicación</th>
               </tr>
             </thead>
           <tbody>
@@ -5199,8 +5199,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
             </tr>
           </thead>
           <tbody>
@@ -5211,8 +5211,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Clase</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
             </tr>
           </thead>
           <tbody>
@@ -5223,9 +5223,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Wording underwriting</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">% LC</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Wording underwriting</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
             </tr>
           </thead>
           <tbody>
@@ -5236,8 +5236,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
             <thead>
               <tr>
-                <th style="padding: 8px; border: 1px solid #ccc;">Score</th>
-                <th style="padding: 8px; border: 1px solid #ccc;">% LC</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
+                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
               </tr>
             </thead>
             <tbody>
@@ -5248,9 +5248,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
           <thead>
             <tr>
-              <th style="padding: 8px; border: 1px solid #ccc;">Ratio</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Periodo anterior</th>
-              <th style="padding: 8px; border: 1px solid #ccc;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
             </tr>
           </thead>
           <tbody>
@@ -9401,7 +9401,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     const empresas_info_basica =
       `
-        <div style="font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
           </h4>
@@ -9448,7 +9448,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
     /* Inicio ccionistas mayoritarios */
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
@@ -9469,7 +9469,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
@@ -9496,7 +9496,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Principales Directores */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
@@ -9528,7 +9528,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -9643,7 +9643,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Inicio Transporte */
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
@@ -9704,7 +9704,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         `;
 
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
@@ -12594,7 +12594,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       : '';
 
     const empresas_info_basica =
-      `<div style="font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
   
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
@@ -12640,7 +12640,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
@@ -12661,7 +12661,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
@@ -12687,7 +12687,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     /* Fin Accionistas mayoritarios */
     /* Principales Directores  */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
@@ -12719,7 +12719,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto; page-break-before: always;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto; page-break-before: always;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -12836,7 +12836,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const tiene_transporte = equipo_transporte.carga > 0 || equipo_transporte.otros > 0;
 
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
@@ -12896,7 +12896,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
           </div>
         `;
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 13px; color: #2c3e50; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
@@ -13239,7 +13239,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         
       </section>
 
-      <div style="display: flex; justify-content: center; align-items: center; gap: 40px; padding: 20px; font-family: 'Segoe UI', sans-serif;">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 40px; padding: 20px; font-family: 'Helvetica Neue', Arial, sans-serif;">
 
         <!-- Veces -->
         <div style="display: flex; align-items: center; gap: 10px;">
