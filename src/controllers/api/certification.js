@@ -4976,8 +4976,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const scoreTables = `
         <div class="table-section">
-        <h4 style="color: #337ab7;">Score vs Clases (Tabla 1)</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Score vs Clases (Tabla 1)</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
@@ -4990,8 +4990,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Score vs Clases (Tabla 2)</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Score vs Clases (Tabla 2)</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
@@ -5004,8 +5004,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Score descripción algoritmo</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Score descripción algoritmo</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
@@ -5019,8 +5019,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Score vs % LC</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Score vs % LC</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
@@ -5628,8 +5628,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tbody>
           </table>
           <div class="table-section">
-          <h4 style="color: #337ab7;">Detalles</h4>
           <table style="border-collapse: collapse; width: 100%;">
+            <caption>Detalles</caption>
             <thead>
               <tr>
                 <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Campo</th>
@@ -5646,8 +5646,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Ratios financieros</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Ratios financieros</caption>
           <thead>
               <tr>
                 <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
@@ -5663,8 +5663,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Cálculos Estado de Balance</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Cálculos Estado de Balance</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
@@ -5680,8 +5680,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <h4 style="color: #337ab7;">Cálculos Estado de Resultados</h4>
-        <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Cálculos Estado de Resultados</caption>
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
@@ -5713,11 +5713,12 @@ ${JSON.stringify(info_email_error, null, 2)}
     const styles = `
       <style>
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
-        table { font-size: 12px; page-break-inside: avoid; break-inside: avoid; width: 100%; border-collapse: collapse; }
+        table { font-size: 12px; width: 100%; border-collapse: collapse; }
+        caption { caption-side: top; color: #337ab7; font-weight: bold; page-break-after: avoid; }
         thead { display: table-header-group; }
         tr, th, td { page-break-inside: avoid; break-inside: avoid; }
         h3, h4 { page-break-after: avoid; break-after: avoid; }
-        .table-section { page-break-inside: avoid; break-inside: avoid; }
+        .table-section { margin-top: 10px; }
       </style>
     `
     const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
