@@ -481,6 +481,29 @@ const startCronJobs = () => {
         }
     })
 
+    // Cron diario que marca como vencidas las referencias comerciales contestadas
+    cron.schedule('0 2 * * *', async () => {
+        try {
+            logger.info('[CRON] Referencias comerciales vencidas: inicio de ejecución')
+
+            // Paso 1: Obtener la variable del sistema para días de vigencia
+            const globalConfig = await utilitiesService.getParametros()
+            const diasVigencia = await globalConfig.find(item => item.nombre === 'dias_vigencia_rferencia_comercial').valor
+
+            // Paso 2: Buscar referencias con más de X días desde su actualización
+            const referenciasVencidas = await certificationService.getReferenciasContestadasVencidas(diasVigencia)
+
+            // Paso 3: Marcar referencias vencidas en la tabla externa
+            for (const ref of referenciasVencidas) {
+                await certificationService.actualizarEstatusReferenciaExternaVencida(ref.id_certification_referencia_comercial)
+            }
+
+            logger.info(`[CRON] Total actualizadas: ${referenciasVencidas.length}`)
+        } catch (error) {
+            logger.error(`[CRON] Error al actualizar referencias comerciales vencidas: ${JSON.stringify(error)}`)
+        }
+    })
+
     cron.schedule('0 17 * * 5', async () => {
         try {
             logger.info('Cron que envia correo de estadisticas de nuevos registros semanales')

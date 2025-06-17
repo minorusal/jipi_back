@@ -5618,6 +5618,29 @@ WHERE
     return result;
   }
 
+  // Obtiene referencias comerciales contestadas cuya antigüedad supera los días de vigencia
+  async getReferenciasContestadasVencidas(diasVigencia) {
+    const queryString = `
+      SELECT id_certification_referencia_comercial
+      FROM certification_referencia_comercial
+      WHERE contestada = 'si'
+        AND DATEDIFF(NOW(), updated_at) > ${mysqlLib.escape(diasVigencia)};
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
+  // Actualiza el estatus de la referencia en la tabla externa a "vencida"
+  async actualizarEstatusReferenciaExternaVencida(idReferencia) {
+    const queryString = `
+      UPDATE certification_referencia_comercial_external_invitation
+      SET estatus_referencia = 'vencida'
+      WHERE id_referencia = ${mysqlLib.escape(idReferencia)};
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
   async guardaBloc_sat69b(id_certification, sat69bArray) {
     const sat69b = sat69bArray[0]
 
