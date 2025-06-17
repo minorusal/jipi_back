@@ -5704,41 +5704,51 @@ ${JSON.stringify(info_email_error, null, 2)}
       return
     }
 
-    const pdfOptions = {
-      format: 'A4',
-      printBackground: true,
-      margin: { top: 10, right: 10, bottom: 10, left: 10 }
-    }
-    const styles = `
-      <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
-        table { font-size: 12px; width: 100%; border-collapse: collapse; }
-        caption { caption-side: top; color: #337ab7; font-weight: bold; page-break-after: avoid; }
-        thead { display: table-header-group; }
-        tr, th, td { page-break-inside: avoid; break-inside: avoid; }
-        h3, h4 { page-break-after: avoid; break-after: avoid; }
-        .table-section { margin-top: 10px; }
-      </style>
-    `
-    const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
-    const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
+    let mailOptions = {}
+    if (info_email_error) {
+      mailOptions = {
+        from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
+        to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
+        subject,
+        html: htmlContent
+      }
+    } else {
+      const pdfOptions = {
+        format: 'A4',
+        printBackground: true,
+        margin: { top: 10, right: 10, bottom: 10, left: 10 }
+      }
+      const styles = `
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
+          table { font-size: 12px; width: 100%; border-collapse: collapse; }
+          caption { caption-side: top; color: #337ab7; font-weight: bold; page-break-after: avoid; }
+          thead { display: table-header-group; }
+          tr, th, td { page-break-inside: avoid; break-inside: avoid; }
+          h3, h4 { page-break-after: avoid; break-after: avoid; }
+          .table-section { margin-top: 10px; }
+        </style>
+      `
+      const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
+      const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
 
-    const mailOptions = {
-      from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
-      to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
-      subject,
-      html: `
-        <p>Se adjunta reporte de crédito en formato PDF.</p>
-        <object data="cid:reporte_credito_cid" type="application/pdf" width="100%" height="800px"></object>
-      `,
-      attachments: [
-        {
-          filename: 'reporte_credito.pdf',
-          content: pdfBuffer,
-          contentType: 'application/pdf',
-          cid: 'reporte_credito_cid'
-        }
-      ]
+      mailOptions = {
+        from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
+        to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
+        subject,
+        html: `
+          <p>Se adjunta reporte de crédito en formato PDF.</p>
+          <object data="cid:reporte_credito_cid" type="application/pdf" width="100%" height="800px"></object>
+        `,
+        attachments: [
+          {
+            filename: 'reporte_credito.pdf',
+            content: pdfBuffer,
+            contentType: 'application/pdf',
+            cid: 'reporte_credito_cid'
+          }
+        ]
+      }
     }
 
     logger.info(`${fileMethod} |Información del correo: ${JSON.stringify(mailOptions)}`)
@@ -9477,14 +9487,13 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 `).join('');
 
     const filasReferenciasDetalladas = (datos_reporte?.referenciasComerciales || []).map(ref => `
-  <tr>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
-  </tr>
-`).join('');
-
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
+      </tr>
+    `).join('');
 
     const REFERENCIAS_C = referenciasValidas.length > 0
       ? `
@@ -9514,9 +9523,9 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
     </section>
   `
       : '';
-
-    const REFERENCIAS_CONSIDERADAS = filasReferenciasDetalladas
-      ? `
+    let REFERENCIAS_CONSIDERADAS = '';
+    if (filasReferenciasDetalladas) {
+      REFERENCIAS_CONSIDERADAS = `
     <section style="width: 100%; margin-top: 20px;">
       <div style="display: flex; flex-direction: column;">
         <h3 style="font-size: 16px; font-weight: 700; color: #0a3d8e; text-transform: uppercase; margin: 0 0 5px 0;">
@@ -9539,8 +9548,8 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </table>
       </div>
     </section>
-  `
-      : '';
+  `;
+    }
 
 
 
