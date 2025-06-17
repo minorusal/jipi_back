@@ -5108,6 +5108,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
       const ratioData = rangos.ratio_financiero || {}
+      const balanceData = rangos.calculos_estado_balance || {}
+      const resultsData = rangos.calculos_estado_resultados || {}
       const ratioMap = [
         ['r1_capital_trabajo_numero_veces', 'Capital de trabajo (veces)', 'razon_circulante_anterior', 'razon_circulante_previo_anterior'],
         ['r2_capital_trabajo_valor_nominal', 'Capital de trabajo (valor nominal)', 'capital_trabajo_anterior', 'capital_trabajo_previo_anterior'],
@@ -5124,14 +5126,113 @@ ${JSON.stringify(info_email_error, null, 2)}
         ['r13_rendimiento_activos', 'Rendimiento sobre activos', 'rendimiento_activos_anterior', 'rendimiento_activos_previo_anterior']
       ]
       const formatRatioValue = v => (v === null || v === undefined ? '-' : v)
+      const ratioOps = {
+        r1_capital_trabajo_numero_veces: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${formatMoney(acA)} / ${formatMoney(pcA)}<br/>Previo: ${formatMoney(acP)} / ${formatMoney(pcP)}`
+        },
+        r2_capital_trabajo_valor_nominal: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: ${formatMoney(acA)} - ${formatMoney(pcA)}<br/>Previo: ${formatMoney(acP)} - ${formatMoney(pcP)}`
+        },
+        r3_prueba_acida_numero_veces: () => {
+          const acA = balanceData.total_activo_circulante?.total_activo_circulante_anterior
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const pcA = balanceData.total_pasivo_circulante?.total_pasivo_circulante_anterior
+          const acP = balanceData.total_activo_circulante?.total_activo_circulante_previo_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          const pcP = balanceData.total_pasivo_circulante?.total_pasivo_circulante_previo_anterior
+          return `Anterior: (${formatMoney(acA)} - ${formatMoney(invA)}) / ${formatMoney(pcA)}<br/>Previo: (${formatMoney(acP)} - ${formatMoney(invP)}) / ${formatMoney(pcP)}`
+        },
+        r4_grado_general_endeudamiento_numero_veces: () => {
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          return `Anterior: ${formatMoney(taA)} / ${formatMoney(plA)}<br/>Previo: ${formatMoney(taP)} / ${formatMoney(plP)}`
+        },
+        r5_apalancamiento_financiero_numero_veces: () => {
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          return `Anterior: ${formatMoney(plA)} / ${formatMoney(taA)}<br/>Previo: ${formatMoney(plP)} / ${formatMoney(taP)}`
+        },
+        r6_rotacion_inventarios_numero_veces: () => {
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          return `Anterior: ${formatMoney(cvA)} / ${formatMoney(invA)}<br/>Previo: ${formatMoney(cvP)} / ${formatMoney(invP)}`
+        },
+        r7_rotacion_inventarios_dias: () => {
+          const invA = balanceData.estado_balance_anterior?.inventarios_anterior
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          return `Anterior: (${formatMoney(invA)} / ${formatMoney(cvA)}) * 360<br/>Previo: (${formatMoney(invP)} / ${formatMoney(cvP)}) * 360`
+        },
+        r8_rotacion_cuentas_x_cobrar_dias: () => {
+          const cliA = balanceData.estado_balance_anterior?.cliente_anterior
+          const vtaA = resultsData.estado_resultado_anterior?.ventas_anuales_anterior
+          const cliP = balanceData.estado_balance_previo_anterior?.cliente_previo_anterior
+          const vtaP = resultsData.estado_resultado_previo_anterior?.ventas_anuales_previo_anterior
+          return `Anterior: (${formatMoney(cliA)} / ${formatMoney(vtaA)}) * 360<br/>Previo: (${formatMoney(cliP)} / ${formatMoney(vtaP)}) * 360`
+        },
+        r9_rotacion_pagos_dias: () => {
+          const provA = balanceData.estado_balance_anterior?.proveedores_anterior
+          const acreA = balanceData.estado_balance_anterior?.acreedores_anterior
+          const cvA = resultsData.estado_resultado_anterior?.costo_ventas_anuales_anterior
+          const provP = balanceData.estado_balance_previo_anterior?.proveedores_previo_anterior
+          const acreP = balanceData.estado_balance_previo_anterior?.acreedores_previo_anterior
+          const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
+          return `Anterior: (${formatMoney(provA)} + ${formatMoney(acreA)}) / ${formatMoney(cvA)} * 360<br/>Previo: (${formatMoney(provP)} + ${formatMoney(acreP)}) / ${formatMoney(cvP)} * 360`
+        },
+        r10_solvencia_deuda_total_sobre_capital: () => {
+          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${formatMoney(plA)} / ${formatMoney(ccA)}<br/>Previo: ${formatMoney(plP)} / ${formatMoney(ccP)}`
+        },
+        r11_retorno_sobre_capital_acciones: () => {
+          const uoA = resultsData.utilidad_operacion?.operacion_utilidad_operacion_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const uoP = resultsData.utilidad_operacion?.operacion_utilidad_operacion_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${formatMoney(uoA)} / ${formatMoney(ccA)} * 100<br/>Previo: ${formatMoney(uoP)} / ${formatMoney(ccP)} * 100`
+        },
+        r12_rendimiento_capital: () => {
+          const unA = resultsData.utilidad_neta?.utilidad_neta_anterior
+          const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
+          const unP = resultsData.utilidad_neta?.utilidad_neta_previo_anterior
+          const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
+          return `Anterior: ${formatMoney(unA)} / ${formatMoney(ccA)} * 100<br/>Previo: ${formatMoney(unP)} / ${formatMoney(ccP)} * 100`
+        },
+        r13_rendimiento_activos: () => {
+          const unA = resultsData.utilidad_neta?.utilidad_neta_anterior
+          const taA = balanceData.total_activo?.total_activo_anterior
+          const unP = resultsData.utilidad_neta?.utilidad_neta_previo_anterior
+          const taP = balanceData.total_activo?.total_activo_previo_anterior
+          return `Anterior: ${formatMoney(unA)} / ${formatMoney(taA)} * 100<br/>Previo: ${formatMoney(unP)} / ${formatMoney(taP)} * 100`
+        }
+      }
       const ratioRows = ratioMap
         .map(([key, label, a, p], idx) => {
           const item = ratioData[key] || {}
+          const op = ratioOps[key] ? ratioOps[key]() : '-'
           return `
             <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[a])}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[p])}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${op}</td>
             </tr>`
         })
         .join('')
@@ -5251,6 +5352,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
             </tr>
           </thead>
           <tbody>
