@@ -2172,6 +2172,7 @@ WHERE cer.certificacion_id = (
       crc.razon_social,
       crc.denominacion,
       crc.rfc,
+      crc.contestada,
       d.codigo_postal,
       crc.id_pais
     FROM certification_referencia_comercial AS crc
@@ -5565,7 +5566,8 @@ WHERE
   async updateEstatusExternalReference(hash, estatus = 'actualizado') {
     const queryString = `
       UPDATE certification_referencia_comercial_external_invitation
-      SET estatus = '${estatus}'
+      SET estatus = '${estatus}',
+      estatus_referencia = 'vigente'
       WHERE hash = '${hash}';
   `;
     await mysqlLib.query(queryString);

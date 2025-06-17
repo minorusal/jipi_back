@@ -1287,8 +1287,7 @@ const getReferenciaComercialForm = async (req, res, next) => {
       referencia.empresa_cliente = empresas_cliente
       referencias_comerciales.push(referencia)
     }
-
-
+    
     return res.json({
       id_certification,
       referencias_comerciales
