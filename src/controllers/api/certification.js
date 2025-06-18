@@ -4656,28 +4656,34 @@ const getAlgoritmoResult = async (req, res, next) => {
         }
       }
 
-      referencias_consideradas = await Promise.all(
-        validas.map(async r => ({
-          ...r,
-          ...(await fetchEmpresaData(r))
-        }))
+      referencias_consideradas = uniqueBy(
+        await Promise.all(
+          validas.map(async r => ({
+            ...r,
+            ...(await fetchEmpresaData(r))
+          }))
+        ),
+        x => x.id_certification_referencia_comercial
       )
 
-      referencias_descartadas = await Promise.all(
-        todas
-          .filter(r => !setValidas.has(r.id_certification_referencia_comercial))
-          .map(async r => {
-            let motivo = ''
-            if (r.contestada !== 'si') motivo = 'No contestada'
-            else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
-            else if (r.referencia_valida !== 'true') motivo = r.observaciones || 'No válida'
-            else motivo = r.observaciones || r.estatus_referencia || 'No válida'
-            return {
-              ...r,
-              ...(await fetchEmpresaData(r)),
-              motivo_descartada: motivo
-            }
-          })
+      referencias_descartadas = uniqueBy(
+        await Promise.all(
+          todas
+            .filter(r => !setValidas.has(r.id_certification_referencia_comercial))
+            .map(async r => {
+              let motivo = ''
+              if (r.contestada !== 'si') motivo = 'No contestada'
+              else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
+              else if (r.referencia_valida !== 'true') motivo = r.observaciones || 'No válida'
+              else motivo = r.observaciones || r.estatus_referencia || 'No válida'
+              return {
+                ...r,
+                ...(await fetchEmpresaData(r)),
+                motivo_descartada: motivo
+              }
+            })
+        ),
+        x => x.id_certification_referencia_comercial
       )
     } catch (err) {
       logger.warn(`${fileMethod} | ${customUuid} Error obteniendo referencias para correo: ${err}`)
@@ -5652,6 +5658,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
@@ -5666,6 +5673,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
@@ -5797,6 +5805,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Referencias comerciales consideradas</caption>
           <thead>
             <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">ID</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
@@ -5812,6 +5821,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Referencias comerciales descartadas</caption>
           <thead>
             <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">ID</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Calificación</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Línea de crédito</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Porcentaje de deuda</th>
