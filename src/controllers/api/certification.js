@@ -5659,9 +5659,10 @@ ${JSON.stringify(info_email_error, null, 2)}
                 (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
           </tr>`
               )
               .join('')
@@ -5806,9 +5807,10 @@ ${JSON.stringify(info_email_error, null, 2)}
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">ID</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Calificación</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Línea de crédito</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Porcentaje de deuda</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Días de atraso</th>
             </tr>
           </thead>
           <tbody>
