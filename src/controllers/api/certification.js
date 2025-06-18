@@ -5293,28 +5293,28 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             <tr>
-              <td style="background-color: #000; color: #fff;">Capital<br><small>capital_contable</small></td>
+              <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.<br><small>capital_contable</small></td>
               <td><strong>Valor:</strong> ${capitalAnterior}</td>
               <td><strong>Valor:</strong> ${capitalPrevio}</td>
               <td>${msg(resCapital)}</td>
               <td>capital_contable – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Caja y bancos + Inventarios<br><small>caja_bancos, saldo_inventarios</small></td>
+              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.<br><small>caja_bancos, saldo_inventarios</small></td>
               <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resCajaInv)}</td>
               <td>caja_bancos, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar<br><small>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</small></td>
+              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.<br><small>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</small></td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resClientesInv)}</td>
               <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Inventarios<br><small>saldo_inventarios</small></td>
+              <td style="background-color: #000; color: #fff;">Si no se reporta ningún valor de inventarios en ninguno de los periodos contables, se ejecuta el algoritmo sin EEFF.<br><small>saldo_inventarios</small></td>
               <td><strong>Valor:</strong> ${invAnterior}</td>
               <td><strong>Valor:</strong> ${invPrevio}</td>
               <td>${msg(resInventarios)}</td>
