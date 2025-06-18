@@ -3143,6 +3143,7 @@ WHERE cer.certificacion_id = (
       cpe.utilidad_operativa as utilidad_operativa_${periodo},
       cpe.gastos_productos_financieros as gastos_productos_financieros_${periodo},
       cpe.depreciacion_amortizacion as depreciacion_amortizacion_${periodo},
+      cpe.utilidad_neta as utilidad_neta_${periodo},
       cpe.otros_ingresos as otros_ingresos_${periodo},
       cpe.otros_egresos as otros_egresos_${periodo},
       cpe.otros_gastos as otros_gastos_${periodo}
