@@ -3445,8 +3445,12 @@ const cuentaCajaBancos = async (idCertification, customUuid) => {
 
     const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
 
-    if ((isEmpty(caja_banco_anterior) && isEmpty(inventario_anterior)) ||
-      (isEmpty(caja_banco_previo_anterior) && isEmpty(inventario_previo_anterior))) {
+    if (
+      isEmpty(caja_banco_anterior) ||
+      isEmpty(caja_banco_previo_anterior) ||
+      isEmpty(inventario_anterior) ||
+      isEmpty(inventario_previo_anterior)
+    ) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
@@ -3492,8 +3496,12 @@ const cuentaClienteCuentasXCobrar = async (idCertification, customUuid) => {
 
     const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
 
-    if ((isEmpty(clientes_cuentas_x_cobrar_anterior) && isEmpty(inventario_anterior)) ||
-      (isEmpty(clientes_cuentas_x_cobrar_previo_anterior) && isEmpty(inventario_previo_anterior))) {
+    if (
+      isEmpty(clientes_cuentas_x_cobrar_anterior) ||
+      isEmpty(clientes_cuentas_x_cobrar_previo_anterior) ||
+      isEmpty(inventario_anterior) ||
+      isEmpty(inventario_previo_anterior)
+    ) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_anterior: ${clientes_cuentas_x_cobrar_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_previo_anterior: ${clientes_cuentas_x_cobrar_previo_anterior}`)
@@ -3526,7 +3534,10 @@ const cuentaInventarios = async (id_certification, customUuid) => {
 
     const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
 
-    if (isEmpty(inventario_anterior) && isEmpty(inventario_previo_anterior)) {
+    if (
+      isEmpty(inventario_anterior) ||
+      isEmpty(inventario_previo_anterior)
+    ) {
       logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
       logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
@@ -3550,13 +3561,16 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     }
     return resp
   }
-  const isEmpty = (value) =>
-    value === null || value === undefined || value === ''
   const parseNumber = (val) => {
     if (val === undefined || val === null) return NaN
     const cleaned = String(val).replace(/[$,\s]/g, '')
     return Number(cleaned)
   }
+  const isEmpty = (value) =>
+    value === null ||
+    value === undefined ||
+    value === '' ||
+    parseNumber(value) === 0
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
@@ -3633,7 +3647,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
       const provA = balanceAnterior?.proveedores_anterior
       const provP = balancePrevio?.proveedores_previo_anterior
-      if (isEmpty(provA) && isEmpty(provP)) {
+      if (isEmpty(provA) || isEmpty(provP)) {
         return buildResponse('Proveedores vacíos en ambos periodos', 2)
       }
 
@@ -5206,16 +5220,40 @@ ${JSON.stringify(info_email_error, null, 2)}
         const num = normalizeNumber(str)
         return isNaN(num)
       }
-      const resCapital = isMissing(balAnterior.capital_contable) || isMissing(balPrevio.capital_contable)
-      const resCajaInv =
-        (isMissing(balAnterior.caja_bancos) && isMissing(balAnterior.saldo_inventarios)) ||
-        (isMissing(balPrevio.caja_bancos) && isMissing(balPrevio.saldo_inventarios))
-      const resClientesInv =
-        (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) && isMissing(balAnterior.saldo_inventarios)) ||
-        (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) && isMissing(balPrevio.saldo_inventarios))
-      const resInventarios = isMissing(balAnterior.saldo_inventarios) && isMissing(balPrevio.saldo_inventarios)
-      const resProveedores = isMissing(balAnterior.proveedores) && isMissing(balPrevio.proveedores)
       const isZero = v => normalizeNumber(v) === 0
+      const resCapital =
+        isMissing(balAnterior.capital_contable) ||
+        isMissing(balPrevio.capital_contable) ||
+        isZero(balAnterior.capital_contable) ||
+        isZero(balPrevio.capital_contable)
+      const resCajaInv =
+        isMissing(balAnterior.caja_bancos) ||
+        isMissing(balPrevio.caja_bancos) ||
+        isMissing(balAnterior.saldo_inventarios) ||
+        isMissing(balPrevio.saldo_inventarios) ||
+        isZero(balAnterior.caja_bancos) ||
+        isZero(balPrevio.caja_bancos) ||
+        isZero(balAnterior.saldo_inventarios) ||
+        isZero(balPrevio.saldo_inventarios)
+      const resClientesInv =
+        isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
+        isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
+        isMissing(balAnterior.saldo_inventarios) ||
+        isMissing(balPrevio.saldo_inventarios) ||
+        isZero(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
+        isZero(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
+        isZero(balAnterior.saldo_inventarios) ||
+        isZero(balPrevio.saldo_inventarios)
+      const resInventarios =
+        isMissing(balAnterior.saldo_inventarios) ||
+        isMissing(balPrevio.saldo_inventarios) ||
+        isZero(balAnterior.saldo_inventarios) ||
+        isZero(balPrevio.saldo_inventarios)
+      const resProveedores =
+        isMissing(balAnterior.proveedores) ||
+        isMissing(balPrevio.proveedores) ||
+        isZero(balAnterior.proveedores) ||
+        isZero(balPrevio.proveedores)
       const resVentas =
         isMissing(resAnterior.ventas_anuales) ||
         isMissing(resPrevio.ventas_anuales) ||
