@@ -5192,6 +5192,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         const num = Number(value)
         return isNaN(num) ? value : moneyFormatter.format(num)
       }
+      const formatDays = value => {
+        const num = Number(value)
+        return isNaN(num) ? value : `${num} d\u00EDas`
+      }
 
       const excludedKeys = [
         'alertas',
@@ -5239,7 +5243,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_superior !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            detalle = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatMoney(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatMoney(val.parametro_dio)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+            detalle = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatDays(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatDays(val.parametro_dio)}\nL\u00EDmite inferior: ${formatDays(val.limite_inferior)}\nL\u00EDmite superior: ${formatDays(val.limite_superior)}`
           } else if (
             [
               '_08_ventas_anuales',
