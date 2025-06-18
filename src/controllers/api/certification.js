@@ -5050,34 +5050,78 @@ ${JSON.stringify(info_email_error, null, 2)}
       } = info_email
 
 
+      const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN'
+      })
+      const formatMoneyAlg = value => {
+        const num = Number(value)
+        return isNaN(num) ? null : moneyFormatterAlg.format(num)
+      }
+
+      const balAnterior = partidasFinancierasBalance.find(
+        p => p.tipo_periodo_estado_balance === 'anterior'
+      ) || {}
+      const balPrevio = partidasFinancierasBalance.find(
+        p => p.tipo_periodo_estado_balance === 'previo_anterior'
+      ) || {}
+
+      const val = (v, periodo) => {
+        const fm = formatMoneyAlg(v)
+        return fm ?? `<span style="color: red;">Sin dato en ${periodo}</span>`
+      }
+
+      const capitalAnterior = val(balAnterior.capital_contable, 'periodo anterior')
+      const capitalPrevio = val(balPrevio.capital_contable, 'periodo previo anterior')
+      const cajaAnterior = val(balAnterior.caja_bancos, 'periodo anterior')
+      const cajaPrevio = val(balPrevio.caja_bancos, 'periodo previo anterior')
+      const invAnterior = val(balAnterior.saldo_inventarios, 'periodo anterior')
+      const invPrevio = val(balPrevio.saldo_inventarios, 'periodo previo anterior')
+      const cxcAnterior = val(balAnterior.saldo_cliente_cuenta_x_cobrar, 'periodo anterior')
+      const cxcPrevio = val(balPrevio.saldo_cliente_cuenta_x_cobrar, 'periodo previo anterior')
+
+      const inventariosEncontrados =
+        balAnterior.saldo_inventarios != null || balPrevio.saldo_inventarios != null
+
       const validacionesVersionTable = `
         <h3>Validaciones para selección de versión de algoritmo</h3>
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
-              <th>Periodo anterior (${(/(\d{4})/.exec((partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'anterior')?.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance || '')||'')||[])[1] || '-'})</th>
-              <th>Periodo previo anterior (${(/(\d{4})/.exec((partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'previo_anterior')?.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance || '')||'')||[])[1] || '-'})</th>
+              <th>Periodo anterior (${(/(\d{4})/.exec((balAnterior.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance || '')) || [])[1] || '-'})</th>
+              <th>Periodo previo anterior (${(/(\d{4})/.exec((balPrevio.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance || '')) || [])[1] || '-'})</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td style="background-color: #000; color: #fff;">Capital</td>
-              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF</td>
-              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF</td>
+              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF<br><strong>Valor:</strong> ${capitalAnterior}</td>
+              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF<br><strong>Valor:</strong> ${capitalPrevio}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Caja y bancos</td>
-              <td colspan="2">Con no tener este + Inventarios en cualquier periodo contable → se va a algoritmo sin EEFF</td>
+              <td style="background-color: #000; color: #fff;">Caja y bancos + Inventarios</td>
+              <td colspan="2">Con no tener este + Inventarios en cualquier periodo contable → se va a algoritmo sin EEFF<br>
+                <strong>Caja y bancos periodo anterior:</strong> ${cajaAnterior}<br>
+                <strong>Inventarios periodo anterior:</strong> ${invAnterior}<br>
+                <strong>Caja y bancos periodo previo anterior:</strong> ${cajaPrevio}<br>
+                <strong>Inventarios periodo previo anterior:</strong> ${invPrevio}
+              </td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar</td>
-              <td colspan="2">Con no tener este + Clientes en cualquier periodo contable → se va a algoritmo sin EEFF</td>
+              <td colspan="2">Con no tener este + Clientes en cualquier periodo contable → se va a algoritmo sin EEFF<br>
+                <strong>Clientes y cuentas por cobrar periodo anterior:</strong> ${cxcAnterior}<br>
+                <strong>Clientes y cuentas por cobrar periodo previo anterior:</strong> ${cxcPrevio}
+              </td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Inventarios<br><small>No tener nada de EEFF (partidas)</small></td>
-              <td></td>
-              <td>Se va a algoritmo sin EEFF</td>
+              <td colspan="2">Se va a algoritmo sin EEFF<br>
+                <strong>Inventarios periodo anterior:</strong> ${invAnterior}<br>
+                <strong>Inventarios periodo previo anterior:</strong> ${invPrevio}<br>
+                <strong>Inventarios encontrados:</strong> ${inventariosEncontrados ? 'sí' : 'no'}
+              </td>
             </tr>
           </tbody>
         </table>
