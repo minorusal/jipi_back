@@ -4989,6 +4989,7 @@ const sendEmailNodeMailer = async ({
 
     let partidasFinancierasBalance = []
     let partidasFinancierasResultados = []
+    const attachments = []
 
     if (id_certification) {
       try {
@@ -6086,26 +6087,37 @@ ${JSON.stringify(info_email_error, null, 2)}
         </div>
       `
       logger.info(`${fileMethod} | La información del email es: ${JSON.stringify(info_email)}`)
+
+      try {
+        const pdfOptions = { format: 'A4', printBackground: true }
+        const pdfFile = { content: htmlContent }
+        const pdfBuffer = await html_to_pdf.generatePdf(pdfFile, pdfOptions)
+        attachments.push({
+          filename: 'reporte_desglose_algoritmo.pdf',
+          content: pdfBuffer,
+          contentType: 'application/pdf'
+        })
+        htmlContent = `
+        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
+          <p>Se adjunta el Reporte de Desglose del Algoritmo en formato PDF.</p>
+        </div>
+        `
+      } catch (err) {
+        logger.error(`${fileMethod} | Error al generar PDF: ${err.message}`)
+      }
     } else {
       logger.info(`${fileMethod} | No se proporcionó información para enviar correo`)
       return
     }
 
-    let mailOptions = {}
-    if (info_email_error) {
-      mailOptions = {
-        from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
-        to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
-        subject,
-        html: htmlContent
-      }
-    } else {
-      mailOptions = {
-        from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
-        to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
-        subject,
-        html: htmlContent
-      }
+    const mailOptions = {
+      from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
+      to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
+      subject,
+      html: htmlContent
+    }
+    if (attachments.length) {
+      mailOptions.attachments = attachments
     }
 
     logger.info(`${fileMethod} |Información del correo: ${JSON.stringify(mailOptions)}`)
