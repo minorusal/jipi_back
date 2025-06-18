@@ -3658,7 +3658,13 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
       const unA = resultadoAnterior?.utilidad_neta_anterior
       const unP = resultadoPrevio?.utilidad_neta_previo_anterior
-      if (isEmpty(unA) || isEmpty(unP)) {
+      const parseNumber = val => {
+        if (val === undefined || val === null) return NaN
+        const cleaned = String(val).replace(/[$,\s]/g, '')
+        return Number(cleaned)
+      }
+      const isEmptyUtilidadNeta = v => isEmpty(v) || parseNumber(v) === 0
+      if (isEmptyUtilidadNeta(unA) || isEmptyUtilidadNeta(unP)) {
         return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
       }
 
@@ -5193,7 +5199,17 @@ ${JSON.stringify(info_email_error, null, 2)}
       const resCosto = isMissing(resAnterior.costo_ventas_anuales) || isMissing(resPrevio.costo_ventas_anuales)
       const resUBruta = isMissing(resAnterior.utilidad_bruta) || isMissing(resPrevio.utilidad_bruta)
       const resUOperativa = isMissing(resAnterior.utilidad_operativa) || isMissing(resPrevio.utilidad_operativa)
-      const resUNeta = isMissing(resAnterior.utilidad_neta) || isMissing(resPrevio.utilidad_neta)
+      const parseNumber = v => {
+        if (v === undefined || v === null) return NaN
+        const cleaned = String(v).replace(/[$,\s]/g, '')
+        return Number(cleaned)
+      }
+      const isZero = v => parseNumber(v) === 0
+      const resUNeta =
+        isMissing(resAnterior.utilidad_neta) ||
+        isMissing(resPrevio.utilidad_neta) ||
+        isZero(resAnterior.utilidad_neta) ||
+        isZero(resPrevio.utilidad_neta)
       const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
 
       const validacionesVersionTable = `
