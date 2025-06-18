@@ -5654,8 +5654,51 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
-      const referenciasConsideradas = info_email.referencias_consideradas || []
-      const referenciasDescartadas = info_email.referencias_descartadas || []
+      let referenciasConsideradas = info_email.referencias_consideradas || []
+      let referenciasDescartadas = info_email.referencias_descartadas || []
+
+      const allReferencias =
+        Array.isArray(info_email.referencias)
+          ? info_email.referencias
+          : [...referenciasConsideradas, ...referenciasDescartadas]
+
+      if (Array.isArray(allReferencias) && allReferencias.length > 0) {
+        const uniqueBy = (arr, keyFn) => {
+          const seen = new Set()
+          return (arr || []).filter(item => {
+            const k = keyFn(item)
+            if (seen.has(k)) return false
+            seen.add(k)
+            return true
+          })
+        }
+
+        const esConsiderada = r =>
+          r.contestada === 'si' &&
+          r.referencia_valida === 'true' &&
+          (!r.estatus_referencia || r.estatus_referencia !== 'vencida') &&
+          (!r.observaciones || r.observaciones.trim() === '')
+
+        const motivoDescartada = r => {
+          if (r.contestada !== 'si') return 'No contestada'
+          if (r.estatus_referencia === 'vencida') return 'Vencida'
+          if (r.referencia_valida !== 'true') return r.observaciones || 'No válida'
+          if (r.observaciones) return r.observaciones
+          return r.estatus_referencia || 'No válida'
+        }
+
+        referenciasConsideradas = uniqueBy(
+          allReferencias.filter(esConsiderada),
+          x => x.id_certification_referencia_comercial
+        )
+
+        referenciasDescartadas = uniqueBy(
+          allReferencias
+            .filter(r => !esConsiderada(r))
+            .map(r => ({ ...r, motivo_descartada: motivoDescartada(r) })),
+          x => x.id_certification_referencia_comercial
+        )
+      }
 
       const buildRefRowsConsideradas = refs =>
         Array.isArray(refs)
