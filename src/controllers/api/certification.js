@@ -3496,13 +3496,16 @@ const cuentaClienteCuentasXCobrar = async (idCertification, customUuid) => {
 
     const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
 
-    if (
-      isEmpty(clientes_cuentas_x_cobrar_anterior) ||
-      isEmpty(clientes_cuentas_x_cobrar_previo_anterior) ||
-      isEmpty(inventario_anterior) ||
+    const faltaPeriodoAnterior =
+      isEmpty(clientes_cuentas_x_cobrar_anterior) &&
+      isEmpty(inventario_anterior)
+
+    const faltaPeriodoPrevio =
+      isEmpty(clientes_cuentas_x_cobrar_previo_anterior) &&
       isEmpty(inventario_previo_anterior)
-    ) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
+
+    if (faltaPeriodoAnterior || faltaPeriodoPrevio) {
+      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Clientes y cuentas por cobrar e inventarios ausentes en al menos un periodo]`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_anterior: ${clientes_cuentas_x_cobrar_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_previo_anterior: ${clientes_cuentas_x_cobrar_previo_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
@@ -3764,8 +3767,14 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       }
     }
 
-    if ((!condicionante_cta_x_cobrar_anterior || !condicionante_cta_x_cobrar_previo_anterior) && (!condicionante_inventarios_anterior || !condicionante_inventarios_previo_anterior)) {
-      return buildResponse('Partidas financieras incompletas (Cientes o cuentas por cobrar o inventarios)', 2)
+    if (
+      (condicionante_cta_x_cobrar_anterior && condicionante_inventarios_anterior) ||
+      (condicionante_cta_x_cobrar_previo_anterior && condicionante_inventarios_previo_anterior)
+    ) {
+      return buildResponse(
+        'Partidas financieras incompletas (Clientes y cuentas por cobrar e inventarios en al menos un periodo)',
+        2
+      )
     }
 
     if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance)) {
@@ -5235,15 +5244,19 @@ ${JSON.stringify(info_email_error, null, 2)}
         isZero(balPrevio.caja_bancos) ||
         isZero(balAnterior.saldo_inventarios) ||
         isZero(balPrevio.saldo_inventarios)
-      const resClientesInv =
-        isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
-        isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
-        isMissing(balAnterior.saldo_inventarios) ||
-        isMissing(balPrevio.saldo_inventarios) ||
-        isZero(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
-        isZero(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
-        isZero(balAnterior.saldo_inventarios) ||
-        isZero(balPrevio.saldo_inventarios)
+      const faltaClientesInvAnterior =
+        (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
+          isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
+        (isMissing(balAnterior.saldo_inventarios) ||
+          isZero(balAnterior.saldo_inventarios))
+
+      const faltaClientesInvPrevio =
+        (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
+          isZero(balPrevio.saldo_cliente_cuenta_x_cobrar)) &&
+        (isMissing(balPrevio.saldo_inventarios) ||
+          isZero(balPrevio.saldo_inventarios))
+
+      const resClientesInv = faltaClientesInvAnterior || faltaClientesInvPrevio
       const resInventarios =
         isMissing(balAnterior.saldo_inventarios) ||
         isMissing(balPrevio.saldo_inventarios) ||
