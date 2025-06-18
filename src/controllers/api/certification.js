@@ -5049,63 +5049,38 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
-      const capitalOk = id_certification
-        ? await cuentaConCapital(id_certification, uuid)
-        : false
-      const cajaBancosOk = id_certification
-        ? await cuentaCajaBancos(id_certification, uuid)
-        : false
-      const clientesOk = id_certification
-        ? await cuentaClienteCuentasXCobrar(id_certification, uuid)
-        : false
-      const inventariosOk = id_certification
-        ? await cuentaInventarios(id_certification, uuid)
-        : false
-
-      const validacionesVersionRows = [
-        {
-          label: 'Capital contable en ambos periodos',
-          value: capitalOk
-        },
-        {
-          label: 'Caja y bancos e inventarios en ambos periodos',
-          value: cajaBancosOk
-        },
-        {
-          label: 'Clientes y cuentas por cobrar e inventarios en ambos periodos',
-          value: clientesOk
-        },
-        {
-          label: 'Inventarios en ambos periodos',
-          value: inventariosOk
-        }
-      ]
-        .map(
-          ({ label, value }, idx) => `
-          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${
-              value ? 'Cumple' : 'No cumple'
-            }</td>
-          </tr>`
-        )
-        .join('')
 
       const validacionesVersionTable = `
-        <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
-          <caption>Validaciones para selección de versión de algoritmo</caption>
-          <thead>
+        <h3>Validaciones para selección de versión de algoritmo</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Validación</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">¿Se cumple?</th>
+              <th style="background-color: #000; color: #fff;">Variable condicionante</th>
+              <th>Periodo anterior (${(/(\d{4})/.exec((partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'anterior')?.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance || '')||'')||[])[1] || '-'})</th>
+              <th>Periodo previo anterior (${(/(\d{4})/.exec((partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'previo_anterior')?.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance || '')||'')||[])[1] || '-'})</th>
             </tr>
           </thead>
           <tbody>
-            ${validacionesVersionRows}
+            <tr>
+              <td style="background-color: #000; color: #fff;">Capital</td>
+              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF</td>
+              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Caja y bancos</td>
+              <td colspan="2">Con no tener este + Inventarios en cualquier periodo contable → se va a algoritmo sin EEFF</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar</td>
+              <td colspan="2">Con no tener este + Clientes en cualquier periodo contable → se va a algoritmo sin EEFF</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Inventarios<br><small>No tener nada de EEFF (partidas)</small></td>
+              <td></td>
+              <td>Se va a algoritmo sin EEFF</td>
+            </tr>
           </tbody>
         </table>
-        </div>
       `
       const scoreLcData = await certificationService.getAllScoreLc().catch(() => [])
       const scoreLcRows = Array.isArray(scoreLcData)
