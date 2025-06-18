@@ -5157,77 +5157,104 @@ ${JSON.stringify(info_email_error, null, 2)}
       const utilidadNetaAnterior = val(resAnterior.utilidad_neta, 'periodo anterior')
       const utilidadNetaPrevio = val(resPrevio.utilidad_neta, 'periodo previo anterior')
 
+      const getYear = str => {
+        const match = /(\d{4})/.exec(str || '')
+        return match ? match[1] : '-'
+      }
+
+      const periodoAnterior = balAnterior.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance
+      const periodoPrevio = balPrevio.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance
+      const yearAnterior = getYear(periodoAnterior)
+      const yearPrevio = getYear(periodoPrevio)
+
+      const isEmpty = v => v === '0.00' || v === '0' || v === undefined || v === null || v === 0
+      const resCapital = isEmpty(balAnterior.capital_contable) || isEmpty(balPrevio.capital_contable)
+      const resCajaInv =
+        (isEmpty(balAnterior.caja_bancos) && isEmpty(balAnterior.saldo_inventarios)) ||
+        (isEmpty(balPrevio.caja_bancos) && isEmpty(balPrevio.saldo_inventarios))
+      const resClientesInv =
+        (isEmpty(balAnterior.saldo_cliente_cuenta_x_cobrar) && isEmpty(balAnterior.saldo_inventarios)) ||
+        (isEmpty(balPrevio.saldo_cliente_cuenta_x_cobrar) && isEmpty(balPrevio.saldo_inventarios))
+      const resInventarios = isEmpty(balAnterior.saldo_inventarios) && isEmpty(balPrevio.saldo_inventarios)
+      const resProveedores = isEmpty(balAnterior.proveedores) && isEmpty(balPrevio.proveedores)
+      const resVentas = isEmpty(resAnterior.ventas_anuales) || isEmpty(resPrevio.ventas_anuales)
+      const resCosto = isEmpty(resAnterior.costo_ventas_anuales) || isEmpty(resPrevio.costo_ventas_anuales)
+      const resUBruta = isEmpty(resAnterior.utilidad_bruta) || isEmpty(resPrevio.utilidad_bruta)
+      const resUOperativa = isEmpty(resAnterior.utilidad_operativa) || isEmpty(resPrevio.utilidad_operativa)
+      const resUNeta = isEmpty(resAnterior.utilidad_neta) || isEmpty(resPrevio.utilidad_neta)
+      const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
+
       const validacionesVersionTable = `
         <h3>Validaciones para selección de versión de algoritmo</h3>
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
-              <th>Periodo anterior (${(/(\d{4})/.exec((balAnterior.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance || '')) || [])[1] || '-'})</th>
-              <th>Periodo previo anterior (${(/(\d{4})/.exec((balPrevio.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance || '')) || [])[1] || '-'})</th>
+              <th>Periodo anterior (${yearAnterior})</th>
+              <th>Periodo previo anterior (${yearPrevio})</th>
+              <th>Resultado</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="background-color: #000; color: #fff;">Capital</td>
-              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF<br><strong>Valor:</strong> ${capitalAnterior}</td>
-              <td>Con al menos no tener un periodo contable → se va a algoritmo sin EEFF<br><strong>Valor:</strong> ${capitalPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Capital<br><small>capital_contable</small></td>
+              <td><strong>Valor:</strong> ${capitalAnterior}</td>
+              <td><strong>Valor:</strong> ${capitalPrevio}</td>
+              <td>${msg(resCapital)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Caja y bancos + Inventarios</td>
-              <td colspan="2">Con no tener este + Inventarios en cualquier periodo contable → se va a algoritmo sin EEFF<br>
-                <strong>Caja y bancos periodo anterior:</strong> ${cajaAnterior}<br>
-                <strong>Inventarios periodo anterior:</strong> ${invAnterior}<br>
-                <strong>Caja y bancos periodo previo anterior:</strong> ${cajaPrevio}<br>
-                <strong>Inventarios periodo previo anterior:</strong> ${invPrevio}
-              </td>
+              <td style="background-color: #000; color: #fff;">Caja y bancos + Inventarios<br><small>caja_bancos, saldo_inventarios</small></td>
+              <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msg(resCajaInv)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar</td>
-              <td colspan="2">Con no tener este + Clientes en cualquier periodo contable → se va a algoritmo sin EEFF<br>
-                <strong>Clientes y cuentas por cobrar periodo anterior:</strong> ${cxcAnterior}<br>
-                <strong>Clientes y cuentas por cobrar periodo previo anterior:</strong> ${cxcPrevio}
-              </td>
+              <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar<br><small>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</small></td>
+              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msg(resClientesInv)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Inventarios<br><small>No tener nada de EEFF (partidas)</small></td>
-              <td colspan="2">Se va a algoritmo sin EEFF<br>
-                <strong>Inventarios periodo anterior:</strong> ${invAnterior}<br>
-                <strong>Inventarios periodo previo anterior:</strong> ${invPrevio}<br>
-                <strong>Inventarios encontrados:</strong> ${inventariosEncontrados ? 'sí' : 'no'}
-              </td>
+              <td style="background-color: #000; color: #fff;">Inventarios<br><small>saldo_inventarios</small></td>
+              <td><strong>Valor:</strong> ${invAnterior}</td>
+              <td><strong>Valor:</strong> ${invPrevio}</td>
+              <td>${msg(resInventarios)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
-              <td colspan="2">
-                <strong>Proveedores periodo anterior:</strong> ${provAnterior}<br>
-                <strong>Proveedores periodo previo anterior:</strong> ${provPrevio}
-              </td>
+              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos<br><small>proveedores</small></td>
+              <td><strong>Valor:</strong> ${provAnterior}</td>
+              <td><strong>Valor:</strong> ${provPrevio}</td>
+              <td>${msg(resProveedores)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Ventas no reportadas en al menos un periodo</td>
-              <td>${ventasAnterior}</td>
-              <td>${ventasPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Ventas no reportadas en al menos un periodo<br><small>ventas_anuales</small></td>
+              <td><strong>Valor:</strong> ${ventasAnterior}</td>
+              <td><strong>Valor:</strong> ${ventasPrevio}</td>
+              <td>${msg(resVentas)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo</td>
-              <td>${costoAnterior}</td>
-              <td>${costoPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo<br><small>costo_ventas_anuales</small></td>
+              <td><strong>Valor:</strong> ${costoAnterior}</td>
+              <td><strong>Valor:</strong> ${costoPrevio}</td>
+              <td>${msg(resCosto)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo</td>
-              <td>${utilidadBrutaAnterior}</td>
-              <td>${utilidadBrutaPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo<br><small>utilidad_bruta</small></td>
+              <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
+              <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
+              <td>${msg(resUBruta)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo</td>
-              <td>${utilidadOperativaAnterior}</td>
-              <td>${utilidadOperativaPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo<br><small>utilidad_operativa</small></td>
+              <td><strong>Valor:</strong> ${utilidadOperativaAnterior}</td>
+              <td><strong>Valor:</strong> ${utilidadOperativaPrevio}</td>
+              <td>${msg(resUOperativa)}</td>
             </tr>
             <tr>
-              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo</td>
-              <td>${utilidadNetaAnterior}</td>
-              <td>${utilidadNetaPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo<br><small>utilidad_neta</small></td>
+              <td><strong>Valor:</strong> ${utilidadNetaAnterior}</td>
+              <td><strong>Valor:</strong> ${utilidadNetaPrevio}</td>
+              <td>${msg(resUNeta)}</td>
             </tr>
           </tbody>
         </table>
