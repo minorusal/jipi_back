@@ -4835,7 +4835,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         referencias_consideradas,
         referencias_descartadas
       },
-      rangos_bd: rangosBD
+      rangos_bd: rangosBD,
+      id_certification
     })
     logger.info(`${fileMethod} | ${customUuid} | Resultado del envío de correo: ${JSON.stringify(emailReporteResumenEmail)}`)
     logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
@@ -4945,7 +4946,12 @@ function serializeError(error) {
 }
 
 
-const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null, rangos_bd = null }) => {
+const sendEmailNodeMailer = async ({
+  info_email_error = null,
+  info_email = null,
+  rangos_bd = null,
+  id_certification = null
+}) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: sendEmailNodeMailer`
   try {
     const globalConfig = await utilitiesService.getParametros()
@@ -4980,6 +4986,38 @@ const sendEmailNodeMailer = async ({ info_email_error = null, info_email = null,
         pass: password_email_sender_error_reporte_credito
       }
     })
+
+    let partidasFinancierasBalance = []
+    let partidasFinancierasResultados = []
+
+    if (id_certification) {
+      try {
+        const partidas = await certificationService.getCertificacionPartidaFinanciera(id_certification)
+        const data = partidas?.result || []
+        const balanceMap = new Map()
+        const resultadosMap = new Map()
+        data.forEach(obj => {
+          const tipoBalance = obj.tipo_periodo_estado_balance
+          const tipoResultados = obj.tipo_periodo_estado_resultados
+          if (tipoBalance && !balanceMap.has(tipoBalance)) {
+            balanceMap.set(tipoBalance, {
+              tipo_periodo_estado_balance: tipoBalance,
+              ...obj
+            })
+          }
+          if (tipoResultados && !resultadosMap.has(tipoResultados)) {
+            resultadosMap.set(tipoResultados, {
+              tipo_periodo_estado_resultados: tipoResultados,
+              ...obj
+            })
+          }
+        })
+        partidasFinancierasBalance = Array.from(balanceMap.values())
+        partidasFinancierasResultados = Array.from(resultadosMap.values())
+      } catch (err) {
+        logger.error(`${fileMethod} | Error al obtener partidas financieras: ${err.message}`)
+      }
+    }
 
     let htmlContent = ''
     let subject = ''
@@ -5749,6 +5787,80 @@ ${JSON.stringify(info_email_error, null, 2)}
       const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
       const refDescartadasRows = buildRefRowsDescartadas(referenciasDescartadas)
 
+      const buildFinancialRows = (arr, periodKey) => {
+        const map = {}
+        ;(arr || []).forEach(item => {
+          const period = item[periodKey]
+          Object.entries(item || {}).forEach(([k, v]) => {
+            if (
+              [
+                'id_certification',
+                'id_tipo_cifra',
+                'compartir_balance',
+                'compartir_resultado',
+                'compartir_info_empresa',
+                periodKey
+              ].includes(k)
+            )
+              return
+            if (!map[k]) map[k] = {}
+            map[k][period] = v
+          })
+        })
+        return Object.entries(map)
+          .map(
+            ([field, vals], idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${vals.anterior ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${vals.previo_anterior ?? '-'}</td>
+          </tr>`
+          )
+          .join('')
+      }
+
+      const balancePartidasRows = buildFinancialRows(
+        partidasFinancierasBalance,
+        'tipo_periodo_estado_balance'
+      )
+      const resultadosPartidasRows = buildFinancialRows(
+        partidasFinancierasResultados,
+        'tipo_periodo_estado_resultados'
+      )
+
+      const financialTables = `
+        <div class="table-section">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Partidas Financieras - Estado de Balance</caption>
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${balancePartidasRows}
+          </tbody>
+        </table>
+        </div>
+        <div class="table-section">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Partidas Financieras - Estado de Resultados</caption>
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${resultadosPartidasRows}
+          </tbody>
+        </table>
+        </div>
+      `
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center;">Reporte de desglose de algoritmo</h1>
@@ -5857,10 +5969,11 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
             </tr>
           </thead>
-          <tbody>
+        <tbody>
             ${resultsRows}
           </tbody>
         </table>
+        ${financialTables}
         ${scoreTables}
         <div class="table-section">
         <table style="border-collapse: collapse; width: 100%;">
