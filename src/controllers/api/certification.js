@@ -5628,7 +5628,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
-            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.observaciones || '-'}</td>` : ''}
+            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.observaciones || ref.estatus_referencia || '-'}</td>` : ''}
           </tr>`
               )
               .join('')
