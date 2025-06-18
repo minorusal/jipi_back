@@ -5618,7 +5618,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const referenciasConsideradas = info_email.referencias_consideradas || []
       const referenciasDescartadas = info_email.referencias_descartadas || []
-      const buildRefRows = refs =>
+      const buildRefRows = (refs, showReason = false) =>
         Array.isArray(refs)
           ? refs
               .map(
@@ -5628,12 +5628,13 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
+            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.observaciones || '-'}</td>` : ''}
           </tr>`
               )
               .join('')
           : ''
       const refConsideradasRows = buildRefRows(referenciasConsideradas)
-      const refDescartadasRows = buildRefRows(referenciasDescartadas)
+      const refDescartadasRows = buildRefRows(referenciasDescartadas, true)
 
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
@@ -5773,6 +5774,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Observaciones</th>
             </tr>
           </thead>
           <tbody>
