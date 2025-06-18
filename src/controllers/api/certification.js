@@ -3609,6 +3609,59 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       inventarios_anterior = partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance
       inventarios_previo_anterior = partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance
 
+      const [balanceAnterior] = await certificationService.getEstadoBalanceData(
+        id_certification,
+        'anterior'
+      )
+      const [balancePrevio] = await certificationService.getEstadoBalanceData(
+        id_certification,
+        'previo_anterior'
+      )
+      const [resultadoAnterior] = await certificationService.getEstadoResultadoData(
+        id_certification,
+        'anterior'
+      )
+      const [resultadoPrevio] = await certificationService.getEstadoResultadoData(
+        id_certification,
+        'previo_anterior'
+      )
+
+      const provA = balanceAnterior?.proveedores_anterior
+      const provP = balancePrevio?.proveedores_previo_anterior
+      if (isEmpty(provA) && isEmpty(provP)) {
+        return buildResponse('Proveedores vacíos en ambos periodos', 2)
+      }
+
+      const ventasA = resultadoAnterior?.ventas_anuales_anterior
+      const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
+      if (isEmpty(ventasA) || isEmpty(ventasP)) {
+        return buildResponse('Ventas no reportadas en al menos un periodo', 2)
+      }
+
+      const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
+      const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
+      if (isEmpty(costoA) || isEmpty(costoP)) {
+        return buildResponse('Costo de ventas no reportado en al menos un periodo', 2)
+      }
+
+      const ubA = resultadoAnterior?.utilidad_bruta_anterior
+      const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
+      if (isEmpty(ubA) || isEmpty(ubP)) {
+        return buildResponse('Utilidad bruta no reportada en al menos un periodo', 2)
+      }
+
+      const uoA = resultadoAnterior?.utilidad_operativa_anterior
+      const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
+      if (isEmpty(uoA) || isEmpty(uoP)) {
+        return buildResponse('Utilidad operativa no reportada en al menos un periodo', 2)
+      }
+
+      const unA = resultadoAnterior?.utilidad_neta_anterior
+      const unP = resultadoPrevio?.utilidad_neta_previo_anterior
+      if (isEmpty(unA) || isEmpty(unP)) {
+        return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
+      }
+
 
       // Primera condición: No tener saldo_cliente_cuenta_x_cobrar_estado_balance en el periodo anterior o previo anterior, pero tener saldo_inventarios_estado_balance en cualquier periodo
       const condition1 = (isEmpty(cta_x_cobrar_anterior_value) && isEmpty(cta_x_cobrar_previo_anterior_value)) && (!isEmpty(inventarios_anterior) || !isEmpty(inventarios_previo_anterior))
@@ -5083,6 +5136,27 @@ ${JSON.stringify(info_email_error, null, 2)}
       const inventariosEncontrados =
         balAnterior.saldo_inventarios != null || balPrevio.saldo_inventarios != null
 
+      const provAnterior = val(balAnterior.proveedores, 'periodo anterior')
+      const provPrevio = val(balPrevio.proveedores, 'periodo previo anterior')
+
+      const resAnterior = partidasFinancierasResultados.find(
+        p => p.tipo_periodo_estado_resultados === 'anterior'
+      ) || {}
+      const resPrevio = partidasFinancierasResultados.find(
+        p => p.tipo_periodo_estado_resultados === 'previo_anterior'
+      ) || {}
+
+      const ventasAnterior = val(resAnterior.ventas_anuales, 'periodo anterior')
+      const ventasPrevio = val(resPrevio.ventas_anuales, 'periodo previo anterior')
+      const costoAnterior = val(resAnterior.costo_ventas_anuales, 'periodo anterior')
+      const costoPrevio = val(resPrevio.costo_ventas_anuales, 'periodo previo anterior')
+      const utilidadBrutaAnterior = val(resAnterior.utilidad_bruta, 'periodo anterior')
+      const utilidadBrutaPrevio = val(resPrevio.utilidad_bruta, 'periodo previo anterior')
+      const utilidadOperativaAnterior = val(resAnterior.utilidad_operativa, 'periodo anterior')
+      const utilidadOperativaPrevio = val(resPrevio.utilidad_operativa, 'periodo previo anterior')
+      const utilidadNetaAnterior = val(resAnterior.utilidad_neta, 'periodo anterior')
+      const utilidadNetaPrevio = val(resPrevio.utilidad_neta, 'periodo previo anterior')
+
       const validacionesVersionTable = `
         <h3>Validaciones para selección de versión de algoritmo</h3>
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
@@ -5122,6 +5196,38 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <strong>Inventarios periodo previo anterior:</strong> ${invPrevio}<br>
                 <strong>Inventarios encontrados:</strong> ${inventariosEncontrados ? 'sí' : 'no'}
               </td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
+              <td colspan="2">
+                <strong>Proveedores periodo anterior:</strong> ${provAnterior}<br>
+                <strong>Proveedores periodo previo anterior:</strong> ${provPrevio}
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Ventas no reportadas en al menos un periodo</td>
+              <td>${ventasAnterior}</td>
+              <td>${ventasPrevio}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo</td>
+              <td>${costoAnterior}</td>
+              <td>${costoPrevio}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo</td>
+              <td>${utilidadBrutaAnterior}</td>
+              <td>${utilidadBrutaPrevio}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo</td>
+              <td>${utilidadOperativaAnterior}</td>
+              <td>${utilidadOperativaPrevio}</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo</td>
+              <td>${utilidadNetaAnterior}</td>
+              <td>${utilidadNetaPrevio}</td>
             </tr>
           </tbody>
         </table>
