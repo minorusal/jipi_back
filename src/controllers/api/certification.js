@@ -4629,7 +4629,6 @@ const getAlgoritmoResult = async (req, res, next) => {
     let referencias_descartadas = []
     try {
       const todasRaw = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
-      const validasRaw = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
 
       const uniqueBy = (arr, keyFn) => {
         const seen = new Set()
@@ -4642,9 +4641,6 @@ const getAlgoritmoResult = async (req, res, next) => {
       }
 
       const todas = uniqueBy(todasRaw, r => r.id_certification_referencia_comercial)
-      const validas = uniqueBy(validasRaw, r => r.id_certification_referencia_comercial)
-
-      const setValidas = new Set(validas.map(r => r.id_certification_referencia_comercial))
 
       const fetchEmpresaData = async ref => {
         const [empresa] = await certificationService.getEmpresaClienteByIdCertification(ref.id_certification_referencia_comercial)
@@ -4656,12 +4652,20 @@ const getAlgoritmoResult = async (req, res, next) => {
         }
       }
 
+      const esConsiderada = r =>
+        r.contestada === 'si' &&
+        r.referencia_valida === 'true' &&
+        (!r.estatus_referencia || r.estatus_referencia !== 'vencida') &&
+        (!r.observaciones || r.observaciones.trim() === '')
+
       referencias_consideradas = uniqueBy(
         await Promise.all(
-          validas.map(async r => ({
-            ...r,
-            ...(await fetchEmpresaData(r))
-          }))
+          todas
+            .filter(esConsiderada)
+            .map(async r => ({
+              ...r,
+              ...(await fetchEmpresaData(r))
+            }))
         ),
         x => x.id_certification_referencia_comercial
       )
@@ -4669,13 +4673,14 @@ const getAlgoritmoResult = async (req, res, next) => {
       referencias_descartadas = uniqueBy(
         await Promise.all(
           todas
-            .filter(r => !setValidas.has(r.id_certification_referencia_comercial))
+            .filter(r => !esConsiderada(r))
             .map(async r => {
               let motivo = ''
               if (r.contestada !== 'si') motivo = 'No contestada'
               else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
               else if (r.referencia_valida !== 'true') motivo = r.observaciones || 'No válida'
-              else motivo = r.observaciones || r.estatus_referencia || 'No válida'
+              else if (r.observaciones) motivo = r.observaciones
+              else motivo = r.estatus_referencia || 'No válida'
               return {
                 ...r,
                 ...(await fetchEmpresaData(r)),
