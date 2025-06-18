@@ -5800,7 +5800,9 @@ ${JSON.stringify(info_email_error, null, 2)}
                 'compartir_resultado',
                 'compartir_info_empresa',
                 periodKey
-              ].includes(k)
+              ].includes(k) ||
+              k.startsWith('periodo') ||
+              k.startsWith('perioro')
             )
               return
             if (!map[k]) map[k] = {}
@@ -5818,6 +5820,121 @@ ${JSON.stringify(info_email_error, null, 2)}
           )
           .join('')
       }
+
+      const partidasLabels = {
+        caja_bancos: 'Caja y bancos',
+        saldo_cliente_cuenta_x_cobrar: 'Clientes',
+        saldo_inventarios: 'Inventarios',
+        deuda_corto_plazo: 'Deuda corto plazo',
+        deuda_total: 'Deuda total',
+        capital_contable: 'Capital contable',
+        deudores_diversos: 'Deudores diversos',
+        otros_activos: 'Otros activos',
+        otros_activos_fijos_largo_plazo: 'Otros activos fijos largo plazo',
+        total_activo_circulante: 'Total activo circulante',
+        total_activo_fijo: 'Total activo fijo',
+        activo_intangible: 'Activo intangible',
+        activo_diferido: 'Activo diferido',
+        total_otros_activos: 'Total otros activos',
+        activo_total: 'Activo total',
+        proveedores: 'Proveedores',
+        acreedores: 'Acreedores',
+        inpuestos_x_pagar: 'Impuestos por pagar',
+        otros_pasivos: 'Otros pasivos',
+        total_pasivo_largo_plazo: 'Total pasivo largo plazo',
+        pasivo_diferido: 'Pasivo diferido',
+        capital_social: 'Capital social',
+        resultado_ejercicios_anteriores: 'Resultado ejercicios anteriores',
+        resultado_ejercicios: 'Resultado del ejercicio',
+        otro_capital: 'Otro capital',
+        ventas_anuales: 'Ventas anuales',
+        costo_ventas_anuales: 'Costo ventas anuales',
+        utilidad_operativa: 'Utilidad operativa',
+        utilidad_bruta: 'Utilidad bruta',
+        gastos_administracion: 'Gastos de administración',
+        gastos_productos_financieros: 'Gastos prod. financieros',
+        depreciacion_amortizacion: 'Depreciación y amortización',
+        otros_ingresos: 'Otros ingresos',
+        otros_egresos: 'Otros egresos',
+        otros_gastos: 'Otros gastos',
+        utilidad_neta: 'Utilidad neta'
+      }
+
+      const buildSummaryRows = () => {
+        const map = {}
+        const process = (arr, key) => {
+          ;(arr || []).forEach(item => {
+            const period = item[key]
+            Object.entries(item).forEach(([k, v]) => {
+              if (
+                [
+                  'id_certification',
+                  'id_tipo_cifra',
+                  'compartir_estado_balance',
+                  'compartir_estado_resultados',
+                  'compartir_info_empresa',
+                  key
+                ].includes(k) ||
+                k.startsWith('periodo') ||
+                k.startsWith('perioro')
+              )
+                return
+              if (!map[k]) map[k] = {}
+              map[k][period] = v
+            })
+          })
+        }
+
+        process(partidasFinancierasBalance, 'tipo_periodo_estado_balance')
+        process(partidasFinancierasResultados, 'tipo_periodo_estado_resultados')
+
+        return Object.entries(map)
+          .map(([field, vals], idx) => {
+            const label = partidasLabels[field] || field
+            const anterior = vals.anterior
+            const previo = vals.previo_anterior
+            return `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
+            }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              previo !== undefined && previo !== null ? formatMoney(previo) : '-'
+            }</td>
+          </tr>`
+          })
+          .join('')
+      }
+
+      const summaryRows = buildSummaryRows()
+
+      const periodoAnterior =
+        partidasFinancierasBalance[0]?.perioro_anterior_estado_balance ||
+        partidasFinancierasResultados[0]?.perioro_anterior_estado_resultados ||
+        '-'
+      const periodoPrevioAnterior =
+        partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance ||
+        partidasFinancierasResultados[0]?.perioro_previo_anterior_estado_resultados ||
+        '-'
+
+      const financialSummaryTable = `
+        <div class="table-section">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Partidas Financieras</caption>
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${periodoAnterior})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${periodoPrevioAnterior})</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${summaryRows}
+          </tbody>
+        </table>
+        </div>
+      `
 
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
@@ -5974,6 +6091,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         ${financialTables}
+        ${financialSummaryTable}
         ${scoreTables}
         <div class="table-section">
         <table style="border-collapse: collapse; width: 100%;">
