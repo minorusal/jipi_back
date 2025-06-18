@@ -5286,33 +5286,23 @@ ${JSON.stringify(info_email_error, null, 2)}
         .filter(([key, val]) =>
           !excludedKeys.includes(key) && val && typeof val === 'object'
         )
-        .map(([key, val], idx) => {
+        .map(([key, val]) => {
           const descripcion = val.descripcion ?? val.caso ?? val.tipo ?? '-'
           const score = val.score ?? '-'
           const tableName = tableMap[key]
-          let opciones = '-'
           if (tableName && rangos_bd && Array.isArray(rangos_bd[tableName])) {
-            opciones = `<ul style="margin:0;padding-left:15px;">${
-              rangos_bd[tableName]
-                .map(opt => {
-                  const isSelected =
-                    descripcion &&
-                    opt.nombre &&
-                    opt.nombre.toLowerCase() === descripcion.toLowerCase()
-                  const nombre = isSelected
-                    ? `<strong>${opt.nombre ?? ''}</strong>`
-                    : opt.nombre ?? ''
-                  const valor =
-                    Number(version_algoritmo) === 2
-                      ? opt.valor_algoritmo_v2 ?? opt.valor_algoritmo ?? ''
-                      : opt.valor_algoritmo ?? ''
-                  return `<li>${nombre} (${valor})</li>`
-                })
-                .join('')
-            }</ul>`
+            rangos_bd[tableName].forEach(opt => {
+              if (
+                descripcion &&
+                opt.nombre &&
+                opt.nombre.toLowerCase() === descripcion.toLowerCase()
+              ) {
+                opt.nombre = `<strong>${opt.nombre ?? ''}</strong>`
+              }
+            })
           }
           const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
-          let detalle = '-'
+          let formula = '-'
           if (
             key === '_15_rotacion_ctas_x_cobrar' &&
             val.parametro_dso !== undefined &&
@@ -5321,7 +5311,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_superior !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            detalle = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatDays(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatDays(val.parametro_dio)}\nL\u00EDmite inferior: ${formatDays(val.limite_inferior)}\nL\u00EDmite superior: ${formatDays(val.limite_superior)}`
+            formula = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatDays(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatDays(val.parametro_dio)}\nL\u00EDmite inferior: ${formatDays(val.limite_inferior)}\nL\u00EDmite superior: ${formatDays(val.limite_superior)}`
           } else if (
             [
               '_08_ventas_anuales',
@@ -5336,9 +5326,13 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_superior !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
-            if (key === '_14_payback' && val.deuda_corto_plazo_periodo_anterior !== undefined && val.utilida_operativa !== undefined) {
-              detalle += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+            formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+            if (
+              key === '_14_payback' &&
+              val.deuda_corto_plazo_periodo_anterior !== undefined &&
+              val.utilida_operativa !== undefined
+            ) {
+              formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
             }
           } else if (
             key === '_11_evolucion_ventas' &&
@@ -5346,12 +5340,12 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.rango !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            detalle = `${etiqueta}: ${formatMoney(val.parametro)}\nRango: ${val.rango}`
+            formula = `${etiqueta}: ${formatMoney(val.parametro)}\nRango: ${val.rango}`
             if (
               val.ventas_anuales_periodo_anterior_estado_resultados !== undefined &&
               val.ventas_anuales_periodo_previo_anterior_estado_resultados !== undefined
             ) {
-              detalle += `\nOperaci\u00F3n: (${formatMoney(
+              formula += `\nOperaci\u00F3n: (${formatMoney(
                 val.ventas_anuales_periodo_anterior_estado_resultados
               )} - ${formatMoney(
                 val.ventas_anuales_periodo_previo_anterior_estado_resultados
@@ -5360,27 +5354,27 @@ ${JSON.stringify(info_email_error, null, 2)}
               )} * 100`
             }
           }
+          const resultado =
+            val.parametro_dso ??
+            val.parametro_dio ??
+            val.parametro ??
+            val.valor ??
+            '-'
+          const unidad = val.unidad_medida ?? '-'
+          const num = key.match(/_(\d+)_/)?.[1]
+          const etiqueta = labelMap[key] || key.replace(/^_\d+_/, '').replace(/_/g, ' ')
+          const titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
           return `
-            <div class="table-section">
-            <table style="border-collapse: collapse; width: 100%;">
-              <caption>${key}</caption>
-              <thead>
-                <tr>
-                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Descripción</th>
-                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</th>
-                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Opciones</th>
-                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Detalle</th>
-                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Explicación</th>
-                </tr>
-              </thead>
+            <div class="table-section" style="margin-bottom: 20px;">
+            <h3>${titulo}</h3>
+            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
               <tbody>
-                <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${descripcion}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${score}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${opciones}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${detalle}</td>
-                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${explicacion}</td>
-                </tr>
+                <tr><td>Fórmula utilizada</td><td style="white-space: pre-line;">${formula}</td></tr>
+                <tr><td>Resultado obtenido</td><td>${resultado}</td></tr>
+                <tr><td>Unidad de medida</td><td>${unidad}</td></tr>
+                <tr><td>Score asignado</td><td>${score}</td></tr>
+                <tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>
+                <tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>
               </tbody>
             </table>
             </div>`
