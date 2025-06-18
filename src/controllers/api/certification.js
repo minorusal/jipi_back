@@ -5119,8 +5119,8 @@ const sendEmailNodeMailer = async ({
     if (info_email_error) {
       subject = '🚨 Error en el reporte de crédito'
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
-          <h3 style="color: #d9534f; margin: 0 0 8px 0;">⚠ Información de Error</h3>
+        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
+          <h3 style="font-size: 10px; color: #d9534f; margin: 0 0 8px 0;">⚠ Información de Error</h3>
           <pre style="
             background-color: #f5f5f5;
             padding: 10px;
@@ -5280,8 +5280,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
 
       const validacionesVersionTable = `
-        <h3>Validaciones para selección de versión de algoritmo</h3>
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+        <h3 style="font-size: 10px;">Validaciones para selección de versión de algoritmo</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
@@ -5614,8 +5614,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
           return `
             <div class="table-section" style="margin-bottom: 20px;">
-            <h3>${titulo}</h3>
-            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+            <h3 style="font-size: 10px;">${titulo}</h3>
+            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
               <tbody>
                 ${rows.join('')}
               </tbody>
@@ -6298,7 +6298,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             .join('')
           return `
             <div class="table-section">
-            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
               <caption>${label}</caption>
               <thead style="background-color: #f2f2f2;">
                 <tr>
@@ -6316,10 +6316,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
       htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
-          <h1 style="color:#0a3d8e; text-align:center;">Reporte de desglose de algoritmo</h1>
-          <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
-          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 12px;">
+        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
+          <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
+          <h3 style="font-size: 10px; color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
+          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
             <tbody>
               <tr style="background-color:#ffffff;">
                 <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Score</td>
@@ -6464,7 +6464,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           contentType: 'application/pdf'
         })
         htmlContent = `
-        <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
+        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <p>Se adjunta el Reporte de Desglose del Algoritmo en formato PDF.</p>
         </div>
         `
