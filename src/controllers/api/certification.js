@@ -5810,14 +5810,21 @@ ${JSON.stringify(info_email_error, null, 2)}
           })
         })
         return Object.entries(map)
-          .map(
-            ([field, vals], idx) => `
+          .map(([field, vals], idx) => {
+            const label = partidasLabels[field] || field.replace(/_/g, ' ')
+            const anterior = vals.anterior
+            const previo = vals.previo_anterior
+            return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">Periodo anterior (${vals.anterior ?? '-'})</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">Previo anterior (${vals.previo_anterior ?? '-'})</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
+            }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              previo !== undefined && previo !== null ? formatMoney(previo) : '-'
+            }</td>
           </tr>`
-          )
+          })
           .join('')
       }
 
@@ -5860,81 +5867,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         utilidad_neta: 'Utilidad neta'
       }
 
-      const buildSummaryRows = () => {
-        const map = {}
-        const process = (arr, key) => {
-          ;(arr || []).forEach(item => {
-            const period = item[key]
-            Object.entries(item).forEach(([k, v]) => {
-              if (
-                [
-                  'id_certification',
-                  'id_tipo_cifra',
-                  'compartir_estado_balance',
-                  'compartir_estado_resultados',
-                  'compartir_info_empresa',
-                  key
-                ].includes(k) ||
-                k.startsWith('periodo') ||
-                k.startsWith('perioro')
-              )
-                return
-              if (!map[k]) map[k] = {}
-              map[k][period] = v
-            })
-          })
-        }
 
-        process(partidasFinancierasBalance, 'tipo_periodo_estado_balance')
-        process(partidasFinancierasResultados, 'tipo_periodo_estado_resultados')
-
-        return Object.entries(map)
-          .map(([field, vals], idx) => {
-            const label = partidasLabels[field] || field
-            const anterior = vals.anterior
-            const previo = vals.previo_anterior
-            return `
-          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
-            }</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              previo !== undefined && previo !== null ? formatMoney(previo) : '-'
-            }</td>
-          </tr>`
-          })
-          .join('')
+      const getYear = str => {
+        const match = /(\d{4})/.exec(str || '')
+        return match ? match[1] : str || '-'
       }
-
-      const summaryRows = buildSummaryRows()
-
-      const periodoAnterior =
-        partidasFinancierasBalance[0]?.perioro_anterior_estado_balance ||
-        partidasFinancierasResultados[0]?.perioro_anterior_estado_resultados ||
-        '-'
-      const periodoPrevioAnterior =
-        partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance ||
-        partidasFinancierasResultados[0]?.perioro_previo_anterior_estado_resultados ||
-        '-'
-
-      const financialSummaryTable = `
-        <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
-          <caption>Partidas Financieras</caption>
-          <thead>
-            <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${periodoAnterior})</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${periodoPrevioAnterior})</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${summaryRows}
-          </tbody>
-        </table>
-        </div>
-      `
 
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
@@ -5945,15 +5882,33 @@ ${JSON.stringify(info_email_error, null, 2)}
         'tipo_periodo_estado_resultados'
       )
 
+      const periodoAnteriorBalance =
+        partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'anterior')?.perioro_anterior_estado_balance ||
+        partidasFinancierasBalance[0]?.perioro_anterior_estado_balance ||
+        '-'
+      const periodoPrevioBalance =
+        partidasFinancierasBalance.find(p => p.tipo_periodo_estado_balance === 'previo_anterior')?.perioro_previo_anterior_estado_balance ||
+        partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance ||
+        '-'
+
+      const periodoAnteriorResultados =
+        partidasFinancierasResultados.find(p => p.tipo_periodo_estado_resultados === 'anterior')?.perioro_anterior_estado_resultados ||
+        partidasFinancierasResultados[0]?.perioro_anterior_estado_resultados ||
+        '-'
+      const periodoPrevioResultados =
+        partidasFinancierasResultados.find(p => p.tipo_periodo_estado_resultados === 'previo_anterior')?.perioro_previo_anterior_estado_resultados ||
+        partidasFinancierasResultados[0]?.perioro_previo_anterior_estado_resultados ||
+        '-'
+
       const financialTables = `
         <div class="table-section">
         <table style="border-collapse: collapse; width: 100%;">
           <caption>Partidas Financieras - Estado de Balance</caption>
           <thead>
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${getYear(periodoAnteriorBalance)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${getYear(periodoPrevioBalance)})</th>
             </tr>
           </thead>
           <tbody>
@@ -5966,9 +5921,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Partidas Financieras - Estado de Resultados</caption>
           <thead>
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${getYear(periodoAnteriorResultados)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${getYear(periodoPrevioResultados)})</th>
             </tr>
           </thead>
           <tbody>
@@ -6091,7 +6046,6 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         ${financialTables}
-        ${financialSummaryTable}
         ${scoreTables}
         <div class="table-section">
         <table style="border-collapse: collapse; width: 100%;">
