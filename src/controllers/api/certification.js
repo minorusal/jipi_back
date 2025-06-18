@@ -6029,74 +6029,57 @@ ${JSON.stringify(info_email_error, null, 2)}
         </div>
       `
 
-      const variablesVersion = [
-        ['_01_pais', '1. País'],
-        ['_02_sector_riesgo', '2. Sector riesgo'],
-        ['_03_capital_contable', '3. Capital contable'],
-        ['_04_plantilla_laboral', '4. Plantilla laboral'],
-        ['_05_sector_cliente_final', '5. Sector cliente final'],
-        ['_06_tiempo_actividad', '6. Tiempo actividad'],
-        ['_08_ventas_anuales', '7. Ventas anuales'],
-        ['_09_tipo_cifras', '8. Tipo cifras'],
-        ['_10_incidencias_legales', '9. Incidencias legales'],
-        ['_11_evolucion_ventas', '10. Evolución de ventas'],
-        ['_12_apalancamiento', '11. Apalancamiento'],
-        ['_13_flujo_neto', '12. Flujo neto'],
-        ['_14_payback', '13. Payback'],
-        ['_15_rotacion_ctas_x_cobrar', '14. Rotación ctas x cobrar'],
-        ['_16_referencias_comerciales', '15. Referencias comerciales']
+      const variablesReference = [
+        ['_01_pais', '1. País', 'cat_pais_algoritmo'],
+        ['_02_sector_riesgo', '2. Sector riesgo', 'cat_sector_riesgo_sectorial_algoritmo'],
+        ['_03_capital_contable', '3. Capital contable', 'cat_capital_contable_algoritmo'],
+        ['_04_plantilla_laboral', '4. Plantilla laboral', 'cat_plantilla_laboral_algoritmo'],
+        ['_05_sector_cliente_final', '5. Sector cliente final', 'cat_sector_clientes_finales_algoritmo'],
+        ['_06_tiempo_actividad', '6. Tiempo actividad', 'cat_tiempo_actividad_comercial_algoritmo'],
+        ['_07_influencia_controlante', '7. Influencia controlante', 'cat_influencia_controlante_algoritmo'],
+        ['_08_ventas_anuales', '8. Ventas anuales', 'cat_ventas_anuales_algoritmo'],
+        ['_09_tipo_cifras', '9. Tipo cifras', 'cat_tipo_cifras_algoritmo'],
+        ['_10_incidencias_legales', '10. Incidencias legales', 'cat_incidencias_legales_algoritmo'],
+        ['_11_evolucion_ventas', '11. Evolución de ventas', 'cat_evolucion_ventas_algoritmo'],
+        ['_12_apalancamiento', '12. Apalancamiento', 'cat_apalancamiento_algoritmo'],
+        ['_13_flujo_neto', '13. Flujo neto', 'cat_flujo_neto_caja_algoritmo'],
+        ['_14_payback', '14. Payback', 'cat_payback_algoritmo'],
+        ['_15_rotacion_ctas_x_cobrar', '15. Rotación ctas x cobrar', 'cat_rotacion_cuentas_cobrar_algoritmo'],
+        ['_16_referencias_comerciales', '16. Referencias comerciales', 'cat_resultado_referencias_proveedores_algoritmo']
       ]
 
-      const getValorDisponible = (obj, version) => {
-        if (!obj || typeof obj !== 'object') return 'Dato faltante'
-        const desc = String(obj.descripcion || '').toLowerCase()
-        if (version === '1' && desc.includes('algoritmo v2')) return 'No disponible'
-        if (version === '2' && desc.includes('algoritmo v1')) return 'No disponible'
-        const val =
-          obj.parametro ??
-          obj.parametro_dso ??
-          obj.parametro_dio ??
-          obj.valor ??
-          obj.score ??
-          obj.tipo ??
-          obj.caso ??
-          obj.descripcion
-        return val !== undefined && val !== null && val !== '' && val !== 'null'
-          ? val
-          : 'Dato faltante'
-      }
-
-      const valoresVersionRows = variablesVersion
-        .map(([key, label], idx) => {
-          const data = rangos[key] || {}
-          const v1 = getValorDisponible(data, '1')
-          const v2 = getValorDisponible(data, '2')
+      const referenceTables = variablesReference
+        .map(([, label, table]) => {
+          const rows = (rangos_bd && Array.isArray(rangos_bd[table]) ? rangos_bd[table] : [])
+            .map((opt, idx) => {
+              const v1 = opt.valor_algoritmo ?? '-'
+              const v2 = opt.valor_algoritmo_v2 ?? opt.valor_algoritmo ?? '-'
+              return `
+                <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+                  <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.nombre ?? '-'}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd;">${v1}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd;">${v2}</td>
+                </tr>`
+            })
+            .join('')
           return `
-            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-              <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd;">${v1}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd;">${v2}</td>
-            </tr>`
+            <div class="table-section">
+            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+              <caption>${label}</caption>
+              <thead style="background-color: #f2f2f2;">
+                <tr>
+                  <th>Opción</th>
+                  <th>Score V1</th>
+                  <th>Score V2</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+            </div>`
         })
         .join('')
-
-      const valoresVersionTable = `
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
-          <caption>Valores utilizados para cálculo del score según versión del algoritmo</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th>Variable</th>
-              <th>Algoritmo V1 – Valor disponible</th>
-              <th>Algoritmo V2 – Valor disponible</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${valoresVersionRows}
-          </tbody>
-        </table>
-        </div>
-      `
 
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
@@ -6231,7 +6214,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         </div>
-        ${valoresVersionTable}
+        ${referenceTables}
           ${rangos_bd ? '' : ''}
         </div>
       `
