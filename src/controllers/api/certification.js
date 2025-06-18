@@ -5167,7 +5167,17 @@ ${JSON.stringify(info_email_error, null, 2)}
       const yearAnterior = extractYear(periodoAnterior)
       const yearPrevio = extractYear(periodoPrevio)
 
-      const isEmpty = v => v === '0.00' || v === '0' || v === undefined || v === null || v === 0
+      const normalizeNumber = value => {
+        if (value === undefined || value === null) return NaN
+        const cleaned = String(value).replace(/[$,]/g, '')
+        return Number(cleaned)
+      }
+
+      const isEmpty = v => {
+        if (v === undefined || v === null || String(v).trim() === '') return true
+        const num = normalizeNumber(v)
+        return isNaN(num)
+      }
       const resCapital = isEmpty(balAnterior.capital_contable) || isEmpty(balPrevio.capital_contable)
       const resCajaInv =
         (isEmpty(balAnterior.caja_bancos) && isEmpty(balAnterior.saldo_inventarios)) ||
