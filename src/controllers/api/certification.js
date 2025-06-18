@@ -6025,6 +6025,75 @@ ${JSON.stringify(info_email_error, null, 2)}
         </div>
       `
 
+      const variablesVersion = [
+        ['_01_pais', '1. País'],
+        ['_02_sector_riesgo', '2. Sector riesgo'],
+        ['_03_capital_contable', '3. Capital contable'],
+        ['_04_plantilla_laboral', '4. Plantilla laboral'],
+        ['_05_sector_cliente_final', '5. Sector cliente final'],
+        ['_06_tiempo_actividad', '6. Tiempo actividad'],
+        ['_08_ventas_anuales', '7. Ventas anuales'],
+        ['_09_tipo_cifras', '8. Tipo cifras'],
+        ['_10_incidencias_legales', '9. Incidencias legales'],
+        ['_11_evolucion_ventas', '10. Evolución de ventas'],
+        ['_12_apalancamiento', '11. Apalancamiento'],
+        ['_13_flujo_neto', '12. Flujo neto'],
+        ['_14_payback', '13. Payback'],
+        ['_15_rotacion_ctas_x_cobrar', '14. Rotación ctas x cobrar'],
+        ['_16_referencias_comerciales', '15. Referencias comerciales']
+      ]
+
+      const getValorDisponible = (obj, version) => {
+        if (!obj || typeof obj !== 'object') return 'Dato faltante'
+        const desc = String(obj.descripcion || '').toLowerCase()
+        if (version === '1' && desc.includes('algoritmo v2')) return 'No disponible'
+        if (version === '2' && desc.includes('algoritmo v1')) return 'No disponible'
+        const val =
+          obj.parametro ??
+          obj.parametro_dso ??
+          obj.parametro_dio ??
+          obj.valor ??
+          obj.score ??
+          obj.tipo ??
+          obj.caso ??
+          obj.descripcion
+        return val !== undefined && val !== null && val !== '' && val !== 'null'
+          ? val
+          : 'Dato faltante'
+      }
+
+      const valoresVersionRows = variablesVersion
+        .map(([key, label], idx) => {
+          const data = rangos[key] || {}
+          const v1 = getValorDisponible(data, '1')
+          const v2 = getValorDisponible(data, '2')
+          return `
+            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">${v1}</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">${v2}</td>
+            </tr>`
+        })
+        .join('')
+
+      const valoresVersionTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
+          <caption>Valores utilizados para cálculo del score según versión del algoritmo</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th>Variable</th>
+              <th>Algoritmo V1 – Valor disponible</th>
+              <th>Algoritmo V2 – Valor disponible</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${valoresVersionRows}
+          </tbody>
+        </table>
+        </div>
+      `
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center;">Reporte de desglose de algoritmo</h1>
@@ -6153,11 +6222,12 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Motivo descarte</th>
             </tr>
           </thead>
-          <tbody>
+        <tbody>
             ${refDescartadasRows}
           </tbody>
         </table>
         </div>
+        ${valoresVersionTable}
           ${rangos_bd ? '' : ''}
         </div>
       `
