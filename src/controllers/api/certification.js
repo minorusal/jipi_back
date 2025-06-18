@@ -5360,21 +5360,25 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.parametro ??
             val.valor ??
             '-'
-          const unidad = val.unidad_medida ?? '-'
           const num = key.match(/_(\d+)_/)?.[1]
           const etiqueta = labelMap[key] || key.replace(/^_\d+_/, '').replace(/_/g, ' ')
           const titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
+          const rows = []
+          if (formula !== '-' && formula !== null && formula !== '') {
+            rows.push(`<tr><td>Fórmula utilizada</td><td style="white-space: pre-line;">${formula}</td></tr>`)
+          }
+          if (resultado !== '-' && resultado !== null && resultado !== '') {
+            rows.push(`<tr><td>Resultado obtenido</td><td>${resultado}</td></tr>`)
+          }
+          rows.push(`<tr><td>Score asignado</td><td>${score}</td></tr>`)
+          rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
+          rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
           return `
             <div class="table-section" style="margin-bottom: 20px;">
             <h3>${titulo}</h3>
             <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 13px;">
               <tbody>
-                <tr><td>Fórmula utilizada</td><td style="white-space: pre-line;">${formula}</td></tr>
-                <tr><td>Resultado obtenido</td><td>${resultado}</td></tr>
-                <tr><td>Unidad de medida</td><td>${unidad}</td></tr>
-                <tr><td>Score asignado</td><td>${score}</td></tr>
-                <tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>
-                <tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>
+                ${rows.join('')}
               </tbody>
             </table>
             </div>`
