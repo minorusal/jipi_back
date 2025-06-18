@@ -2873,14 +2873,14 @@ WHERE cer.certificacion_id = (
 
   async insertaReferenciaComercial(referencias_comerciales, id_certification, id_direccion) {
     const queryString = `
-      INSERT INTO certification_referencia_comercial 
+      INSERT INTO certification_referencia_comercial
         (id_certification,
         razon_social,
         denominacion,
         rfc,
         id_direccion,
         id_pais)
-      VALUES 
+      VALUES
         (${id_certification},
         '${referencias_comerciales.razon_social}',
         ${referencias_comerciales.denominacion},
@@ -2890,6 +2890,30 @@ WHERE cer.certificacion_id = (
     `
     const { result } = await mysqlLib.query(queryString)
     return result
+  }
+
+  async existeReferenciaComercial(data) {
+    const {
+      id_certification,
+      razon_social,
+      denominacion,
+      rfc,
+      id_pais
+    } = data
+
+    const queryString = `
+      SELECT id_certification_referencia_comercial
+        FROM certification_referencia_comercial
+       WHERE id_certification = ${mysqlLib.escape(id_certification)}
+         AND razon_social = ${mysqlLib.escape(razon_social)}
+         AND denominacion = ${mysqlLib.escape(denominacion)}
+         AND rfc = ${mysqlLib.escape(rfc)}
+         AND id_pais = ${mysqlLib.escape(id_pais)}
+       LIMIT 1;
+    `
+
+    const { result } = await mysqlLib.query(queryString)
+    return Array.isArray(result) && result.length > 0
   }
 
   async insertaContacto(contacto, estatus, id_certification_referencia_comercial) {
