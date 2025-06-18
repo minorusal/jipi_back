@@ -2167,22 +2167,33 @@ WHERE cer.certificacion_id = (
 
   async getReferenciasComercialesByIdCertification(id_certification) {
     const queryString = `
-     SELECT
-      MIN(crc.id_certification_referencia_comercial) AS id_certification_referencia_comercial,
-      crc.razon_social,
-      crc.denominacion,
-      crc.rfc,
-      crc.contestada,
-      d.codigo_postal,
-      crc.id_pais,
-      crcei.estatus_referencia
-    FROM certification_referencia_comercial AS crc
-    LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
-    LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
-    LEFT JOIN certification_referencia_comercial_external_invitation AS crcei ON crcei.id_referencia = crc.id_certification_referencia_comercial
-    WHERE crc.id_certification = ${id_certification}
-    GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal, crc.id_pais, crcei.estatus_referencia
-    ORDER BY id_certification_referencia_comercial DESC;
+       SELECT
+        MIN(crc.id_certification_referencia_comercial) AS id_certification_referencia_comercial,
+        crc.razon_social,
+        crc.denominacion,
+        crc.rfc,
+        crc.contestada,
+        d.codigo_postal,
+        crc.id_pais,
+        crcei.estatus_referencia
+      FROM certification_referencia_comercial AS crc
+      LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
+      LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
+      LEFT JOIN certification_referencia_comercial_external_invitation AS crcei ON crcei.id_referencia = crc.id_certification_referencia_comercial
+      WHERE crc.id_certification = ${id_certification}
+      GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal, crc.id_pais, crcei.estatus_referencia
+      ORDER BY id_certification_referencia_comercial DESC;
+      `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
+  async getDataReferenciasExternas(id_certification) {
+    const queryString = `
+      SELECT *
+      FROM
+      certification_referencia_comercial_external_invitation
+      WHERE certification_id = ${id_certification}
     `
     const { result } = await mysqlLib.query(queryString)
     return result
@@ -2253,21 +2264,17 @@ WHERE cer.certificacion_id = (
 
   async getCertificacionReferenciasComerciales(id_certification) {
     const queryString = `
-
-    SELECT
-    crc.*,
+      
+    SELECT 
+    crc.*, 
     cecc.*
-      FROM
+      FROM 
     certification_referencia_comercial crc
-      INNER JOIN
+      INNER JOIN 
     certification_empresa_cliente_contacto cecc
     ON crc.id_certification_referencia_comercial = cecc.id_referencia_comercial
-      LEFT JOIN
-    certification_referencia_comercial_external_invitation crcei
-    ON crcei.id_referencia = crc.id_certification_referencia_comercial
-      WHERE
+      WHERE 
     crc.id_certification = ${id_certification} AND contestada = 'si'
-      AND (crcei.estatus_referencia IS NULL OR crcei.estatus_referencia <> 'vencida')
       `;
     const result = await mysqlLib.query(queryString);
     return result;
@@ -3058,7 +3065,7 @@ WHERE cer.certificacion_id = (
 
 
 
-  async getScoreEvolucionVentas (evolucionVentas) {
+  async getScoreEvolucionVentas(evolucionVentas) {
     const queryString = `
       SELECT
         nombre,
@@ -4327,9 +4334,9 @@ WHERE cer.certificacion_id = (
       dias_atraso,
       resultado_experiencia_pagos,
       antiguedad_relacion
-       } = data.datos_cliente
+    } = data.datos_cliente
 
-       const {porcentaje_deuda} =data
+    const { porcentaje_deuda } = data
 
     const queryString = `
       UPDATE certification_empresa_cliente_contacto
