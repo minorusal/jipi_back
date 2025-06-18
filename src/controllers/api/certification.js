@@ -4643,6 +4643,19 @@ const getAlgoritmoResult = async (req, res, next) => {
       score: referencias_comerciales.score !== undefined ? String(referencias_comerciales.score) : '0'
     }
 
+    let referencias_consideradas = []
+    let referencias_descartadas = []
+    try {
+      const todas = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
+      const validas = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
+      const key = r => `${r.razon_social}-${r.denominacion}-${r.rfc}-${r.codigo_postal}`
+      const setValidas = new Set((validas || []).map(key))
+      referencias_consideradas = validas || []
+      referencias_descartadas = (todas || []).filter(r => !setValidas.has(key(r)))
+    } catch (err) {
+      logger.warn(`${fileMethod} | ${customUuid} Error obteniendo referencias para correo: ${err}`)
+    }
+
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 16: ${JSON.stringify(reporteCredito)}`)
 
     let porcentaje_endeudamiento_comercial = null
@@ -4767,7 +4780,9 @@ const getAlgoritmoResult = async (req, res, next) => {
         rangos: reporteCredito,
         razon_algoritmo: algoritmo_v.reason,
         version_algoritmo: algoritmo_v.v_alritmo,
-        customUuid
+        customUuid,
+        referencias_consideradas,
+        referencias_descartadas
       },
       rangos_bd: rangosBD
     })
@@ -5601,6 +5616,25 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
+      const referenciasConsideradas = info_email.referencias_consideradas || []
+      const referenciasDescartadas = info_email.referencias_descartadas || []
+      const buildRefRows = refs =>
+        Array.isArray(refs)
+          ? refs
+              .map(
+                (ref, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
+          </tr>`
+              )
+              .join('')
+          : ''
+      const refConsideradasRows = buildRefRows(referenciasConsideradas)
+      const refDescartadasRows = buildRefRows(referenciasDescartadas)
+
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center;">Reporte de desglose de algoritmo</h1>
@@ -5714,6 +5748,38 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         ${scoreTables}
+        <div class="table-section">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Referencias comerciales consideradas</caption>
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refConsideradasRows}
+          </tbody>
+        </table>
+        </div>
+        <div class="table-section">
+        <table style="border-collapse: collapse; width: 100%;">
+          <caption>Referencias comerciales descartadas</caption>
+          <thead>
+            <tr>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refDescartadasRows}
+          </tbody>
+        </table>
+        </div>
           ${rangos_bd ? '' : ''}
         </div>
       `
