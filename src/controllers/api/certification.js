@@ -1164,15 +1164,28 @@ const guardaReferenciasComerciales = async (req, res, next) => {
     }
     logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
-    for (let i in referencias_comerciales) {
-      const direccion = await certificationService.insertaDireccionReferenciaComercial(referencias_comerciales[i])
-      const rc = await certificationService.insertaReferenciaComercial(referencias_comerciales[i], id_certification, direccion.insertId)
+    for (const referencia of referencias_comerciales) {
+      const existe = await certificationService.existeReferenciaComercial({
+        id_certification,
+        razon_social: referencia.razon_social,
+        denominacion: referencia.denominacion,
+        rfc: referencia.rfc,
+        id_pais: referencia.id_pais
+      })
+
+      if (existe) {
+        logger.info(`${fileMethod} | Referencia comercial duplicada, se omite ${JSON.stringify(referencia)}`)
+        continue
+      }
+
+      const direccion = await certificationService.insertaDireccionReferenciaComercial(referencia)
+      const rc = await certificationService.insertaReferenciaComercial(referencia, id_certification, direccion.insertId)
       if (!rc) {
         logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(rc)}`)
         return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(rc)}`))
       }
 
-      const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencias_comerciales[i], rc.insertId)
+      const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencia, rc.insertId)
       logger.info(`${fileMethod} | Se obtiene la empresa cliente ${JSON.stringify(empresa_cliente)}`)
       if (!empresa_cliente) {
         logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`)
@@ -1182,8 +1195,8 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       const [empresa_destino] = await companiesService.getEmpresaById(empresa_cliente.insertId)
       logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
 
-      if (referencias_comerciales[i].contactos.length > 0) {
-        for (const contacto of referencias_comerciales[i].contactos) {
+      if (referencia.contactos.length > 0) {
+        for (const contacto of referencia.contactos) {
           const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
           const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
 
