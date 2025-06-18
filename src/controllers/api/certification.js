@@ -3647,8 +3647,8 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
       const provA = balanceAnterior?.proveedores_anterior
       const provP = balancePrevio?.proveedores_previo_anterior
-      if (isEmpty(provA) || isEmpty(provP)) {
-        return buildResponse('Proveedores vacíos en ambos periodos', 2)
+      if (isEmpty(provA) && isEmpty(provP)) {
+        return buildResponse('Proveedores sin datos en ambos periodos', 2)
       }
 
       const ventasA = resultadoAnterior?.ventas_anuales_anterior
@@ -5250,10 +5250,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         isZero(balAnterior.saldo_inventarios) ||
         isZero(balPrevio.saldo_inventarios)
       const resProveedores =
-        isMissing(balAnterior.proveedores) ||
-        isMissing(balPrevio.proveedores) ||
-        isZero(balAnterior.proveedores) ||
-        isZero(balPrevio.proveedores)
+        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores)) &&
+        (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores))
       const resVentas =
         isMissing(resAnterior.ventas_anuales) ||
         isMissing(resPrevio.ventas_anuales) ||
