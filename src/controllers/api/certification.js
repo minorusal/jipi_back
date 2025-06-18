@@ -5585,6 +5585,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
+          <h1 style="color:#0a3d8e; text-align:center;">Reporte de desglose de algoritmo</h1>
           <h3 style="color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 12px;">
             <tbody>
@@ -5729,7 +5730,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           .table-section { margin-top: 10px; }
         </style>
       `
-      const file = { content: `<html><head>${styles}</head><body>${htmlContent}</body></html>` }
+      const file = {
+        content: `<html><head><title>reporte de desglose de algoritmo</title>${styles}</head><body>${htmlContent}</body></html>`
+      }
       const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
 
       mailOptions = {
@@ -5742,7 +5745,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         `,
         attachments: [
           {
-            filename: 'reporte_credito.pdf',
+            filename: `desglose-de-algoritmo-${uuid}.pdf`,
             content: pdfBuffer,
             contentType: 'application/pdf',
             cid: 'reporte_credito_cid'
