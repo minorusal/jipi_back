@@ -5157,15 +5157,15 @@ ${JSON.stringify(info_email_error, null, 2)}
       const utilidadNetaAnterior = val(resAnterior.utilidad_neta, 'periodo anterior')
       const utilidadNetaPrevio = val(resPrevio.utilidad_neta, 'periodo previo anterior')
 
-      const getYear = str => {
+      const extractYear = str => {
         const match = /(\d{4})/.exec(str || '')
         return match ? match[1] : str || '-'
       }
 
       const periodoAnterior = balAnterior.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance
       const periodoPrevio = balPrevio.perioro_previo_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_previo_anterior_estado_balance
-      const yearAnterior = getYear(periodoAnterior)
-      const yearPrevio = getYear(periodoPrevio)
+      const yearAnterior = extractYear(periodoAnterior)
+      const yearPrevio = extractYear(periodoPrevio)
 
       const isEmpty = v => v === '0.00' || v === '0' || v === undefined || v === null || v === 0
       const resCapital = isEmpty(balAnterior.capital_contable) || isEmpty(balPrevio.capital_contable)
@@ -6131,8 +6131,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${getYear(periodoAnteriorBalance)})</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${getYear(periodoPrevioBalance)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
             </tr>
           </thead>
           <tbody>
@@ -6146,8 +6146,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           <thead>
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${getYear(periodoAnteriorResultados)})</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${getYear(periodoPrevioResultados)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
             </tr>
           </thead>
           <tbody>
