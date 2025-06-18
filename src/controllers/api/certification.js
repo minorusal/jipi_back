@@ -1259,12 +1259,12 @@ const getReferenciaComercialForm = async (req, res, next) => {
     const get_referencias_comerciales = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
     if (!get_referencias_comerciales) return next(boom.badRequest(`El ID de certificacion ${id_certification} no tiene referecias insertadas`))
 
-    // El query puede devolver referencias duplicadas. Filtrarlas por los datos
-    // relevantes para evitar repetir las mismas referencias con diferente id
+    // El query puede devolver registros repetidos por los joins. Filtrar por
+    // id de referencia para evitar duplicados exactos
     const referenciasUnicas = []
     const seenReferencias = new Set()
     for (const ref of get_referencias_comerciales) {
-      const key = `${ref.razon_social}-${ref.denominacion}-${ref.rfc}`
+      const key = ref.id_certification_referencia_comercial
       if (!seenReferencias.has(key)) {
         seenReferencias.add(key)
         referenciasUnicas.push(ref)
