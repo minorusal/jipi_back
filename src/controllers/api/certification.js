@@ -1298,24 +1298,6 @@ const getReferenciaComercialForm = async (req, res, next) => {
   }
 }
 
-const getReferenciasComercialesExternas = async (req, res, next) => {
-  try {
-    const { id_certification } = req.params
-    const referenciasExternas = await certificationService.getDataReferenciasExternas(id_certification)
-
-    if (!referenciasExternas) {
-      return next(boom.notFound(`No hay referencias comerciales externas para la certificación ${id_certification}`))
-    }
-
-    res.json({
-      id_certification,
-      referencias_comerciales_externas: referenciasExternas
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
 const getCertificationContries = async (req, res, next) => {
   debug(`[${req.method}] ${req.originalUrl}`)
   try {
@@ -12991,15 +12973,15 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
 
     const filasReferencias = referenciasValidas.map(ref => `
-  <tr>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.calificacion_referencia || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.linea_credito || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda || '-'}</td>
-    <td style="padding: 8px; border: 1px solid #ddd;">${ref.dias_atraso || '-'}</td>
-  </tr>
-`).join('');
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.calificacion_referencia || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.linea_credito || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.dias_atraso || '-'}</td>
+      </tr>
+    `).join('');
 
 
     const REFERENCIAS_C = referenciasValidas.length > 0
@@ -15994,7 +15976,6 @@ module.exports = {
   consultaMailjet,
   saveLog,
   getReferenciaComercialForm,
-  getReferenciasComercialesExternas,
   getInfoContactoReferido,
   getDataReporteGlobal,
   validacionBloc,

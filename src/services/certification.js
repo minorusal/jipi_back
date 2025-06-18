@@ -2190,17 +2190,6 @@ WHERE cer.certificacion_id = (
     return result
   }
 
-  async getDataReferenciasExternas(id_certification) {
-    const queryString = `
-      SELECT *
-      FROM
-      certification_referencia_comercial_external_invitation
-      WHERE certification_id = ${id_certification}
-    `
-    const { result } = await mysqlLib.query(queryString)
-    return result
-  }
-
   async getCertificacionPartidaFinanciera(id_certification) {
     const queryString = `
      SELECT
@@ -2264,10 +2253,8 @@ WHERE cer.certificacion_id = (
     return result
   }
 
-  async getCertificacionReferenciasComerciales(id_certification) {
-    const queryString = `
-      
-    SELECT 
+  /* 
+  SELECT 
     crc.*, 
     cecc.*
       FROM 
@@ -2277,6 +2264,25 @@ WHERE cer.certificacion_id = (
     ON crc.id_certification_referencia_comercial = cecc.id_referencia_comercial
       WHERE 
     crc.id_certification = ${id_certification} AND contestada = 'si'
+  */
+
+  async getCertificacionReferenciasComerciales(id_certification) {
+    const queryString = `
+    SELECT 
+    crc.*, 
+    cecc.*
+      FROM 
+    certification_referencia_comercial crc
+      INNER JOIN 
+    certification_empresa_cliente_contacto cecc
+    ON crc.id_certification_referencia_comercial = cecc.id_referencia_comercial
+      INNER JOIN 
+    certification_referencia_comercial_external_invitation crcei
+    ON crcei.id_referencia = crc.id_certification_referencia_comercial
+      WHERE 
+    crc.id_certification = ${id_certification}
+    AND crc.contestada = 'si'
+    AND crcei.estatus_referencia = 'vigente'
       `;
     const result = await mysqlLib.query(queryString);
     return result;
