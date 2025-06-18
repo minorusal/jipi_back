@@ -12963,6 +12963,42 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     </section>
   `
       : '';
+    const filasReferenciasDetalladas = (datos_reporte?.referenciasComerciales || []).map(ref => `
+      <tr>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
+        <td style="padding: 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
+      </tr>
+    `).join('');
+
+    let REFERENCIAS_CONSIDERADAS = '';
+    if (filasReferenciasDetalladas) {
+      REFERENCIAS_CONSIDERADAS = `
+    <section style="width: 100%; margin-top: 20px;">
+      <div style="display: flex; flex-direction: column;">
+        <h3 style="font-size: 16px; font-weight: 700; color: #0a3d8e; text-transform: uppercase; margin: 0 0 5px 0;">
+          REFERENCIAS COMERCIALES RELACIONADAS
+        </h3>
+      </div>
+      <div style="background-color: #f9f9f9; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 100%;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px;">
+          <thead>
+            <tr style="background-color: #2ba2af; color: white; text-align: left;">
+              <th style="padding: 8px; border: 1px solid #ddd;">RFC</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Razón Social</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Denominación</th>
+              <th style="padding: 8px; border: 1px solid #ddd;">Código Postal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filasReferenciasDetalladas}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+    }
 
 
     const cuerpoImportaciones = mercado_objetivo_importaciones.map(im => `
