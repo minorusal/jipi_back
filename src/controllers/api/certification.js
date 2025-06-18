@@ -4628,22 +4628,57 @@ const getAlgoritmoResult = async (req, res, next) => {
     let referencias_consideradas = []
     let referencias_descartadas = []
     try {
-      const todas = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
-      const validas = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
-      const key = r => `${r.razon_social}-${r.denominacion}-${r.rfc}-${r.codigo_postal}`
-      const setValidas = new Set((validas || []).map(key))
-      referencias_consideradas = validas || []
-      referencias_descartadas = (todas || [])
-        .filter(r => !setValidas.has(key(r)))
-        .map(r => {
-          let motivo = ''
-          if (r.contestada !== 'si') motivo = 'No contestada'
-          else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
-          else if (r.referencia_valida !== 'true')
-            motivo = r.observaciones || 'No válida'
-          else motivo = r.observaciones || r.estatus_referencia || 'No válida'
-          return { ...r, motivo_descartada: motivo }
+      const todasRaw = await certificationService.getReferenciasComercialesByIdCertification(id_certification)
+      const validasRaw = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
+
+      const uniqueBy = (arr, keyFn) => {
+        const seen = new Set()
+        return (arr || []).filter(item => {
+          const k = keyFn(item)
+          if (seen.has(k)) return false
+          seen.add(k)
+          return true
         })
+      }
+
+      const todas = uniqueBy(todasRaw, r => r.id_certification_referencia_comercial)
+      const validas = uniqueBy(validasRaw, r => r.id_certification_referencia_comercial)
+
+      const setValidas = new Set(validas.map(r => r.id_certification_referencia_comercial))
+
+      const fetchEmpresaData = async ref => {
+        const [empresa] = await certificationService.getEmpresaClienteByIdCertification(ref.id_certification_referencia_comercial)
+        return {
+          calificacion_referencia: empresa?.calificacion_referencia || null,
+          linea_credito: empresa?.linea_credito || null,
+          porcentaje_deuda: empresa?.porcentaje_deuda || null,
+          dias_atraso: empresa?.dias_atraso || null
+        }
+      }
+
+      referencias_consideradas = await Promise.all(
+        validas.map(async r => ({
+          ...r,
+          ...(await fetchEmpresaData(r))
+        }))
+      )
+
+      referencias_descartadas = await Promise.all(
+        todas
+          .filter(r => !setValidas.has(r.id_certification_referencia_comercial))
+          .map(async r => {
+            let motivo = ''
+            if (r.contestada !== 'si') motivo = 'No contestada'
+            else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
+            else if (r.referencia_valida !== 'true') motivo = r.observaciones || 'No válida'
+            else motivo = r.observaciones || r.estatus_referencia || 'No válida'
+            return {
+              ...r,
+              ...(await fetchEmpresaData(r)),
+              motivo_descartada: motivo
+            }
+          })
+      )
     } catch (err) {
       logger.warn(`${fileMethod} | ${customUuid} Error obteniendo referencias para correo: ${err}`)
     }
@@ -5610,7 +5645,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const referenciasConsideradas = info_email.referencias_consideradas || []
       const referenciasDescartadas = info_email.referencias_descartadas || []
-      const buildRefRows = (refs, showReason = false) =>
+
+      const buildRefRowsConsideradas = refs =>
         Array.isArray(refs)
           ? refs
               .map(
@@ -5618,15 +5654,30 @@ ${JSON.stringify(info_email_error, null, 2)}
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
-            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>` : ''}
           </tr>`
               )
               .join('')
           : ''
-      const refConsideradasRows = buildRefRows(referenciasConsideradas)
-      const refDescartadasRows = buildRefRows(referenciasDescartadas, true)
+
+      const buildRefRowsDescartadas = refs =>
+        Array.isArray(refs)
+          ? refs
+              .map(
+                (ref, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
+          </tr>`
+              )
+              .join('')
+          : ''
+
+      const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
+      const refDescartadasRows = buildRefRowsDescartadas(referenciasDescartadas)
 
       htmlContent = `
         <div style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6; color: #333;">
@@ -5748,7 +5799,6 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
             </tr>
           </thead>
@@ -5762,10 +5812,10 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Referencias comerciales descartadas</caption>
           <thead>
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">RFC</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Calificación</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Línea de crédito</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Porcentaje de deuda</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Días de atraso</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Motivo descarte</th>
             </tr>
           </thead>
