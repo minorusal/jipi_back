@@ -5282,7 +5282,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         'calculos_estado_resultados',
         'ratio_financiero'
       ]
-      const detallesTabla = Object.entries(rangos)
+      const detallesTables = Object.entries(rangos)
         .filter(([key, val]) =>
           !excludedKeys.includes(key) && val && typeof val === 'object'
         )
@@ -5361,14 +5361,29 @@ ${JSON.stringify(info_email_error, null, 2)}
             }
           }
           return `
-            <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${key}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${descripcion}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${score}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${opciones}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${detalle}</td>
-              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${explicacion}</td>
-            </tr>`
+            <div class="table-section">
+            <table style="border-collapse: collapse; width: 100%;">
+              <caption>${key}</caption>
+              <thead>
+                <tr>
+                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Descripción</th>
+                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</th>
+                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Opciones</th>
+                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Detalle</th>
+                  <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Explicación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${descripcion}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${score}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${opciones}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${detalle}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${explicacion}</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>`
         })
         .join('')
 
@@ -6061,24 +6076,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tbody>
           </table>
           ${validacionesVersionTable}
-          <div class="table-section">
-          <table style="border-collapse: collapse; width: 100%;">
-            <caption>Detalles</caption>
-            <thead>
-              <tr>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Campo</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Descripción</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Score</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Opciones</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Detalle</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0; white-space: pre-line;">Explicación</th>
-              </tr>
-            </thead>
-          <tbody>
-              ${detallesTabla}
-          </tbody>
-        </table>
-        </div>
+          ${detallesTables}
         <div class="table-section">
         <table style="border-collapse: collapse; width: 100%;">
           <caption>Ratios financieros</caption>
