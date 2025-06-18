@@ -2282,6 +2282,7 @@ WHERE cer.certificacion_id = (
       WHERE 
     crc.id_certification = ${id_certification}
     AND crc.contestada = 'si'
+    AND crc.referencia_valida = 'true'
     AND crcei.estatus_referencia = 'vigente'
       `;
     const result = await mysqlLib.query(queryString);
