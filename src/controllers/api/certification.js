@@ -5714,43 +5714,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         html: htmlContent
       }
     } else {
-      const pdfOptions = {
-        format: 'A4',
-        printBackground: true,
-        margin: { top: 10, right: 10, bottom: 10, left: 10 }
-      }
-      const styles = `
-        <style>
-          body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
-          table { font-size: 12px; width: 100%; border-collapse: collapse; }
-          caption { caption-side: top; color: #337ab7; font-weight: bold; page-break-after: avoid; }
-          thead { display: table-header-group; }
-          tr, th, td { page-break-inside: avoid; break-inside: avoid; }
-          h3, h4 { page-break-after: avoid; break-after: avoid; }
-          .table-section { margin-top: 10px; }
-        </style>
-      `
-      const file = {
-        content: `<html><head><title>reporte de desglose de algoritmo</title>${styles}</head><body>${htmlContent}</body></html>`
-      }
-      const pdfBuffer = await html_to_pdf.generatePdf(file, pdfOptions)
-
       mailOptions = {
         from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
         to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
         subject,
-        html: `
-          <p>Se adjunta reporte de crédito en formato PDF.</p>
-          <object data="cid:reporte_credito_cid" type="application/pdf" width="100%" height="800px"></object>
-        `,
-        attachments: [
-          {
-            filename: `desglose-de-algoritmo-${uuid}.pdf`,
-            content: pdfBuffer,
-            contentType: 'application/pdf',
-            cid: 'reporte_credito_cid'
-          }
-        ]
+        html: htmlContent
       }
     }
 
