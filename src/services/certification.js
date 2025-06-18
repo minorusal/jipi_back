@@ -2244,8 +2244,11 @@ WHERE cer.certificacion_id = (
         cperc.periodo_anterior AS perioro_anterior_estado_resultados,
         cperc.periodo_previo_anterior AS perioro_previo_anterior_estado_resultados
       FROM certification_partidas_estado_balance AS cpeb
-      INNER JOIN certification_partidas_estado_resultados_contables AS cperc ON cperc.id_certification = cpeb.id_certification
-      WHERE cpeb.id_certification = ${id_certification};
+      INNER JOIN certification_partidas_estado_resultados_contables AS cperc
+        ON cperc.id_certification = cpeb.id_certification
+        AND cperc.tipo = cpeb.tipo
+      WHERE cpeb.id_certification = ${id_certification}
+      ORDER BY cpeb.id_certification_partidas_estado_balance DESC;
     `;
     const result = await mysqlLib.query(queryString)
     return result
@@ -3148,10 +3151,11 @@ WHERE cer.certificacion_id = (
       cpe.otros_egresos as otros_egresos_${periodo},
       cpe.otros_gastos as otros_gastos_${periodo}
 
-
     FROM certification_partidas_estado_resultados_contables AS cpe
     WHERE cpe.id_certification = ${id_certification}
-    AND cpe.tipo = '${periodo}';
+    AND cpe.tipo = '${periodo}'
+    ORDER BY cpe.id_certification_estado_resultados_contables DESC
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
     return result
@@ -3181,7 +3185,9 @@ WHERE cer.certificacion_id = (
       cpe.capital_social as capital_social_${periodo}
     FROM certification_partidas_estado_balance AS cpe
     WHERE cpe.id_certification = ${id_certification}
-    AND cpe.tipo = '${periodo}';
+    AND cpe.tipo = '${periodo}'
+    ORDER BY cpe.id_certification_partidas_estado_balance DESC
+    LIMIT 1;
     `
     logger.info(`${JSON.stringify(queryString)}`)
     const { result } = await mysqlLib.query(queryString)
