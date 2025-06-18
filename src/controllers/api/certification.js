@@ -5203,6 +5203,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th>Periodo anterior (${yearAnterior})</th>
               <th>Periodo previo anterior (${yearPrevio})</th>
               <th>Resultado</th>
+              <th>Origen del dato</th>
             </tr>
           </thead>
           <tbody>
@@ -5211,60 +5212,70 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td><strong>Valor:</strong> ${capitalAnterior}</td>
               <td><strong>Valor:</strong> ${capitalPrevio}</td>
               <td>${msg(resCapital)}</td>
+              <td>capital_contable – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Caja y bancos + Inventarios<br><small>caja_bancos, saldo_inventarios</small></td>
               <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resCajaInv)}</td>
+              <td>caja_bancos, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar<br><small>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</small></td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resClientesInv)}</td>
+              <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Inventarios<br><small>saldo_inventarios</small></td>
               <td><strong>Valor:</strong> ${invAnterior}</td>
               <td><strong>Valor:</strong> ${invPrevio}</td>
               <td>${msg(resInventarios)}</td>
+              <td>saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos<br><small>proveedores</small></td>
               <td><strong>Valor:</strong> ${provAnterior}</td>
               <td><strong>Valor:</strong> ${provPrevio}</td>
               <td>${msg(resProveedores)}</td>
+              <td>proveedores – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Ventas no reportadas en al menos un periodo<br><small>ventas_anuales</small></td>
               <td><strong>Valor:</strong> ${ventasAnterior}</td>
               <td><strong>Valor:</strong> ${ventasPrevio}</td>
               <td>${msg(resVentas)}</td>
+              <td>ventas_anuales – tabla: certification_partidas_estado_resultados_contables</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo<br><small>costo_ventas_anuales</small></td>
               <td><strong>Valor:</strong> ${costoAnterior}</td>
               <td><strong>Valor:</strong> ${costoPrevio}</td>
               <td>${msg(resCosto)}</td>
+              <td>costo_ventas_anuales – tabla: certification_partidas_estado_resultados_contables</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo<br><small>utilidad_bruta</small></td>
               <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
               <td>${msg(resUBruta)}</td>
+              <td>utilidad_bruta – tabla: certification_partidas_estado_resultados_contables</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo<br><small>utilidad_operativa</small></td>
               <td><strong>Valor:</strong> ${utilidadOperativaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadOperativaPrevio}</td>
               <td>${msg(resUOperativa)}</td>
+              <td>utilidad_operativa – tabla: certification_partidas_estado_resultados_contables</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo<br><small>utilidad_neta</small></td>
               <td><strong>Valor:</strong> ${utilidadNetaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadNetaPrevio}</td>
               <td>${msg(resUNeta)}</td>
+              <td>utilidad_neta – tabla: certification_partidas_estado_resultados_contables</td>
             </tr>
           </tbody>
         </table>
