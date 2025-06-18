@@ -3552,6 +3552,11 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
   }
   const isEmpty = (value) =>
     value === null || value === undefined || value === ''
+  const parseNumber = (val) => {
+    if (val === undefined || val === null) return NaN
+    const cleaned = String(val).replace(/[$,\s]/g, '')
+    return Number(cleaned)
+  }
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
@@ -3634,35 +3639,50 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
       const ventasA = resultadoAnterior?.ventas_anuales_anterior
       const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
-      if (isEmpty(ventasA) || isEmpty(ventasP)) {
+      if (
+        isEmpty(ventasA) ||
+        isEmpty(ventasP) ||
+        parseNumber(ventasA) === 0 ||
+        parseNumber(ventasP) === 0
+      ) {
         return buildResponse('Ventas no reportadas en al menos un periodo', 2)
       }
 
       const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
       const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
-      if (isEmpty(costoA) || isEmpty(costoP)) {
+      if (
+        isEmpty(costoA) ||
+        isEmpty(costoP) ||
+        parseNumber(costoA) === 0 ||
+        parseNumber(costoP) === 0
+      ) {
         return buildResponse('Costo de ventas no reportado en al menos un periodo', 2)
       }
 
       const ubA = resultadoAnterior?.utilidad_bruta_anterior
       const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
-      if (isEmpty(ubA) || isEmpty(ubP)) {
+      if (
+        isEmpty(ubA) ||
+        isEmpty(ubP) ||
+        parseNumber(ubA) === 0 ||
+        parseNumber(ubP) === 0
+      ) {
         return buildResponse('Utilidad bruta no reportada en al menos un periodo', 2)
       }
 
       const uoA = resultadoAnterior?.utilidad_operativa_anterior
       const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
-      if (isEmpty(uoA) || isEmpty(uoP)) {
+      if (
+        isEmpty(uoA) ||
+        isEmpty(uoP) ||
+        parseNumber(uoA) === 0 ||
+        parseNumber(uoP) === 0
+      ) {
         return buildResponse('Utilidad operativa no reportada en al menos un periodo', 2)
       }
 
       const unA = resultadoAnterior?.utilidad_neta_anterior
       const unP = resultadoPrevio?.utilidad_neta_previo_anterior
-      const parseNumber = val => {
-        if (val === undefined || val === null) return NaN
-        const cleaned = String(val).replace(/[$,\s]/g, '')
-        return Number(cleaned)
-      }
       const isEmptyUtilidadNeta = v => isEmpty(v) || parseNumber(v) === 0
       if (isEmptyUtilidadNeta(unA) || isEmptyUtilidadNeta(unP)) {
         return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
@@ -5195,16 +5215,27 @@ ${JSON.stringify(info_email_error, null, 2)}
         (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) && isMissing(balPrevio.saldo_inventarios))
       const resInventarios = isMissing(balAnterior.saldo_inventarios) && isMissing(balPrevio.saldo_inventarios)
       const resProveedores = isMissing(balAnterior.proveedores) && isMissing(balPrevio.proveedores)
-      const resVentas = isMissing(resAnterior.ventas_anuales) || isMissing(resPrevio.ventas_anuales)
-      const resCosto = isMissing(resAnterior.costo_ventas_anuales) || isMissing(resPrevio.costo_ventas_anuales)
-      const resUBruta = isMissing(resAnterior.utilidad_bruta) || isMissing(resPrevio.utilidad_bruta)
-      const resUOperativa = isMissing(resAnterior.utilidad_operativa) || isMissing(resPrevio.utilidad_operativa)
-      const parseNumber = v => {
-        if (v === undefined || v === null) return NaN
-        const cleaned = String(v).replace(/[$,\s]/g, '')
-        return Number(cleaned)
-      }
-      const isZero = v => parseNumber(v) === 0
+      const isZero = v => normalizeNumber(v) === 0
+      const resVentas =
+        isMissing(resAnterior.ventas_anuales) ||
+        isMissing(resPrevio.ventas_anuales) ||
+        isZero(resAnterior.ventas_anuales) ||
+        isZero(resPrevio.ventas_anuales)
+      const resCosto =
+        isMissing(resAnterior.costo_ventas_anuales) ||
+        isMissing(resPrevio.costo_ventas_anuales) ||
+        isZero(resAnterior.costo_ventas_anuales) ||
+        isZero(resPrevio.costo_ventas_anuales)
+      const resUBruta =
+        isMissing(resAnterior.utilidad_bruta) ||
+        isMissing(resPrevio.utilidad_bruta) ||
+        isZero(resAnterior.utilidad_bruta) ||
+        isZero(resPrevio.utilidad_bruta)
+      const resUOperativa =
+        isMissing(resAnterior.utilidad_operativa) ||
+        isMissing(resPrevio.utilidad_operativa) ||
+        isZero(resAnterior.utilidad_operativa) ||
+        isZero(resPrevio.utilidad_operativa)
       const resUNeta =
         isMissing(resAnterior.utilidad_neta) ||
         isMissing(resPrevio.utilidad_neta) ||
