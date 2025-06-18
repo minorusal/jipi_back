@@ -4651,7 +4651,17 @@ const getAlgoritmoResult = async (req, res, next) => {
       const key = r => `${r.razon_social}-${r.denominacion}-${r.rfc}-${r.codigo_postal}`
       const setValidas = new Set((validas || []).map(key))
       referencias_consideradas = validas || []
-      referencias_descartadas = (todas || []).filter(r => !setValidas.has(key(r)))
+      referencias_descartadas = (todas || [])
+        .filter(r => !setValidas.has(key(r)))
+        .map(r => {
+          let motivo = ''
+          if (r.contestada !== 'si') motivo = 'No contestada'
+          else if (r.estatus_referencia === 'vencida') motivo = 'Vencida'
+          else if (r.referencia_valida !== 'true')
+            motivo = r.observaciones || 'No válida'
+          else motivo = r.observaciones || r.estatus_referencia || 'No válida'
+          return { ...r, motivo_descartada: motivo }
+        })
     } catch (err) {
       logger.warn(`${fileMethod} | ${customUuid} Error obteniendo referencias para correo: ${err}`)
     }
@@ -5628,7 +5638,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.denominacion || '-'}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.codigo_postal || '-'}</td>
-            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.observaciones || ref.estatus_referencia || '-'}</td>` : ''}
+            ${showReason ? `<td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>` : ''}
           </tr>`
               )
               .join('')
@@ -5774,7 +5784,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Razón Social</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Denominación</th>
               <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Código Postal</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Observaciones</th>
+              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Motivo descarte</th>
             </tr>
           </thead>
           <tbody>
