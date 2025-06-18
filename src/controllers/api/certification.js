@@ -5812,8 +5812,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ([field, vals], idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${vals.anterior ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${vals.previo_anterior ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">Periodo anterior (${vals.anterior ?? '-'})</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">Previo anterior (${vals.previo_anterior ?? '-'})</td>
           </tr>`
           )
           .join('')
