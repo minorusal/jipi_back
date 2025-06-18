@@ -5169,29 +5169,31 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const normalizeNumber = value => {
         if (value === undefined || value === null) return NaN
-        const cleaned = String(value).replace(/[$,]/g, '')
+        const cleaned = String(value).replace(/[$,\s]/g, '')
         return Number(cleaned)
       }
 
-      const isEmpty = v => {
-        if (v === undefined || v === null || String(v).trim() === '') return true
-        const num = normalizeNumber(v)
+      const isMissing = v => {
+        if (v === undefined || v === null) return true
+        const str = String(v).trim()
+        if (str === '' || str.toLowerCase() === 'n/a') return true
+        const num = normalizeNumber(str)
         return isNaN(num)
       }
-      const resCapital = isEmpty(balAnterior.capital_contable) || isEmpty(balPrevio.capital_contable)
+      const resCapital = isMissing(balAnterior.capital_contable) || isMissing(balPrevio.capital_contable)
       const resCajaInv =
-        (isEmpty(balAnterior.caja_bancos) && isEmpty(balAnterior.saldo_inventarios)) ||
-        (isEmpty(balPrevio.caja_bancos) && isEmpty(balPrevio.saldo_inventarios))
+        (isMissing(balAnterior.caja_bancos) && isMissing(balAnterior.saldo_inventarios)) ||
+        (isMissing(balPrevio.caja_bancos) && isMissing(balPrevio.saldo_inventarios))
       const resClientesInv =
-        (isEmpty(balAnterior.saldo_cliente_cuenta_x_cobrar) && isEmpty(balAnterior.saldo_inventarios)) ||
-        (isEmpty(balPrevio.saldo_cliente_cuenta_x_cobrar) && isEmpty(balPrevio.saldo_inventarios))
-      const resInventarios = isEmpty(balAnterior.saldo_inventarios) && isEmpty(balPrevio.saldo_inventarios)
-      const resProveedores = isEmpty(balAnterior.proveedores) && isEmpty(balPrevio.proveedores)
-      const resVentas = isEmpty(resAnterior.ventas_anuales) || isEmpty(resPrevio.ventas_anuales)
-      const resCosto = isEmpty(resAnterior.costo_ventas_anuales) || isEmpty(resPrevio.costo_ventas_anuales)
-      const resUBruta = isEmpty(resAnterior.utilidad_bruta) || isEmpty(resPrevio.utilidad_bruta)
-      const resUOperativa = isEmpty(resAnterior.utilidad_operativa) || isEmpty(resPrevio.utilidad_operativa)
-      const resUNeta = isEmpty(resAnterior.utilidad_neta) || isEmpty(resPrevio.utilidad_neta)
+        (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) && isMissing(balAnterior.saldo_inventarios)) ||
+        (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) && isMissing(balPrevio.saldo_inventarios))
+      const resInventarios = isMissing(balAnterior.saldo_inventarios) && isMissing(balPrevio.saldo_inventarios)
+      const resProveedores = isMissing(balAnterior.proveedores) && isMissing(balPrevio.proveedores)
+      const resVentas = isMissing(resAnterior.ventas_anuales) || isMissing(resPrevio.ventas_anuales)
+      const resCosto = isMissing(resAnterior.costo_ventas_anuales) || isMissing(resPrevio.costo_ventas_anuales)
+      const resUBruta = isMissing(resAnterior.utilidad_bruta) || isMissing(resPrevio.utilidad_bruta)
+      const resUOperativa = isMissing(resAnterior.utilidad_operativa) || isMissing(resPrevio.utilidad_operativa)
+      const resUNeta = isMissing(resAnterior.utilidad_neta) || isMissing(resPrevio.utilidad_neta)
       const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
 
       const validacionesVersionTable = `
