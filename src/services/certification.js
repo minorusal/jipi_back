@@ -2175,13 +2175,15 @@ WHERE cer.certificacion_id = (
         crc.contestada,
         d.codigo_postal,
         crc.id_pais,
-        crcei.estatus_referencia
+        crcei.estatus_referencia,
+        crc.referencia_valida,
+        crc.observaciones
       FROM certification_referencia_comercial AS crc
       LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
       LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
       LEFT JOIN certification_referencia_comercial_external_invitation AS crcei ON crcei.id_referencia = crc.id_certification_referencia_comercial
       WHERE crc.id_certification = ${id_certification}
-      GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal, crc.id_pais, crcei.estatus_referencia
+      GROUP BY crc.razon_social, crc.denominacion, crc.rfc, d.codigo_postal, crc.id_pais, crcei.estatus_referencia, crc.referencia_valida, crc.observaciones
       ORDER BY id_certification_referencia_comercial DESC;
       `
     const { result } = await mysqlLib.query(queryString)
