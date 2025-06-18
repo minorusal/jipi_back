@@ -5159,7 +5159,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const getYear = str => {
         const match = /(\d{4})/.exec(str || '')
-        return match ? match[1] : '-'
+        return match ? match[1] : str || '-'
       }
 
       const periodoAnterior = balAnterior.perioro_anterior_estado_balance || partidasFinancierasBalance[0]?.perioro_anterior_estado_balance
@@ -6096,11 +6096,6 @@ ${JSON.stringify(info_email_error, null, 2)}
         utilidad_neta: 'Utilidad neta'
       }
 
-
-      const getYear = str => {
-        const match = /(\d{4})/.exec(str || '')
-        return match ? match[1] : str || '-'
-      }
 
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
