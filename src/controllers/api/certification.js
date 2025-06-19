@@ -6190,8 +6190,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
-      let referenciasConsideradas = info_email.referencias_consideradas || []
-      let referenciasDescartadas = info_email.referencias_descartadas || []
+      referenciasConsideradas = info_email.referencias_consideradas || []
+      referenciasDescartadas = info_email.referencias_descartadas || []
 
       const allReferencias =
         Array.isArray(info_email.referencias)
