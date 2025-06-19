@@ -1813,6 +1813,7 @@ router.post('/consultaMailjet', certificationController.consultaMailjet)
 router.post('/saveLog', certificationController.saveLog)
 
 router.get('/getDataReporteGlobal/:id_emp', certificationController.getDataReporteGlobal)
+router.get('/getDemandasBloc/:nombre', certificationController.getDemandasBloc)
 
 
 module.exports = router
