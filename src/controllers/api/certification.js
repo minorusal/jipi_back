@@ -5437,12 +5437,12 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const scoreTables = `
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Score vs Clases (Tabla 1)</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
+              <th style="background-color: #000; color: #fff;">Score</th>
+              <th>Clase</th>
             </tr>
           </thead>
           <tbody>
@@ -5451,12 +5451,12 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Score vs Clases (Tabla 2)</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Clase</th>
+              <th style="background-color: #000; color: #fff;">Score</th>
+              <th>Clase</th>
             </tr>
           </thead>
           <tbody>
@@ -5465,13 +5465,13 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Score descripción algoritmo</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Wording underwriting</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
+              <th style="background-color: #000; color: #fff;">Score</th>
+              <th>Wording underwriting</th>
+              <th>% LC</th>
             </tr>
           </thead>
           <tbody>
@@ -5480,12 +5480,12 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Score vs % LC</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Score</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">% LC</th>
+              <th style="background-color: #000; color: #fff;">Score</th>
+              <th>% LC</th>
             </tr>
           </thead>
           <tbody>
@@ -6254,13 +6254,13 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const financialTables = `
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Partidas Financieras - Estado de Balance</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
+              <th style="background-color: #000; color: #fff;">Partida financiera</th>
+              <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
+              <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
             </tr>
           </thead>
           <tbody>
@@ -6269,13 +6269,13 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Partidas Financieras - Estado de Resultados</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Partida financiera</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
+              <th style="background-color: #000; color: #fff;">Partida financiera</th>
+              <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
+              <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
             </tr>
           </thead>
           <tbody>
@@ -6401,15 +6401,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Cálculos Estado de Balance</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
+              <th style="background-color: #000; color: #fff;">Cálculo</th>
+              <th>Periodo anterior</th>
+              <th>Previo anterior</th>
+              <th>Fórmula</th>
+              <th>Operación</th>
             </tr>
           </thead>
           <tbody>
@@ -6418,15 +6418,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Cálculos Estado de Resultados</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Cálculo</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
+              <th style="background-color: #000; color: #fff;">Cálculo</th>
+              <th>Periodo anterior</th>
+              <th>Previo anterior</th>
+              <th>Fórmula</th>
+              <th>Operación</th>
             </tr>
           </thead>
         <tbody>
@@ -6436,15 +6436,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         ${financialTables}
         ${scoreTables}
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Referencias comerciales consideradas</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">ID</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Calificación</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Línea de crédito</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Porcentaje de deuda</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Días de atraso</th>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
             </tr>
           </thead>
           <tbody>
@@ -6453,16 +6453,16 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Referencias comerciales descartadas</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">ID</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Calificación</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Línea de crédito</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Porcentaje de deuda</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Días de atraso</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Motivo descarte</th>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
+              <th>Motivo descarte</th>
             </tr>
           </thead>
         <tbody>
