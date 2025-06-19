@@ -6384,15 +6384,15 @@ ${JSON.stringify(info_email_error, null, 2)}
           ${validacionesVersionTable}
           ${detallesTables}
         <div class="table-section">
-        <table style="border-collapse: collapse; width: 100%;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Ratios financieros</caption>
-          <thead>
+          <thead style="background-color: #f2f2f2;">
               <tr>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Ratio</th>
-                <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Periodo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Previo anterior</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Fórmula</th>
-              <th style="padding: 6px 8px; border: 1px solid #e0e0e0;">Operación</th>
+                <th style="background-color: #000; color: #fff;">Ratio</th>
+                <th>Periodo anterior</th>
+              <th>Previo anterior</th>
+              <th>Fórmula</th>
+              <th>Operación</th>
             </tr>
           </thead>
           <tbody>
