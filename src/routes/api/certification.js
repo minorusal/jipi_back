@@ -167,8 +167,8 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                       type: string
  *                       example: "Empresa Relacionada S.A. de C.V."
  *                     pais:
- *                       type: string
- *                       example: "México"
+ *                       type: integer
+ *                       example: 11
  *                     controlante:
  *                       type: integer
  *                       description: |
