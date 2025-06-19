@@ -445,13 +445,19 @@ exports.cifra = async (req, res, next) => {
   }
 }
 
-exports.genericKoneshRequest = async ({ rfc }) => {
+exports.genericKoneshRequest = async (req, res, next) => {
   try {
+    const { rfc, razon_social } = req.query
+
+    if (!rfc || !razon_social) {
+      return next(boom.badRequest('Faltan parámetros requeridos'))
+    }
+
     const globalConfig = await utilitiesService.getParametros()
 
     const activa_api_sat = globalConfig.find(item => item.nombre === 'activa_api_sat')?.valor
     if (activa_api_sat !== 'true') {
-      return { success: false, message: 'El consumo de la API de Konesh está desactivado por configuración.' }
+      return res.json({ success: false, mensaje: 'El consumo a la API de Konesh está desactivado' })
     }
 
     const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
@@ -489,9 +495,28 @@ exports.genericKoneshRequest = async ({ rfc }) => {
       transactionResponse04: await descifra_konesh(data.transactionResponse04)
     }
 
-    return { success: true, data: konesh_api_des }
+    const problematicEntry = Object.entries(konesh_api_des.transactionResponse01[0])
+      .find(([, value]) => typeof value === 'string' && value.toLowerCase() === 'false')
+
+    if (problematicEntry) {
+      return res.json({
+        success: false,
+        mensaje: 'El RFC tiene problemas en el SAT',
+        detalle: problematicEntry[0]
+      })
+    }
+
+    const razonSat = konesh_api_des.transactionResponse01[0].data04
+    if (razonSat !== razon_social) {
+      return res.json({
+        success: false,
+        mensaje: 'La razón social proporcionada no coincide con la registrada en el SAT'
+      })
+    }
+
+    return res.json({ success: true, mensaje: 'RFC y razón social validados correctamente' })
   } catch (error) {
-    return { success: false, message: error.message }
+    next(error)
   }
 }
 

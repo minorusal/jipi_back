@@ -127,6 +127,30 @@ router.post('/ValidaListaService', decryptMiddleware,  konesh.validaListaService
 
 /**
  * @swagger
+ * /api/konesh/validar-rfc:
+ *   get:
+ *     summary: Validación de RFC y razón social ante SAT (vía Konesh)
+ *     parameters:
+ *       - in: query
+ *         name: rfc
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: RFC a validar ante el SAT
+ *       - in: query
+ *         name: razon_social
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Razón social proporcionada por el usuario
+ *     responses:
+ *       200:
+ *         description: Resultado de la validación del RFC y la razón social
+ */
+router.get('/validar-rfc', konesh.genericKoneshRequest)
+
+/**
+ * @swagger
  * /api/konesh/consultaEstatusKonesh/{rfc}:
  *   get:
  *     summary: Consulta el estatus de un RFC en el servicio Konesh - Cifrado => [true]
