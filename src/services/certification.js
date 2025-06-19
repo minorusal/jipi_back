@@ -1690,9 +1690,9 @@ WHERE cer.certificacion_id = (
   async insertaAccionista(insertIdCert, accionista) {
     const queryString = `
       INSERT INTO certification_accionistas
-        (id_certification, razon_social, denominacion, rfc, controlante)
+        (id_certification, razon_social, denominacion, rfc, controlante, conteo_error_rfc)
       VALUES
-        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}', ${accionista.controlante})
+        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}', ${accionista.controlante}, ${accionista.conteo_error_rfc ?? null})
     `;
     const result = await mysqlLib.query(queryString);
     return result;
