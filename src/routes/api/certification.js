@@ -1108,24 +1108,32 @@ router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificat
 /**
  * @swagger
  * /api/certification/consultaBlocEmpresaControlante:
- *   post:
+ *   get:
  *     tags:
  *       - Certificación
  *     summary: Consulta BLOC para empresa controlante
- *     description: Obtiene información de SAT 69-B, OFAC, concursos mercantiles y proveedores/contratistas boletinados por gobierno.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *                 example: "EMPRESA"
- *               apellido:
- *                 type: string
- *                 example: "SA DE CV"
+ *     description: Actúa como proxy hacia los servicios de BLOC para obtener información de SAT 69-B, OFAC, concursos mercantiles y proveedores/contratistas boletinados por gobierno.
+ *     parameters:
+ *       - in: query
+ *         name: rfc
+ *         schema:
+ *           type: string
+ *         description: RFC de la empresa a consultar
+ *       - in: query
+ *         name: id_empresa
+ *         schema:
+ *           type: integer
+ *         description: Identificador de la empresa
+ *       - in: query
+ *         name: nombre
+ *         schema:
+ *           type: string
+ *         description: Nombre de la empresa controlante
+ *       - in: query
+ *         name: apellido
+ *         schema:
+ *           type: string
+ *         description: Apellido o denominación complementaria
  *     responses:
  *       200:
  *         description: Respuesta con la información de los servicios BLOC
@@ -1143,7 +1151,7 @@ router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificat
  *                 bloc_proveedores_contratistas:
  *                   type: object
  */
-router.post('/consultaBlocEmpresaControlante', /*decryptMiddleware, authMiddleware,*/ certificationController.consultaBlocEmpresaControlante)
+router.get('/consultaBlocEmpresaControlante', /*decryptMiddleware, authMiddleware,*/ certificationController.consultaBlocEmpresaControlante)
 
 /**
  * @swagger

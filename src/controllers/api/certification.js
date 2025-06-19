@@ -4132,7 +4132,7 @@ const validacionBloc = async (req, res, next) => {
 const consultaBlocEmpresaControlante = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: consultaBlocEmpresaControlante`
   try {
-    const { nombre, apellido } = req.body
+    const { nombre, apellido } = req.query
 
     const params = await utilitiesService.getParametros()
 
