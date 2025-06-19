@@ -120,6 +120,14 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                     rfc:
  *                       type: string
  *                       example: "TIF123456789"
+ *                     controlante:
+ *                       type: integer
+ *                       description: |
+ *                         Indica si el accionista es la empresa controlante.
+ *                         Valores posibles:
+ *                         • 1 = es la controlante
+ *                         • 0 = no lo es
+ *                       example: 1
  *               empresas:
  *                 type: array
  *                 items:
@@ -169,14 +177,6 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                     pais:
  *                       type: string
  *                       example: "México"
- *                     controlante:
- *                       type: integer
- *                       description: |
- *                         Indica si la empresa relacionada es la controlante.
- *                         Valores posibles:
- *                         • 1 = es la controlante
- *                         • 0 = no lo es
- *                       example: 1
  *               principales_directores:
  *                 type: array
  *                 items:

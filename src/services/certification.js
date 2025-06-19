@@ -1476,19 +1476,17 @@ WHERE cer.certificacion_id = (
   }
 
   async insertEmpresasRel(id, body) {
-    const { razon_social, pais, controlante } = body
+    const { razon_social, pais } = body
     const queryString = `
     INSERT INTO certification_empresas_relacionadas
       (id_certification,
       razon_social,
-      pais,
-      controlante
+      pais
       )
     VALUES
       (${id},
       '${razon_social}',
-      '${pais}',
-      ${controlante})
+      '${pais}')
   `
     const result = await mysqlLib.query(queryString)
     return result
@@ -1691,10 +1689,10 @@ WHERE cer.certificacion_id = (
 
   async insertaAccionista(insertIdCert, accionista) {
     const queryString = `
-      INSERT INTO certification_accionistas 
-        (id_certification, razon_social, denominacion, rfc) 
-      VALUES 
-        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}')
+      INSERT INTO certification_accionistas
+        (id_certification, razon_social, denominacion, rfc, controlante)
+      VALUES
+        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}', ${accionista.controlante})
     `;
     const result = await mysqlLib.query(queryString);
     return result;
@@ -4176,8 +4174,9 @@ WHERE cer.certificacion_id = (
   async updateAccionista(body) {
     const queryString = `
       UPDATE certification_accionistas
-      SET 
+      SET
         razon_social = ${mysqlLib.escape(body.razonSocial)},
+        controlante = ${mysqlLib.escape(body.controlante)},
         rfc = ${mysqlLib.escape(body.rfc)},
         updated_at = CURRENT_TIMESTAMP
       WHERE id_certification = ${mysqlLib.escape(body.idCertification)};

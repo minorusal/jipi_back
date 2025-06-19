@@ -536,22 +536,22 @@ const iniciaCertificacion = async (req, res, next) => {
       return next(boom.badRequest(`La empresa con ID ${id_empresa} no tiene relacion con el usuario ${id_usuario}`))
     }
 
-    if (empresas_relacionadas && empresas_relacionadas.length > 0) {
-      if (empresas_relacionadas.length === 1) {
-        empresas_relacionadas[0].controlante = 1
+    if (accionistas && accionistas.length > 0) {
+      if (accionistas.length === 1) {
+        accionistas[0].controlante = 1
       } else {
         let controlantes = 0
-        for (const empresa of empresas_relacionadas) {
-          if (parseInt(empresa.controlante) === 1) {
+        for (const accionista of accionistas) {
+          if (parseInt(accionista.controlante) === 1) {
             controlantes += 1
-            empresa.controlante = 1
+            accionista.controlante = 1
           } else {
-            empresa.controlante = 0
+            accionista.controlante = 0
           }
         }
         if (controlantes !== 1) {
-          logger.warn(`${fileMethod} | Se debe indicar exactamente una empresa controlante`)
-          return next(boom.badRequest('Debe existir una sola empresa controlante'))
+          logger.warn(`${fileMethod} | Se debe indicar exactamente un accionista controlante`)
+          return next(boom.badRequest('Debe existir un solo accionista controlante'))
         }
       }
     }
@@ -7639,6 +7639,26 @@ const updateCertificacion = async (req, res, next) => {
     if (!updateDomicilioCertificacion.result) {
       logger.warn(`${fileMethod} - No se actualizaron los datos de la direccion fiscal de empresa para la certificación`)
       return next(boom.badRequest('No se actualizaron los datos de la direccion fiscal de  la empresa para la certificación'))
+    }
+
+    if (accionistas && accionistas.length > 0) {
+      if (accionistas.length === 1) {
+        accionistas[0].controlante = 1
+      } else {
+        let controlantes = 0
+        for (const accionista of accionistas) {
+          if (parseInt(accionista.controlante) === 1) {
+            controlantes += 1
+            accionista.controlante = 1
+          } else {
+            accionista.controlante = 0
+          }
+        }
+        if (controlantes !== 1) {
+          logger.warn(`${fileMethod} - Se debe indicar exactamente un accionista controlante`)
+          return next(boom.badRequest('Debe existir un solo accionista controlante'))
+        }
+      }
     }
 
     await certificationService.deleteAccionista(id_certification)
