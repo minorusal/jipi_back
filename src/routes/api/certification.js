@@ -1107,6 +1107,46 @@ router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificat
 
 /**
  * @swagger
+ * /api/certification/consultaBlocEmpresaControlante:
+ *   post:
+ *     tags:
+ *       - Certificación
+ *     summary: Consulta BLOC para empresa controlante
+ *     description: Obtiene información de SAT 69-B, OFAC, concursos mercantiles y proveedores/contratistas boletinados por gobierno.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 example: "EMPRESA"
+ *               apellido:
+ *                 type: string
+ *                 example: "SA DE CV"
+ *     responses:
+ *       200:
+ *         description: Respuesta con la información de los servicios BLOC
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 bloc_sat69b:
+ *                   type: object
+ *                 bloc_ofac:
+ *                   type: object
+ *                 bloc_concursos_mercantiles:
+ *                   type: object
+ *                 bloc_proveedores_contratistas:
+ *                   type: object
+ */
+router.post('/consultaBlocEmpresaControlante', /*decryptMiddleware, authMiddleware,*/ certificationController.consultaBlocEmpresaControlante)
+
+/**
+ * @swagger
  * /api/certification/consultaBloc/{idEmpresa}:
  *   get:
  *     tags:
