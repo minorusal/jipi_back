@@ -5623,7 +5623,10 @@ ${JSON.stringify(info_email_error, null, 2)}
             '-'
           const num = key.match(/_(\d+)_/)?.[1]
           const etiqueta = labelMap[key] || key.replace(/^_\d+_/, '').replace(/_/g, ' ')
-          const titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
+          let titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
+          if (num && parseInt(num, 10) < 16) {
+            titulo += ' score'
+          }
           const rows = []
           if (formula !== '-' && formula !== null && formula !== '') {
             rows.push(`<tr><td>Fórmula utilizada</td><td style="white-space: pre-line;">${formula}</td></tr>`)
@@ -5634,7 +5637,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           rows.push(`<tr><td>Score asignado</td><td>${score}</td></tr>`)
           rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
           rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
-          return `
+          let tableHtml = `
             <div class="table-section" style="margin-bottom: 20px;">
             <h3 style="font-size: 10px;">${titulo}</h3>
             <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
@@ -5643,6 +5646,10 @@ ${JSON.stringify(info_email_error, null, 2)}
               </tbody>
             </table>
             </div>`
+          if (key === '_16_referencias_comerciales') {
+            tableHtml += `${refConsideradasTable}${refDescartadasTable}`
+          }
+          return tableHtml
         })
         .join('')
 
@@ -6144,6 +6151,45 @@ ${JSON.stringify(info_email_error, null, 2)}
       const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
       const refDescartadasRows = buildRefRowsDescartadas(referenciasDescartadas)
 
+      const refConsideradasTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Referencias comerciales consideradas</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refConsideradasRows}
+          </tbody>
+        </table>
+        </div>`
+
+      const refDescartadasTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Referencias comerciales descartadas</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
+              <th>Motivo descarte</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refDescartadasRows}
+          </tbody>
+        </table>
+        </div>`
+
       const buildFinancialRows = (arr, periodKey) => {
         const map = {}
         ;(arr || []).forEach(item => {
@@ -6436,41 +6482,6 @@ ${JSON.stringify(info_email_error, null, 2)}
         ${financialTables}
         ${scoreTables}
         ${referenceTables}
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales consideradas</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th style="background-color: #000; color: #fff;">ID</th>
-              <th>Calificación</th>
-              <th>Línea de crédito</th>
-              <th>Porcentaje de deuda</th>
-              <th>Días de atraso</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${refConsideradasRows}
-          </tbody>
-        </table>
-        </div>
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales descartadas</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th style="background-color: #000; color: #fff;">ID</th>
-              <th>Calificación</th>
-              <th>Línea de crédito</th>
-              <th>Porcentaje de deuda</th>
-              <th>Días de atraso</th>
-              <th>Motivo descarte</th>
-            </tr>
-          </thead>
-        <tbody>
-            ${refDescartadasRows}
-          </tbody>
-        </table>
-        </div>
           ${rangos_bd ? '' : ''}
         </div>
       `
