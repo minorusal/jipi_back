@@ -1187,70 +1187,88 @@ const guardaReferenciasComerciales = async (req, res, next) => {
     logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
     for (const referencia of referencias_comerciales) {
-      const existe = await certificationService.existeReferenciaComercial({
-        id_certification,
-        razon_social: referencia.razon_social,
-        denominacion: referencia.denominacion,
-        rfc: referencia.rfc,
-        id_pais: referencia.id_pais
-      })
+      const existe = await certificationService.existeReferenciaComercial(
+        referencia.id_certification_referencia_comercial
+      )
 
       if (existe) {
-        logger.info(`${fileMethod} | Referencia comercial duplicada, se omite ${JSON.stringify(referencia)}`)
-        continue
+        const referenciaRepetida = await certificationService.getReferenciaComercialRepetida(
+          referencia.id_certification_referencia_comercial
+        )
+
+        logger.info(`${fileMethod} | Referencia comercial duplicada ${JSON.stringify(referencia)}`)
+        // Si la referencia comercial ya existe, se actualiza data de la referencia comercial
+        await certificationService.updateReferenciaComercialRepetida(
+          referenciaRepetida[0].id_certification_referencia_comercial,
+          id_certification,
+          referencia
+        )
+
+        for (let i = 0; i < referencia.contactos.length; i++) {
+          if (referencia.contactos[i].id_certification_referencia_comercial > 0) {
+            console.log('Este contacto ya existe, se actualiza')
+            console.log(referencia.contactos[i])
+            await certificationService.updateContacto(referencia.contactos[i], referencia.contactos[i].id_certification_referencia_comercial);
+          }
+          if (referencia.contactos[i].id_certification_referencia_comercial == 0) {
+            console.log('Este contacto no existe, se inserta en la referencia comercial')
+            console.log(referencia.contactos[i])
+            await certificationService.insertaContacto(referencia.contactos[i], 'enviado', referencia.id_certification_referencia_comercial)
+          }
+        }
       }
 
-      const direccion = await certificationService.insertaDireccionReferenciaComercial(referencia)
-      const rc = await certificationService.insertaReferenciaComercial(referencia, id_certification, direccion.insertId)
-      if (!rc) {
-        logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(rc)}`)
-        return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(rc)}`))
-      }
-
-      const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencia, rc.insertId)
-      logger.info(`${fileMethod} | Se obtiene la empresa cliente ${JSON.stringify(empresa_cliente)}`)
-      if (!empresa_cliente) {
-        logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`)
-        return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`))
-      }
-
-      const [empresa_destino] = await companiesService.getEmpresaById(empresa_cliente.insertId)
-      logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
-
-      if (referencia.contactos.length > 0) {
-        for (const contacto of referencia.contactos) {
-          const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
-          const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
-
-          const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification)
-          if (exist_email) {
-            const contactoInsertSi = await certificationService.insertaContacto(contacto, 'enviado', rc.insertId)
-            if (!contactoInsertSi) {
-              logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`)
-              return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`))
+      if (!existe) {
+        const direccion = await certificationService.insertaDireccionReferenciaComercial(referencia)
+        const rc = await certificationService.insertaReferenciaComercial(referencia, id_certification, direccion.insertId)
+        if (!rc) {
+          logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(rc)}`)
+          return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(rc)}`))
+        }
+  
+        const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencia, rc.insertId)
+        logger.info(`${fileMethod} | Se obtiene la empresa cliente ${JSON.stringify(empresa_cliente)}`)
+        if (!empresa_cliente) {
+          logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`)
+          return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`))
+        }
+  
+        const [empresa_destino] = await companiesService.getEmpresaById(empresa_cliente.insertId)
+        logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
+        if (referencia.contactos.length > 0) {
+          for (const contacto of referencia.contactos) {
+            const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
+            const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
+  
+            const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification)
+            if (exist_email) {
+              const contactoInsertSi = await certificationService.insertaContacto(contacto, 'enviado', rc.insertId)
+              if (!contactoInsertSi) {
+                logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`)
+                return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`))
+              }
+            } else {
+              const contactoInsertNo = await certificationService.insertaContacto(contacto, 'noenviado', rc.insertId)
+              if (!contactoInsertNo) {
+                logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`)
+                return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`))
+              }
+  
+              contactos.push({
+                nombre: contacto.nombre_contacto,
+                correo: contacto.correo_contacto,
+                id_contacto: contactoInsertNo.insertId,
+                id_referencia: rc.insertId,
+                id_direccion: direccion.insertId,
+                id_empresa_cliente_contacto: empresa_cliente.insertId,
+                empresa_destino: empresa_destino?.empresa_nombre ?? 'Nombre no disponible',
+                empresa_origen: empresa_origen.empresa_nombre
+              })
             }
-          } else {
-            const contactoInsertNo = await certificationService.insertaContacto(contacto, 'noenviado', rc.insertId)
-            if (!contactoInsertNo) {
-              logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`)
-              return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`))
-            }
-
-            contactos.push({
-              nombre: contacto.nombre_contacto,
-              correo: contacto.correo_contacto,
-              id_contacto: contactoInsertNo.insertId,
-              id_referencia: rc.insertId,
-              id_direccion: direccion.insertId,
-              id_empresa_cliente_contacto: empresa_cliente.insertId,
-              empresa_destino: empresa_destino?.empresa_nombre ?? 'Nombre no disponible',
-              empresa_origen: empresa_origen.empresa_nombre
-            })
           }
         }
       }
     }
-
     logger.info(`${fileMethod} - Se envia emails a los siguientes contactos de las referencia comerciales: ${JSON.stringify(contactos)}`)
 
     const denominaciones = await certificationService.getDenominaciones()

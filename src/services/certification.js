@@ -2176,7 +2176,8 @@ WHERE cer.certificacion_id = (
         crc.id_pais,
         crcei.estatus_referencia,
         crc.referencia_valida,
-        crc.observaciones
+        crc.observaciones,
+        crc.id_certification_referencia_comercial
       FROM certification_referencia_comercial AS crc
       LEFT JOIN domicilio AS d ON d.domicilio_id = crc.id_direccion
       LEFT JOIN certification AS c ON c.id_certification = crc.id_certification
@@ -2873,7 +2874,7 @@ WHERE cer.certificacion_id = (
     const { result } = await mysqlLib.query(queryString)
     return result
   }
-
+// 
   async insertaReferenciaComercial(referencias_comerciales, id_certification, id_direccion) {
     const queryString = `
       INSERT INTO certification_referencia_comercial
@@ -2895,24 +2896,29 @@ WHERE cer.certificacion_id = (
     return result
   }
 
-  async existeReferenciaComercial(data) {
-    const {
-      id_certification,
-      razon_social,
-      denominacion,
-      rfc,
-      id_pais
-    } = data
+  async existeReferenciaComercial(id_certification_referencia_comercial) {
+    // const {
+    //   id_certification,
+    //   razon_social,
+    //   denominacion,
+    //   rfc,
+    //   id_pais
+    // } = data
 
+    // const queryString = `
+    //   SELECT id_certification_referencia_comercial
+    //     FROM certification_referencia_comercial
+    //    WHERE id_certification = ${mysqlLib.escape(id_certification)}
+    //      AND razon_social = ${mysqlLib.escape(razon_social)}
+    //      AND denominacion = ${mysqlLib.escape(denominacion)}
+    //      AND rfc = ${mysqlLib.escape(rfc)}
+    //      AND id_pais = ${mysqlLib.escape(id_pais)}
+    //    LIMIT 1;
+    // `
     const queryString = `
       SELECT id_certification_referencia_comercial
         FROM certification_referencia_comercial
-       WHERE id_certification = ${mysqlLib.escape(id_certification)}
-         AND razon_social = ${mysqlLib.escape(razon_social)}
-         AND denominacion = ${mysqlLib.escape(denominacion)}
-         AND rfc = ${mysqlLib.escape(rfc)}
-         AND id_pais = ${mysqlLib.escape(id_pais)}
-       LIMIT 1;
+       WHERE id_certification_referencia_comercial = ${mysqlLib.escape(id_certification_referencia_comercial)};
     `
 
     const { result } = await mysqlLib.query(queryString)
@@ -4587,6 +4593,7 @@ WHERE cer.certificacion_id = (
         correo_contacto = '${contacto.correo_contacto}',
         telefono_contacto = '${contacto.telefono_contacto}'
     WHERE id_certification_referencia_comercial = ${id_certification_referencia_comercial}
+    AND id_certification_contacto = ${contacto.id_certification_contacto}
   `;
     const result = await mysqlLib.query(queryString);
     return result;
@@ -5914,6 +5921,33 @@ WHERE
         e.emp_id = ${id_emp}        
         AND it.idioma_id = 1;
     `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
+  async updateReferenciaComercialRepetida(id_certification_referencia_comercial, id_certification, referencia) {
+    const queryString = `
+      UPDATE certification_referencia_comercial
+        SET
+          id_certification = ${id_certification},
+          razon_social = '${referencia.razon_social}',
+          denominacion = ${referencia.denominacion},
+          rfc = '${referencia.rfc}',
+          id_pais = ${referencia.id_pais}
+        WHERE id_certification_referencia_comercial = ${id_certification_referencia_comercial};
+      `;
+    const result = await mysqlLib.query(queryString)
+    return result
+  }
+
+    async getReferenciaComercialRepetida(id_certification_referencia_comercial) {
+    const queryString = `
+      SELECT id_certification_referencia_comercial
+      FROM certification_referencia_comercial
+      WHERE id_certification_referencia_comercial = ${mysqlLib.escape(id_certification_referencia_comercial)}
+      LIMIT 1;
+    `
+
     const { result } = await mysqlLib.query(queryString)
     return result
   }
