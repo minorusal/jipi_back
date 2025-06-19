@@ -3426,7 +3426,7 @@ const cuentaConCapital = async (idCertification, customUuid) => {
 const cuentaCajaBancos = async (idCertification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: cuentaCajaBancos`
   try {
-    logger.info(`${fileMethod} | ${customUuid} Validación 2: Se evalua [Con no tener caja bancos en cualquier periodo contable se va a algoritmo v2]`)
+    logger.info(`${fileMethod} | ${customUuid} Validación 2: Se evalua [Si en cualquier periodo faltan caja y bancos e inventarios se usa algoritmo v2]`)
 
     const caja_bancos_anterior = await certificationService.obtieneCajaBancosAnterior(idCertification)
     logger.info(`${fileMethod} | ${customUuid} Caja bancos anterior obtenido es: ${JSON.stringify(caja_bancos_anterior)}`)
@@ -3443,15 +3443,15 @@ const cuentaCajaBancos = async (idCertification, customUuid) => {
     const inventario_anterior = inventarios_anterior[0].inventarios
     const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
 
-    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
+    const isEmpty = value => value === '0.00' || value === undefined || value === null || value === 0
 
-    if (
-      isEmpty(caja_banco_anterior) ||
-      isEmpty(caja_banco_previo_anterior) ||
-      isEmpty(inventario_anterior) ||
-      isEmpty(inventario_previo_anterior)
-    ) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
+    const faltaPeriodoAnterior =
+      isEmpty(caja_banco_anterior) && isEmpty(inventario_anterior)
+    const faltaPeriodoPrevio =
+      isEmpty(caja_banco_previo_anterior) && isEmpty(inventario_previo_anterior)
+
+    if (faltaPeriodoAnterior || faltaPeriodoPrevio) {
+      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Caja y bancos e inventarios ausentes en al menos un periodo]`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
       logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
@@ -3459,7 +3459,7 @@ const cuentaCajaBancos = async (idCertification, customUuid) => {
       return false
     }
 
-    logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
+    logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Caja y bancos e inventarios ausentes en al menos un periodo]`)
     logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
     logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
     logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
@@ -5235,15 +5235,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         isMissing(balPrevio.capital_contable) ||
         isZero(balAnterior.capital_contable) ||
         isZero(balPrevio.capital_contable)
-      const resCajaInv =
-        isMissing(balAnterior.caja_bancos) ||
-        isMissing(balPrevio.caja_bancos) ||
-        isMissing(balAnterior.saldo_inventarios) ||
-        isMissing(balPrevio.saldo_inventarios) ||
-        isZero(balAnterior.caja_bancos) ||
-        isZero(balPrevio.caja_bancos) ||
-        isZero(balAnterior.saldo_inventarios) ||
-        isZero(balPrevio.saldo_inventarios)
+      const faltaCajaInvAnterior =
+        (isMissing(balAnterior.caja_bancos) || isZero(balAnterior.caja_bancos)) &&
+        (isMissing(balAnterior.saldo_inventarios) || isZero(balAnterior.saldo_inventarios))
+
+      const faltaCajaInvPrevio =
+        (isMissing(balPrevio.caja_bancos) || isZero(balPrevio.caja_bancos)) &&
+        (isMissing(balPrevio.saldo_inventarios) || isZero(balPrevio.saldo_inventarios))
+
+      const resCajaInv = faltaCajaInvAnterior || faltaCajaInvPrevio
       const faltaClientesInvAnterior =
         (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
           isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
@@ -5291,6 +5291,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         isZero(resAnterior.utilidad_neta) ||
         isZero(resPrevio.utilidad_neta)
       const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
+      const msgCajaInv = c => {
+        if (!c) {
+          return '❌ No se cumple la condición.'
+        }
+        const periodos = []
+        if (faltaCajaInvAnterior) periodos.push('periodo anterior')
+        if (faltaCajaInvPrevio) periodos.push('periodo previo anterior')
+        return `✅ Se cumple la condición en ${periodos.join(' y ')}. Se ejecuta algoritmo V2.`
+      }
 
       const validacionesVersionTable = `
         <h3 style="font-size: 10px;">Validaciones para selección de versión de algoritmo</h3>
@@ -5316,7 +5325,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.<br><small>caja_bancos, saldo_inventarios</small></td>
               <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
-              <td>${msg(resCajaInv)}</td>
+              <td>${msgCajaInv(resCajaInv)}</td>
               <td>caja_bancos, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
