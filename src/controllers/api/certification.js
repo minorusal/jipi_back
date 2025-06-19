@@ -4129,6 +4129,52 @@ const validacionBloc = async (req, res, next) => {
   }
 }
 
+const consultaBlocEmpresaControlante = async (req, res, next) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: consultaBlocEmpresaControlante`
+  try {
+    const { nombre, apellido } = req.body
+
+    const params = await utilitiesService.getParametros()
+
+    const getUrl = (param) => {
+      const conf = params.find(item => item.nombre === param)
+      return conf ? conf.valor : null
+    }
+
+    const sat69bUrl = getUrl('block_lista_sat_69B_presuntos_inexistentes')
+      ?.replace('||', encodeURIComponent(nombre))
+      .replace('||', encodeURIComponent(apellido))
+
+    const ofacUrl = getUrl('bloc_ofac')
+      ?.replace('||', encodeURIComponent(nombre))
+      .replace('||', encodeURIComponent(apellido))
+
+    const concursosUrl = getUrl('bloc_consursos_mercantiles')
+      ?.replace('||', encodeURIComponent(nombre))
+
+    const proveedoresUrl = getUrl('bloc_provedores_contratistas')
+      ?.replace('||', encodeURIComponent(nombre))
+      .replace('||', encodeURIComponent(apellido))
+
+    const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = await Promise.all([
+      sat69bUrl ? axios.get(sat69bUrl) : { data: null },
+      ofacUrl ? axios.get(ofacUrl) : { data: null },
+      concursosUrl ? axios.get(concursosUrl) : { data: null },
+      proveedoresUrl ? axios.get(proveedoresUrl) : { data: null }
+    ])
+
+    return res.json({
+      bloc_sat69b: sat69bResp.data,
+      bloc_ofac: ofacResp.data,
+      bloc_concursos_mercantiles: concursosResp.data,
+      bloc_proveedores_contratistas: proveedoresResp.data
+    })
+  } catch (error) {
+    logger.error(`${fileMethod} | Error durante la ejecución: ${JSON.stringify(error)}`)
+    next(error)
+  }
+}
+
 const generaReporteInformativoCredito = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: generaReporteInformativoCredito`;
   const consulta_bloc = req.consultaBloc;
@@ -16759,6 +16805,7 @@ module.exports = {
   getInfoContactoReferido,
   getDataReporteGlobal,
   validacionBloc,
+  consultaBlocEmpresaControlante,
   consultaBloc,
   getMontoPlazo
   /* validarCertificacionBloc */
