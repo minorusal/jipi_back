@@ -5536,6 +5536,127 @@ ${JSON.stringify(info_email_error, null, 2)}
         return isNaN(num) ? value : `${num} d\u00EDas`
       }
 
+      let referenciasConsideradas = info_email.referencias_consideradas || []
+      let referenciasDescartadas = info_email.referencias_descartadas || []
+
+      const allReferencias =
+        Array.isArray(info_email.referencias)
+          ? info_email.referencias
+          : [...referenciasConsideradas, ...referenciasDescartadas]
+
+      if (Array.isArray(allReferencias) && allReferencias.length > 0) {
+        const uniqueBy = (arr, keyFn) => {
+          const seen = new Set()
+          return (arr || []).filter(item => {
+            const k = keyFn(item)
+            if (seen.has(k)) return false
+            seen.add(k)
+            return true
+          })
+        }
+
+        const esConsiderada = r =>
+          r.contestada === 'si' &&
+          r.referencia_valida === 'true' &&
+          (!r.estatus_referencia || r.estatus_referencia !== 'vencida') &&
+          (!r.observaciones || r.observaciones.trim() === '')
+
+        const motivoDescartada = r => {
+          if (r.contestada !== 'si') return 'No contestada'
+          if (r.estatus_referencia === 'vencida') return 'Vencida'
+          if (r.referencia_valida !== 'true') return r.observaciones || 'No válida'
+          if (r.observaciones) return r.observaciones
+          return r.estatus_referencia || 'No válida'
+        }
+
+        referenciasConsideradas = uniqueBy(
+          allReferencias.filter(esConsiderada),
+          x => x.id_certification_referencia_comercial
+        )
+
+        referenciasDescartadas = uniqueBy(
+          allReferencias
+            .filter(r => !esConsiderada(r))
+            .map(r => ({ ...r, motivo_descartada: motivoDescartada(r) })),
+          x => x.id_certification_referencia_comercial
+        )
+      }
+
+      const buildRefRowsConsideradas = refs =>
+        Array.isArray(refs)
+          ? refs
+              .map(
+                (ref, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+          </tr>`
+              )
+              .join('')
+          : ''
+
+      const buildRefRowsDescartadas = refs =>
+        Array.isArray(refs)
+          ? refs
+              .map(
+                (ref, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
+          </tr>`
+              )
+              .join('')
+          : ''
+
+      const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
+      const refDescartadasRows = buildRefRowsDescartadas(referenciasDescartadas)
+
+      const refConsideradasTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Referencias comerciales consideradas</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refConsideradasRows}
+          </tbody>
+        </table>
+        </div>`
+
+      const refDescartadasTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Referencias comerciales descartadas</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">ID</th>
+              <th>Calificación</th>
+              <th>Línea de crédito</th>
+              <th>Porcentaje de deuda</th>
+              <th>Días de atraso</th>
+              <th>Motivo descarte</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${refDescartadasRows}
+          </tbody>
+        </table>
+        </div>`
+
       const excludedKeys = [
         'alertas',
         'alerta_preventiva_reserva',
@@ -6147,48 +6268,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               )
               .join('')
           : ''
-
-      const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
-      const refDescartadasRows = buildRefRowsDescartadas(referenciasDescartadas)
-
-      const refConsideradasTable = `
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales consideradas</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th style="background-color: #000; color: #fff;">ID</th>
-              <th>Calificación</th>
-              <th>Línea de crédito</th>
-              <th>Porcentaje de deuda</th>
-              <th>Días de atraso</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${refConsideradasRows}
-          </tbody>
-        </table>
-        </div>`
-
-      const refDescartadasTable = `
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales descartadas</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th style="background-color: #000; color: #fff;">ID</th>
-              <th>Calificación</th>
-              <th>Línea de crédito</th>
-              <th>Porcentaje de deuda</th>
-              <th>Días de atraso</th>
-              <th>Motivo descarte</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${refDescartadasRows}
-          </tbody>
-        </table>
-        </div>`
 
       const buildFinancialRows = (arr, periodKey) => {
         const map = {}
