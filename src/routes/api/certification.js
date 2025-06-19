@@ -128,6 +128,10 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                         • 1 = es la controlante
  *                         • 0 = no lo es
  *                       example: 1
+ *                     conteo_error_rfc:
+ *                       type: integer
+ *                       description: Conteo de intentos fallidos de validación de RFC del accionista controlante
+ *                       example: 0
  *               empresas:
  *                 type: array
  *                 items:
