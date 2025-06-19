@@ -1476,17 +1476,19 @@ WHERE cer.certificacion_id = (
   }
 
   async insertEmpresasRel(id, body) {
-    const { razon_social, pais } = body
+    const { razon_social, pais, controlante } = body
     const queryString = `
-    INSERT INTO certification_empresas_relacionadas 
+    INSERT INTO certification_empresas_relacionadas
       (id_certification,
       razon_social,
-      pais
-      ) 
-    VALUES 
+      pais,
+      controlante
+      )
+    VALUES
       (${id},
       '${razon_social}',
-      '${pais}');
+      '${pais}',
+      ${controlante})
   `
     const result = await mysqlLib.query(queryString)
     return result
