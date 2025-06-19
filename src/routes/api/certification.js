@@ -162,6 +162,15 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                 type: array
  *                 items:
  *                   type: object
+ *                   properties:
+ *                     controlante:
+ *                       type: integer
+ *                       description: |
+ *                         Indica si la empresa relacionada es la controlante.
+ *                         Valores posibles:
+ *                         • 1 = es la controlante
+ *                         • 0 = no lo es
+ *                       example: 1
  *               principales_directores:
  *                 type: array
  *                 items:
