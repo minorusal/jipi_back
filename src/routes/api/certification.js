@@ -1122,7 +1122,7 @@ router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificat
  *         description: Nombre de la empresa controlante
  *       - in: query
  *         name: apellido
- *         required: true
+ *         required: false
  *         schema:
  *           type: string
  *         description: Apellido o denominación complementaria
