@@ -146,6 +146,20 @@ router.post('/ValidaListaService', decryptMiddleware,  konesh.validaListaService
  *     responses:
  *       200:
  *         description: Resultado de la validación del RFC y la razón social
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 mensaje:
+ *                   type: string
+ *                 detalle:
+ *                   type: string
+ *                 data_konesh:
+ *                   type: object
+ *                   description: Objeto completo retornado por la API de Konesh (ya desencriptado)
  */
 router.get('/validar-rfc', konesh.genericKoneshRequest)
 

@@ -502,7 +502,8 @@ exports.genericKoneshRequest = async (req, res, next) => {
       return res.json({
         success: false,
         mensaje: 'El RFC tiene problemas en el SAT',
-        detalle: problematicEntry[0]
+        detalle: problematicEntry[0],
+        data_konesh: konesh_api_des
       })
     }
 
@@ -510,11 +511,12 @@ exports.genericKoneshRequest = async (req, res, next) => {
     if (razonSat !== razon_social) {
       return res.json({
         success: false,
-        mensaje: 'La razón social proporcionada no coincide con la registrada en el SAT'
+        mensaje: 'La razón social proporcionada no coincide con la registrada en el SAT',
+        data_konesh: konesh_api_des
       })
     }
 
-    return res.json({ success: true, mensaje: 'RFC y razón social validados correctamente' })
+    return res.json({ success: true, mensaje: 'RFC y razón social validados correctamente', data_konesh: konesh_api_des })
   } catch (error) {
     next(error)
   }
