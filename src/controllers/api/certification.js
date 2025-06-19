@@ -536,25 +536,6 @@ const iniciaCertificacion = async (req, res, next) => {
       return next(boom.badRequest(`La empresa con ID ${id_empresa} no tiene relacion con el usuario ${id_usuario}`))
     }
 
-    if (empresas_relacionadas && empresas_relacionadas.length > 0) {
-      if (empresas_relacionadas.length === 1) {
-        empresas_relacionadas[0].controlante = 1
-      } else {
-        let controlantes = 0
-        for (const empresa of empresas_relacionadas) {
-          if (parseInt(empresa.controlante) === 1) {
-            controlantes += 1
-            empresa.controlante = 1
-          } else {
-            empresa.controlante = 0
-          }
-        }
-        if (controlantes !== 1) {
-          logger.warn(`${fileMethod} | Se debe indicar exactamente una empresa controlante`)
-          return next(boom.badRequest('Debe existir una sola empresa controlante'))
-        }
-      }
-    }
 
     const insertCert = await certificationService.iniciaCertification(body)
     if (!insertCert.result) {
@@ -563,12 +544,10 @@ const iniciaCertificacion = async (req, res, next) => {
     }
 
     if (empresas_relacionadas.length > 0) {
-      for (let i in empresas_relacionadas) {
-        const insertEmpresasRel = await certificationService.insertEmpresasRel(insertCert.result.insertId, empresas_relacionadas[i])
-        if (!insertEmpresasRel.result) {
-          logger.warn(`${fileMethod} | No se insertaron los datos de empresas relacionadas para la certificación`)
-          return next(boom.badRequest('No se insertaron los datos de empresas relacionadas para la certificación'))
-        }
+      const insertEmpresasRel = await certificationService.insertEmpresasRel(insertCert.result.insertId, empresas_relacionadas)
+      if (!insertEmpresasRel.result) {
+        logger.warn(`${fileMethod} | No se insertaron los datos de empresas relacionadas para la certificación`)
+        return next(boom.badRequest('No se insertaron los datos de empresas relacionadas para la certificación'))
       }
     }
 

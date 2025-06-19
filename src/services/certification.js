@@ -1475,23 +1475,47 @@ WHERE cer.certificacion_id = (
     return result;
   }
 
-  async insertEmpresasRel(id, body) {
-    const { razon_social, pais, controlante } = body
-    const queryString = `
-    INSERT INTO certification_empresas_relacionadas
-      (id_certification,
-      razon_social,
-      pais,
-      controlante
-      )
-    VALUES
-      (${id},
-      '${razon_social}',
-      '${pais}',
-      ${controlante})
-  `
-    const result = await mysqlLib.query(queryString)
-    return result
+  async insertEmpresasRel (id_certification, empresas) {
+    if (!Array.isArray(empresas)) empresas = [empresas]
+
+    if (empresas.length === 1) {
+      empresas[0].controlante = 1
+    } else if (empresas.length > 1) {
+      let controlantes = 0
+      empresas = empresas.map(emp => {
+        const flag = parseInt(emp.controlante) === 1
+        if (flag) controlantes += 1
+        return {
+          ...emp,
+          controlante: flag ? 1 : 0
+        }
+      })
+      if (controlantes !== 1) {
+        throw new Error('Debe existir una sola empresa controlante')
+      }
+    }
+
+    const results = []
+    for (const empresa of empresas) {
+      const { razon_social, pais, controlante } = empresa
+      const queryString = `
+      INSERT INTO certification_empresas_relacionadas
+        (id_certification,
+        razon_social,
+        pais,
+        controlante
+        )
+      VALUES
+        (${id_certification},
+        '${razon_social}',
+        '${pais}',
+        ${controlante})
+    `
+      const result = await mysqlLib.query(queryString)
+      results.push(result)
+    }
+
+    return { result: results }
   }
 
   async iniciaCertification(body) {
