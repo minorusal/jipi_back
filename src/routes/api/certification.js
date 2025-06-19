@@ -1115,22 +1115,14 @@ router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificat
  *     description: Actúa como proxy hacia los servicios de BLOC para obtener información de SAT 69-B, OFAC, concursos mercantiles y proveedores/contratistas boletinados por gobierno.
  *     parameters:
  *       - in: query
- *         name: rfc
- *         schema:
- *           type: string
- *         description: RFC de la empresa a consultar
- *       - in: query
- *         name: id_empresa
- *         schema:
- *           type: integer
- *         description: Identificador de la empresa
- *       - in: query
  *         name: nombre
+ *         required: true
  *         schema:
  *           type: string
  *         description: Nombre de la empresa controlante
  *       - in: query
  *         name: apellido
+ *         required: true
  *         schema:
  *           type: string
  *         description: Apellido o denominación complementaria
