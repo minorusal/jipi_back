@@ -444,3 +444,54 @@ exports.cifra = async (req, res, next) => {
     next(error);
   }
 }
+
+exports.genericKoneshRequest = async ({ rfc }) => {
+  try {
+    const globalConfig = await utilitiesService.getParametros()
+
+    const activa_api_sat = globalConfig.find(item => item.nombre === 'activa_api_sat')?.valor
+    if (activa_api_sat !== 'true') {
+      return { success: false, message: 'El consumo de la API de Konesh está desactivado por configuración.' }
+    }
+
+    const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
+    const textCifrado = await cifra_konesh(rfc)
+
+    const request = {
+      credentials: {
+        usuario: globalConfig.find(item => item.nombre === 'konesh_usuario').valor,
+        token: globalConfig.find(item => item.nombre === 'konesh_token').valor,
+        password: globalConfig.find(item => item.nombre === 'konesh_password').valor,
+        cuenta: globalConfig.find(item => item.nombre === 'konesh_cuenta').valor
+      },
+      issuer: {
+        rfc: globalConfig.find(item => item.nombre === 'konesh_issuer').valor
+      },
+      list: {
+        list: [textCifrado]
+      }
+    }
+
+    const headers = { headers: { 'Content-Type': 'application/json' } }
+    const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
+    const data = konesh_api.data
+
+    const konesh_api_des = {
+      transactionResponse01: [{
+        data01: await descifra_konesh(data.transactionResponse01[0].data01),
+        data02: await descifra_konesh(data.transactionResponse01[0].data02),
+        data03: await descifra_konesh(data.transactionResponse01[0].data03),
+        data04: await descifra_konesh(data.transactionResponse01[0].data04),
+        data05: await descifra_konesh(data.transactionResponse01[0].data05)
+      }],
+      transactionResponse02: await descifra_konesh(data.transactionResponse02),
+      transactionResponse03: await descifra_konesh(data.transactionResponse03),
+      transactionResponse04: await descifra_konesh(data.transactionResponse04)
+    }
+
+    return { success: true, data: konesh_api_des }
+  } catch (error) {
+    return { success: false, message: error.message }
+  }
+}
+
