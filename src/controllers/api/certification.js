@@ -6435,6 +6435,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         ${financialTables}
         ${scoreTables}
+        ${referenceTables}
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <caption>Referencias comerciales consideradas</caption>
@@ -6470,7 +6471,6 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         </div>
-        ${referenceTables}
           ${rangos_bd ? '' : ''}
         </div>
       `
