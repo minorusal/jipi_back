@@ -2295,27 +2295,16 @@ const getControlanteScoreFromSummary = async (
   try {
     const accionistas = await certificationService.getAccionistas(id_certification)
 
-    if (!accionistas || !accionistas.result || accionistas.result.length === 0) {
-      logger.warn(
-        `${fileMethod} | ${customUuid} No se encontraron accionistas para la certificación ${id_certification}`
-      )
-      return { error: true }
+    const accionistaControlante = accionistas && accionistas.result
+      ? accionistas.result.find(a => parseInt(a.controlante) === 1)
+      : null
+
+    const nombreEmpresaControlante = accionistaControlante?.razon_social || null
+
+    let respuestaDemandas = { data: { demandas: [] } }
+    if (nombreEmpresaControlante) {
+      respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
     }
-
-    const accionistaControlante = accionistas.result.find(
-      a => parseInt(a.controlante) === 1
-    )
-
-    if (!accionistaControlante || !accionistaControlante.razon_social) {
-      logger.warn(
-        `${fileMethod} | ${customUuid} No existe accionista controlante para la certificación ${id_certification}`
-      )
-      return { error: true }
-    }
-
-    const nombreEmpresaControlante = accionistaControlante.razon_social
-
-    const respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
     debug(
       `${fileMethod} | ${customUuid} Demandas obtenidas: ${JSON.stringify(respuestaDemandas)}`
     )
@@ -2345,13 +2334,66 @@ const getControlanteScoreFromSummary = async (
       `${fileMethod} | ${customUuid} Resumen demandas: ${JSON.stringify(resumenDemandas)}`
     )
 
-    const blocData = await consultaBlocEmpresaControlanteData(nombreEmpresaControlante)
+    const blocData = nombreEmpresaControlante
+      ? await consultaBlocEmpresaControlanteData(nombreEmpresaControlante)
+      : {
+          bloc_sat69b: null,
+          bloc_ofac: null,
+          bloc_concursos_mercantiles: null,
+          bloc_proveedores_contratistas: null
+        }
 
     debug(
       `${fileMethod} | ${customUuid} Bloc data: ${JSON.stringify(blocData)}`
     )
 
-    return { resumen_demandas: resumenDemandas, bloc_data: blocData }
+    const sinDemandas =
+      !respuestaDemandas.data?.demandas ||
+      respuestaDemandas.data.demandas.length === 0
+
+    const sinBlocInfo = !blocData ||
+      [
+        blocData.bloc_sat69b,
+        blocData.bloc_ofac,
+        blocData.bloc_concursos_mercantiles,
+        blocData.bloc_proveedores_contratistas
+      ].every(v =>
+        v == null || (Array.isArray(v) ? v.length === 0 : Object.keys(v).length === 0)
+      )
+
+    let regla = ''
+    if (!accionistaControlante) {
+      regla = 'Desconocido'
+    } else if (sinDemandas && sinBlocInfo) {
+      regla = 'Positivo'
+    } else {
+      regla = 'AES O EN BLOC ANTE DEMANDAS MERCANTILES RECIENTES <1 AÑO Y MÁS DE 2 D'
+    }
+
+    const cat = await certificationService.getInfluenciaControlanteScore(regla)
+    const score = cat ? cat.valor_algoritmo : null
+
+    const insertData = {
+      id_certification,
+      empresa_controlante: nombreEmpresaControlante,
+      demandas_penales: resumenDemandas.hay_demanda_penal ? 1 : 0,
+      demandas_mercantiles: resumenDemandas.hay_2_o_mas_mercantiles_recientes ? 1 : 0,
+      sat_69b: blocData.bloc_sat69b,
+      ofac: blocData.bloc_ofac,
+      mercantiles_proveedores: blocData.bloc_concursos_mercantiles,
+      contratistas_boletinados: blocData.bloc_proveedores_contratistas
+    }
+
+    await certificationService.insertResultadoEmpresaControlante(insertData)
+
+    return {
+      score,
+      regla,
+      empresa_controlante: nombreEmpresaControlante,
+      resumen_demandas: resumenDemandas,
+      bloc_data: blocData,
+      resultado_empresa_controlante: insertData
+    }
   } catch (error) {
     logger.error(
       `${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`
