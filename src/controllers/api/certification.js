@@ -546,24 +546,19 @@ const iniciaCertificacion = async (req, res, next) => {
     }
 
     if (accionistas && accionistas.length > 0) {
-      if (accionistas.length === 1) {
-        accionistas[0].controlante = 1
-        if (accionistas[0].conteo_error_rfc === undefined) accionistas[0].conteo_error_rfc = 0
-      } else {
-        let controlantes = 0
-        for (const accionista of accionistas) {
-          if (parseInt(accionista.controlante) === 1) {
-            controlantes += 1
-            accionista.controlante = 1
-            if (accionista.conteo_error_rfc === undefined) accionista.conteo_error_rfc = 0
-          } else {
-            accionista.controlante = 0
-          }
+      let controlantes = 0
+      for (const accionista of accionistas) {
+        if (parseInt(accionista.controlante) === 1) {
+          controlantes += 1
+          accionista.controlante = 1
+        } else {
+          accionista.controlante = 0
         }
-        if (controlantes !== 1) {
-          logger.warn(`${fileMethod} | Se debe indicar exactamente un accionista controlante`)
-          return next(boom.badRequest('Debe existir un solo accionista controlante'))
-        }
+        if (accionista.conteo_error_rfc === undefined) accionista.conteo_error_rfc = 0
+      }
+      if (controlantes > 1) {
+        logger.warn(`${fileMethod} | Se debe indicar como máximo un accionista controlante`)
+        return next(boom.badRequest('Debe existir como máximo un accionista controlante'))
       }
 
       const accionistaControlante = accionistas.find(
