@@ -9030,6 +9030,12 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
       }
     }
 
+    const accionistaControlante = datos_reporte?.certificacion?.[0]?.accionistas?.find(a => parseInt(a.controlante) === 1)
+    if (accionistaControlante) {
+      resumen.empresa_controlante_razon_social = accionistaControlante.razon_social || '-'
+      resumen.empresa_controlante_rfc = accionistaControlante.rfc || '-'
+    }
+
     logger.info(`${fileMethod} | ${customUuid} | Resumen-info: ${JSON.stringify(resumen)}`)
 
     const resultados = {
@@ -12748,6 +12754,12 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         indicencias_mercantiles: 1,
         contribuyente_incumplido: 0
       }
+    }
+
+    const accionistaControlante2 = datos_reporte?.certificacion?.[0]?.accionistas?.find(a => parseInt(a.controlante) === 1)
+    if (accionistaControlante2) {
+      resumen.empresa_controlante_razon_social = accionistaControlante2.razon_social || '-'
+      resumen.empresa_controlante_rfc = accionistaControlante2.rfc || '-'
     }
 
     logger.info(`${fileMethod} | ${customUuid} | Resumen: ${JSON.stringify(resumen)}`)
