@@ -5413,6 +5413,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
+      const selectedRule = (rangos._07_influencia_controlante_regla || '').toLowerCase()
+
 
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
         style: 'currency',
@@ -5763,6 +5765,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         _04_plantilla_laboral: 'cat_plantilla_laboral_algoritmo',
         _05_sector_cliente_final: 'cat_sector_clientes_finales_algoritmo',
         _06_tiempo_actividad: 'cat_tiempo_actividad_comercial_algoritmo',
+        _07_influencia_controlante: 'cat_influencia_controlante',
         _08_ventas_anuales: 'cat_ventas_anuales_algoritmo',
         _09_tipo_cifras: 'cat_tipo_cifras_algoritmo',
         _10_incidencias_legales: 'cat_incidencias_legales_algoritmo',
@@ -6056,7 +6059,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             tableHtml += `${refConsideradasTable}${refDescartadasTable}`
           }
           if (key === '_06_tiempo_actividad') {
-            tableHtml += empresaControlanteTable
+            tableHtml += empresaControlanteTable + controlanteCatalogTable
           }
           return tableHtml
         })
@@ -6676,11 +6679,17 @@ ${JSON.stringify(info_email_error, null, 2)}
       const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante)
         ? rangos_bd.cat_influencia_controlante
         : [])
-        .map((opt, idx) => `
+        .map((opt, idx) => {
+          const desc = opt.descripcion ?? opt.nombre ?? '-'
+          const val = opt.valor_algoritmo ?? '-'
+          const isSel = selectedRule && desc.toLowerCase() === selectedRule
+          const descHtml = isSel ? `<strong>${desc}</strong>` : desc
+          return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.descripcion ?? opt.nombre ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.valor_algoritmo ?? '-'}</td>
-          </tr>`)
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${descHtml}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${val}</td>
+          </tr>`
+        })
         .join('')
 
       const controlanteCatalogTable = `
@@ -6798,7 +6807,6 @@ ${JSON.stringify(info_email_error, null, 2)}
         ${financialTables}
         ${scoreTables}
         ${referenceTables}
-        ${controlanteCatalogTable}
           ${rangos_bd ? '' : ''}
         </div>
       `
