@@ -580,7 +580,8 @@ const iniciaCertificacion = async (req, res, next) => {
 
     const uniqueIncidencias = []
     const seenKeys = new Set()
-
+    
+    await certificationService.deleteDemandas(certificacion.result[0].id_certification)
     if (incidencias_legales && incidencias_legales.length > 0) {
       for (let i = 0; i < incidencias_legales.length; i++) {
         const item = incidencias_legales[i];
@@ -600,7 +601,7 @@ const iniciaCertificacion = async (req, res, next) => {
       }
       if (certificacion.result.length == 0) {
       } else {
-        await certificationService.deleteDemandas(certificacion.result[0].id_certification)
+        // await certificationService.deleteDemandas(certificacion.result[0].id_certification)
         for (let i in uniqueIncidencias) {
           const insertDemandas = await certificationService.insertDemandas(uniqueIncidencias[i], insertCert.result.insertId)
           if (!insertDemandas.result) {
@@ -2391,7 +2392,6 @@ const getControlanteScoreFromSummary = async (
       score,
       regla,
       empresa_controlante: nombreEmpresaControlante,
-      rfc: rfcEmpresaControlante,
       resumen_demandas: resumenDemandas,
       bloc_data: blocData,
       resultado_empresa_controlante: insertData
@@ -4275,6 +4275,14 @@ const consultaBlocEmpresaControlanteData = async (nombre, apellido = '') => {
     ?.replace('||', encodeURIComponent(nombre))
     .replace('||', encodeURIComponent(apellido))
 
+<<<<<<< HEAD
+  const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = await Promise.all([
+    sat69bUrl ? axios.get(sat69bUrl) : { data: null },
+    ofacUrl ? axios.get(ofacUrl) : { data: null },
+    concursosUrl ? axios.get(concursosUrl) : { data: null },
+    proveedoresUrl ? axios.get(proveedoresUrl) : { data: null }
+  ])
+=======
   const requests = [
     sat69bUrl ? axios.get(sat69bUrl) : Promise.resolve({ data: null }),
     ofacUrl ? axios.get(ofacUrl) : Promise.resolve({ data: null }),
@@ -4287,6 +4295,7 @@ const consultaBlocEmpresaControlanteData = async (nombre, apellido = '') => {
   const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = results.map(r =>
     r.status === 'fulfilled' ? r.value : { data: null }
   )
+>>>>>>> ajustes_reporte_desglosado
 
   return {
     bloc_sat69b: sat69bResp.data,
@@ -4696,7 +4705,10 @@ const getAlgoritmoResult = async (req, res, next) => {
       )}`
     )
 
+<<<<<<< HEAD
+=======
     let resultadoControlante = influencia_controlante.resultado_empresa_controlante || {}
+>>>>>>> ajustes_reporte_desglosado
     if (influencia_controlante.error) {
       logger.warn(
         `${fileMethod} | ${customUuid} No se pudo obtener información para obtener influencia controlante en la certificación con ID: ${JSON.stringify(
@@ -4713,24 +4725,36 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: desconocido ? desconocido.valor_algoritmo : '0',
         empresa_controlante: null
       }
+<<<<<<< HEAD
+=======
 
       resultadoControlante = {}
       reporteCredito._07_influencia_controlante_score = desconocido ? desconocido.valor_algoritmo : '0'
       reporteCredito._07_influencia_controlante_regla = 'Desconocido'
       reporteCredito._07_influencia_controlante_empresa = null
       reporteCredito._07_influencia_controlante_rfc = null
+>>>>>>> ajustes_reporte_desglosado
     } else {
       reporteCredito._07_influencia_controlante = {
         descripcion: influencia_controlante.regla,
         score: influencia_controlante.score,
         empresa_controlante: influencia_controlante.empresa_controlante
       }
+<<<<<<< HEAD
+    }
+
+    const resultadoControlante = influencia_controlante.resultado_empresa_controlante || {}
+    reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
+    reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
+    reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
+=======
 
       reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
       reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
       reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
       reporteCredito._07_influencia_controlante_rfc = influencia_controlante.rfc ?? ''
     }
+>>>>>>> ajustes_reporte_desglosado
     reporteCredito._07_influencia_controlante_demandas_penales = resultadoControlante.demandas_penales ?? null
     reporteCredito._07_influencia_controlante_demandas_mercantiles = resultadoControlante.demandas_mercantiles ?? null
     reporteCredito._07_influencia_controlante_sat_69b = resultadoControlante.sat_69b ?? null
@@ -5428,7 +5452,13 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
+<<<<<<< HEAD
+      const selectedRule = String(rangos._07_influencia_controlante_regla || '').toLowerCase()
+
+
+=======
       
+>>>>>>> ajustes_reporte_desglosado
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
         style: 'currency',
         currency: 'MXN'
@@ -5915,6 +5945,40 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+<<<<<<< HEAD
+      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante)
+        ? rangos_bd.cat_influencia_controlante
+        : [])
+        .map((opt, idx) => {
+          const desc = opt.descripcion ?? opt.nombre ?? '-'
+          const val = opt.valor_algoritmo ?? '-'
+          const isSel = selectedRule && desc.toLowerCase() === selectedRule
+          const descHtml = isSel ? `<strong>${desc}</strong>` : desc
+          return `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${descHtml}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${val}</td>
+          </tr>`
+        })
+        .join('')
+
+      const controlanteCatalogTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Catálogo Influencia Controlante</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th>Descripción</th>
+              <th>Valor Algoritmo</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${controlanteRows || '<tr><td colspan="2" style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">Sin registros disponibles</td></tr>'}
+          </tbody>
+        </table>
+        </div>`
+=======
+>>>>>>> ajustes_reporte_desglosado
 
       const refDescartadasTable = `
         <div class="table-section">
@@ -5951,7 +6015,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <tbody>
             <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
+<<<<<<< HEAD
+=======
             <tr><td>RFC</td><td>${formatField(rangos._07_influencia_controlante_rfc)}</td></tr>
+>>>>>>> ajustes_reporte_desglosado
             <tr><td>Score de Influencia</td><td>${formatField(rangos._07_influencia_controlante_score)}</td></tr>
             <tr><td>Regla Aplicada</td><td>${formatField(rangos._07_influencia_controlante_regla)}</td></tr>
             <tr><td>¿Demandas Penales? (Sí / No)</td><td>${formatBool(rangos._07_influencia_controlante_demandas_penales)}</td></tr>
@@ -6075,7 +6142,11 @@ ${JSON.stringify(info_email_error, null, 2)}
             tableHtml += `${refConsideradasTable}${refDescartadasTable}`
           }
           if (key === '_07_influencia_controlante') {
+<<<<<<< HEAD
+            tableHtml += empresaControlanteTable + controlanteCatalogTable
+=======
             tableHtml += empresaControlanteTable
+>>>>>>> ajustes_reporte_desglosado
           }
           return tableHtml
         })
@@ -12019,6 +12090,8 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         border: 1px solid #787878;
         width: 90%;
         margin-top: 10px;
+        break-inside: avoid;
+        page-break-inside: avoid;
       "
     >          
       <div>
@@ -12041,7 +12114,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              ${demanda.fecha_demanda}
+              ${(demanda.fecha_demanda.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
             </p>
           </div>              
 
@@ -12064,7 +12137,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${demanda.demandante}
+            ${(demanda.demandante.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
             </p>
           </div>              
 
@@ -12073,7 +12146,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -12101,7 +12174,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${demanda.tipo_demanda}
+            ${(demanda.tipo_demanda.length > 0 || demanda.tipo_demanda === 'undefined') ? demanda.tipo_demanda : '-'}
             </p>
           </div>              
 
@@ -12112,7 +12185,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -12127,7 +12200,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 
               "
             >
-            Población: 
+            Entidad:
             </p>
           </div>
 
@@ -12140,7 +12213,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              
+              ${(demanda.entidad.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
             </p>
           </div> 
           
@@ -12152,7 +12225,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -12180,7 +12253,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              
+              ${(demanda.juzgado.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
             </p>
           </div>              
 
@@ -12204,7 +12277,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${demanda.comentarios}
+            ${(demanda.comentarios.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
             </p>
           </div>              
 
@@ -15891,6 +15964,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         border: 1px solid #787878;
         width: 90%;
         margin-top: 10px;
+        break-inside: avoid;
+        page-break-inside: avoid;
       "
     >          
       <div>
@@ -15913,7 +15988,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              ${demanda.fecha_demanda}
+              ${(demanda.fecha_demanda.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
             </p>
           </div>              
 
@@ -15936,7 +16011,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${demanda.demandante}
+            ${(demanda.demandante.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
             </p>
           </div>              
 
@@ -15945,7 +16020,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -15973,7 +16048,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${demanda.tipo_demanda}
+            ${(demanda.tipo.length > 0 || demanda.tipo === 'undefined') ? demanda.tipo : '-'}
             </p>
           </div>              
 
@@ -15984,7 +16059,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -15999,7 +16074,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 
               "
             >
-            Población: 
+            Entidad:
             </p>
           </div>
 
@@ -16012,7 +16087,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              
+              ${(demanda.entidad.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
             </p>
           </div> 
           
@@ -16024,7 +16099,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         <div
           style="
             display: grid;
-            grid-template-columns: 0.5fr 2fr;
+            grid-template-columns: 1fr 5fr;
             border-bottom: 1px solid #787878;
           "
         >
@@ -16052,7 +16127,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              
+              ${(demanda.juzgado.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
             </p>
           </div>              
 
@@ -16076,7 +16151,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${demanda.comentarios}
+            ${(demanda.comentarios.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
             </p>
           </div>              
 
@@ -16996,7 +17071,16 @@ const getDemandasBloc = async (req, res, next) => {
   try {
     const { nombre } = req.params
 
+<<<<<<< HEAD
+    const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
+    const block_demandas_url = block_demandas.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(''))
+
+    const response = await axios.get(block_demandas_url, { responseType: 'arraybuffer' });
+    const dataString = Buffer.from(response.data).toString('latin1');
+    const data = JSON.parse(dataString);
+=======
     const data = await obtenerDemandas(nombre)
+>>>>>>> ajustes_reporte_desglosado
 
     logger.info(`${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify({
       error: false,
