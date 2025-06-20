@@ -2299,7 +2299,8 @@ const getControlanteScoreFromSummary = async (
       ? accionistas.result.find(a => parseInt(a.controlante) === 1)
       : null
 
-    const nombreEmpresaControlante = accionistaControlante?.razon_social || null
+  const nombreEmpresaControlante = accionistaControlante?.razon_social || null
+  const rfcEmpresaControlante = accionistaControlante?.rfc || null
 
     let respuestaDemandas = { data: { demandas: [] } }
     if (nombreEmpresaControlante) {
@@ -2390,6 +2391,7 @@ const getControlanteScoreFromSummary = async (
       score,
       regla,
       empresa_controlante: nombreEmpresaControlante,
+      rfc: rfcEmpresaControlante,
       resumen_demandas: resumenDemandas,
       bloc_data: blocData,
       resultado_empresa_controlante: insertData
@@ -4716,6 +4718,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       reporteCredito._07_influencia_controlante_score = desconocido ? desconocido.valor_algoritmo : '0'
       reporteCredito._07_influencia_controlante_regla = 'Desconocido'
       reporteCredito._07_influencia_controlante_empresa = null
+      reporteCredito._07_influencia_controlante_rfc = null
     } else {
       reporteCredito._07_influencia_controlante = {
         descripcion: influencia_controlante.regla,
@@ -4726,6 +4729,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
       reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
       reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
+      reporteCredito._07_influencia_controlante_rfc = influencia_controlante.rfc ?? ''
     }
     reporteCredito._07_influencia_controlante_demandas_penales = resultadoControlante.demandas_penales ?? null
     reporteCredito._07_influencia_controlante_demandas_mercantiles = resultadoControlante.demandas_mercantiles ?? null
@@ -5947,6 +5951,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <tbody>
             <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
+            <tr><td>RFC</td><td>${formatField(rangos._07_influencia_controlante_rfc)}</td></tr>
             <tr><td>Score de Influencia</td><td>${formatField(rangos._07_influencia_controlante_score)}</td></tr>
             <tr><td>Regla Aplicada</td><td>${formatField(rangos._07_influencia_controlante_regla)}</td></tr>
             <tr><td>¿Demandas Penales? (Sí / No)</td><td>${formatBool(rangos._07_influencia_controlante_demandas_penales)}</td></tr>
