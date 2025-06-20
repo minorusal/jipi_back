@@ -4712,6 +4712,17 @@ const getAlgoritmoResult = async (req, res, next) => {
       }
     }
 
+    const resultadoControlante = influencia_controlante.resultado_empresa_controlante || {}
+    reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
+    reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
+    reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
+    reporteCredito._07_influencia_controlante_demandas_penales = resultadoControlante.demandas_penales ?? null
+    reporteCredito._07_influencia_controlante_demandas_mercantiles = resultadoControlante.demandas_mercantiles ?? null
+    reporteCredito._07_influencia_controlante_sat_69b = resultadoControlante.sat_69b ?? null
+    reporteCredito._07_influencia_controlante_ofac = resultadoControlante.ofac ?? null
+    reporteCredito._07_influencia_controlante_mercantiles_proveedores = resultadoControlante.mercantiles_proveedores ?? null
+    reporteCredito._07_influencia_controlante_contratistas_boletinados = resultadoControlante.contratistas_boletinados ?? null
+
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 07: ${JSON.stringify(reporteCredito)}`)
 
     const ventas_anuales = await getScoreVentasAnualesFromSummary(
