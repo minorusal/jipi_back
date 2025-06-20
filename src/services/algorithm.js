@@ -103,7 +103,7 @@ class AlgorithmService {
       plantillaLaboralScore: mapTable('cat_plantilla_laboral_algoritmo'),
       sectorClienteFinalScore: mapTable('cat_sector_clientes_finales_algoritmo'),
       tiempoActividadScore: mapTable('cat_tiempo_actividad_comercial_algoritmo'),
-      influenciaControlanteScore: [],
+      influenciaControlanteScore: mapTable('cat_influencia_controlante_algoritmo'),
       ventasAnualesScore: mapTable('cat_ventas_anuales_algoritmo'),
       tipoCifrasScore: mapTable('cat_tipo_cifras_algoritmo'),
       incidenciasLegalesScore: mapTable('cat_incidencias_legales_algoritmo'),
@@ -149,6 +149,7 @@ class AlgorithmService {
       'cat_rotacion_cuentas_cobrar_algoritmo',
       'cat_tipo_cifras_algoritmo',
       'cat_evolucion_ventas_algoritmo',
+      'cat_influencia_controlante_algoritmo',
       'cat_score_descripcion_algoritmo'
     ]
 

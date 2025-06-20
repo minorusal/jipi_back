@@ -6641,7 +6641,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const referenceTables = variablesReference
         .map(([, label, table]) => {
-          const rows = (rangos_bd && Array.isArray(rangos_bd[table]) ? rangos_bd[table] : [])
+          const rowItems = (rangos_bd && Array.isArray(rangos_bd[table]) ? rangos_bd[table] : [])
             .map((opt, idx) => {
               const v1 = opt.valor_algoritmo ?? '-'
               const v2 = opt.valor_algoritmo_v2 ?? opt.valor_algoritmo ?? '-'
@@ -6653,6 +6653,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 </tr>`
             })
             .join('')
+          const rows = rowItems || `<tr><td colspan="3" style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">No hay información disponible</td></tr>`
           return `
             <div class="table-section">
             <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
