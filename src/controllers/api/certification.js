@@ -6681,9 +6681,10 @@ ${JSON.stringify(info_email_error, null, 2)}
             .map((opt, idx) => {
               const v1 = opt.valor_algoritmo ?? '-'
               const v2 = opt.valor_algoritmo_v2 ?? opt.valor_algoritmo ?? '-'
+              const opcion = opt.nombre ?? opt.descripcion ?? '-'
               return `
                 <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-                  <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.nombre ?? '-'}</td>
+                  <td style="padding: 6px 8px; border: 1px solid #ddd;">${opcion}</td>
                   <td style="padding: 6px 8px; border: 1px solid #ddd;">${v1}</td>
                   <td style="padding: 6px 8px; border: 1px solid #ddd;">${v2}</td>
                 </tr>`
