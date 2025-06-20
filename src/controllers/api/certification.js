@@ -555,6 +555,7 @@ const iniciaCertificacion = async (req, res, next) => {
           accionista.controlante = 0
         }
         if (accionista.conteo_error_rfc === undefined) accionista.conteo_error_rfc = 0
+        if (accionista.razon_sat_rfc === undefined) accionista.razon_sat_rfc = ''
       }
       if (controlantes > 1) {
         logger.warn(`${fileMethod} | Se debe indicar como máximo un accionista controlante`)
@@ -8017,6 +8018,7 @@ const updateCertificacion = async (req, res, next) => {
           } else {
             accionista.controlante = 0
           }
+          if (accionista.razon_sat_rfc === undefined) accionista.razon_sat_rfc = ''
         }
         if (controlantes !== 1) {
           logger.warn(`${fileMethod} - Se debe indicar exactamente un accionista controlante`)

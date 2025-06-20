@@ -1690,9 +1690,9 @@ WHERE cer.certificacion_id = (
   async insertaAccionista(insertIdCert, accionista) {
     const queryString = `
       INSERT INTO certification_accionistas
-        (id_certification, razon_social, denominacion, rfc, controlante, conteo_error_rfc)
+        (id_certification, razon_social, denominacion, rfc, controlante, conteo_error_rfc, razon_sat_rfc)
       VALUES
-        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}', ${accionista.controlante}, ${accionista.conteo_error_rfc ?? null})
+        (${insertIdCert}, '${accionista.razon_social}', ${accionista.denominacion}, '${accionista.rfc}', ${accionista.controlante}, ${accionista.conteo_error_rfc ?? null}, ${mysqlLib.escape(accionista.razon_sat_rfc)})
     `;
     const result = await mysqlLib.query(queryString);
     return result;
@@ -4186,6 +4186,7 @@ WHERE cer.certificacion_id = (
         razon_social = ${mysqlLib.escape(body.razonSocial)},
         controlante = ${mysqlLib.escape(body.controlante)},
         rfc = ${mysqlLib.escape(body.rfc)},
+        razon_sat_rfc = ${mysqlLib.escape(body.razon_sat_rfc)},
         updated_at = CURRENT_TIMESTAMP
       WHERE id_certification = ${mysqlLib.escape(body.idCertification)};
     `;
