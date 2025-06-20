@@ -6849,7 +6849,7 @@ ${JSON.stringify(info_email_error, null, 2)}
     const info = await transporter.sendMail(mailOptions)
     return info
   } catch (error) {
-    logger.info(`Error en el envio de correo electronico: ${error} - ${fileMethod}`)
+    logger.error(`Error en el envio de correo electronico: ${error} - ${fileMethod}`)
   }
 }
 
