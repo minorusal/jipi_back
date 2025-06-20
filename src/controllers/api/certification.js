@@ -4694,6 +4694,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       )}`
     )
 
+    let resultadoControlante = influencia_controlante.resultado_empresa_controlante || {}
     if (influencia_controlante.error) {
       logger.warn(
         `${fileMethod} | ${customUuid} No se pudo obtener información para obtener influencia controlante en la certificación con ID: ${JSON.stringify(
@@ -4710,18 +4711,22 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: desconocido ? desconocido.valor_algoritmo : '0',
         empresa_controlante: null
       }
+
+      resultadoControlante = {}
+      reporteCredito._07_influencia_controlante_score = desconocido ? desconocido.valor_algoritmo : '0'
+      reporteCredito._07_influencia_controlante_regla = 'Desconocido'
+      reporteCredito._07_influencia_controlante_empresa = null
     } else {
       reporteCredito._07_influencia_controlante = {
         descripcion: influencia_controlante.regla,
         score: influencia_controlante.score,
         empresa_controlante: influencia_controlante.empresa_controlante
       }
-    }
 
-    const resultadoControlante = influencia_controlante.resultado_empresa_controlante || {}
-    reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
-    reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
-    reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
+      reporteCredito._07_influencia_controlante_score = influencia_controlante.score ?? null
+      reporteCredito._07_influencia_controlante_regla = influencia_controlante.regla ?? ''
+      reporteCredito._07_influencia_controlante_empresa = influencia_controlante.empresa_controlante ?? ''
+    }
     reporteCredito._07_influencia_controlante_demandas_penales = resultadoControlante.demandas_penales ?? null
     reporteCredito._07_influencia_controlante_demandas_mercantiles = resultadoControlante.demandas_mercantiles ?? null
     reporteCredito._07_influencia_controlante_sat_69b = resultadoControlante.sat_69b ?? null
