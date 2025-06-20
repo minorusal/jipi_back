@@ -5906,6 +5906,50 @@ WHERE
     return result
   }
 
+  async getInfluenciaControlanteScore(nombre) {
+    const queryString = `
+      SELECT nombre, valor_algoritmo
+      FROM cat_influencia_controlante_algoritmo
+      WHERE nombre = ${mysqlLib.escape(nombre)}
+      LIMIT 1;
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0]
+  }
+
+  async insertResultadoEmpresaControlante(data) {
+    const {
+      id_certification,
+      empresa_controlante,
+      demandas_penales,
+      demandas_mercantiles,
+      sat_69b,
+      ofac,
+      mercantiles_proveedores,
+      contratistas_boletinados
+    } = data
+
+    const queryString = `
+      INSERT INTO resultado_empresa_controlante
+        (id_certification, empresa_controlante, demandas_penales, demandas_mercantiles,
+         sat_69b, ofac, mercantiles_proveedores, contratistas_boletinados, created_at, updated_at)
+      VALUES (
+        ${mysqlLib.escape(id_certification)},
+        ${empresa_controlante ? mysqlLib.escape(empresa_controlante) : 'NULL'},
+        ${mysqlLib.escape(demandas_penales)},
+        ${mysqlLib.escape(demandas_mercantiles)},
+        ${sat_69b ? mysqlLib.escape(JSON.stringify(sat_69b)) : 'NULL'},
+        ${ofac ? mysqlLib.escape(JSON.stringify(ofac)) : 'NULL'},
+        ${mercantiles_proveedores ? mysqlLib.escape(JSON.stringify(mercantiles_proveedores)) : 'NULL'},
+        ${contratistas_boletinados ? mysqlLib.escape(JSON.stringify(contratistas_boletinados)) : 'NULL'},
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+      );
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
 
   async getIndustriaNombre(id_emp) {
     const queryString = `
