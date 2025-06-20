@@ -556,6 +556,15 @@ const iniciaCertificacion = async (req, res, next) => {
           return next(boom.badRequest('Debe existir un solo accionista controlante'))
         }
       }
+
+      const accionistaControlante = accionistas.find(
+        a => parseInt(a.controlante) === 1
+      )
+      if (accionistaControlante && accionistaControlante.razon_social) {
+        const nombreEmpresaControlante = accionistaControlante.razon_social
+        const demandas = await obtenerDemandas(nombreEmpresaControlante)
+        debug(`${fileMethod} | Demandas obtenidas: ${JSON.stringify(demandas)}`)
+      }
     }
 
     const insertCert = await certificationService.iniciaCertification(body)
