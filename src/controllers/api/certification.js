@@ -560,36 +560,6 @@ const iniciaCertificacion = async (req, res, next) => {
         logger.warn(`${fileMethod} | Se debe indicar como máximo un accionista controlante`)
         return next(boom.badRequest('Debe existir como máximo un accionista controlante'))
       }
-
-      const accionistaControlante = accionistas.find(
-        a => parseInt(a.controlante) === 1
-      )
-      if (accionistaControlante && accionistaControlante.razon_social) {
-        const nombreEmpresaControlante = accionistaControlante.razon_social
-        const respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
-        debug(`${fileMethod} | Demandas obtenidas: ${JSON.stringify(respuestaDemandas)}`)
-
-        const hayDemandaPenal = respuestaDemandas.data?.demandas?.some(d =>
-          d.tipo_proceso?.toLowerCase() === 'penal'
-        )
-
-        const haceUnAño = new Date()
-        haceUnAño.setFullYear(haceUnAño.getFullYear() - 1)
-
-        const demandasMercantilesRecientes = respuestaDemandas.data?.demandas?.filter(d =>
-          d.tipo_proceso?.toLowerCase() === 'mercantil' &&
-          new Date(d.fecha) >= haceUnAño
-        )
-
-        const hayDosOMasIncidenciasRecientes = demandasMercantilesRecientes?.length >= 2
-
-        const resumenDemandas = {
-          hay_demanda_penal: hayDemandaPenal,
-          hay_2_o_mas_mercantiles_recientes: hayDosOMasIncidenciasRecientes
-        }
-
-        debug(`${fileMethod} | Resumen demandas: ${JSON.stringify(resumenDemandas)}`)
-      }
     }
 
     const insertCert = await certificationService.iniciaCertification(body)
@@ -2307,6 +2277,81 @@ const getScoreTiempoActividadFromSummary = async (
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? tiempoScore.v2 : tiempoScore.v1
     return { nombre: tiempoActividad.nombre, valor_algoritmo: score }
+  } catch (error) {
+    logger.error(
+      `${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`
+    )
+    return { error: true }
+  }
+}
+
+const getControlanteScoreFromSummary = async (
+  id_certification,
+  parametrosAlgoritmo,
+  customUuid
+) => {
+  const fileMethod =
+    `file: src/controllers/api/certification.js - method: getControlanteScoreFromSummary`
+  try {
+    const accionistas = await certificationService.getAccionistas(id_certification)
+
+    if (!accionistas || !accionistas.result || accionistas.result.length === 0) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se encontraron accionistas para la certificación ${id_certification}`
+      )
+      return { error: true }
+    }
+
+    const accionistaControlante = accionistas.result.find(
+      a => parseInt(a.controlante) === 1
+    )
+
+    if (!accionistaControlante || !accionistaControlante.razon_social) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No existe accionista controlante para la certificación ${id_certification}`
+      )
+      return { error: true }
+    }
+
+    const nombreEmpresaControlante = accionistaControlante.razon_social
+
+    const respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
+    debug(
+      `${fileMethod} | ${customUuid} Demandas obtenidas: ${JSON.stringify(respuestaDemandas)}`
+    )
+
+    const hayDemandaPenal = respuestaDemandas.data?.demandas?.some(
+      d => d.tipo_proceso?.toLowerCase() === 'penal'
+    )
+
+    const haceUnAño = new Date()
+    haceUnAño.setFullYear(haceUnAño.getFullYear() - 1)
+
+    const demandasMercantilesRecientes = respuestaDemandas.data?.demandas?.filter(
+      d =>
+        d.tipo_proceso?.toLowerCase() === 'mercantil' &&
+        new Date(d.fecha) >= haceUnAño
+    )
+
+    const hayDosOMasIncidenciasRecientes =
+      demandasMercantilesRecientes?.length >= 2
+
+    const resumenDemandas = {
+      hay_demanda_penal: hayDemandaPenal,
+      hay_2_o_mas_mercantiles_recientes: hayDosOMasIncidenciasRecientes
+    }
+
+    debug(
+      `${fileMethod} | ${customUuid} Resumen demandas: ${JSON.stringify(resumenDemandas)}`
+    )
+
+    const blocData = await consultaBlocEmpresaControlanteData(nombreEmpresaControlante)
+
+    debug(
+      `${fileMethod} | ${customUuid} Bloc data: ${JSON.stringify(blocData)}`
+    )
+
+    return { resumen_demandas: resumenDemandas, bloc_data: blocData }
   } catch (error) {
     logger.error(
       `${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`
