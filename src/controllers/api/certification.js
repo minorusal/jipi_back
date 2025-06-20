@@ -5902,6 +5902,38 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante)
+        ? rangos_bd.cat_influencia_controlante
+        : [])
+        .map((opt, idx) => {
+          const desc = opt.descripcion ?? opt.nombre ?? '-'
+          const val = opt.valor_algoritmo ?? '-'
+          const isSel = selectedRule && desc.toLowerCase() === selectedRule
+          const descHtml = isSel ? `<strong>${desc}</strong>` : desc
+          return `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${descHtml}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${val}</td>
+          </tr>`
+        })
+        .join('')
+
+      const controlanteCatalogTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Catálogo Influencia Controlante</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th>Descripción</th>
+              <th>Valor Algoritmo</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${controlanteRows || '<tr><td colspan="2" style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">Sin registros disponibles</td></tr>'}
+          </tbody>
+        </table>
+        </div>`
+
       const refDescartadasTable = `
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
@@ -5944,6 +5976,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           </tbody>
         </table>
         </div>`
+
 
       const excludedKeys = [
         'alertas',
@@ -6676,37 +6709,6 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
-      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante)
-        ? rangos_bd.cat_influencia_controlante
-        : [])
-        .map((opt, idx) => {
-          const desc = opt.descripcion ?? opt.nombre ?? '-'
-          const val = opt.valor_algoritmo ?? '-'
-          const isSel = selectedRule && desc.toLowerCase() === selectedRule
-          const descHtml = isSel ? `<strong>${desc}</strong>` : desc
-          return `
-          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${descHtml}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${val}</td>
-          </tr>`
-        })
-        .join('')
-
-      const controlanteCatalogTable = `
-        <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Catálogo Influencia Controlante</caption>
-          <thead style="background-color: #f2f2f2;">
-            <tr>
-              <th>Descripción</th>
-              <th>Valor Algoritmo</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${controlanteRows || '<tr><td colspan="2" style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">Sin registros disponibles</td></tr>'}
-          </tbody>
-        </table>
-        </div>`
 
       htmlContent = `
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
