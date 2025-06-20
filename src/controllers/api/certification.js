@@ -4676,6 +4676,12 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 06: ${JSON.stringify(reporteCredito)}`)
 
+    const influencia_controlante = await getControlanteScoreFromSummary(
+      id_certification,
+      parametrosAlgoritmo,
+      customUuid
+    )
+
     const ventas_anuales = await getScoreVentasAnualesFromSummary(
       id_certification,
       algoritmo_v,
