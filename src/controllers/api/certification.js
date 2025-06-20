@@ -4273,12 +4273,18 @@ const consultaBlocEmpresaControlanteData = async (nombre, apellido = '') => {
     ?.replace('||', encodeURIComponent(nombre))
     .replace('||', encodeURIComponent(apellido))
 
-  const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = await Promise.all([
-    sat69bUrl ? axios.get(sat69bUrl) : { data: null },
-    ofacUrl ? axios.get(ofacUrl) : { data: null },
-    concursosUrl ? axios.get(concursosUrl) : { data: null },
-    proveedoresUrl ? axios.get(proveedoresUrl) : { data: null }
-  ])
+  const requests = [
+    sat69bUrl ? axios.get(sat69bUrl) : Promise.resolve({ data: null }),
+    ofacUrl ? axios.get(ofacUrl) : Promise.resolve({ data: null }),
+    concursosUrl ? axios.get(concursosUrl) : Promise.resolve({ data: null }),
+    proveedoresUrl ? axios.get(proveedoresUrl) : Promise.resolve({ data: null })
+  ]
+
+  const results = await Promise.allSettled(requests)
+
+  const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = results.map(r =>
+    r.status === 'fulfilled' ? r.value : { data: null }
+  )
 
   return {
     bloc_sat69b: sat69bResp.data,
