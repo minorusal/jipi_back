@@ -1774,6 +1774,7 @@ WHERE cer.certificacion_id = (
       'cat_capital_contable_algoritmo',
       'cat_incidencias_legales_algoritmo',
       'cat_influencia_controlante_algoritmo',
+      'cat_influencia_controlante',
       'cat_resultado_referencias_proveedores_algoritmo',
       'cat_payback_algoritmo',
       'cat_rotacion_cuentas_cobrar_algoritmo',
