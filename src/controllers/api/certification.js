@@ -5413,7 +5413,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
-      const selectedRule = (rangos._07_influencia_controlante_regla || '').toLowerCase()
+      const selectedRule = String(rangos._07_influencia_controlante_regla || '').toLowerCase()
 
 
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
