@@ -6091,7 +6091,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (key === '_16_referencias_comerciales') {
             tableHtml += `${refConsideradasTable}${refDescartadasTable}`
           }
-          if (key === '_06_tiempo_actividad') {
+          if (key === '_07_influencia_controlante') {
             tableHtml += empresaControlanteTable + controlanteCatalogTable
           }
           return tableHtml
