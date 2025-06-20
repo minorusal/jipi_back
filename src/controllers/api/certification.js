@@ -562,8 +562,29 @@ const iniciaCertificacion = async (req, res, next) => {
       )
       if (accionistaControlante && accionistaControlante.razon_social) {
         const nombreEmpresaControlante = accionistaControlante.razon_social
-        const demandas = await obtenerDemandas(nombreEmpresaControlante)
-        debug(`${fileMethod} | Demandas obtenidas: ${JSON.stringify(demandas)}`)
+        const respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
+        debug(`${fileMethod} | Demandas obtenidas: ${JSON.stringify(respuestaDemandas)}`)
+
+        const hayDemandaPenal = respuestaDemandas.data?.demandas?.some(d =>
+          d.tipo_proceso?.toLowerCase() === 'penal'
+        )
+
+        const haceUnAño = new Date()
+        haceUnAño.setFullYear(haceUnAño.getFullYear() - 1)
+
+        const demandasMercantilesRecientes = respuestaDemandas.data?.demandas?.filter(d =>
+          d.tipo_proceso?.toLowerCase() === 'mercantil' &&
+          new Date(d.fecha) >= haceUnAño
+        )
+
+        const hayDosOMasIncidenciasRecientes = demandasMercantilesRecientes?.length >= 2
+
+        const resumenDemandas = {
+          hay_demanda_penal: hayDemandaPenal,
+          hay_2_o_mas_mercantiles_recientes: hayDosOMasIncidenciasRecientes
+        }
+
+        debug(`${fileMethod} | Resumen demandas: ${JSON.stringify(resumenDemandas)}`)
       }
     }
 
