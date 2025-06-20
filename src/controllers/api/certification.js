@@ -2305,7 +2305,7 @@ const getControlanteScoreFromSummary = async (
     if (nombreEmpresaControlante) {
       respuestaDemandas = await obtenerDemandas(nombreEmpresaControlante)
     }
-    debug(
+    logger.info(
       `${fileMethod} | ${customUuid} Demandas obtenidas: ${JSON.stringify(respuestaDemandas)}`
     )
 
@@ -2330,7 +2330,7 @@ const getControlanteScoreFromSummary = async (
       hay_2_o_mas_mercantiles_recientes: hayDosOMasIncidenciasRecientes
     }
 
-    debug(
+    logger.info(
       `${fileMethod} | ${customUuid} Resumen demandas: ${JSON.stringify(resumenDemandas)}`
     )
 
@@ -2343,7 +2343,7 @@ const getControlanteScoreFromSummary = async (
           bloc_proveedores_contratistas: null
         }
 
-    debug(
+    logger.info(
       `${fileMethod} | ${customUuid} Bloc data: ${JSON.stringify(blocData)}`
     )
 
@@ -4694,19 +4694,22 @@ const getAlgoritmoResult = async (req, res, next) => {
           influencia_controlante
         )}`
       )
-      return next(
-        boom.badRequest(
-          `No se pudo obtener información para obtener influencia controlante en la certificación con ID: ${JSON.stringify(
-            influencia_controlante
-          )}`
-        )
-      )
-    }
 
-    reporteCredito._07_influencia_controlante = {
-      descripcion: influencia_controlante.regla,
-      score: influencia_controlante.score,
-      empresa_controlante: influencia_controlante.empresa_controlante
+      const desconocido = await certificationService.getInfluenciaControlanteScore(
+        'Desconocido'
+      )
+
+      reporteCredito._07_influencia_controlante = {
+        descripcion: 'Desconocido',
+        score: desconocido ? desconocido.valor_algoritmo : '0',
+        empresa_controlante: null
+      }
+    } else {
+      reporteCredito._07_influencia_controlante = {
+        descripcion: influencia_controlante.regla,
+        score: influencia_controlante.score,
+        empresa_controlante: influencia_controlante.empresa_controlante
+      }
     }
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 07: ${JSON.stringify(reporteCredito)}`)
