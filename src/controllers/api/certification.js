@@ -4682,6 +4682,35 @@ const getAlgoritmoResult = async (req, res, next) => {
       customUuid
     )
 
+    logger.info(
+      `${fileMethod} | ${customUuid} Influencia controlante para el algoritmo es: ${JSON.stringify(
+        influencia_controlante
+      )}`
+    )
+
+    if (influencia_controlante.error) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} No se pudo obtener información para obtener influencia controlante en la certificación con ID: ${JSON.stringify(
+          influencia_controlante
+        )}`
+      )
+      return next(
+        boom.badRequest(
+          `No se pudo obtener información para obtener influencia controlante en la certificación con ID: ${JSON.stringify(
+            influencia_controlante
+          )}`
+        )
+      )
+    }
+
+    reporteCredito._07_influencia_controlante = {
+      descripcion: influencia_controlante.regla,
+      score: influencia_controlante.score,
+      empresa_controlante: influencia_controlante.empresa_controlante
+    }
+
+    logger.info(`${fileMethod} | ${customUuid} Reporte de credito 07: ${JSON.stringify(reporteCredito)}`)
+
     const ventas_anuales = await getScoreVentasAnualesFromSummary(
       id_certification,
       algoritmo_v,
@@ -5063,7 +5092,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       plantillaLaboralScore: plantilla_laboral.score,
       sectorClienteFinalScore: sector_cliente_final.valor_algoritmo,
       tiempoActividadScore: tiempo_actividad.valor_algoritmo,
-      influenciaControlanteScore: '0',//'Pendiente de consumo de api con información de investigacion ante el SAT'// Influencia de empresa controlante (PENDIENTE)
+      influenciaControlanteScore: influencia_controlante.score, //'Pendiente de consumo de api con información de investigacion ante el SAT'// Influencia de empresa controlante
       ventasAnualesScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : ventas_anuales.score,
       tipoCifrasScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : tipo_cifras.score,
       incidenciasLegalesScore: incidencias_legales.score,
