@@ -6627,7 +6627,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         ['_04_plantilla_laboral', '4. Plantilla laboral', 'cat_plantilla_laboral_algoritmo'],
         ['_05_sector_cliente_final', '5. Sector cliente final', 'cat_sector_clientes_finales_algoritmo'],
         ['_06_tiempo_actividad', '6. Tiempo actividad', 'cat_tiempo_actividad_comercial_algoritmo'],
-        ['_07_influencia_controlante', '7. Influencia controlante', 'cat_influencia_controlante_algoritmo'],
+        ['_07_influencia_controlante', '7. Influencia controlante', 'cat_influencia_controlante'],
         ['_08_ventas_anuales', '8. Ventas anuales', 'cat_ventas_anuales_algoritmo'],
         ['_09_tipo_cifras', '9. Tipo cifras', 'cat_tipo_cifras_algoritmo'],
         ['_10_incidencias_legales', '10. Incidencias legales', 'cat_incidencias_legales_algoritmo'],
@@ -6673,8 +6673,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
-      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante_algoritmo)
-        ? rangos_bd.cat_influencia_controlante_algoritmo
+      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante)
+        ? rangos_bd.cat_influencia_controlante
         : [])
         .map((opt, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
