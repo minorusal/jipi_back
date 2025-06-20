@@ -16752,36 +16752,21 @@ const getDataReporteGlobal = async (req, res, next) => {
     next(error)
   }
 }
-// Función interna reutilizable para obtener las demandas desde BLoC
-const obtenerDemandas = async nombre => {
-  const block_demandas = await globalConfig.find(
-    item => item.nombre === 'block_demandas'
-  ).valor
-  const block_demandas_url = block_demandas
-    .replace('||', encodeURIComponent(nombre))
-    .replace('||', encodeURIComponent(''))
-
-  const { data } = await axios.get(block_demandas_url)
-  return data
-}
-
 const getDemandasBloc = async (req, res, next) => {
-  const fileMethod =
-    `file: src/controllers/api/certification.js - method: getDemandasBloc`
+  const fileMethod = `file: src/controllers/api/certification.js - method: getDemandasBloc`
   try {
     const { nombre } = req.params
 
-    const data = await obtenerDemandas(nombre)
+    const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
+    const block_demandas_url = block_demandas.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(''))
 
-    logger.info(
-      `${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify(
-        {
-          error: false,
-          reult: 'OK',
-          data: data
-        }
-      )}`
-    )
+    const { data } = await axios.get(block_demandas_url)
+
+    logger.info(`${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify({
+      error: false,
+      reult: 'OK',
+      data: data
+    })}`)
 
     res.status(200).json({
       error: false,
