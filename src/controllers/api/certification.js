@@ -5919,6 +5919,29 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+      const formatField = v =>
+        v === null || v === undefined || v === '' ? 'No disponible' : v
+      const formatBool = v =>
+        v === null || v === undefined || v === ''
+          ? 'No disponible'
+          : v === true || v === 1 || v === '1' || v === 'true'
+            ? 'Sí'
+            : 'No'
+
+      const empresaControlanteTable = `
+        <div class="table-section" style="margin-bottom: 20px;">
+        <h3 style="font-size: 10px;">7. Influencia de Empresa Controlante</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <tbody>
+            <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
+            <tr><td>Score de Influencia</td><td>${formatField(rangos._07_influencia_controlante_score)}</td></tr>
+            <tr><td>Regla Aplicada</td><td>${formatField(rangos._07_influencia_controlante_regla)}</td></tr>
+            <tr><td>¿Demandas Penales? (Sí / No)</td><td>${formatBool(rangos._07_influencia_controlante_demandas_penales)}</td></tr>
+            <tr><td>¿Demandas Mercantiles Relevantes? (Sí / No)</td><td>${formatBool(rangos._07_influencia_controlante_demandas_mercantiles)}</td></tr>
+          </tbody>
+        </table>
+        </div>`
+
       const excludedKeys = [
         'alertas',
         'alerta_preventiva_reserva',
@@ -6031,6 +6054,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             </div>`
           if (key === '_16_referencias_comerciales') {
             tableHtml += `${refConsideradasTable}${refDescartadasTable}`
+          }
+          if (key === '_06_tiempo_actividad') {
+            tableHtml += empresaControlanteTable
           }
           return tableHtml
         })
