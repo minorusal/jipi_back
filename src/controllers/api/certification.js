@@ -115,6 +115,15 @@ const loadAlgorithmConstants = async () => {
 
 loadAlgorithmConstants()
 
+async function obtenerDemandas (nombre) {
+  const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
+  const block_demandas_url = block_demandas
+    .replace('||', encodeURIComponent(nombre))
+    .replace('||', encodeURIComponent(''))
+  const { data } = await axios.get(block_demandas_url)
+  return data
+}
+
 const duplicateRegister = async (body, certificacion_id) => {
   try {
     const latestCertification = await certificationService.duplicateCertification(body, certificacion_id)
@@ -16787,10 +16796,7 @@ const getDemandasBloc = async (req, res, next) => {
   try {
     const { nombre } = req.params
 
-    const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
-    const block_demandas_url = block_demandas.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(''))
-
-    const { data } = await axios.get(block_demandas_url)
+    const data = await obtenerDemandas(nombre)
 
     logger.info(`${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify({
       error: false,
