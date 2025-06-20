@@ -132,6 +132,10 @@ router.post('/certificar-reset', authMiddleware, certificationController.resetCe
  *                       type: integer
  *                       description: Conteo de intentos fallidos de validación de RFC del accionista controlante
  *                       example: 0
+ *                     razon_sat_rfc:
+ *                       type: string
+ *                       description: Razón social reportada por el SAT para el RFC proporcionado
+ *                       example: "RAZON SOCIAL DEL SAT"
  *               empresas:
  *                 type: array
  *                 items:
