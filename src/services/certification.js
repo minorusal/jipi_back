@@ -5937,9 +5937,9 @@ WHERE
 
   async getInfluenciaControlanteScore(nombre) {
     const queryString = `
-      SELECT nombre, valor_algoritmo
-      FROM cat_influencia_controlante_algoritmo
-      WHERE nombre = ${mysqlLib.escape(nombre)}
+      SELECT descripcion, valor_algoritmo
+      FROM cat_influencia_controlante
+      WHERE descripcion = ${mysqlLib.escape(nombre)}
       LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
