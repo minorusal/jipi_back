@@ -6673,6 +6673,32 @@ ${JSON.stringify(info_email_error, null, 2)}
         })
         .join('')
 
+      const controlanteRows = (rangos_bd && Array.isArray(rangos_bd.cat_influencia_controlante_algoritmo)
+        ? rangos_bd.cat_influencia_controlante_algoritmo
+        : [])
+        .map((opt, idx) => `
+          <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.descripcion ?? opt.nombre ?? '-'}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${opt.valor_algoritmo ?? '-'}</td>
+          </tr>`)
+        .join('')
+
+      const controlanteCatalogTable = `
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>Catálogo Influencia Controlante</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th>Descripción</th>
+              <th>Valor Algoritmo</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${controlanteRows || '<tr><td colspan="2" style="padding: 6px 8px; border: 1px solid #ddd; text-align: center;">Sin registros disponibles</td></tr>'}
+          </tbody>
+        </table>
+        </div>`
+
       htmlContent = `
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
@@ -6772,6 +6798,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         ${financialTables}
         ${scoreTables}
         ${referenceTables}
+        ${controlanteCatalogTable}
           ${rangos_bd ? '' : ''}
         </div>
       `
