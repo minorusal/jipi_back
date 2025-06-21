@@ -12055,7 +12055,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              ${(demanda.fecha_demanda.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
+              ${(demanda.fecha_demanda?.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
             </p>
           </div>              
 
@@ -12078,7 +12078,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${(demanda.demandante.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
+            ${(demanda.demandante?.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
             </p>
           </div>              
 
@@ -12115,7 +12115,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${(demanda.tipo_demanda.length > 0 || demanda.tipo_demanda === 'undefined') ? demanda.tipo_demanda : '-'}
+            ${(demanda.tipo_demanda?.length > 0 || demanda.tipo_demanda === 'undefined') ? demanda.tipo_demanda : '-'}
             </p>
           </div>              
 
@@ -12154,7 +12154,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              ${(demanda.entidad.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
+              ${(demanda.entidad?.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
             </p>
           </div> 
           
@@ -12194,7 +12194,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-              ${(demanda.juzgado.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
+              ${(demanda.juzgado?.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
             </p>
           </div>              
 
@@ -12218,7 +12218,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
                 font-weight: 500;
               "
             >
-            ${(demanda.comentarios.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
+            ${(demanda.comentarios?.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
             </p>
           </div>              
 
@@ -15929,7 +15929,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              ${(demanda.fecha_demanda.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
+              ${(demanda.fecha_demanda?.length > 0 || demanda.fecha_demanda === 'undefined') ? demanda.fecha_demanda : '-'}
             </p>
           </div>              
 
@@ -15952,7 +15952,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${(demanda.demandante.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
+            ${(demanda.demandante?.length > 0 || demanda.demandante === 'undefined') ? demanda.demandante : '-'}
             </p>
           </div>              
 
@@ -15989,7 +15989,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${(demanda.tipo.length > 0 || demanda.tipo === 'undefined') ? demanda.tipo : '-'}
+            ${(demanda.tipo?.length > 0 || demanda.tipo === 'undefined') ? demanda.tipo : '-'}
             </p>
           </div>              
 
@@ -16028,7 +16028,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              ${(demanda.entidad.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
+              ${(demanda.entidad?.length > 0 || demanda.entidad === 'undefined') ? demanda.entidad : '-'}
             </p>
           </div> 
           
@@ -16068,7 +16068,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-              ${(demanda.juzgado.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
+              ${(demanda.juzgado?.length > 0 || demanda.juzgado === 'undefined') ? demanda.juzgado : '-'}
             </p>
           </div>              
 
@@ -16092,7 +16092,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${(demanda.comentarios.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
+            ${(demanda.comentarios?.length > 0 || demanda.comentarios === 'undefined') ? demanda.comentarios : '-'}
             </p>
           </div>              
 
