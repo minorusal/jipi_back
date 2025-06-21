@@ -1182,17 +1182,6 @@ const guardaReferenciasComerciales = async (req, res, next) => {
   try {
     const { body } = req;
     const { id_certification, id_empresa, referencias_comerciales } = body
-    if (!Array.isArray(referencias_comerciales)) {
-      logger.warn(
-        `${fileMethod} | referencias_comerciales no es un arreglo valido: ${JSON.stringify(
-          referencias_comerciales
-        )}`
-      )
-      return next(
-        boom.badRequest('El formato de referencias comerciales no es válido')
-      )
-    }
-
     let contactos = []
 
     const [empresa_origen] = await companiesService.getEmpresaById(id_empresa)
@@ -6766,7 +6755,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <th style="background-color: #000; color: #fff;">Etiqueta</th>
                 <th style="background-color: #000; color: #fff;">Ratio</th>
                 <th>Periodo anterior</th>
-              <th>Periodo previo anterior</th>
+              <th>Previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
@@ -6783,7 +6772,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th style="background-color: #000; color: #fff;">Cálculo</th>
               <th>Periodo anterior</th>
-              <th>Periodo previo anterior</th>
+              <th>Previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
@@ -6800,7 +6789,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th style="background-color: #000; color: #fff;">Cálculo</th>
               <th>Periodo anterior</th>
-              <th>Periodo previo anterior</th>
+              <th>Previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
