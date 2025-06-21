@@ -582,7 +582,9 @@ const iniciaCertificacion = async (req, res, next) => {
     const uniqueIncidencias = []
     const seenKeys = new Set()
     
-    await certificationService.deleteDemandas(certificacion.result[0].id_certification)
+    if (certificacion.result.length > 0) {
+      await certificationService.deleteDemandas(certificacion.result[0].id_certification)
+    }
     if (incidencias_legales && incidencias_legales.length > 0) {
       for (let i = 0; i < incidencias_legales.length; i++) {
         const item = incidencias_legales[i];
