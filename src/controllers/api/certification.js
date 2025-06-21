@@ -7067,26 +7067,36 @@ const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_e
     logger.info(`${fileMethod} | ${customUuid} R9 rotacion de pagos dias: ${JSON.stringify(r9_rotacion_pagos_dias)}`);
     insertData.r9_rotacion_pagos_dias = r9_rotacion_pagos_dias;
 
-    const r10_solvencia_deuda_total_sobre_capital = {
-      solvencia_deuda_total_sobre_capital_anterior:
-        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_anterior ?? 0) !== 0)
-          ? parseFloat(
-            (
-              parseFloat(calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_largo_plazo_anterior ?? 0) /
-              parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_anterior ?? 1)
-            ).toFixed(1)
-          )
-          : null,
+    const parseNumber = require('../../utils/number')
+    const pasivoAnterior = parseNumber(
+      calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_largo_plazo_anterior
+    )
+    const capitalAnterior = parseNumber(
+      calculos_estado_balance.total_capital_contable.total_capital_contable_anterior
+    )
+    const pasivoPrevio = parseNumber(
+      calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_previo_anterior
+    )
+    const capitalPrevio = parseNumber(
+      calculos_estado_balance.total_capital_contable.total_capital_contable_previo_anterior
+    )
 
-      solvencia_deuda_total_sobre_capital_previo_anterior:
-        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_previo_anterior ?? 0) !== 0)
-          ? parseFloat(
-            (
-              parseFloat(calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_previo_anterior ?? 0) /
-              parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_previo_anterior ?? 1)
-            ).toFixed(1)
-          )
-          : null
+    const solvenciaAnterior =
+      !isNaN(pasivoAnterior) && !isNaN(capitalAnterior) && capitalAnterior !== 0
+        ? parseFloat((pasivoAnterior / capitalAnterior).toFixed(1))
+        : capitalAnterior === 0
+          ? null
+          : NaN
+    const solvenciaPrevio =
+      !isNaN(pasivoPrevio) && !isNaN(capitalPrevio) && capitalPrevio !== 0
+        ? parseFloat((pasivoPrevio / capitalPrevio).toFixed(1))
+        : capitalPrevio === 0
+          ? null
+          : NaN
+
+    const r10_solvencia_deuda_total_sobre_capital = {
+      solvencia_deuda_total_sobre_capital_anterior: solvenciaAnterior,
+      solvencia_deuda_total_sobre_capital_previo_anterior: solvenciaPrevio
     }
     logger.info(`${fileMethod} | ${customUuid} R10 Solvencia deuda total sobre capital: ${JSON.stringify(r10_solvencia_deuda_total_sobre_capital)}`)
     insertData.r10_solvencia_deuda_total_sobre_capital = r10_solvencia_deuda_total_sobre_capital
@@ -7594,10 +7604,8 @@ const calculosEstadoResultados = async (customUuid, id_certification) => {
     logger.info(`${fileMethod} | ${customUuid} Resultado anterior: ${JSON.stringify(estado_resultado_anterior)}`)
     logger.info(`${fileMethod} | ${customUuid} Resultado previo anterior: ${JSON.stringify(estado_resultado_previo_anterior)}`)
 
-    const toFloat = (value) => {
-      const parsed = parseFloat(value)
-      return isNaN(parsed) ? 0 : parsed
-    }
+    const parseNumber = require('../../utils/number')
+    const toFloat = (value) => parseNumber(value)
 
     const { ventas_anuales_anterior, costo_ventas_anuales_anterior } = estado_resultado_anterior
     const operacion_utilidad_bruta_anterior = toFloat(ventas_anuales_anterior) - toFloat(costo_ventas_anuales_anterior)
@@ -7693,10 +7701,8 @@ const calculoEstadoBalance = async (customUuid, id_certification) => {
     logger.info(`${fileMethod} | ${customUuid} ------------------------  INICIA SECCION DE CALCULO DE ACTIVO CIRCULANTE PARA RATIOS FINANCIEROS  ------------------------`)
 
     const { caja_bancos_anterior, inventarios_anterior, cliente_anterior, deudores_diversos_anterior, otros_activos_anterior } = estado_balance_anterior
-    const toFloat = (value) => {
-      const parsed = parseFloat(value);
-      return isNaN(parsed) ? 0 : parsed;
-    }
+    const parseNumber = require('../../utils/number')
+    const toFloat = (value) => parseNumber(value)
 
     const total_activo_circulante_anterior =
       toFloat(caja_bancos_anterior) +
