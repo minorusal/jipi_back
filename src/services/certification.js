@@ -6030,6 +6030,17 @@ WHERE
     return result
   }
 
+  async getAlertasPreventivasSAT(id_certification) {
+    const queryString = `
+      SELECT razon_sat_rfc
+      FROM certification_accionistas
+      WHERE id_certification = ${mysqlLib.escape(id_certification)}
+    `
+
+    const { result } = await mysqlLib.query(queryString)
+    return result
+  }
+
 }
 
 
