@@ -6153,7 +6153,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           const invA = balanceData.estado_balance_anterior?.inventarios_anterior
           const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
           const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
-          return `Anterior: ${withLabel('Costo ventas anuales', cvA)} / ${withLabel('Inventarios', invA)}<br/>Previo: ${withLabel('Costo ventas anuales', cvP)} / ${withLabel('Inventarios', invP)}`
+          return `Anterior: ${withLabel('Inventarios', invA)} / ${withLabel('Costo ventas anuales', cvA)}<br/>Previo: ${withLabel('Inventarios', invP)} / ${withLabel('Costo ventas anuales', cvP)}`
         },
         r7_rotacion_inventarios_dias: () => {
           const invA = balanceData.estado_balance_anterior?.inventarios_anterior
@@ -6251,7 +6251,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           const invA = balanceData.estado_balance_anterior?.inventarios_anterior
           const cvP = resultsData.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior
           const invP = balanceData.estado_balance_previo_anterior?.inventarios_previo_anterior
-          return `Anterior: ${withValue(cvA)} / ${withValue(invA)}<br/>Previo: ${withValue(cvP)} / ${withValue(invP)}`
+          return `Anterior: ${withValue(invA)} / ${withValue(cvA)}<br/>Previo: ${withValue(invP)} / ${withValue(cvP)}`
         },
         r7_rotacion_inventarios_dias: () => {
           const invA = balanceData.estado_balance_anterior?.inventarios_anterior
@@ -6312,7 +6312,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         r3_prueba_acida_numero_veces: '(Activo circulante - Inventarios) / Pasivo circulante',
         r4_grado_general_endeudamiento_numero_veces: 'Total activo / Pasivo largo plazo',
         r5_apalancamiento_financiero_numero_veces: 'Pasivo largo plazo / Total activo',
-        r6_rotacion_inventarios_numero_veces: 'Costo ventas anuales / Inventarios',
+        r6_rotacion_inventarios_numero_veces: 'Inventarios / Costo ventas anuales',
         r7_rotacion_inventarios_dias: '(Inventarios / Costo ventas anuales) * 360',
         r8_rotacion_cuentas_x_cobrar_dias: '(Clientes / Ventas anuales) * 360',
         r9_rotacion_pagos_dias: '(Proveedores + Acreedores) / Costo ventas anuales * 360',
@@ -6965,23 +6965,23 @@ const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_e
 
     const r6_rotacion_inventarios_numero_veces = {
       rotacion_inventarios_numero_veces_anterior:
-        parseFloat(calculos_estado_resultados?.estado_resultado_anterior?.costo_ventas_anuales_anterior ?? 0) !== 0 &&
-          parseFloat(calculos_estado_balance?.estado_balance_anterior?.inventarios_anterior ?? 0) !== 0
+        parseFloat(calculos_estado_balance?.estado_balance_anterior?.inventarios_anterior ?? 0) !== 0 &&
+          parseFloat(calculos_estado_resultados?.estado_resultado_anterior?.costo_ventas_anuales_anterior ?? 0) !== 0
           ? parseFloat(
             (
-              parseFloat(calculos_estado_resultados.estado_resultado_anterior.costo_ventas_anuales_anterior ?? 0) /
-              parseFloat(calculos_estado_balance.estado_balance_anterior.inventarios_anterior ?? 1)
+              parseFloat(calculos_estado_balance.estado_balance_anterior.inventarios_anterior ?? 0) /
+              parseFloat(calculos_estado_resultados.estado_resultado_anterior.costo_ventas_anuales_anterior ?? 1)
             ).toFixed(1)
           )
           : null,
 
       rotacion_inventarios_numero_veces_previo_anterior:
-        parseFloat(calculos_estado_resultados?.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior ?? 0) !== 0 &&
-          parseFloat(calculos_estado_balance?.estado_balance_previo_anterior?.inventarios_previo_anterior ?? 0) !== 0
+        parseFloat(calculos_estado_balance?.estado_balance_previo_anterior?.inventarios_previo_anterior ?? 0) !== 0 &&
+          parseFloat(calculos_estado_resultados?.estado_resultado_previo_anterior?.costo_ventas_anuales_previo_anterior ?? 0) !== 0
           ? parseFloat(
             (
-              parseFloat(calculos_estado_resultados.estado_resultado_previo_anterior.costo_ventas_anuales_previo_anterior ?? 0) /
-              parseFloat(calculos_estado_balance.estado_balance_previo_anterior.inventarios_previo_anterior ?? 1)
+              parseFloat(calculos_estado_balance.estado_balance_previo_anterior.inventarios_previo_anterior ?? 0) /
+              parseFloat(calculos_estado_resultados.estado_resultado_previo_anterior.costo_ventas_anuales_previo_anterior ?? 1)
             ).toFixed(1)
           )
           : null
