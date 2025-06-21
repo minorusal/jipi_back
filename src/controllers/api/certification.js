@@ -5205,10 +5205,6 @@ const getAlgoritmoResult = async (req, res, next) => {
     reporteCredito.calculos_estado_resultados = calculos_estado_resultados
     reporteCredito.ratio_financiero = ratio_financiero
 
-    const alertas_preventivas_sat = await certificationService.getAlertasPreventivasSAT(id_certification);
-    logger.info(`${fileMethod} | ${customUuid} Alertas preventivas SAT: ${JSON.stringify(alertas_preventivas_sat)}`);
-    reporteCredito.alertas_preventivas_sat = alertas_preventivas_sat;
-
     const emailReporteResumenEmail = await sendEmailNodeMailer({
       info_email: {
         scores,
@@ -5433,9 +5429,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
-
-      const selectedRule = String(rangos._07_influencia_controlante_regla || '').toLowerCase()
-
+      
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
         style: 'currency',
         currency: 'MXN'
@@ -5958,7 +5952,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <tbody>
             <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
+<<<<<<< HEAD
+=======
             <tr><td>RFC</td><td>${formatField(rangos._07_influencia_controlante_rfc)}</td></tr>
+>>>>>>> ajustes_reporte_desglosado
             <tr><td>Score de Influencia</td><td>${formatField(rangos._07_influencia_controlante_score)}</td></tr>
             <tr><td>Regla Aplicada</td><td>${formatField(rangos._07_influencia_controlante_regla)}</td></tr>
             <tr><td>¿Demandas Penales? (Sí / No)</td><td>${formatBool(rangos._07_influencia_controlante_demandas_penales)}</td></tr>
@@ -13058,7 +13055,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     const compartir_info_empresa = await certificationService.getCertificacionPartidaFinanciera(idCertification);
     const soloCompartirInfoEmpresa = compartir_info_empresa?.result?.[0]?.compartir_info_empresa;
-    const alertas_preventivas_sat = datos_reporte?.alertas_preventivas_sat;
 
     logger.info(`${fileMethod} | ${customUuid} | compartir_info_empresa del primer objeto: ${soloCompartirInfoEmpresa}`);
 
@@ -15066,31 +15062,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     ` :
       '';
 
-      const incidencias_sat = 
-      (alertas_preventivas_sat[0].razon_sat_rfc !== ''
-      && alertas_preventivas_sat[0].razon_sat_rfc !== null
-      && alertas_preventivas_sat[0].razon_sat_rfc !== 'null'
-      && alertas_preventivas_sat[0].razon_sat_rfc !== 'undefined'
-      && alertas_preventivas_sat[0].razon_sat_rfc.length > 0)
-    ? `<div style="
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border: 4px solid #d32f2f;
-        padding: 10px 15px;
-        background: #ffebee;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        ">
-         <p style="color: #b71c1c; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
-           ⚠️ Estimado cliente, le informamos que su comprador notifico un RFC que no pertenece a la razón social comentada o dicho RFC no está vigente antes SAT por alguna incidencia, favor de tomar en cuenta este dato para su decisión final. 
-         </p>
-      </div>`
-    : '';
-
     const alertas_preventivas = soloCompartirInfoEmpresa === 1 ?
       `
       <section style="width: 100%; margin: 0px 0px; margin-top: 60px; page-break-before: always;">
@@ -15143,9 +15114,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
              ⚠️ Estimado cliente, este apartado contiene información adicional de validaciones realizadas por Credibusiness. Le sugerimos considerarlas antes de tomar su decisión final sobre el crédito.
            </p>
       </div>
-
-      ${incidencias_sat}
-
+     
       <section>
          <div
           style="background-color: #f1f8ff; border-left: 5px solid #2ba2af; padding: 10px 20px; margin-bottom: 10px; width: 45rem; margin-top: 1rem;">
