@@ -6089,19 +6089,19 @@ ${JSON.stringify(info_email_error, null, 2)}
       const balanceData = rangos.calculos_estado_balance || {}
       const resultsData = rangos.calculos_estado_resultados || {}
       const ratioMap = [
-        ['r1_capital_trabajo_numero_veces', 'Capital de trabajo (veces)', 'razon_circulante_anterior', 'razon_circulante_previo_anterior'],
-        ['r2_capital_trabajo_valor_nominal', 'Capital de trabajo (valor nominal)', 'capital_trabajo_anterior', 'capital_trabajo_previo_anterior'],
-        ['r3_prueba_acida_numero_veces', 'Prueba ácida (veces)', 'prueba_acida_numero_veces_anterior', 'prueba_acida_numero_veces_previo_anterior'],
-        ['r4_grado_general_endeudamiento_numero_veces', 'Grado de endeudamiento', 'grado_general_endeudamiento_anterior', 'grado_general_endeudamiento_previo_anterior'],
-        ['r5_apalancamiento_financiero_numero_veces', 'Apalancamiento financiero', 'apalancamiento_anterior', 'apalancamiento_previo_anterior'],
-        ['r6_rotacion_inventarios_numero_veces', 'Rotación inventarios (veces)', 'rotacion_inventarios_numero_veces_anterior', 'rotacion_inventarios_numero_veces_previo_anterior'],
-        ['r7_rotacion_inventarios_dias', 'Rotación inventarios (días)', 'rotacion_inventarios_dias_anterior', 'rotacion_inventarios_dias_previo_anterior'],
-        ['r8_rotacion_cuentas_x_cobrar_dias', 'Rotación cuentas por cobrar (días)', 'rotacion_cuentas_x_cobrar_dias_anterior', 'rotacion_cuentas_x_cobrar_dias_previo_anterior'],
-        ['r9_rotacion_pagos_dias', 'Rotación de pagos (días)', 'rotacion_pagos_dias_anterior', 'rotacion_pagos_dias_previo_anterior'],
-        ['r10_solvencia_deuda_total_sobre_capital', 'Solvencia deuda total sobre capital', 'solvencia_deuda_total_sobre_capital_anterior', 'solvencia_deuda_total_sobre_capital_previo_anterior'],
-        ['r11_retorno_sobre_capital_acciones', 'Retorno sobre capital', 'retorno_sobre_capital_acciones_anterior', 'retorno_sobre_capital_acciones_previo_anterior'],
-        ['r12_rendimiento_capital', 'Rendimiento sobre capital', 'rendimiento_capital_anterior', 'rendimiento_capital_previo_anterior'],
-        ['r13_rendimiento_activos', 'Rendimiento sobre activos', 'rendimiento_activos_anterior', 'rendimiento_activos_previo_anterior']
+        ['r1_capital_trabajo_numero_veces', 'Capital de trabajo (veces)', 'razon_circulante_anterior', 'razon_circulante_previo_anterior', 'R1'],
+        ['r2_capital_trabajo_valor_nominal', 'Capital de trabajo (valor nominal)', 'capital_trabajo_anterior', 'capital_trabajo_previo_anterior', 'R2'],
+        ['r3_prueba_acida_numero_veces', 'Prueba ácida (veces)', 'prueba_acida_numero_veces_anterior', 'prueba_acida_numero_veces_previo_anterior', 'R3'],
+        ['r4_grado_general_endeudamiento_numero_veces', 'Grado de endeudamiento', 'grado_general_endeudamiento_anterior', 'grado_general_endeudamiento_previo_anterior', 'R4'],
+        ['r5_apalancamiento_financiero_numero_veces', 'Apalancamiento financiero', 'apalancamiento_anterior', 'apalancamiento_previo_anterior', 'R5'],
+        ['r6_rotacion_inventarios_numero_veces', 'Rotación inventarios (veces)', 'rotacion_inventarios_numero_veces_anterior', 'rotacion_inventarios_numero_veces_previo_anterior', 'R6'],
+        ['r7_rotacion_inventarios_dias', 'Rotación inventarios (días)', 'rotacion_inventarios_dias_anterior', 'rotacion_inventarios_dias_previo_anterior', 'R7'],
+        ['r8_rotacion_cuentas_x_cobrar_dias', 'Rotación cuentas por cobrar (días)', 'rotacion_cuentas_x_cobrar_dias_anterior', 'rotacion_cuentas_x_cobrar_dias_previo_anterior', 'R8'],
+        ['r9_rotacion_pagos_dias', 'Rotación de pagos (días)', 'rotacion_pagos_dias_anterior', 'rotacion_pagos_dias_previo_anterior', 'R9'],
+        ['r10_solvencia_deuda_total_sobre_capital', 'Solvencia deuda total sobre capital', 'solvencia_deuda_total_sobre_capital_anterior', 'solvencia_deuda_total_sobre_capital_previo_anterior', 'R10'],
+        ['r11_retorno_sobre_capital_acciones', 'Retorno sobre capital', 'retorno_sobre_capital_acciones_anterior', 'retorno_sobre_capital_acciones_previo_anterior', 'R11'],
+        ['r12_rendimiento_capital', 'Rendimiento sobre capital', 'rendimiento_capital_anterior', 'rendimiento_capital_previo_anterior', 'R12'],
+        ['r13_rendimiento_activos', 'Rendimiento sobre activos', 'rendimiento_activos_anterior', 'rendimiento_activos_previo_anterior', 'R13']
       ]
       const formatRatioValue = v => (v === null || v === undefined ? '-' : v)
       const withLabel = (label, value) => `${label}: ${formatMoney(value)}`
@@ -6320,12 +6320,13 @@ ${JSON.stringify(info_email_error, null, 2)}
         r13_rendimiento_activos: 'Utilidad neta / Total activo * 100'
       }
       const ratioRows = ratioMap
-        .map(([key, label, a, p], idx) => {
+        .map(([key, label, a, p, code], idx) => {
           const item = ratioData[key] || {}
           const op = ratioOpsValues[key] ? ratioOpsValues[key]() : '-'
           const formula = ratioFormulas[key] || '-'
           return `
             <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
+              <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${code}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${label}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[a])}</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">${formatRatioValue(item[p])}</td>
@@ -6752,6 +6753,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Ratios financieros</caption>
           <thead style="background-color: #f2f2f2;">
               <tr>
+                <th style="background-color: #000; color: #fff;">R</th>
                 <th style="background-color: #000; color: #fff;">Ratio</th>
                 <th>Periodo anterior</th>
               <th>Previo anterior</th>
@@ -7067,7 +7069,7 @@ const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_e
 
     const r10_solvencia_deuda_total_sobre_capital = {
       solvencia_deuda_total_sobre_capital_anterior:
-        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_anterior ?? 0) > 0)
+        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_anterior ?? 0) !== 0)
           ? parseFloat(
             (
               parseFloat(calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_largo_plazo_anterior ?? 0) /
@@ -7077,7 +7079,7 @@ const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_e
           : null,
 
       solvencia_deuda_total_sobre_capital_previo_anterior:
-        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_previo_anterior ?? 0) > 0)
+        (parseFloat(calculos_estado_balance.total_capital_contable.total_capital_contable_previo_anterior ?? 0) !== 0)
           ? parseFloat(
             (
               parseFloat(calculos_estado_balance.total_pasivo_largo_plazo.total_pasivo_previo_anterior ?? 0) /
