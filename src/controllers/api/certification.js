@@ -6753,7 +6753,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Ratios financieros</caption>
           <thead style="background-color: #f2f2f2;">
               <tr>
-                <th style="background-color: #000; color: #fff;">R</th>
+                <th style="background-color: #000; color: #fff;">Etiqueta</th>
                 <th style="background-color: #000; color: #fff;">Ratio</th>
                 <th>Periodo anterior</th>
               <th>Previo anterior</th>
