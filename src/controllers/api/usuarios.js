@@ -698,5 +698,3 @@ exports.updatePerfilPermisos = async (req, res, next) => {
     next(error)
   }
 }
-
-

@@ -193,7 +193,7 @@ class SolicituCreditoService {
   async getEnviadas(id_emp, idCliente = 0) {
 
     const queryString = `
-      SELECT 
+    SELECT
     sol.id_solicitud_credito,
     sol.id_cliente,
     sol.id_proveedor,
@@ -202,26 +202,27 @@ class SolicituCreditoService {
     emp.emp_razon_social,
     emp.emp_logo,
     cert.id_certification,
-    rc.reporte_pdf,
-    rc.monto_solicitado AS linea_credito_solicitada,
-    rc.plazo,
-    rc.score,
-    rc.monto_sugerido AS linea_credito_sugerida,
+	 COALESCE(rc.reporte_pdf, rcd.reporte_pdf) AS reporte_pdf,
+    COALESCE(rc.monto_solicitado, rcd.monto_solicitado) AS linea_credito_solicitada,
+    COALESCE(rc.plazo, rcd.plazo) AS plazo,
+    COALESCE(rc.score, '') AS score,
+    COALESCE(rc.monto_sugerido , '') AS linea_credito_sugerida,
     "" AS ciudad,
     "" AS consumo_mensual,
     "" AS metodo_pago,
     sol.estatus,
     cert.estatus_certificacion,
     COALESCE(sol.created_at, '') AS fecha_solicitud,
-    COALESCE(rc.created_at, '') AS fecha_reporte
-FROM solicitud_credito sol
-LEFT JOIN empresa emp ON emp.emp_id = sol.id_cliente
-LEFT JOIN certification cert ON emp.emp_id = cert.id_empresa AND cert.estatus_certificacion <> 'cancelada'
-LEFT JOIN reporte_credito rc ON rc.id_reporte_credito = sol.id_solicitud_credito AND rc.id_reporte_credito IS NOT NULL
+    COALESCE(rc.created_at, rcd.created_at) AS fecha_reporte
+FROM solicitud_credito sol 
+LEFT JOIN empresa emp ON emp.emp_id = sol.id_cliente 
+LEFT JOIN certification cert ON emp.emp_id = cert.id_empresa AND cert.estatus_certificacion <> 'cancelada' 
+LEFT JOIN reporte_credito rc ON rc.id_reporte_credito = sol.id_solicitud_credito AND rc.id_reporte_credito IS NOT NULL 
+LEFT JOIN reporte_credito_descriptivo rcd 
+  ON rcd.id_reporte_credito = sol.id_solicitud_credito 
+  AND rcd.id_reporte_credito IS NOT NULL 
 WHERE sol.id_proveedor = ${id_emp}
-
-UNION 
-
+UNION
 SELECT 
     NULL AS id_solicitud_credito,
     NULL AS id_cliente,
@@ -250,36 +251,7 @@ AND NOT EXISTS (
     FROM solicitud_credito sol 
     LEFT JOIN empresa emp ON emp.emp_id = sol.id_cliente
     WHERE emp.emp_rfc = sce.tax_id)
-
-UNION
-
-SELECT 
-    sol.id_solicitud_credito,
-    sol.id_cliente,
-    sol.id_proveedor,
-    emp.emp_rfc,
-    emp.emp_website,
-    emp.emp_razon_social,
-    emp.emp_logo,
-    cert.id_certification,
-    rcd.reporte_pdf,
-    rcd.monto_solicitado AS linea_credito_solicitada,
-    rcd.plazo,
-    NULL AS score,
-    NULL AS linea_credito_sugerida,
-    "" AS ciudad,
-    "" AS consumo_mensual,
-    "" AS metodo_pago,
-    sol.estatus,
-    cert.estatus_certificacion,
-    COALESCE(sol.created_at, '') AS fecha_solicitud,
-    COALESCE(rcd.created_at, '') AS fecha_reporte
-FROM solicitud_credito sol
-INNER JOIN empresa emp ON emp.emp_id = sol.id_cliente
-LEFT JOIN certification cert ON emp.emp_id = cert.id_empresa AND cert.estatus_certificacion <> 'cancelada'
-INNER JOIN reporte_credito_descriptivo rcd ON rcd.id_reporte_credito = sol.id_solicitud_credito
-WHERE sol.id_proveedor = ${id_emp}
-    `; 
+    `;
 
     const result = await mysqlLib.query(queryString)
     return result

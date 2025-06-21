@@ -1455,21 +1455,25 @@ WHERE cer.certificacion_id = (
 
 
   async insertDemandas(body, id_certification) {
-    const { tipo, fecha, comentarios, demandante } = body;
+    const { tipo_demanda, fecha_demanda, comentarios, demandante, entidad, juzgado } = body;
     const queryString = `
       INSERT INTO certification_demandas 
         (id_certification,
         tipo_demanda,
         fecha_demanda,
         comentarios,
-        demandante
+        demandante,
+        entidad,
+        juzgado
         ) 
       VALUES 
         (${id_certification},
-        '${tipo}',
-        '${fecha}',
+        '${tipo_demanda}',
+        '${fecha_demanda}',
         '${comentarios}',
-        '${demandante}');
+        '${demandante}',
+        '${entidad}',
+        '${juzgado}');
     `;
     const result = await mysqlLib.query(queryString);
     return result;
