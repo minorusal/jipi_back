@@ -1182,6 +1182,16 @@ const guardaReferenciasComerciales = async (req, res, next) => {
   try {
     const { body } = req;
     const { id_certification, id_empresa, referencias_comerciales } = body
+    if (!Array.isArray(referencias_comerciales)) {
+      logger.warn(
+        `${fileMethod} | referencias_comerciales no es un arreglo valido: ${JSON.stringify(
+          referencias_comerciales
+        )}`
+      )
+      return next(
+        boom.badRequest('El formato de referencias comerciales no es válido')
+      )
+    }
     let contactos = []
 
     const [empresa_origen] = await companiesService.getEmpresaById(id_empresa)
