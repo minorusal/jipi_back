@@ -6755,7 +6755,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 <th style="background-color: #000; color: #fff;">Etiqueta</th>
                 <th style="background-color: #000; color: #fff;">Ratio</th>
                 <th>Periodo anterior</th>
-              <th>Previo anterior</th>
+              <th>Periodo previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
@@ -6772,7 +6772,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th style="background-color: #000; color: #fff;">Cálculo</th>
               <th>Periodo anterior</th>
-              <th>Previo anterior</th>
+              <th>Periodo previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
@@ -6789,7 +6789,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th style="background-color: #000; color: #fff;">Cálculo</th>
               <th>Periodo anterior</th>
-              <th>Previo anterior</th>
+              <th>Periodo previo anterior</th>
               <th>Fórmula</th>
               <th>Operación</th>
             </tr>
