@@ -241,7 +241,7 @@ const enviarEmailRegistrosSemanal = async (registros, total_registros) => {
         console.log({info})
         return info
     } catch (error) {
-        console.log(error)
+        logger.error(`Error al enviar correo de registros semanales: ${JSON.stringify(error)}`)
     }
 }
 
@@ -350,7 +350,7 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
         console.log({info})
         return info
     } catch (error) {
-        console.log(error)
+        logger.error(`Error al enviar correo de saldo de empresas: ${JSON.stringify(error)}`)
     }
 }
 
