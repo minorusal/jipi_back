@@ -1176,6 +1176,12 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         resultado_ejercicios_anteriores +
         resultado_ejercicios +
         otro_capital
+
+      anterior.capital_contable =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
     }
 
     if (body.partida_estado_balance_periodo_contable_previo_anterior) {
@@ -1225,6 +1231,12 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         total_pasivo_largo_plazo + otros_pasivos_largo_plazo
 
       previo.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
+
+      previo.capital_contable =
         capital_social +
         resultado_ejercicios_anteriores +
         resultado_ejercicios +
@@ -8137,6 +8149,12 @@ const updatePartidasFinancieras = async (req, res, next) => {
         resultado_ejercicios_anteriores +
         resultado_ejercicios +
         otro_capital
+
+      anterior.capital_contable =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
     }
 
     if (body.partida_estado_balance_periodo_contable_previo_anterior) {
@@ -8148,6 +8166,12 @@ const updatePartidasFinancieras = async (req, res, next) => {
         otro_capital = 0
       } = previo
       previo.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
+
+      previo.capital_contable =
         capital_social +
         resultado_ejercicios_anteriores +
         resultado_ejercicios +
