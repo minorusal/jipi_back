@@ -5358,7 +5358,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         referencias_descartadas
       },
       rangos_bd: rangosBD,
-      id_certification
+      id_certification,
+      req_body: body
     })
     logger.info(`${fileMethod} | ${customUuid} | Resultado del envío de correo: ${JSON.stringify(emailReporteResumenEmail)}`)
     logger.info(`${fileMethod} | ${customUuid} | Resumen de reporte de credito ejecutado: ${JSON.stringify(scores)}`)
@@ -5447,7 +5448,10 @@ const getAlgoritmoResult = async (req, res, next) => {
     const errorJSON = serializeError(error)
     errorJSON.origenError = `Error en catch del metodo: ${fileMethod}`
     errorJSON.customUuid = customUuid
-    const emailError = await sendEmailNodeMailer({ info_email_error: errorJSON })
+    const emailError = await sendEmailNodeMailer({
+      info_email_error: errorJSON,
+      req_body: body
+    })
     logger.info(`${fileMethod} | Error al enviar correo electronico: ${JSON.stringify(emailError)}`)
     logger.error(`${fileMethod} | Error reporte de credito final: ${JSON.stringify(error)}`)
     next(error)
@@ -5472,7 +5476,8 @@ const sendEmailNodeMailer = async ({
   info_email_error = null,
   info_email = null,
   rangos_bd = null,
-  id_certification = null
+  id_certification = null,
+  req_body = null
 }) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: sendEmailNodeMailer`
   try {
@@ -6646,7 +6651,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
 
-      const buildFinancialRows = (arr, periodKey, tableName) => {
+      const buildFinancialRows = (arr, periodKey, tableName, body, prefix) => {
         const map = {}
         ;(arr || []).forEach(item => {
           const period = item[periodKey]
@@ -6673,6 +6678,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             const label = partidasLabels[field] || field.replace(/_/g, ' ')
             const anterior = vals.anterior
             const previo = vals.previo_anterior
+            const bodyAnterior = body?.[`${prefix}_anterior`]?.[field]
+            const bodyPrevio = body?.[`${prefix}_previo_anterior`]?.[field]
+            const reqPath = `${prefix}_anterior.${field}`
             return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
@@ -6684,6 +6692,15 @@ ${JSON.stringify(info_email_error, null, 2)}
             }</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${tableName}.${field}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${reqPath}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              bodyAnterior !== undefined && bodyAnterior !== null ? formatMoney(bodyAnterior) : '-'
+            }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
+              bodyPrevio !== undefined && bodyPrevio !== null ? formatMoney(bodyPrevio) : '-'
+            }</td>
           </tr>`
           })
           .join('')
@@ -6732,12 +6749,16 @@ ${JSON.stringify(info_email_error, null, 2)}
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
         'tipo_periodo_estado_balance',
-        'certification_partidas_estado_balance'
+        'certification_partidas_estado_balance',
+        req_body,
+        'partida_estado_balance_periodo_contable'
       )
       const resultadosPartidasRows = buildFinancialRows(
         partidasFinancierasResultados,
         'tipo_periodo_estado_resultados',
-        'certification_partidas_estado_resultados_contables'
+        'certification_partidas_estado_resultados_contables',
+        req_body,
+        'partida_estado_resultado_periodo_contable'
       )
 
       const periodoAnteriorBalance =
@@ -6769,6 +6790,11 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
               <th>Nombre del objeto request</th>
               <th>Campo en base de datos</th>
+              <th>Nombre del campo en el formulario</th>
+              <th>Nombre de la propiedad en el objeto del request</th>
+              <th>Nombre del campo en la base de datos</th>
+              <th>Valor del período anterior</th>
+              <th>Valor del período previo anterior</th>
             </tr>
           </thead>
           <tbody>
@@ -6786,6 +6812,11 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
               <th>Nombre del objeto request</th>
               <th>Campo en base de datos</th>
+              <th>Nombre del campo en el formulario</th>
+              <th>Nombre de la propiedad en el objeto del request</th>
+              <th>Nombre del campo en la base de datos</th>
+              <th>Valor del período anterior</th>
+              <th>Valor del período previo anterior</th>
             </tr>
           </thead>
           <tbody>
