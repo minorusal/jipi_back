@@ -16927,6 +16927,16 @@ const consultaCertificacion = async (customUuid, idEmpresa) => {
       const balanceArray = Array.from(balanceMap.values())
       const resultadosArray = Array.from(resultadosMap.values())
 
+      const sortedBalance = balanceArray.sort((a, b) => {
+        if (a.tipo_periodo_estado_balance === "anterior" && b.tipo_periodo_estado_balance === "previo_anterior") {
+          return -1
+        }
+        if (a.tipo_periodo_estado_balance === "previo_anterior" && b.tipo_periodo_estado_balance === "anterior") {
+          return 1
+        }
+        return 0
+      })
+
       const sortedData = resultadosArray.sort((a, b) => {
         if (a.tipo_periodo_estado_resultados === "anterior" && b.tipo_periodo_estado_resultados === "previo_anterior") {
           return -1
@@ -16938,7 +16948,7 @@ const consultaCertificacion = async (customUuid, idEmpresa) => {
       })
 
       return {
-        certification_partidas_estado_balance: balanceArray,
+        certification_partidas_estado_balance: sortedBalance,
         certification_partidas_estado_resultados_contables: sortedData
       }
     }
