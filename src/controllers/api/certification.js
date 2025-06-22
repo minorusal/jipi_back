@@ -1124,7 +1124,7 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       return next(boom.badRequest(`La certificacion con ID ${certificacion} no existe`))
     }
 
-    // Calcular total_activo_circulante para los dos periodos
+    // Calcular totales para los dos periodos
     if (body.partida_estado_balance_periodo_contable_anterior) {
       const anterior = body.partida_estado_balance_periodo_contable_anterior
       const {
@@ -1132,7 +1132,11 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         saldo_cliente_cuenta_x_cobrar = 0,
         saldo_inventarios = 0,
         deudores_diversos = 0,
-        otros_activos = 0
+        otros_activos = 0,
+        total_activo_fijo = 0,
+        activo_intangible = 0,
+        activo_diferido = 0,
+        total_otros_activos = 0
       } = anterior
       anterior.total_activo_circulante =
         caja_bancos +
@@ -1140,6 +1144,13 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         saldo_inventarios +
         deudores_diversos +
         otros_activos
+
+      anterior.activo_total =
+        anterior.total_activo_circulante +
+        total_activo_fijo +
+        activo_intangible +
+        activo_diferido +
+        total_otros_activos
     }
 
     if (body.partida_estado_balance_periodo_contable_previo_anterior) {
@@ -1149,7 +1160,11 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         saldo_cliente_cuenta_x_cobrar = 0,
         saldo_inventarios = 0,
         deudores_diversos = 0,
-        otros_activos = 0
+        otros_activos = 0,
+        total_activo_fijo = 0,
+        activo_intangible = 0,
+        activo_diferido = 0,
+        total_otros_activos = 0
       } = previo
       previo.total_activo_circulante =
         caja_bancos +
@@ -1157,6 +1172,13 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         saldo_inventarios +
         deudores_diversos +
         otros_activos
+
+      previo.activo_total =
+        previo.total_activo_circulante +
+        total_activo_fijo +
+        activo_intangible +
+        activo_diferido +
+        total_otros_activos
     }
 
     const insertPEBPCA = await certificationService.insertPEBPCA(body)
