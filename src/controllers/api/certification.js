@@ -6767,7 +6767,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
-              <th>Nombre del campo del formulario</th>
+              <th>Nombre del objeto request</th>
               <th>Campo en base de datos</th>
             </tr>
           </thead>
@@ -6784,7 +6784,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
-              <th>Nombre del campo del formulario</th>
+              <th>Nombre del objeto request</th>
               <th>Campo en base de datos</th>
             </tr>
           </thead>
