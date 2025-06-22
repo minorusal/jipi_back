@@ -5979,7 +5979,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         'alerta_preventiva_reserva',
         'calculos_estado_balance',
         'calculos_estado_resultados',
-        'ratio_financiero'
+        'ratio_financiero',
+        '_07_influencia_controlante_sat_69b',
+        '_07_influencia_controlante_ofac',
+        '_07_influencia_controlante_mercantiles_proveedores',
+        '_07_influencia_controlante_contratistas_boletinados'
       ]
       const detallesTables = Object.entries(rangos)
         .filter(([key, val]) =>
