@@ -1204,30 +1204,41 @@ const guardaReferenciasComerciales = async (req, res, next) => {
     }
     logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
+    await certificationService.deleteReferenciaComercial(id_certification);
     for (const referencia of referencias_comerciales) {
       const existe = await certificationService.existeReferenciaComercial(
         referencia.id_certification_referencia_comercial
       )
 
       if (existe) {
+
         const referenciaRepetida = await certificationService.getReferenciaComercialRepetida(
           referencia.id_certification_referencia_comercial
         )
 
+        if (referenciaRepetida[0].contestada == 'si') {
+          continue
+        }
+
         logger.info(`${fileMethod} | Referencia comercial duplicada ${JSON.stringify(referencia)}`)
         // Si la referencia comercial ya existe, se actualiza data de la referencia comercial
-        await certificationService.updateReferenciaComercialRepetida(
-          referenciaRepetida[0].id_certification_referencia_comercial,
+        // await certificationService.updateReferenciaComercialRepetida(
+        //   referenciaRepetida[0].id_certification_referencia_comercial,
+        //   id_certification,
+        //   referencia
+        // )
+        await certificationService.insertaReferenciaComercial(
+          referencia,
           id_certification,
-          referencia
+          null
         )
 
         for (let i = 0; i < referencia.contactos.length; i++) {
-          if (referencia.contactos[i].id_certification_referencia_comercial > 0) {
-            console.log('Este contacto ya existe, se actualiza')
-            console.log(referencia.contactos[i])
-            await certificationService.updateContacto(referencia.contactos[i], referencia.contactos[i].id_certification_referencia_comercial);
-          }
+          // if (referencia.contactos[i].id_certification_referencia_comercial > 0) {
+          //   console.log('Este contacto ya existe, se actualiza')
+          //   console.log(referencia.contactos[i])
+          //   await certificationService.updateContacto(referencia.contactos[i], referencia.contactos[i].id_certification_referencia_comercial);
+          // }
           if (referencia.contactos[i].id_certification_referencia_comercial == 0) {
             console.log('Este contacto no existe, se inserta en la referencia comercial')
             console.log(referencia.contactos[i])
