@@ -1140,7 +1140,9 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         total_activo_fijo = 0,
         activo_intangible = 0,
         activo_diferido = 0,
-        total_otros_activos = 0
+        total_otros_activos = 0,
+        total_pasivo_largo_plazo = 0,
+        otros_pasivos_largo_plazo = 0
       } = anterior
       anterior.total_activo_circulante =
         caja_bancos +
@@ -1161,6 +1163,9 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         acreedores +
         inpuestos_x_pagar +
         otros_pasivos
+
+      anterior.suma_pasivo_largo_plazo =
+        total_pasivo_largo_plazo + otros_pasivos_largo_plazo
     }
 
     if (body.partida_estado_balance_periodo_contable_previo_anterior) {
@@ -1178,7 +1183,9 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         total_activo_fijo = 0,
         activo_intangible = 0,
         activo_diferido = 0,
-        total_otros_activos = 0
+        total_otros_activos = 0,
+        total_pasivo_largo_plazo = 0,
+        otros_pasivos_largo_plazo = 0
       } = previo
       previo.total_activo_circulante =
         caja_bancos +
@@ -1199,6 +1206,9 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         acreedores +
         inpuestos_x_pagar +
         otros_pasivos
+
+      previo.suma_pasivo_largo_plazo =
+        total_pasivo_largo_plazo + otros_pasivos_largo_plazo
     }
 
     const insertPEBPCA = await certificationService.insertPEBPCA(body)
