@@ -1142,7 +1142,11 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         activo_diferido = 0,
         total_otros_activos = 0,
         total_pasivo_largo_plazo = 0,
-        otros_pasivos_largo_plazo = 0
+        otros_pasivos_largo_plazo = 0,
+        capital_social = 0,
+        resultado_ejercicios_anteriores = 0,
+        resultado_ejercicios = 0,
+        otro_capital = 0
       } = anterior
       anterior.total_activo_circulante =
         caja_bancos +
@@ -1166,6 +1170,12 @@ const guardaPartidasFinancieras = async (req, res, next) => {
 
       anterior.suma_pasivo_largo_plazo =
         total_pasivo_largo_plazo + otros_pasivos_largo_plazo
+
+      anterior.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
     }
 
     if (body.partida_estado_balance_periodo_contable_previo_anterior) {
@@ -1185,7 +1195,11 @@ const guardaPartidasFinancieras = async (req, res, next) => {
         activo_diferido = 0,
         total_otros_activos = 0,
         total_pasivo_largo_plazo = 0,
-        otros_pasivos_largo_plazo = 0
+        otros_pasivos_largo_plazo = 0,
+        capital_social = 0,
+        resultado_ejercicios_anteriores = 0,
+        resultado_ejercicios = 0,
+        otro_capital = 0
       } = previo
       previo.total_activo_circulante =
         caja_bancos +
@@ -1209,6 +1223,12 @@ const guardaPartidasFinancieras = async (req, res, next) => {
 
       previo.suma_pasivo_largo_plazo =
         total_pasivo_largo_plazo + otros_pasivos_largo_plazo
+
+      previo.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
     }
 
     const insertPEBPCA = await certificationService.insertPEBPCA(body)
@@ -8103,6 +8123,36 @@ const updatePartidasFinancieras = async (req, res, next) => {
     const { body } = req;
     const { id_certification, monto_solicitado } = body
     let actualiza = true
+
+    if (body.partida_estado_balance_periodo_contable_anterior) {
+      const anterior = body.partida_estado_balance_periodo_contable_anterior
+      const {
+        capital_social = 0,
+        resultado_ejercicios_anteriores = 0,
+        resultado_ejercicios = 0,
+        otro_capital = 0
+      } = anterior
+      anterior.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
+    }
+
+    if (body.partida_estado_balance_periodo_contable_previo_anterior) {
+      const previo = body.partida_estado_balance_periodo_contable_previo_anterior
+      const {
+        capital_social = 0,
+        resultado_ejercicios_anteriores = 0,
+        resultado_ejercicios = 0,
+        otro_capital = 0
+      } = previo
+      previo.total_capital_contable_pat =
+        capital_social +
+        resultado_ejercicios_anteriores +
+        resultado_ejercicios +
+        otro_capital
+    }
 
 
     const updatePEBPCA = await certificationService.updatePEBPCA(body)

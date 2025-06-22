@@ -2603,10 +2603,11 @@ WHERE cer.certificacion_id = (
         resultado_ejercicios_anteriores,
         resultado_ejercicios,
         otro_capital,
+        total_capital_contable_pat,
         periodo_actual,
         periodo_anterior,
-        periodo_previo_anterior) 
-      VALUES 
+        periodo_previo_anterior)
+      VALUES
         (${body.id_certification},
         ${body.id_tipo_cifra ?? null},
         '${body.compartir}',
@@ -2639,7 +2640,8 @@ WHERE cer.certificacion_id = (
         ${body.partida_estado_balance_periodo_contable_anterior.capital_social ?? null},
         ${body.partida_estado_balance_periodo_contable_anterior.resultado_ejercicios_anteriores ?? null},
         ${body.partida_estado_balance_periodo_contable_anterior.resultado_ejercicios ?? null},
-        ${body.partida_estado_balance_periodo_contable_anterior.otro_capital ?? null},   
+        ${body.partida_estado_balance_periodo_contable_anterior.otro_capital ?? null},
+        ${body.partida_estado_balance_periodo_contable_anterior.total_capital_contable_pat ?? null},
         '${body.periodo_actual}',
         '${body.periodo_anterior}',
         '${body.periodo_previo_anterior}')
@@ -2691,10 +2693,11 @@ WHERE cer.certificacion_id = (
         resultado_ejercicios_anteriores,
         resultado_ejercicios,
         otro_capital,
+        total_capital_contable_pat,
         periodo_actual,
         periodo_anterior,
-        periodo_previo_anterior) 
-      VALUES 
+        periodo_previo_anterior)
+      VALUES
         (${body.id_certification},
         ${body.id_tipo_cifra ?? null},
         '${body.compartir}',
@@ -2728,6 +2731,7 @@ WHERE cer.certificacion_id = (
         ${body.partida_estado_balance_periodo_contable_previo_anterior.resultado_ejercicios_anteriores ?? null},
         ${body.partida_estado_balance_periodo_contable_previo_anterior.resultado_ejercicios ?? null},
         ${body.partida_estado_balance_periodo_contable_previo_anterior.otro_capital ?? null},
+        ${body.partida_estado_balance_periodo_contable_previo_anterior.total_capital_contable_pat ?? null},
         '${body.periodo_actual}',
         '${body.periodo_anterior}',
         '${body.periodo_previo_anterior}')
@@ -4224,6 +4228,7 @@ WHERE cer.certificacion_id = (
             deuda_corto_plazo = ${body.partida_estado_balance_periodo_contable_anterior.deuda_corto_plazo ?? null},
             deuda_total = ${body.partida_estado_balance_periodo_contable_anterior.deuda_total ?? null},
             capital_contable = ${body.partida_estado_balance_periodo_contable_anterior.capital_contable ?? null},
+            total_capital_contable_pat = ${body.partida_estado_balance_periodo_contable_anterior.total_capital_contable_pat ?? null},
             periodo_actual = '${body.periodo_actual}',
             periodo_anterior = '${body.periodo_anterior}',
             periodo_previo_anterior = '${body.periodo_previo_anterior}'
@@ -4250,6 +4255,7 @@ WHERE cer.certificacion_id = (
             deuda_corto_plazo = ${body.partida_estado_balance_periodo_contable_previo_anterior.deuda_corto_plazo ?? null},
             deuda_total = ${body.partida_estado_balance_periodo_contable_previo_anterior.deuda_total ?? null},
             capital_contable = ${body.partida_estado_balance_periodo_contable_previo_anterior.capital_contable ?? null},
+            total_capital_contable_pat = ${body.partida_estado_balance_periodo_contable_previo_anterior.total_capital_contable_pat ?? null},
             periodo_actual = '${body.periodo_actual}',
             periodo_anterior = '${body.periodo_anterior}',
             periodo_previo_anterior = '${body.periodo_previo_anterior}'
