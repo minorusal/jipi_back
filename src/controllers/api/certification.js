@@ -6646,7 +6646,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
 
-      const buildFinancialRows = (arr, periodKey) => {
+      const buildFinancialRows = (arr, periodKey, tableName) => {
         const map = {}
         ;(arr || []).forEach(item => {
           const period = item[periodKey]
@@ -6682,6 +6682,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
               previo !== undefined && previo !== null ? formatMoney(previo) : '-'
             }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${tableName}.${field}</td>
           </tr>`
           })
           .join('')
@@ -6729,11 +6731,13 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
-        'tipo_periodo_estado_balance'
+        'tipo_periodo_estado_balance',
+        'certification_partidas_estado_balance'
       )
       const resultadosPartidasRows = buildFinancialRows(
         partidasFinancierasResultados,
-        'tipo_periodo_estado_resultados'
+        'tipo_periodo_estado_resultados',
+        'certification_partidas_estado_resultados_contables'
       )
 
       const periodoAnteriorBalance =
@@ -6763,6 +6767,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
+              <th>Nombre del campo del formulario</th>
+              <th>Campo en base de datos</th>
             </tr>
           </thead>
           <tbody>
@@ -6778,6 +6784,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
+              <th>Nombre del campo del formulario</th>
+              <th>Campo en base de datos</th>
             </tr>
           </thead>
           <tbody>
