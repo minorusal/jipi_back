@@ -2745,8 +2745,21 @@ WHERE cer.certificacion_id = (
   }
 
   async insertPERPCPA(body) {
+    const per = body.partida_estado_resultado_periodo_contable_previo_anterior || {}
+    const totalPartidas =
+      (Number(per.ventas_anuales) || 0) +
+      (Number(per.costo_ventas_anuales) || 0) +
+      (Number(per.utilidad_bruta) || 0) +
+      (Number(per.gastos_administracion) || 0) +
+      (Number(per.utilidad_operativa) || 0) +
+      (Number(per.depreciacion_amortizacion) || 0) +
+      (Number(per.otros_ingresos) || 0) +
+      (Number(per.otros_gastos) || 0) +
+      (Number(per.gastos_productos_financieros) || 0) +
+      (Number(per.otros_egresos) || 0) +
+      (Number(per.utilidad_neta) || 0)
     const queryString = `
-      INSERT INTO certification_partidas_estado_resultados_contables 
+      INSERT INTO certification_partidas_estado_resultados_contables
         (id_certification,
         compartir,
         tipo,
@@ -2761,10 +2774,11 @@ WHERE cer.certificacion_id = (
         otros_egresos,
         otros_gastos,
         utilidad_neta,
+        total_partidas_estado_resultado,
         periodo_actual,
         periodo_anterior,
-        periodo_previo_anterior) 
-      VALUES 
+        periodo_previo_anterior)
+      VALUES
         (${body.id_certification},
         '${body.compartir}',
         'previo_anterior',
@@ -2779,6 +2793,7 @@ WHERE cer.certificacion_id = (
         ${body.partida_estado_resultado_periodo_contable_previo_anterior.otros_egresos ?? null},
         ${body.partida_estado_resultado_periodo_contable_previo_anterior.otros_gastos ?? null},
         ${body.partida_estado_resultado_periodo_contable_previo_anterior.utilidad_neta ?? null},
+        ${totalPartidas},
         '${body.periodo_actual}',
         '${body.periodo_anterior}',
         '${body.periodo_previo_anterior}')
@@ -2792,8 +2807,21 @@ WHERE cer.certificacion_id = (
   }
 
   async insertPERPCA(body) {
+    const per = body.partida_estado_resultado_periodo_contable_anterior || {}
+    const totalPartidas =
+      (Number(per.ventas_anuales) || 0) +
+      (Number(per.costo_ventas_anuales) || 0) +
+      (Number(per.utilidad_bruta) || 0) +
+      (Number(per.gastos_administracion) || 0) +
+      (Number(per.utilidad_operativa) || 0) +
+      (Number(per.depreciacion_amortizacion) || 0) +
+      (Number(per.otros_ingresos) || 0) +
+      (Number(per.otros_gastos) || 0) +
+      (Number(per.gastos_productos_financieros) || 0) +
+      (Number(per.otros_egresos) || 0) +
+      (Number(per.utilidad_neta) || 0)
     const queryString = `
-      INSERT INTO certification_partidas_estado_resultados_contables 
+      INSERT INTO certification_partidas_estado_resultados_contables
         (id_certification,
         compartir,
         tipo,
@@ -2808,10 +2836,11 @@ WHERE cer.certificacion_id = (
         otros_egresos,
         otros_gastos,
         utilidad_neta,
+        total_partidas_estado_resultado,
         periodo_actual,
         periodo_anterior,
-        periodo_previo_anterior) 
-      VALUES 
+        periodo_previo_anterior)
+      VALUES
         (${body.id_certification},
         '${body.compartir}',
         'anterior',
@@ -2826,6 +2855,7 @@ WHERE cer.certificacion_id = (
         ${body.partida_estado_resultado_periodo_contable_anterior.otros_egresos ?? null},
         ${body.partida_estado_resultado_periodo_contable_anterior.otros_gastos ?? null},
         ${body.partida_estado_resultado_periodo_contable_anterior.utilidad_neta ?? null},
+        ${totalPartidas},
         '${body.periodo_actual}',
         '${body.periodo_anterior}',
         '${body.periodo_previo_anterior}')
@@ -4270,13 +4300,27 @@ WHERE cer.certificacion_id = (
   }
 
   async updatePERPCPA(body) {
+    const per = body.partida_estado_resultado_periodo_contable_previo_anterior || {}
+    const totalPartidas =
+      (Number(per.ventas_anuales) || 0) +
+      (Number(per.costo_ventas_anuales) || 0) +
+      (Number(per.utilidad_bruta) || 0) +
+      (Number(per.gastos_administracion) || 0) +
+      (Number(per.utilidad_operativa) || 0) +
+      (Number(per.depreciacion_amortizacion) || 0) +
+      (Number(per.otros_ingresos) || 0) +
+      (Number(per.otros_gastos) || 0) +
+      (Number(per.gastos_productos_financieros) || 0) +
+      (Number(per.otros_egresos) || 0) +
+      (Number(per.utilidad_neta) || 0)
     const queryString = `
-        UPDATE certification_partidas_estado_resultados_contables 
+        UPDATE certification_partidas_estado_resultados_contables
         SET
             compartir = '${body.compartir}',
-            ventas_anuales = ${body.partida_estado_resultado_periodo_contable_previo_anterior.ventas_anuales ?? null},
-            costo_ventas_anuales = ${body.partida_estado_resultado_periodo_contable_previo_anterior.costo_ventas_anuales ?? null},
-            utilidad_operativa = ${body.partida_estado_resultado_periodo_contable_previo_anterior.utilidad_operativa ?? null},
+            ventas_anuales = ${per.ventas_anuales ?? null},
+            costo_ventas_anuales = ${per.costo_ventas_anuales ?? null},
+            utilidad_operativa = ${per.utilidad_operativa ?? null},
+            total_partidas_estado_resultado = ${totalPartidas},
             periodo_actual = '${body.periodo_actual}',
             periodo_anterior = '${body.periodo_anterior}',
             periodo_previo_anterior = '${body.periodo_previo_anterior}'
@@ -4291,13 +4335,27 @@ WHERE cer.certificacion_id = (
   }
 
   async updatePERPCA(body) {
+    const per = body.partida_estado_resultado_periodo_contable_anterior || {}
+    const totalPartidas =
+      (Number(per.ventas_anuales) || 0) +
+      (Number(per.costo_ventas_anuales) || 0) +
+      (Number(per.utilidad_bruta) || 0) +
+      (Number(per.gastos_administracion) || 0) +
+      (Number(per.utilidad_operativa) || 0) +
+      (Number(per.depreciacion_amortizacion) || 0) +
+      (Number(per.otros_ingresos) || 0) +
+      (Number(per.otros_gastos) || 0) +
+      (Number(per.gastos_productos_financieros) || 0) +
+      (Number(per.otros_egresos) || 0) +
+      (Number(per.utilidad_neta) || 0)
     const queryString = `
-      UPDATE certification_partidas_estado_resultados_contables 
+      UPDATE certification_partidas_estado_resultados_contables
       SET
           compartir = '${body.compartir}',
-          ventas_anuales = ${body.partida_estado_resultado_periodo_contable_anterior.ventas_anuales ?? null},
-          costo_ventas_anuales = ${body.partida_estado_resultado_periodo_contable_anterior.costo_ventas_anuales ?? null},
-          utilidad_operativa = ${body.partida_estado_resultado_periodo_contable_anterior.utilidad_operativa ?? null},
+          ventas_anuales = ${per.ventas_anuales ?? null},
+          costo_ventas_anuales = ${per.costo_ventas_anuales ?? null},
+          utilidad_operativa = ${per.utilidad_operativa ?? null},
+          total_partidas_estado_resultado = ${totalPartidas},
           periodo_actual = '${body.periodo_actual}',
           periodo_anterior = '${body.periodo_anterior}',
           periodo_previo_anterior = '${body.periodo_previo_anterior}'
