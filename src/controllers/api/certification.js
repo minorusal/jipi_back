@@ -6651,7 +6651,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
 
-      const buildFinancialRows = (arr, periodKey, tableName, body, prefix) => {
+      const buildFinancialRows = (arr, periodKey, body, prefix) => {
         const map = {}
         ;(arr || []).forEach(item => {
           const period = item[periodKey]
@@ -6676,10 +6676,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         return Object.entries(map)
           .map(([field, vals], idx) => {
             const label = partidasLabels[field] || field.replace(/_/g, ' ')
+            const formLabel = formFieldNames[field] || label
             const anterior = vals.anterior
             const previo = vals.previo_anterior
-            const bodyAnterior = body?.[`${prefix}_anterior`]?.[field]
-            const bodyPrevio = body?.[`${prefix}_previo_anterior`]?.[field]
             const reqPath = `${prefix}_anterior.${field}`
             return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
@@ -6690,17 +6689,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
               previo !== undefined && previo !== null ? formatMoney(previo) : '-'
             }</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${tableName}.${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${formLabel}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${reqPath}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              bodyAnterior !== undefined && bodyAnterior !== null ? formatMoney(bodyAnterior) : '-'
-            }</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              bodyPrevio !== undefined && bodyPrevio !== null ? formatMoney(bodyPrevio) : '-'
-            }</td>
           </tr>`
           })
           .join('')
@@ -6745,18 +6736,55 @@ ${JSON.stringify(info_email_error, null, 2)}
         utilidad_neta: 'Utilidad neta'
       }
 
+      const formFieldNames = {
+        caja_bancos: 'Caja y bancos',
+        saldo_cliente_cuenta_x_cobrar: 'Saldo de clientes o cuentas por cobrar',
+        saldo_inventarios: 'Inventarios',
+        deuda_corto_plazo: 'Deuda corto plazo',
+        deuda_total: 'Deuda total',
+        capital_contable: 'Capital contable',
+        deudores_diversos: 'Deudores diversos',
+        otros_activos: 'Otros activos',
+        otros_activos_fijos_largo_plazo: 'Otros activos fijos largo plazo',
+        total_activo_circulante: 'Total activo circulante',
+        total_activo_fijo: 'Total activo fijo',
+        activo_intangible: 'Activo intangible',
+        activo_diferido: 'Activo diferido',
+        total_otros_activos: 'Total otros activos',
+        activo_total: 'Activo total',
+        proveedores: 'Proveedores',
+        acreedores: 'Acreedores',
+        inpuestos_x_pagar: 'Impuestos por pagar',
+        otros_pasivos: 'Otros pasivos',
+        total_pasivo_largo_plazo: 'Total pasivo largo plazo',
+        pasivo_diferido: 'Pasivo diferido',
+        capital_social: 'Capital social',
+        resultado_ejercicios_anteriores: 'Resultado ejercicios anteriores',
+        resultado_ejercicios: 'Resultado del ejercicio',
+        otro_capital: 'Otro capital',
+        ventas_anuales: 'Ventas anuales',
+        costo_ventas_anuales: 'Costo ventas anuales',
+        utilidad_operativa: 'Utilidad operativa',
+        utilidad_bruta: 'Utilidad bruta',
+        gastos_administracion: 'Gastos de administración',
+        gastos_productos_financieros: 'Gastos prod. financieros',
+        depreciacion_amortizacion: 'Depreciación y amortización',
+        otros_ingresos: 'Otros ingresos',
+        otros_egresos: 'Otros egresos',
+        otros_gastos: 'Otros gastos',
+        utilidad_neta: 'Utilidad neta'
+      }
+
 
       const balancePartidasRows = buildFinancialRows(
         partidasFinancierasBalance,
         'tipo_periodo_estado_balance',
-        'certification_partidas_estado_balance',
         req_body,
         'partida_estado_balance_periodo_contable'
       )
       const resultadosPartidasRows = buildFinancialRows(
         partidasFinancierasResultados,
         'tipo_periodo_estado_resultados',
-        'certification_partidas_estado_resultados_contables',
         req_body,
         'partida_estado_resultado_periodo_contable'
       )
@@ -6788,13 +6816,9 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
-              <th>Nombre del objeto request</th>
-              <th>Campo en base de datos</th>
               <th>Nombre del campo en el formulario</th>
               <th>Nombre de la propiedad en el objeto del request</th>
-              <th>Nombre del campo en la base de datos</th>
-              <th>Valor del período anterior</th>
-              <th>Valor del período previo anterior</th>
+              <th>Nombre del campo en base de datos</th>
             </tr>
           </thead>
           <tbody>
@@ -6810,13 +6834,9 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">Partida financiera</th>
               <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
               <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
-              <th>Nombre del objeto request</th>
-              <th>Campo en base de datos</th>
               <th>Nombre del campo en el formulario</th>
               <th>Nombre de la propiedad en el objeto del request</th>
-              <th>Nombre del campo en la base de datos</th>
-              <th>Valor del período anterior</th>
-              <th>Valor del período previo anterior</th>
+              <th>Nombre del campo en base de datos</th>
             </tr>
           </thead>
           <tbody>
