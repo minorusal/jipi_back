@@ -1124,6 +1124,41 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       return next(boom.badRequest(`La certificacion con ID ${certificacion} no existe`))
     }
 
+    // Calcular total_activo_circulante para los dos periodos
+    if (body.partida_estado_balance_periodo_contable_anterior) {
+      const anterior = body.partida_estado_balance_periodo_contable_anterior
+      const {
+        caja_bancos = 0,
+        saldo_cliente_cuenta_x_cobrar = 0,
+        saldo_inventarios = 0,
+        deudores_diversos = 0,
+        otros_activos = 0
+      } = anterior
+      anterior.total_activo_circulante =
+        caja_bancos +
+        saldo_cliente_cuenta_x_cobrar +
+        saldo_inventarios +
+        deudores_diversos +
+        otros_activos
+    }
+
+    if (body.partida_estado_balance_periodo_contable_previo_anterior) {
+      const previo = body.partida_estado_balance_periodo_contable_previo_anterior
+      const {
+        caja_bancos = 0,
+        saldo_cliente_cuenta_x_cobrar = 0,
+        saldo_inventarios = 0,
+        deudores_diversos = 0,
+        otros_activos = 0
+      } = previo
+      previo.total_activo_circulante =
+        caja_bancos +
+        saldo_cliente_cuenta_x_cobrar +
+        saldo_inventarios +
+        deudores_diversos +
+        otros_activos
+    }
+
     const insertPEBPCA = await certificationService.insertPEBPCA(body)
     if (!insertPEBPCA.success) {
       logger.warn(`${fileMethod} | ${insertPEBPCA.message}`)
