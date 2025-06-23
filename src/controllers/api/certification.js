@@ -6725,7 +6725,11 @@ ${JSON.stringify(info_email_error, null, 2)}
             const formLabel = formFieldNames[field] || label
             const anterior = vals.anterior
             const previo = vals.previo_anterior
-            const reqPath = `${prefix}_anterior.${field}`
+            const reqPath =
+              field === 'compartir_estado_balance' ||
+              field === 'compartir_estado_resultados'
+                ? field
+                : `${prefix}_anterior.${field}`
             return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${formLabel}</td>
