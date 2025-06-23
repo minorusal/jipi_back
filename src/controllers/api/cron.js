@@ -52,7 +52,8 @@ const enviaCorreoReferenciasExternas = async (id_certification_referencia_comerc
             return false
         }
 
-        const [informacion_hash] = await certificationService.obtenerUltimoHashCertification(contactos_referencia_comercial.id_certification)
+        const informacion_hash_result = await certificationService.obtenerUltimoHashCertification(contactos_referencia_comercial.id_certification)
+        const informacion_hash = Array.isArray(informacion_hash_result) ? informacion_hash_result[0] : informacion_hash_result
 
         if (!informacion_hash) {
             logger.warn(`${fileMethod} | No se encontró hash para la certificación: ${contactos_referencia_comercial.id_certification}`)
