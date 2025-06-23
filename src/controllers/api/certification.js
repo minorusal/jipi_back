@@ -11333,7 +11333,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     const empresas_info_basica =
       `
-        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
           </h4>
@@ -11380,7 +11380,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
     /* Inicio ccionistas mayoritarios */
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
@@ -11401,7 +11401,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
@@ -11428,7 +11428,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Principales Directores */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
@@ -11460,7 +11460,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -11575,7 +11575,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     /* Inicio Transporte */
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
@@ -11636,7 +11636,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
         `;
 
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
@@ -14570,7 +14570,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       : '';
 
     const empresas_info_basica =
-      `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      `<div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
   
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Información de Identidad Empresarial
@@ -14616,7 +14616,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     const accionistasMayoritariosHTML = accionistas?.length > 0 ?
       `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Accionistas Mayoritarios
@@ -14637,7 +14637,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </div>
       ` :
       `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
       <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
         Accionistas Mayoritarios
@@ -14663,7 +14663,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     /* Fin Accionistas mayoritarios */
     /* Principales Directores  */
     const directoresPrincipalesHTML = `
-      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
 
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Principales Directores
@@ -14695,7 +14695,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     if (tiene_personal) {
       html_personal = `
-        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto; page-break-before: always;">
+        <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0; page-break-before: always;">
           <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
             Recursos Humanos
           </h4>
@@ -14812,7 +14812,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const tiene_transporte = equipo_transporte.carga > 0 || equipo_transporte.otros > 0;
 
     let html_transporte = `
-            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+            <div style="background: #fff; padding: 12px 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
               <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
                 Equipo de Transporte
               </h4>
@@ -14872,7 +14872,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
           </div>
         `;
     html_seguros = `
-      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 800px; margin: 30px auto;">
+      <div style="background: #fff; padding: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 1.5; color: #333; max-width: 100%; margin: 30px 0;">
         <h4 style="text-transform: uppercase; background-color: #f1f8ff; padding: 8px 12px; border-left: 4px solid #2ba2af; margin-bottom: 20px; color: #2ba2af;">
           Seguros
         </h4>
