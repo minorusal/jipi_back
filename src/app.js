@@ -1,5 +1,8 @@
 'use strict'
 
+// Fijar zona horaria para todas las operaciones con fecha
+process.env.TZ = 'America/Mexico_City'
+
 const { server: { port } } = require('./config')
 const logger = require('../src/utils/logs/logger')
 const { startCronJobs } = require('./controllers/api/cron')
