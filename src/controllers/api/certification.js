@@ -39,6 +39,25 @@ const REFERENCIA_IDS = Object.freeze({
   NINGUNA: 6
 })
 
+const SCORE_KEYS = [
+  '_01_pais',
+  '_02_sector_riesgo',
+  '_03_capital_contable',
+  '_04_plantilla_laboral',
+  '_05_sector_cliente_final',
+  '_06_tiempo_actividad',
+  '_07_influencia_controlante',
+  '_08_ventas_anuales',
+  '_09_tipo_cifras',
+  '_10_incidencias_legales',
+  '_11_evolucion_ventas',
+  '_12_apalancamiento',
+  '_13_flujo_neto',
+  '_14_payback',
+  '_15_rotacion_ctas_x_cobrar',
+  '_16_referencias_comerciales'
+]
+
 let referenciasCatalogo = {}
 
 const loadReferenciasCatalogo = async () => {
@@ -6108,15 +6127,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
-      const sumatoriaScores = Object.entries(rangos)
-        .reduce((acc, [k, v]) => {
-          const n = k.match(/_(\d+)_/)?.[1]
-          if (n && parseInt(n, 10) <= 16) {
-            const s = parseInt(v?.score, 10)
-            if (!isNaN(s)) acc += s
-          }
-          return acc
-        }, 0)
+      const sumatoriaScores = SCORE_KEYS.reduce((acc, key) => {
+        const s = parseInt(rangos[key]?.score, 10)
+        if (!isNaN(s)) acc += s
+        return acc
+      }, 0)
 
       const sumatoriaScoresTable = `
         <div class="table-section" style="margin-bottom: 20px;">
