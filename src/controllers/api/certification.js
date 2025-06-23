@@ -6133,11 +6133,37 @@ ${JSON.stringify(info_email_error, null, 2)}
         return acc
       }, 0)
 
+      const scoreLabelMap = {
+        _01_pais: '1. País score',
+        _02_sector_riesgo: '2. Sector riesgo score',
+        _03_capital_contable: '3. Capital contable score',
+        _04_plantilla_laboral: '4. Plantilla laboral score',
+        _05_sector_cliente_final: '5. Sector cliente final score',
+        _06_tiempo_actividad: '6. Tiempo actividad score',
+        _07_influencia_controlante: '7. Influencia controlante score',
+        _08_ventas_anuales: '8. Ventas anuales score',
+        _09_tipo_cifras: '9. Tipo de cifras score',
+        _10_incidencias_legales: '10. Incidencias legales score',
+        _11_evolucion_ventas: '11. Evolución ventas score',
+        _12_apalancamiento: '12. Apalancamiento score',
+        _13_flujo_neto: '13. Flujo neto score',
+        _14_payback: '14. Payback score',
+        _15_rotacion_ctas_x_cobrar: '15. Rotación ctas x cobrar score',
+        _16_referencias_comerciales: '16. Referencias comerciales score'
+      }
+
+      const sumatoriaScoreRows = SCORE_KEYS.map(key => {
+        const label = scoreLabelMap[key] || key
+        const value = rangos[key]?.score ?? '-'
+        return `<tr><td>${label}</td><td>${value}</td></tr>`
+      }).join('')
+
       const sumatoriaScoresTable = `
         <div class="table-section" style="margin-bottom: 20px;">
         <h3 style="font-size: 10px;">Sumatoria de scores</h3>
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <tbody>
+            ${sumatoriaScoreRows}
             <tr><td>Total</td><td>${sumatoriaScores}</td></tr>
           </tbody>
         </table>
