@@ -5237,7 +5237,10 @@ const getAlgoritmoResult = async (req, res, next) => {
       tiempoActividadScore: tiempo_actividad.valor_algoritmo,
       influenciaControlanteScore: influencia_controlante.score, //'Pendiente de consumo de api con información de investigacion ante el SAT'// Influencia de empresa controlante
       ventasAnualesScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : ventas_anuales.score,
-      tipoCifrasScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : tipo_cifras.score,
+      tipoCifrasScore:
+        Number(algoritmo_v?.v_alritmo) === 2
+          ? '0'
+          : reporteCredito._09_tipo_cifras?.score,
       incidenciasLegalesScore: incidencias_legales.score,
       evolucionVentasScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : evolucion_ventas.score,
       apalancamientoScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : apalancamiento.score,
