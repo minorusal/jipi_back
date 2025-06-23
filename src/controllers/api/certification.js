@@ -6047,7 +6047,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       const refConsideradasTable = `
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales consideradas</caption>
+          <caption style="caption-side: top; margin-bottom: 4px;">Referencias comerciales consideradas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6067,7 +6067,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       const refDescartadasTable = `
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Referencias comerciales descartadas</caption>
+          <caption style="caption-side: top; margin-bottom: 4px;">Referencias comerciales descartadas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6244,7 +6244,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             </table>
             </div>`
           if (key === '_16_referencias_comerciales') {
-            tableHtml += `${refConsideradasTable}${refDescartadasTable}${sumatoriaScoresTable}`
+            tableHtml += `${sumatoriaScoresTable}${refConsideradasTable}${refDescartadasTable}`
           }
           if (key === '_07_influencia_controlante') {
             tableHtml += empresaControlanteTable
