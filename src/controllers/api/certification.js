@@ -1,6 +1,7 @@
 'use strict'
 
 const axios = require('axios')
+const { callKoneshApi } = require('./konesh')
 const debug = require('debug')('old-api:certification-router')
 const fsp = require('fs').promises
 const html_to_pdf = require('html-pdf-node')
@@ -8956,8 +8957,7 @@ const validacionesReferenciasComercialesValidas = async (data, empresa_referenci
         }
       }
 
-      const headers = { headers: { "Content-Type": "application/json" } }
-      const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
+      const konesh_api = await callKoneshApi(rfc_contacto, globalConfig)
       if (konesh_api.status === 200) {
         razon_social_konesh = await descifra_konesh(konesh_api.data.transactionResponse01[0].data04)
         logger.info(`${fileMethod} | Razon social obtenida de KONESH: ${JSON.stringify(razon_social_konesh)}`)
