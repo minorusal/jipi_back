@@ -6108,6 +6108,26 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+      const sumatoriaScores = Object.entries(rangos)
+        .reduce((acc, [k, v]) => {
+          const n = k.match(/_(\d+)_/)?.[1]
+          if (n && parseInt(n, 10) <= 16) {
+            const s = parseInt(v?.score, 10)
+            if (!isNaN(s)) acc += s
+          }
+          return acc
+        }, 0)
+
+      const sumatoriaScoresTable = `
+        <div class="table-section" style="margin-bottom: 20px;">
+        <h3 style="font-size: 10px;">Sumatoria de scores</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <tbody>
+            <tr><td>Total</td><td>${sumatoriaScores}</td></tr>
+          </tbody>
+        </table>
+        </div>`
+
 
       const excludedKeys = [
         'alertas',
@@ -6201,7 +6221,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           const num = key.match(/_(\d+)_/)?.[1]
           const etiqueta = labelMap[key] || key.replace(/^_\d+_/, '').replace(/_/g, ' ')
           let titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
-          if (num && parseInt(num, 10) < 16) {
+          if (num && parseInt(num, 10) <= 16) {
             titulo += ' score'
           }
           const rows = []
@@ -6224,7 +6244,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             </table>
             </div>`
           if (key === '_16_referencias_comerciales') {
-            tableHtml += `${refConsideradasTable}${refDescartadasTable}`
+            tableHtml += `${refConsideradasTable}${refDescartadasTable}${sumatoriaScoresTable}`
           }
           if (key === '_07_influencia_controlante') {
             tableHtml += empresaControlanteTable
@@ -6862,7 +6882,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         ['_13_flujo_neto', '13. Flujo neto', 'cat_flujo_neto_caja_algoritmo'],
         ['_14_payback', '14. Payback', 'cat_payback_algoritmo'],
         ['_15_rotacion_ctas_x_cobrar', '15. Rotación ctas x cobrar', 'cat_rotacion_cuentas_cobrar_algoritmo'],
-        ['_16_referencias_comerciales', '16. Referencias comerciales', 'cat_resultado_referencias_proveedores_algoritmo']
+        ['_16_referencias_comerciales', '16. Referencias comerciales score', 'cat_resultado_referencias_proveedores_algoritmo']
       ]
 
       const referenceTables = variablesReference
