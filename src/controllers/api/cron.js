@@ -47,7 +47,17 @@ const enviaCorreoReferenciasExternas = async (id_certification_referencia_comerc
 
         const [contactos_referencia_comercial] = await certificationService.obtieneCertificacionVigente(id_certification_referencia_comercial)
 
+        if (!contactos_referencia_comercial) {
+            logger.warn(`${fileMethod} | No se encontró certificación vigente para la referencia comercial: ${id_certification_referencia_comercial}`)
+            return false
+        }
+
         const [informacion_hash] = await certificationService.obtenerUltimoHashCertification(contactos_referencia_comercial.id_certification)
+
+        if (!informacion_hash) {
+            logger.warn(`${fileMethod} | No se encontró hash para la certificación: ${contactos_referencia_comercial.id_certification}`)
+            return false
+        }
 
         const {
             certification_id,
