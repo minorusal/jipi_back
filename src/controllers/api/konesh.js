@@ -445,6 +445,27 @@ exports.cifra = async (req, res, next) => {
   }
 }
 
+exports.callKoneshApi = async (rfc, globalConfig) => {
+  const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
+  const textCifrado = await cifra_konesh(rfc)
+
+  const request = {
+    credentials: {
+      usuario: globalConfig.find(item => item.nombre === 'konesh_usuario').valor,
+      token: globalConfig.find(item => item.nombre === 'konesh_token').valor,
+      password: globalConfig.find(item => item.nombre === 'konesh_password').valor,
+      cuenta: globalConfig.find(item => item.nombre === 'konesh_cuenta').valor
+    },
+    issuer: {
+      rfc: globalConfig.find(item => item.nombre === 'konesh_issuer').valor
+    },
+    list: { list: [textCifrado] }
+  }
+
+  const headers = { headers: { 'Content-Type': 'application/json' } }
+  return axios.post(konesh_url_valid_rfc, request, headers)
+}
+
 exports.genericKoneshRequest = async (req, res, next) => {
   try {
     const { rfc, razon_social } = req.query

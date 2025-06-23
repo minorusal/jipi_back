@@ -20,6 +20,7 @@ const uploadVideoS3 = require('../../utils/uploadVideoS3')
 const sns = require('../../utils/sns')
 const utilitiesService = require('../../services/utilities')
 const axios = require('axios')
+const { callKoneshApi } = require('./konesh')
 const createTokenJWT = require('../../utils/createTokenJWT')
 const validateEmailRegex = require('../../utils/validateEmailRegex')
 const koneshService = require('../../services/konesh')
@@ -211,8 +212,7 @@ exports.createCompany = async (req, res, next) => {
     }
     logger.info(`Se forma el request para consumir konesh - ${JSON.stringify(request)} - ${fileMethod}`)
 
-    const headers = { headers: { "Content-Type": "application/json" } }
-    const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
+    const konesh_api = await callKoneshApi(rfc, globalConfig)
     if (konesh_api.status === 200) {
       logger.info(`Respuesta Konesh: ${JSON.stringify(konesh_api.data)} - ${fileMethod}`)
       konesh_api_des.transactionResponse01 = [
