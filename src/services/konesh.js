@@ -99,6 +99,57 @@ class KoneshService {
     }
   }
 
+  async saveKoneshResponse({
+    emp_id = null,
+    rfc,
+    razon_social_req = null,
+    request_ts,
+    response_time_ms,
+    http_status,
+    konesh_status = null,
+    error_message = null,
+    name_sat = null,
+    postal_code = null,
+    transaction_id = null,
+    transaction_date = null,
+    node = null,
+    raw_response = null
+  }) {
+    const queryString = `INSERT INTO konesh_responses (
+        emp_id,
+        rfc,
+        razon_social_req,
+        request_ts,
+        response_time_ms,
+        http_status,
+        konesh_status,
+        error_message,
+        name_sat,
+        postal_code,
+        transaction_id,
+        transaction_date,
+        node,
+        raw_response
+      ) VALUES (
+        ${emp_id || 'NULL'},
+        ${mysqlLib.escape(rfc)},
+        ${razon_social_req ? mysqlLib.escape(razon_social_req) : 'NULL'},
+        '${request_ts}',
+        ${response_time_ms},
+        ${http_status},
+        ${konesh_status ? mysqlLib.escape(konesh_status) : 'NULL'},
+        ${error_message ? mysqlLib.escape(error_message) : 'NULL'},
+        ${name_sat ? mysqlLib.escape(name_sat) : 'NULL'},
+        ${postal_code ? mysqlLib.escape(postal_code) : 'NULL'},
+        ${transaction_id ? mysqlLib.escape(transaction_id) : 'NULL'},
+        ${transaction_date ? mysqlLib.escape(transaction_date) : 'NULL'},
+        ${node ? mysqlLib.escape(node) : 'NULL'},
+        ${raw_response ? mysqlLib.escape(JSON.stringify(raw_response)) : 'NULL'}
+      )`;
+    const { result } = await mysqlLib.query(queryString);
+    return result;
+  }
+
   async obtenerBanderaIntentos(id_empresa) {
     const queryString = `
     SELECT
