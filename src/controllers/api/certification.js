@@ -4353,53 +4353,6 @@ const validacionBloc = async (req, res, next) => {
       }
     }
 
-    const block_lista_sat_69_incumplidos = await globalConfig.find(item => item.nombre === 'block_lista_sat_69_incumplidos').valor
-    const block_lista_sat_69_incumplidos_url = block_lista_sat_69_incumplidos.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(apellido))
-    const blocListaSat69Response = await axios.get(block_lista_sat_69_incumplidos_url)
-    if (blocListaSat69Response.status === 200) {
-      const { data: data_block_lista_sat_69_presuntos_incumplidos } = blocListaSat69Response
-      if (Array.isArray(data_block_lista_sat_69_presuntos_incumplidos.incumplidos) && data_block_lista_sat_69_presuntos_incumplidos.incumplidos.length > 0) {
-        const rfcEncontrado = data_block_lista_sat_69_presuntos_incumplidos.incumplidos.find(incumplidos => incumplidos.rfc === rfc)
-        if (rfcEncontrado) {
-          sin_incidencias = false
-          message = 'RFC con problemas'
-          asunto.push({
-            listaSat69Incumplidos: data_block_lista_sat_69_presuntos_incumplidos.incumplidos
-          })
-          logger.info(`${fileMethod} | 69 incumplidos response: ${JSON.stringify(data_block_lista_sat_69_presuntos_incumplidos.incumplidos)}`)
-
-          const listaSat69Incumplidos = data_block_lista_sat_69_presuntos_incumplidos.incumplidos
-          for (let i of listaSat69Incumplidos) {
-            const guarda_bloc_69_incumplidos = await certificationService.guardaBloc_69_incumplidos(id_certification, i)
-            logger.info(`${fileMethod} | 69 incumplidos guardado: ${JSON.stringify(guarda_bloc_69_incumplidos)}`)
-          }
-        }
-      }
-    }
-
-    const block_lista_importadores_exportadores = await globalConfig.find(item => item.nombre === 'block_lista_importadores_exportadores').valor
-    const block_lista_importadores_exportadores_url = block_lista_importadores_exportadores.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(apellido))
-    const blocImportadoresExportadores = await axios.get(block_lista_importadores_exportadores_url)
-    if (blocImportadoresExportadores.status === 200) {
-      const { data: data_block_importadores_exportadores } = blocImportadoresExportadores
-      if (Array.isArray(data_block_importadores_exportadores.importadores) && data_block_importadores_exportadores.importadores.length > 0) {
-        const rfcEncontrado = data_block_importadores_exportadores.importadores.find(importadores => importadores.rfc === rfc)
-        if (rfcEncontrado) {
-          sin_incidencias = false
-          message = 'RFC con problemas'
-          asunto.push({
-            importadoresExportadores: data_block_importadores_exportadores.importadores
-          })
-          logger.info(`${fileMethod} | importadores_exportadores response: ${JSON.stringify(data_block_importadores_exportadores.importadores)}`)
-
-          const importadoresExportadores = data_block_importadores_exportadores.importadores
-          for (let i of importadoresExportadores) {
-            const guarda_bloc_importadores_exportadores = await certificationService.guardaBloc_69_importadores_exportadores(id_certification, i)
-            logger.info(`${fileMethod} | importadores_exportadores guardado: ${JSON.stringify(guarda_bloc_importadores_exportadores)}`)
-          }
-        }
-      }
-    }
 
     return res.json({
       sin_incidencias,
