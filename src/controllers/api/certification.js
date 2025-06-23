@@ -6036,8 +6036,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const refConsideradasTable = `
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
-          <caption style="caption-side: top; margin-bottom: 2px;">Referencias comerciales consideradas</caption>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
+          <caption style="caption-side: top; margin-bottom: 6px;">Referencias comerciales consideradas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6056,8 +6056,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const refDescartadasTable = `
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
-          <caption style="caption-side: top; margin-bottom: 2px;">Referencias comerciales descartadas</caption>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
+          <caption style="caption-side: top; margin-bottom: 6px;">Referencias comerciales descartadas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6085,8 +6085,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const empresaControlanteTable = `
         <div class="table-section" style="margin-bottom: 10px;">
-        <h3 style="font-size: 8px;">7. Influencia de Empresa Controlante</h3>
-        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+        <h3 style="font-size: 12px; margin-bottom: 6px;">7. Influencia de Empresa Controlante</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
           <tbody>
             <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
             <tr><td>RFC</td><td>${formatField(rangos._07_influencia_controlante_rfc)}</td></tr>
@@ -6154,8 +6154,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const sumatoriaScoresTable = `
         <div class="table-section" style="margin-bottom: 10px;">
-        <h3 style="font-size: 8px;">Sumatoria de scores</h3>
-        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+        <h3 style="font-size: 12px; margin-bottom: 6px; text-align: center;">Sumatoria de scores</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
           <tbody>
             ${sumatoriaScoreRows}
             <tr style="background:#0a3d8e; color:#fff; font-weight:bold;">
@@ -6274,8 +6274,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
           let tableHtml = `
             <div class="table-section" style="margin-bottom: 10px;">
-            <h3 style="font-size: 8px;">${titulo}</h3>
-            <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+            <h3 style="font-size: 12px; margin-bottom: 6px;">${titulo}</h3>
+            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
               <tbody>
                 ${rows.join('')}
               </tbody>
@@ -6867,7 +6867,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const financialTables = `
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
           <caption>Partidas Financieras - Estado de Balance</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
@@ -6885,7 +6885,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; margin: 0 auto; width: auto; max-width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 12px;">
           <caption>Partidas Financieras - Estado de Resultados</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
