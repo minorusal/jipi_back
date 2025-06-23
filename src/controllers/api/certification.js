@@ -6155,7 +6155,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       const sumatoriaScoreRows = SCORE_KEYS.map(key => {
         const label = scoreLabelMap[key] || key
         const value = rangos[key]?.score ?? '-'
-        return `<tr><td>${label}</td><td>${value}</td></tr>`
+        return `<tr style="background:#e3f2fd;"><td>${label}</td><td style="color:#0a3d8e; font-weight:bold;">${value}</td></tr>`
       }).join('')
 
       const sumatoriaScoresTable = `
@@ -6272,7 +6272,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (resultado !== '-' && resultado !== null && resultado !== '') {
             rows.push(`<tr><td>Resultado obtenido</td><td>${resultado}</td></tr>`)
           }
-          rows.push(`<tr><td>Score asignado</td><td>${score}</td></tr>`)
+          rows.push(`<tr style="background:#e3f2fd;"><td>Score asignado</td><td style="color:#0a3d8e; font-weight:bold;">${score}</td></tr>`)
           rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
           rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
           let tableHtml = `
