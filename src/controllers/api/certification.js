@@ -6164,9 +6164,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
           <tbody>
             ${sumatoriaScoreRows}
-            <tr style="background:#e3f2fd;">
+            <tr style="background:#0a3d8e; color:#fff; font-weight:bold;">
               <td>Total</td>
-              <td style="color:#0a3d8e; font-weight:bold;">${sumatoriaScores}</td>
+              <td>${sumatoriaScores}</td>
             </tr>
           </tbody>
         </table>
