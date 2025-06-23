@@ -760,7 +760,7 @@ const enviaEncuestaEmail = async (info_email) => {
     const info = await transporter.sendMail(mailOptions)
     return info
   } catch (error) {
-    logger.info(`Error en el envio de correo electronico: ${JSON.stringify(error)} - ${fileMethod}`)
+    logger.error(`Error en el envio de correo electronico: ${JSON.stringify(error)} - ${fileMethod}`)
   }
 }
 
