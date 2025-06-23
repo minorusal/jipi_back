@@ -5595,6 +5595,37 @@ ${JSON.stringify(info_email_error, null, 2)}
         customUuid: uuid = ''
       } = info_email
 
+      let clienteNombre = ''
+      let proveedorNombre = ''
+      try {
+        const { id_cliente, id_proveedor } = req_body || {}
+        if (id_cliente) {
+          const clienteInfo = await certificationService.consultaEmpresaInfo(id_cliente)
+          clienteNombre = clienteInfo?.result?.[0]?.emp_razon_social || '-'
+        }
+        if (id_proveedor) {
+          const proveedorInfo = await certificationService.consultaEmpresaInfo(id_proveedor)
+          proveedorNombre = proveedorInfo?.result?.[0]?.emp_razon_social || '-'
+        }
+      } catch (err) {
+        logger.error(`${fileMethod} | Error obteniendo datos de empresas: ${err.message}`)
+      }
+
+      const empresasTabla = `
+        <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
+          <tbody>
+            <tr>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">Cliente</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">${clienteNombre}</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">Comprador</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">${proveedorNombre}</td>
+            </tr>
+          </tbody>
+        </table>
+      `
+
       
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
         style: 'currency',
@@ -6972,6 +7003,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
           <h3 style="font-size: 10px; color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
+          ${empresasTabla}
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
             <tbody>
               <tr style="background-color:#ffffff;">
