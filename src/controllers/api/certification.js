@@ -6033,11 +6033,11 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
           </tr>`
               )
               .join('')
@@ -6049,12 +6049,12 @@ ${JSON.stringify(info_email_error, null, 2)}
               .map(
                 (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
           </tr>`
               )
               .join('')
@@ -6065,8 +6065,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const refConsideradasTable = `
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption style="caption-side: top; margin-bottom: 4px;">Referencias comerciales consideradas</caption>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+          <caption style="caption-side: top; margin-bottom: 2px;">Referencias comerciales consideradas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6085,8 +6085,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const refDescartadasTable = `
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption style="caption-side: top; margin-bottom: 4px;">Referencias comerciales descartadas</caption>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+          <caption style="caption-side: top; margin-bottom: 2px;">Referencias comerciales descartadas</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
@@ -6113,9 +6113,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             : 'No'
 
       const empresaControlanteTable = `
-        <div class="table-section" style="margin-bottom: 20px;">
-        <h3 style="font-size: 10px;">7. Influencia de Empresa Controlante</h3>
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <div class="table-section" style="margin-bottom: 10px;">
+        <h3 style="font-size: 8px;">7. Influencia de Empresa Controlante</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
           <tbody>
             <tr><td>Empresa Controlante</td><td>${formatField(rangos._07_influencia_controlante_empresa)}</td></tr>
             <tr><td>RFC</td><td>${formatField(rangos._07_influencia_controlante_rfc)}</td></tr>
@@ -6159,9 +6159,9 @@ ${JSON.stringify(info_email_error, null, 2)}
       }).join('')
 
       const sumatoriaScoresTable = `
-        <div class="table-section" style="margin-bottom: 20px;">
-        <h3 style="font-size: 10px;">Sumatoria de scores</h3>
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <div class="table-section" style="margin-bottom: 10px;">
+        <h3 style="font-size: 8px;">Sumatoria de scores</h3>
+        <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
           <tbody>
             ${sumatoriaScoreRows}
             <tr><td>Total</td><td>${sumatoriaScores}</td></tr>
@@ -6276,9 +6276,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
           rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
           let tableHtml = `
-            <div class="table-section" style="margin-bottom: 20px;">
-            <h3 style="font-size: 10px;">${titulo}</h3>
-            <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+            <div class="table-section" style="margin-bottom: 10px;">
+            <h3 style="font-size: 8px;">${titulo}</h3>
+            <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
               <tbody>
                 ${rows.join('')}
               </tbody>
