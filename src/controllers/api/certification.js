@@ -6728,16 +6728,15 @@ ${JSON.stringify(info_email_error, null, 2)}
             const reqPath = `${prefix}_anterior.${field}`
             return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${label}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${formLabel}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${reqPath}</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
               anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
             }</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
               previo !== undefined && previo !== null ? formatMoney(previo) : '-'
             }</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${formLabel}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${reqPath}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
           </tr>`
           })
           .join('')
@@ -6859,12 +6858,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Partidas Financieras - Estado de Balance</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="background-color: #000; color: #fff;">Partida financiera</th>
-              <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
-              <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
               <th>Nombre del campo en el formulario</th>
               <th>Nombre de la propiedad en el objeto del request</th>
               <th>Nombre del campo en base de datos</th>
+              <th>Periodo anterior (${extractYear(periodoAnteriorBalance)})</th>
+              <th>Periodo previo anterior (${extractYear(periodoPrevioBalance)})</th>
             </tr>
           </thead>
           <tbody>
@@ -6877,12 +6875,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           <caption>Partidas Financieras - Estado de Resultados</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
-              <th style="background-color: #000; color: #fff;">Partida financiera</th>
-              <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
-              <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
               <th>Nombre del campo en el formulario</th>
               <th>Nombre de la propiedad en el objeto del request</th>
               <th>Nombre del campo en base de datos</th>
+              <th>Periodo anterior (${extractYear(periodoAnteriorResultados)})</th>
+              <th>Periodo previo anterior (${extractYear(periodoPrevioResultados)})</th>
             </tr>
           </thead>
           <tbody>
