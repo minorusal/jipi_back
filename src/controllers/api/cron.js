@@ -349,7 +349,7 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 </body>
 </html>
         `
-
+// 
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
@@ -515,7 +515,7 @@ const startCronJobs = () => {
         }
     })
 
-    cron.schedule('30 13 * * 1', async () => {
+    cron.schedule('0 23 * * 5', async () => {
         try {
             logger.info('Cron que envia correo de estadisticas de nuevos registros semanales')
             const registros = await authService.getNuevosRegistrosSemanal();
@@ -526,7 +526,7 @@ const startCronJobs = () => {
         }
     })
 
-    cron.schedule('0 15 * * 5', async () => {
+    cron.schedule('10 20 * * 1', async () => {
         try {
             logger.info('Cron que envia correo semanal de estadisticas de saldo ocupado por empresa')
             const saldo_empresas = await solicitudCreditoService.getSaldoEmpresasResporte();
