@@ -446,6 +446,7 @@ exports.cifra = async (req, res, next) => {
 }
 
 exports.callKoneshApi = async (rfc, globalConfig) => {
+  const startTs = Date.now()
   const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
   const textCifrado = await cifra_konesh(rfc)
 
@@ -463,7 +464,31 @@ exports.callKoneshApi = async (rfc, globalConfig) => {
   }
 
   const headers = { headers: { 'Content-Type': 'application/json' } }
-  return axios.post(konesh_url_valid_rfc, request, headers)
+  const response = await axios.post(konesh_url_valid_rfc, request, headers)
+
+  const responseTime = Date.now() - startTs
+
+  try {
+    const data = response.data
+    await koneshService.saveKoneshResponse({
+      rfc,
+      request_ts: new Date(startTs).toISOString().slice(0, 19).replace('T', ' '),
+      response_time_ms: responseTime,
+      http_status: response.status,
+      konesh_status: await descifra_konesh(data.transactionResponse01[0].data02),
+      error_message: await descifra_konesh(data.transactionResponse01[0].data03),
+      name_sat: await descifra_konesh(data.transactionResponse01[0].data04),
+      postal_code: await descifra_konesh(data.transactionResponse01[0].data05),
+      transaction_id: await descifra_konesh(data.transactionResponse02),
+      transaction_date: await descifra_konesh(data.transactionResponse03),
+      node: await descifra_konesh(data.transactionResponse04),
+      raw_response: data
+    })
+  } catch (err) {
+    logger.error(`Error saving konesh response log: ${err.message}`)
+  }
+
+  return response
 }
 
 exports.genericKoneshRequest = async (req, res, next) => {
