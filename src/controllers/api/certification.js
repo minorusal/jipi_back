@@ -6731,13 +6731,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               reqPath = 'compartir_estado_balance'
             } else if (field === 'compartir_resultado') {
               reqPath = 'compartir_estado_resultados'
-            } else if (
-              field === 'compartir_estado_balance' ||
-              field === 'compartir_estado_resultados'
-            ) {
-              reqPath = field
             } else {
-              reqPath = `${prefix}_anterior.${field}`
+              reqPath = field
             }
             return `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
