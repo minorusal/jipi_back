@@ -6098,10 +6098,30 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+      const scoreKeyMap = {
+        _01_pais: 'paisScore',
+        _02_sector_riesgo: 'sectorRiesgoScore',
+        _03_capital_contable: 'capitalContableScore',
+        _04_plantilla_laboral: 'plantillaLaboralScore',
+        _05_sector_cliente_final: 'sectorClienteFinalScore',
+        _06_tiempo_actividad: 'tiempoActividadScore',
+        _07_influencia_controlante: 'influenciaControlanteScore',
+        _08_ventas_anuales: 'ventasAnualesScore',
+        _09_tipo_cifras: 'tipoCifrasScore',
+        _10_incidencias_legales: 'incidenciasLegalesScore',
+        _11_evolucion_ventas: 'evolucionVentasScore',
+        _12_apalancamiento: 'apalancamientoScore',
+        _13_flujo_neto: 'flujoNetoScore',
+        _14_payback: 'paybackScore',
+        _15_rotacion_ctas_x_cobrar: 'rotacionCtasXCobrarScore',
+        _16_referencias_comerciales: 'referenciasProveedoresScore'
+      }
+
       const sumatoriaScores = SCORE_KEYS.reduce((acc, key) => {
         const s = parseInt(rangos[key]?.score, 10)
-        if (!isNaN(s)) acc += s
-        return acc
+        if (!isNaN(s)) return acc + s
+        const alt = parseInt(scores[scoreKeyMap[key]], 10)
+        return isNaN(alt) ? acc : acc + alt
       }, 0)
 
       const scoreLabelMap = {
@@ -6125,7 +6145,10 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const sumatoriaScoreRows = SCORE_KEYS.map(key => {
         const label = scoreLabelMap[key] || key
-        const value = rangos[key]?.score ?? '-'
+        let value = rangos[key]?.score
+        if (value === undefined || value === null || value === '') {
+          value = scores[scoreKeyMap[key]] ?? '-'
+        }
         return `<tr style="background:#e3f2fd;"><td>${label}</td><td style="color:#0a3d8e; font-weight:bold;">${value}</td></tr>`
       }).join('')
 
