@@ -3910,8 +3910,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     const checks = [
       { fn: cuentaConCapital, msg: 'Falta capital contable' },
       { fn: cuentaCajaBancos, msg: 'Falta caja y bancos e inventarios' },
-      { fn: cuentaClienteCuentasXCobrar, msg: 'Faltan clientes y cuentas por cobrar e inventarios' },
-      { fn: cuentaInventarios, msg: 'Faltan inventarios' }
+      { fn: cuentaClienteCuentasXCobrar, msg: 'Faltan clientes y cuentas por cobrar e inventarios' }
     ]
 
     for (const { fn, msg } of checks) {
@@ -5732,11 +5731,6 @@ ${JSON.stringify(info_email_error, null, 2)}
           isZero(balPrevio.saldo_inventarios))
 
       const resClientesInv = faltaClientesInvAnterior || faltaClientesInvPrevio
-      const resInventarios =
-        isMissing(balAnterior.saldo_inventarios) ||
-        isMissing(balPrevio.saldo_inventarios) ||
-        isZero(balAnterior.saldo_inventarios) ||
-        isZero(balPrevio.saldo_inventarios)
       const resProveedores =
         (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores)) &&
         (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores))
@@ -5809,13 +5803,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resClientesInv)}</td>
               <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios – tabla: certification_partidas_estado_balance</td>
-            </tr>
-            <tr>
-              <td style="background-color: #000; color: #fff;">Si no se reporta ningún valor de inventarios en ninguno de los periodos contables, se ejecuta el algoritmo sin EEFF.<br><small>saldo_inventarios</small></td>
-              <td><strong>Valor:</strong> ${invAnterior}</td>
-              <td><strong>Valor:</strong> ${invPrevio}</td>
-              <td>${msg(resInventarios)}</td>
-              <td>saldo_inventarios – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos<br><small>proveedores</small></td>
