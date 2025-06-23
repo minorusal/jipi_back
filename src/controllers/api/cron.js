@@ -515,7 +515,7 @@ const startCronJobs = () => {
         }
     })
 
-    cron.schedule('0 17 * * 5', async () => {
+    cron.schedule('30 13 * * 1', async () => {
         try {
             logger.info('Cron que envia correo de estadisticas de nuevos registros semanales')
             const registros = await authService.getNuevosRegistrosSemanal();
