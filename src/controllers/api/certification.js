@@ -6797,8 +6797,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             ? `<tr><th>Opción</th><th>Score</th></tr>`
             : `<tr><th>Opción</th><th>Score V1</th><th>Score V2</th></tr>`
           return `
-            <div class="table-section">
-            <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: auto; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px;">
+            <div class="table-section" style="page-break-inside: avoid; break-inside: avoid;">
+            <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: auto; margin: 0 0 10px 0; margin-left: 0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; page-break-inside: avoid; break-inside: avoid;">
               <caption>${label} (tabla: ${table})</caption>
               <thead style="background-color: #003366; color: #fff;">
                 ${header}
