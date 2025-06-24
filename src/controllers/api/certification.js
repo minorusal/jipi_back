@@ -2810,31 +2810,31 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    const [deudaTotalPCA, capitalContable] = await Promise.all([
-      certificationService.deudaTotalPCA(id_certification),
+    const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
+      certificationService.pasivoLargoPlazoPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
     ])
 
-    if (!deudaTotalPCA || !capitalContable) {
+    if (!pasivoLargoPlazoPCA || !capitalContable) {
       logger.warn(
-        `${fileMethod} | ${customUuid} Falta deuda total o capital contable`
+        `${fileMethod} | ${customUuid} Falta pasivo largo plazo o capital contable`
       )
       return { error: true }
     }
 
     const parseNumber = require('../../utils/number')
 
-    const deuda = parseNumber(deudaTotalPCA.deuda_total)
+    const pasivo = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
     const capital = parseNumber(capitalContable.capital_contable)
 
-    if (!Number.isFinite(deuda) || !Number.isFinite(capital) || capital === 0) {
+    if (!Number.isFinite(pasivo) || !Number.isFinite(capital) || capital === 0) {
       logger.warn(
         `${fileMethod} | ${customUuid} Valores no numéricos para calcular apalancamiento`
       )
       return { error: true }
     }
 
-    const apalancamiento = deuda / capital
+    const apalancamiento = pasivo / capital
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2852,13 +2852,13 @@ const getScoreApalancamientoFromSummary = async (
     return {
       score,
       descripcion_apalancamiento: apalScore.nombre,
-      deuda_total_estado_balance_periodo_anterior:
-        deudaTotalPCA.deuda_total,
-      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
-      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
-      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+      pasivo_largo_plazo_estado_balance_periodo_anterior:
+        pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
+      periodo_estado_balance_tipo: pasivoLargoPlazoPCA.tipo,
+      periodo_anterior_estado_balance: pasivoLargoPlazoPCA.periodo_anterior,
+      periodo_actual_estado_balance: pasivoLargoPlazoPCA.periodo_actual,
       periodo_previo_anterior_estado_balance:
-        deudaTotalPCA.periodo_previo_anterior,
+        pasivoLargoPlazoPCA.periodo_previo_anterior,
       limite_inferior: apalScore.limite_inferior,
       limite_superior: apalScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
@@ -4737,8 +4737,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
         limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
-        deuda_total_estado_balance_periodo_anterior:
-          apalancamiento.deuda_total_estado_balance_periodo_anterior,
+        pasivo_largo_plazo_estado_balance_periodo_anterior:
+          apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
         capital_contable_estado_balance:
           apalancamiento.capital_contable_estado_balance
       }
@@ -5990,10 +5990,10 @@ ${JSON.stringify(info_email_error, null, 2)}
             if (key === '_12_apalancamiento') {
               formula = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
               if (
-                val.deuda_total_estado_balance_periodo_anterior !== undefined &&
+                val.pasivo_largo_plazo_estado_balance_periodo_anterior !== undefined &&
                 val.capital_contable_estado_balance !== undefined
               ) {
-              formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+              formula += `\nOperaci\u00F3n: ${formatMoney(val.pasivo_largo_plazo_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
               }
             } else {
               formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
@@ -6044,10 +6044,12 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (key === '_12_apalancamiento') {
             const format = value =>
               value === undefined || value === null ? '-' : formatMoney(value)
-            const deuda = format(val.deuda_total_estado_balance_periodo_anterior)
+            const pasivo = format(
+              val.pasivo_largo_plazo_estado_balance_periodo_anterior
+            )
             const capital = format(val.capital_contable_estado_balance)
             const formulaResultado =
-              `Deuda total (periodo contable anterior): ${deuda} / ` +
+              `Pasivo largo plazo (periodo contable anterior): ${pasivo} / ` +
               `Capital contable (periodo contable anterior): ${capital}`
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
