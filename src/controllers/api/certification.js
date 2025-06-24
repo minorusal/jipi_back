@@ -3909,70 +3909,26 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       return buildResponse('No existen partidas financieras', 2)
     }
 
-    const checks = [
-      { fn: cuentaConCapital, msg: 'Falta capital contable' },
-      { fn: cuentaCajaBancos, msg: 'Falta caja y bancos e inventarios' },
-      { fn: cuentaClienteCuentasXCobrar, msg: 'Faltan clientes y cuentas por cobrar e inventarios' }
-    ]
-
-    for (const { fn, msg } of checks) {
-      const ok = await fn(id_certification, customUuid)
-      logger.info(`${fileMethod} | ${customUuid} | ${msg}: ${JSON.stringify(ok)}`)
-      if (!ok) {
-        return buildResponse(msg, 2)
-      }
-    }
+    // Se omiten las validaciones de capital contable, caja y bancos e inventarios
+    // para la selección de versión, pues no están contempladas en la tabla de reglas.
 
 
-    let condicionante_cta_x_cobrar_anterior = false
-    let condicionante_cta_x_cobrar_previo_anterior = false
-    let condicionante_inventarios_anterior = false
-    let condicionante_inventarios_previo_anterior = false
-
-    let partidasEstadoBalanceAnteriorFlag = false
-    let partidasEstadoBalancePrevioAnteriorFlag = false
-
-    let cta_x_cobrar_anterior_value = 0
-    let cta_x_cobrar_previo_anterior_value = 0
-
-    let inventarios_anterior = 0
-    let inventarios_previo_anterior = 0
-
-    const partidasEstadoBalanceAnterior = await certificationService.partidasEstadoBalanceAnterior(id_certification)
-    if (partidasEstadoBalanceAnterior.result.length > 0) {
-      partidasEstadoBalanceAnteriorFlag = true
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} | Partida de estado de balance anterior: ${JSON.stringify(partidasEstadoBalanceAnterior)}`)
-
-    const partidasEstadoBalancePrevioAnterior = await certificationService.partidasEstadoBalancePrevioAnterior(id_certification)
-    if (partidasEstadoBalancePrevioAnterior.result.length > 0) {
-      partidasEstadoBalancePrevioAnteriorFlag = true
-    }
-
-    if (partidasEstadoBalanceAnteriorFlag && partidasEstadoBalancePrevioAnteriorFlag) {
-      cta_x_cobrar_anterior_value = partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance
-      cta_x_cobrar_previo_anterior_value = partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance
-
-      inventarios_anterior = partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance
-      inventarios_previo_anterior = partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance
-
-      const [balanceAnterior] = await certificationService.getEstadoBalanceData(
-        id_certification,
-        'anterior'
-      )
-      const [balancePrevio] = await certificationService.getEstadoBalanceData(
-        id_certification,
-        'previo_anterior'
-      )
-      const [resultadoAnterior] = await certificationService.getEstadoResultadoData(
-        id_certification,
-        'anterior'
-      )
-      const [resultadoPrevio] = await certificationService.getEstadoResultadoData(
-        id_certification,
-        'previo_anterior'
-      )
+    const [balanceAnterior] = await certificationService.getEstadoBalanceData(
+      id_certification,
+      'anterior'
+    )
+    const [balancePrevio] = await certificationService.getEstadoBalanceData(
+      id_certification,
+      'previo_anterior'
+    )
+    const [resultadoAnterior] = await certificationService.getEstadoResultadoData(
+      id_certification,
+      'anterior'
+    )
+    const [resultadoPrevio] = await certificationService.getEstadoResultadoData(
+      id_certification,
+      'previo_anterior'
+    )
 
       const provA = balanceAnterior?.proveedores_anterior
       const provP = balancePrevio?.proveedores_previo_anterior
@@ -4044,115 +4000,9 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       }
 
 
-      // Primera condición: No tener saldo_cliente_cuenta_x_cobrar_estado_balance en el periodo anterior o previo anterior, pero tener saldo_inventarios_estado_balance en cualquier periodo
-      const condition1 = (isEmpty(cta_x_cobrar_anterior_value) && isEmpty(cta_x_cobrar_previo_anterior_value)) && (!isEmpty(inventarios_anterior) || !isEmpty(inventarios_previo_anterior))
-      logger.info(`${fileMethod} | ${customUuid} | Primera condición: No tener saldo_cliente_cuenta_x_cobrar_estado_balance en el periodo anterior o previo anterior, pero tener saldo_inventarios_estado_balance en cualquier periodo: ${JSON.stringify(condition1)}`)
-
-      // Segunda condición: No tener saldo_inventarios_estado_balance en el periodo anterior o previo anterior, pero tener saldo_cliente_cuenta_x_cobrar_estado_balance en cualquier periodo
-      const condition2 = (isEmpty(inventarios_anterior) && isEmpty(inventarios_previo_anterior)) && (!isEmpty(cta_x_cobrar_anterior_value) || !isEmpty(cta_x_cobrar_previo_anterior_value))
-      logger.info(`${fileMethod} | ${customUuid} | Segunda condición: No tener saldo_inventarios_estado_balance en el periodo anterior o previo anterior, pero tener saldo_cliente_cuenta_x_cobrar_estado_balance en cualquier periodo: ${JSON.stringify(condition2)}`)
-
-      if (condition1) {
-        return buildResponse(
-          'Sin saldo de clientes y cuentas por cobrar en periodos anteriores pero sí inventarios',
-          2
-        )
-      }
-
-      if (condition2) {
-        return buildResponse(
-          'Sin saldo de inventarios en periodos anteriores pero sí clientes y cuentas por cobrar',
-          2
-        )
-      }
-
-      return {
-        message: 'Algoritmo 1',
-        v_alritmo: 1
-      }
+      return buildResponse('Partidas financieras completas', 1)
     }
 
-    if (partidasEstadoBalanceAnteriorFlag) {
-      if (isEmpty(partidasEstadoBalanceAnterior.result[0].capital_contable_estado_balance)) {
-        return buildResponse('No se pudo obtener capital contable de estado de balance de periodo anterior', 2)
-      }
-
-      if (isEmpty(partidasEstadoBalanceAnterior.result[0].caja_bancos_estado_balance)) {
-        return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo anterior', 2)
-      }
-
-      if (isEmpty(partidasEstadoBalanceAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance)) {
-        condicionante_cta_x_cobrar_anterior = true
-      }
-
-      if (isEmpty(partidasEstadoBalanceAnterior.result[0].saldo_inventarios_estado_balance)) {
-        condicionante_inventarios_anterior = true
-      }
-    }
-
-    if (partidasEstadoBalancePrevioAnteriorFlag) {
-
-      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].capital_contable_estado_balance)) {
-        return buildResponse('No se pudo obtener capital contable de estado de balance de periodo previo anterior', 2)
-      }
-
-      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].saldo_cliente_cuenta_x_cobrar_estado_balance)) {
-        condicionante_cta_x_cobrar_previo_anterior = true
-      }
-
-      if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].saldo_inventarios_estado_balance)) {
-        condicionante_inventarios_previo_anterior = true
-      }
-    }
-
-    if (
-      (condicionante_cta_x_cobrar_anterior && condicionante_inventarios_anterior) ||
-      (condicionante_cta_x_cobrar_previo_anterior && condicionante_inventarios_previo_anterior)
-    ) {
-      return buildResponse(
-        'Partidas financieras incompletas (Clientes y cuentas por cobrar e inventarios en al menos un periodo)',
-        2
-      )
-    }
-
-    if (isEmpty(partidasEstadoBalancePrevioAnterior.result[0].caja_bancos_estado_balance)) {
-      return buildResponse('No se pudo obtener caja bancos de estado de balance de periodo previo_anterior', 2)
-    }
-
-    const partidasFinancieras = await certificationService.partidasFinancierasCertificacion(id_certification)
-    if (partidasFinancieras.result.length == 0) {
-      return buildResponse('La consulta de partidas financieras no trajo resultados para esta certificación', 2)
-    }
-
-
-    for (const obj of partidasFinancieras.result) {
-      if (isEmpty(obj.capital_contable_estado_balance))
-        return buildResponse('Partidas financieras incompletas', 2)
-
-      if (isEmpty(obj.caja_bancos_estado_balance))
-        return buildResponse('Partidas financieras incompletas', 2)
-
-      if (isEmpty(obj.saldo_cliente_cuenta_x_cobrar_estado_balance))
-        return buildResponse('Partidas financieras incompletas', 2)
-
-      if (isEmpty(obj.saldo_inventarios_estado_balance))
-        return buildResponse('Partidas financieras incompletas', 2)
-
-      let allZeroOrNull = true;
-
-      for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          if (obj[key] !== "0.00" && obj[key] !== null) {
-            allZeroOrNull = false;
-            break;
-          }
-        }
-      }
-
-      if (allZeroOrNull) {
-        return buildResponse('Partidas financieras incompletas', 2)
-      }
-    }
     return buildResponse('Partidas financieras completas', 1)
 
   } catch (error) {
