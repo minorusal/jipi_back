@@ -5313,14 +5313,14 @@ ${JSON.stringify(info_email_error, null, 2)}
       }
 
       const empresasTabla = `
-        <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
+        <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px; page-break-inside: avoid; break-inside: avoid;">
           <tbody>
             <tr>
-              <td style="padding: 6px 8px; border: 1px solid #ddd;">Cliente</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">Comprador</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd;">${clienteNombre}</td>
             </tr>
             <tr>
-              <td style="padding: 6px 8px; border: 1px solid #ddd;">Comprador</td>
+              <td style="padding: 6px 8px; border: 1px solid #ddd;">Vendedor</td>
               <td style="padding: 6px 8px; border: 1px solid #ddd;">${proveedorNombre}</td>
             </tr>
           </tbody>
@@ -6761,12 +6761,15 @@ ${JSON.stringify(info_email_error, null, 2)}
           : 'Ambiente de desarrollo'
 
       htmlContent = `
+        <style>
+          .table-section { page-break-inside: avoid; break-inside: avoid; }
+        </style>
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
           <p style="text-align:center; font-size:10px;">${environmentLabel}</p>
           <h3 style="font-size: 10px; color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
           ${empresasTabla}
-          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
+          <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px; page-break-inside: avoid; break-inside: avoid;">
             <tbody>
               <tr style="background-color:#ffffff;">
                 <td style="padding: 6px 8px; border: 1px solid #ddd; white-space: pre-line;">Score</td>
