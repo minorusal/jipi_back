@@ -4715,7 +4715,11 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: apalancamiento.score,
         parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
-        limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior
+        limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
+        deuda_total_estado_balance_periodo_anterior:
+          apalancamiento.deuda_total_estado_balance_periodo_anterior,
+        capital_contable_estado_balance:
+          apalancamiento.capital_contable_estado_balance
       }
       console.log(JSON.stringify(reporteCredito._12_apalancamiento))
     }
