@@ -3592,6 +3592,24 @@ WHERE cer.certificacion_id = (
     return result[0]
   }
 
+  async pasivoLargoPlazoPCA(id_certification) {
+    const id = mysqlLib.escape(id_certification)
+    const queryString = `
+    SELECT
+      total_pasivo_largo_plazo,
+      tipo,
+      periodo_actual,
+      periodo_anterior,
+      periodo_previo_anterior
+    FROM certification_partidas_estado_balance
+    WHERE
+      tipo = 'anterior'
+      AND id_certification = ${id};
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0]
+  }
+
   async capitalContablePCA(id_certification) {
     const id = mysqlLib.escape(id_certification)
     const queryString = `
