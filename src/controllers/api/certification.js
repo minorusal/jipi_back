@@ -6981,9 +6981,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
 
+      const environmentLabel =
+        process.env.NODE_ENV === 'production'
+          ? 'Ambiente productivo'
+          : 'Ambiente de desarrollo'
+
       htmlContent = `
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
+          <p style="text-align:center; font-size:10px;">${environmentLabel}</p>
           <h3 style="font-size: 10px; color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
           ${empresasTabla}
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
