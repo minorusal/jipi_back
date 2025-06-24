@@ -20,6 +20,7 @@ const uploadImageS3 = require('../../utils/uploadImageS3')
 const logger = require('../../utils/logs/logger')
 const cipher = require('../../utils/cipherService')
 const nodemailer = require('nodemailer')
+const { toNumber, getLimits } = require('../../utils/numberUtils')
 
 const { sendCompaniEmail } = require('./mailjet-controler')
 
@@ -2775,29 +2776,7 @@ const getScoreEvolucionVentasFromSummary = async (
       evolucion_ventas: evolucion
     }
 
-    const toNumber = (val) => {
-      if (val === undefined || val === null) return NaN
-      const str = String(val).trim().toLowerCase()
-      if (str === 'inf') return Infinity
-      if (str === '-inf') return -Infinity
-      const clean = str.replace(/[^0-9.-]/g, '')
-      return parseFloat(clean)
-    }
-
-    const getLimits = (entry) => {
-      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
-        const inf = toNumber(entry.limite_inferior)
-        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
-        return [inf, sup]
-      }
-      if (entry.rango) {
-        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
-        const start = toNumber(a)
-        const end = toNumber(b)
-        return [Math.min(start, end), Math.max(start, end)]
-      }
-      return [NaN, NaN]
-    }
+    
 
     const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
       const [inf, sup] = getLimits(e)
@@ -2887,29 +2866,7 @@ const getScoreApalancamientoFromSummary = async (
       }
     }
 
-    const toNumber = (val) => {
-      if (val === undefined || val === null) return NaN
-      const str = String(val).trim().toLowerCase()
-      if (str === 'inf') return Infinity
-      if (str === '-inf') return -Infinity
-      const clean = str.replace(/[^0-9.-]/g, '')
-      return parseFloat(clean)
-    }
 
-    const getLimits = (entry) => {
-      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
-        const inf = toNumber(entry.limite_inferior)
-        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
-        return [inf, sup]
-      }
-      if (entry.rango) {
-        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
-        const start = toNumber(a)
-        const end = toNumber(b)
-        return [Math.min(start, end), Math.max(start, end)]
-      }
-      return [NaN, NaN]
-    }
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2948,29 +2905,7 @@ const getScoreCajaBancosFromSummary = async (
     const cajaBancoPCA = await certificationService.cajaBancoPCA(id_certification)
     if (!cajaBancoPCA) return { error: true }
 
-    const toNumber = (val) => {
-      if (val === undefined || val === null) return NaN
-      const str = String(val).trim().toLowerCase()
-      if (str === 'inf') return Infinity
-      if (str === '-inf') return -Infinity
-      const clean = str.replace(/[^0-9.-]/g, '')
-      return parseFloat(clean)
-    }
 
-    const getLimits = (entry) => {
-      if (entry.limite_inferior !== undefined && entry.limite_inferior !== null) {
-        const inf = toNumber(entry.limite_inferior)
-        const sup = entry.limite_superior == null ? Infinity : toNumber(entry.limite_superior)
-        return [inf, sup]
-      }
-      if (entry.rango) {
-        const [a, b] = entry.rango.replace(/[()\[\]]/g, '').split(',')
-        const start = toNumber(a)
-        const end = toNumber(b)
-        return [Math.min(start, end), Math.max(start, end)]
-      }
-      return [NaN, NaN]
-    }
 
     const cajaScore = parametrosAlgoritmo.flujoNetoScore.find(c => {
       const [inf, sup] = getLimits(c)
