@@ -3518,7 +3518,6 @@ const getScoreIncidenciasLegales = async (id_certification, algoritmo_v, customU
       logger.info(`${fileMethod} | ${customUuid} 2 INCIDENCIAS MERCANTILES <= 1 AÑO ${JSON.stringify(respuesta)}`)
       return respuesta
     }
-
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return {
@@ -3691,7 +3690,6 @@ const getAlertaEndeudamientoComercial = async (id_certification, customUuid) => 
       descripcion: endeudamiento_comercial.nombre,
       texto_reporte: 'DE ACUERDO A NUESTRAS BASES DE  INFORMACIÓN. LA EMPRESA SE SITUA EN EL  SIGUIENTE NIVEL DE ENDEUDAMIENTO COMERCIAL ( TOTAL LINEAS DE CRÉDITO VISIBLES OTORGADAS POR PROVEEDORES  EN RELACIÓN A LA FACTURACIÓN TOTAL ANUAL REVOLVENTE  DE TODOS  SUS PROVEEDORES)'
     }
-
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return {
@@ -3900,7 +3898,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     value === null ||
     value === undefined ||
     value === '' ||
-    parseNumber(value) === 0
+    parseNumber(value) === 0;
   try {
     logger.info(`${fileMethod} | ${customUuid} | Inicia proceso de validacion de version del algoritmo con id de certificacion: ${JSON.stringify(id_certification)}`)
 
@@ -4001,10 +3999,6 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
 
 
       return buildResponse('Partidas financieras completas', 1)
-    }
-
-    return buildResponse('Partidas financieras completas', 1)
-
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return buildResponse(JSON.stringify(error), 2)
