@@ -3586,7 +3586,9 @@ WHERE cer.certificacion_id = (
     FROM certification_partidas_estado_balance
     WHERE
       tipo = 'anterior'
-      AND id_certification = ${id};
+      AND id_certification = ${id}
+    ORDER BY id_certification_partidas_estado_balance DESC
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3604,7 +3606,9 @@ WHERE cer.certificacion_id = (
     FROM certification_partidas_estado_balance
     WHERE
       tipo = 'anterior'
-      AND id_certification = ${id};
+      AND id_certification = ${id}
+    ORDER BY id_certification_partidas_estado_balance DESC
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
@@ -3622,7 +3626,9 @@ WHERE cer.certificacion_id = (
     FROM certification_partidas_estado_balance
     WHERE
       tipo = 'anterior'
-      AND id_certification = ${id};
+      AND id_certification = ${id}
+    ORDER BY id_certification_partidas_estado_balance DESC
+    LIMIT 1;
     `
     const { result } = await mysqlLib.query(queryString)
     return result[0]
