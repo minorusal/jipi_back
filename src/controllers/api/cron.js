@@ -350,8 +350,7 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 </body>
 </html>
         `
-//
-        const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
+
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
