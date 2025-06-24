@@ -6110,12 +6110,12 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (formula !== '-' && formula !== null && formula !== '') {
             rows.push(`<tr><td>Fórmula utilizada</td><td style="white-space: pre-line;">${formula}</td></tr>`)
           }
-          if (
-            key === '_12_apalancamiento' &&
-            val.deuda_total_estado_balance_periodo_anterior !== undefined &&
-            val.capital_contable_estado_balance !== undefined
-          ) {
-            const formulaResultado = `${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+          if (key === '_12_apalancamiento') {
+            const format = value =>
+              value === undefined || value === null ? '-' : formatMoney(value)
+            const deuda = format(val.deuda_total_estado_balance_periodo_anterior)
+            const capital = format(val.capital_contable_estado_balance)
+            const formulaResultado = `${deuda} / ${capital}`
             rows.push(`<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`)
           }
           if (resultado !== '-' && resultado !== null && resultado !== '') {
