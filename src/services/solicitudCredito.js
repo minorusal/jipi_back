@@ -190,7 +190,7 @@ class SolicituCreditoService {
 
   // COALESCE(rc.created_at, '') AS fecha_reporte
 
-  async getEnviadas(id_emp, idCliente = 0) {
+   async getEnviadas(id_emp, idCliente = 0) {
 
     const queryString = `
     SELECT
