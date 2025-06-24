@@ -2827,18 +2827,28 @@ const getScoreApalancamientoFromSummary = async (
     const pasivo = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
     const capital = parseNumber(capitalContable.capital_contable)
 
-    if (!Number.isFinite(pasivo) || !Number.isFinite(capital) || capital === 0) {
+    if (!Number.isFinite(pasivo) || !Number.isFinite(capital)) {
       logger.warn(
         `${fileMethod} | ${customUuid} Valores no numéricos para calcular apalancamiento`
       )
       return { error: true }
     }
 
-    const apalancamiento = pasivo / capital
+    const apalancamiento =
+      !isNaN(pasivo) && !isNaN(capital) && capital !== 0
+        ? parseFloat((pasivo / capital).toFixed(1))
+        : capital === 0
+          ? null
+          : NaN
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
-      return apalancamiento >= inf && apalancamiento <= sup
+      return (
+        apalancamiento !== null &&
+        !Number.isNaN(apalancamiento) &&
+        apalancamiento >= inf &&
+        apalancamiento <= sup
+      )
     })
     if (!apalScore) {
       logger.warn(
