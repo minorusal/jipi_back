@@ -3005,20 +3005,27 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       dioMayor90 = dio >= 90
     }
 
-    const rotScore = parametrosAlgoritmo.rotacionCtasXCobrarScore.find(r => {
-      const sup = r.limite_superior == null ? 9999999999 : r.limite_superior
-      return (
-        (dso >= r.limite_inferior && dso <= sup) ||
-        (dio >= r.limite_inferior && dio <= sup)
-      )
-    })
+    let rotScore = null
+    if (!noDso || !noDio) {
+      rotScore = parametrosAlgoritmo.rotacionCtasXCobrarScore.find(r => {
+        const sup = r.limite_superior == null ? 9999999999 : r.limite_superior
+        return (
+          (dso >= r.limite_inferior && dso <= sup) ||
+          (dio >= r.limite_inferior && dio <= sup)
+        )
+      })
+    }
+
+    if (!rotScore) {
+      rotScore = await certificationService.getDefaultRotacionScore()
+    }
 
     if (!rotScore) return { error: true }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? rotScore.v2 : rotScore.v1
 
     return {
-      score: noDso && noDio ? '-20' : score,
+      score,
       descripcion: rotScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       ventas_anuales: ventasAnuales.ventas_anuales,
@@ -3254,20 +3261,26 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
     logger.info(`${fileMethod} | ${customUuid} DSO ${dso} DIO ${dio}`)
 
     const getScore = await certificationService.getScoreRotacion(Math.round(dso), Math.round(dio))
-    if (!getScore) {
+    let rotScore = getScore || null
+
+    if (!rotScore && noDso && noDio) {
+      rotScore = await certificationService.getDefaultRotacionScore()
+    }
+
+    if (!rotScore) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de rotacion por cuentas por cobrar: ${JSON.stringify(getScore)}`)
       return { error: true }
     }
 
     logger.info(`${fileMethod} | ${customUuid} La información para el score de rotación de cuentas por cobrar es: ${JSON.stringify({
-      score: noDso && noDio ? '-20' : getScore.valor_algoritmo,
-      descripcion: getScore.nombre,
+      score: rotScore.valor_algoritmo,
+      descripcion: rotScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       tipo: saldoClienteCuentaXCobrar.tipo,
       dso,
       dio,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
+      limite_inferior: rotScore.limite_inferior,
+      limite_superior: rotScore.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
       periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
@@ -3275,15 +3288,17 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
       dioMayor90
     })}`)
 
+    const score = rotScore.valor_algoritmo
+
     return {
-      score: noDso && noDio ? '-20' : getScore.valor_algoritmo,
-      descripcion: getScore.nombre,
+      score,
+      descripcion: rotScore.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       tipo: saldoClienteCuentaXCobrar.tipo,
       dso,
       dio,
-      limite_inferior: getScore.limite_inferior,
-      limite_superior: getScore.limite_superior,
+      limite_inferior: rotScore.limite_inferior,
+      limite_superior: rotScore.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
       periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
