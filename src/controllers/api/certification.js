@@ -6793,7 +6793,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           return `
             <div class="table-section">
             <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-              <caption>${label}</caption>
+              <caption>${label} (tabla: ${table})</caption>
               <thead style="background-color: #f2f2f2;">
                 <tr>
                   <th>Opción</th>
