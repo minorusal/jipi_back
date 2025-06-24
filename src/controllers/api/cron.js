@@ -241,10 +241,11 @@ const enviarEmailRegistrosSemanal = async (registros, total_registros) => {
 </html>
         `
 
+        const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
-          subject: 'Resumen semanal de nuevos registros',
+          subject: `[${envLabel}] Resumen semanal de nuevos registros`,
           html: htmlContent
         }
 
@@ -349,11 +350,12 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 </body>
 </html>
         `
-// 
+//
+        const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
-          subject: 'Resumen semanal de consumo de folios',
+          subject: `[${envLabel}] Resumen semanal de consumo de folios`,
           html: htmlContent
         }
 

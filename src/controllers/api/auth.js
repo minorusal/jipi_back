@@ -750,10 +750,11 @@ const enviaEncuestaEmail = async (info_email) => {
     <p>Número de clientes a crédito: ${info_email.numero_clientes_a_credito}</p>
     <p>Rango de ventas a crédito mensual: ${info_email.rango_ventas_credito_mensual}</p>
     `
+    const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
     const mailOptions = {
       from: `"credibusiness" <${email_sender_encuesta}>`,
       to: lista_contactos_encuesta.map(d => d.Email).join(','),
-      subject: 'Encuesta Empresa',
+      subject: `[${envLabel}] Encuesta Empresa`,
       html: htmlContent
     }
 
