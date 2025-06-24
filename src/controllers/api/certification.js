@@ -5800,6 +5800,15 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.</td>
               <td>6</td>
+              <td>utilidad_neta</td>
+              <td><strong>Valor:</strong> ${utilidadNetaAnterior}</td>
+              <td><strong>Valor:</strong> ${utilidadNetaPrevio}</td>
+              <td>${msg(resUNeta)}</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.</td>
+              <td>7</td>
               <td>capital_contable</td>
               <td><strong>Valor:</strong> ${capitalAnterior}</td>
               <td><strong>Valor:</strong> ${capitalPrevio}</td>
@@ -5814,6 +5823,7 @@ ${JSON.stringify(info_email_error, null, 2)}
   <td>${msg(resProveedores)}</td>
 </tr>
             <tr>
+
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
               <td>8</td>
               <td>caja_bancos, saldo_inventarios</td>
@@ -5822,6 +5832,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msgCajaInv(resCajaInv)}</td>
             </tr>
             <tr>
+
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
               <td>9</td>
               <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</td>
@@ -5830,6 +5841,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msg(resClientesInv)}</td>
             </tr>
             <tr>
+
               <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo</td>
               <td>10</td>
               <td>utilidad_neta</td>
