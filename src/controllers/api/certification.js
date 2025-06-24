@@ -5744,8 +5744,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       }
 
       const validacionesVersionTable = `
-        <h3 style="font-size: 10px;">Validaciones para selección de versión de algoritmo</h3>
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <h3 style="font-size: 9px; font-family: 'Segoe UI', Arial, sans-serif;">Validaciones para selección de versión de algoritmo</h3>
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th>N°</th>
