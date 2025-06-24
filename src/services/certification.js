@@ -4016,6 +4016,17 @@ WHERE cer.certificacion_id = (
     return result[0]
   }
 
+  async getDefaultRotacionScore() {
+    const queryString = `
+      SELECT nombre, valor_algoritmo, limite_inferior, limite_superior
+      FROM cat_rotacion_cuentas_cobrar_algoritmo
+      ORDER BY valor_algoritmo ASC
+      LIMIT 1;
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0]
+  }
+
 
   async getClass(value) {
 
