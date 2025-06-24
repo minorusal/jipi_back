@@ -4807,7 +4807,7 @@ const getAlgoritmoResult = async (req, res, next) => {
       reporteCredito._12_apalancamiento = {
         descripcion: apalancamiento.descripcion_apalancamiento,
         score: apalancamiento.score,
-        parametro: apalancamiento.deuda_total_estado_balance_periodo_anterior == null ? 'null' : apalancamiento.deuda_total_estado_balance_periodo_anterior,
+        parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
         limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior
       }
@@ -6056,13 +6056,23 @@ ${JSON.stringify(info_email_error, null, 2)}
             val.limite_superior !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
-            if (
-              key === '_14_payback' &&
-              val.deuda_corto_plazo_periodo_anterior !== undefined &&
-              val.utilida_operativa !== undefined
-            ) {
-              formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+            if (key === '_12_apalancamiento') {
+              formula = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
+              if (
+                val.deuda_total_estado_balance_periodo_anterior !== undefined &&
+                val.capital_contable_estado_balance !== undefined
+              ) {
+                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+              }
+            } else {
+              formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
+              if (
+                key === '_14_payback' &&
+                val.deuda_corto_plazo_periodo_anterior !== undefined &&
+                val.utilida_operativa !== undefined
+              ) {
+                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+              }
             }
           } else if (
             key === '_11_evolucion_ventas' &&
