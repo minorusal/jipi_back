@@ -2810,21 +2810,21 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
-      certificationService.pasivoLargoPlazoPCA(id_certification),
+    const [deudaTotalPCA, capitalContable] = await Promise.all([
+      certificationService.deudaTotalPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
     ])
 
-    if (!pasivoLargoPlazoPCA || !capitalContable) {
+    if (!deudaTotalPCA || !capitalContable) {
       logger.warn(
-        `${fileMethod} | ${customUuid} Falta pasivo largo plazo o capital contable`
+        `${fileMethod} | ${customUuid} Falta deuda total o capital contable`
       )
       return { error: true }
     }
 
     const parseNumber = require('../../utils/number')
 
-    const deuda = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
+    const deuda = parseNumber(deudaTotalPCA.deuda_total)
     const capital = parseNumber(capitalContable.capital_contable)
 
     if (!Number.isFinite(deuda) || !Number.isFinite(capital) || capital === 0) {
@@ -2853,12 +2853,12 @@ const getScoreApalancamientoFromSummary = async (
       score,
       descripcion_apalancamiento: apalScore.nombre,
       deuda_total_estado_balance_periodo_anterior:
-        pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
-      periodo_estado_balance_tipo: pasivoLargoPlazoPCA.tipo,
-      periodo_anterior_estado_balance: pasivoLargoPlazoPCA.periodo_anterior,
-      periodo_actual_estado_balance: pasivoLargoPlazoPCA.periodo_actual,
+        deudaTotalPCA.deuda_total,
+      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
       periodo_previo_anterior_estado_balance:
-        pasivoLargoPlazoPCA.periodo_previo_anterior,
+        deudaTotalPCA.periodo_previo_anterior,
       limite_inferior: apalScore.limite_inferior,
       limite_superior: apalScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
@@ -6047,7 +6047,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             const deuda = format(val.deuda_total_estado_balance_periodo_anterior)
             const capital = format(val.capital_contable_estado_balance)
             const formulaResultado =
-              `Pasivo largo plazo (periodo contable anterior): ${deuda} / ` +
+              `Deuda total (periodo contable anterior): ${deuda} / ` +
               `Capital contable (periodo contable anterior): ${capital}`
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
