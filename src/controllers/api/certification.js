@@ -7126,6 +7126,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       return
     }
 
+    const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
+    subject = `[${envLabel}] ${subject}`
     const mailOptions = {
       from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
       to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
