@@ -4010,7 +4010,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
         parseNumber(costoA) === 0 ||
         parseNumber(costoP) === 0
       ) {
-        return buildResponse('Costo de ventas no reportado en al menos un periodo', 2)
+        return buildResponse('No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable', 2)
       }
 
       const ubA = resultadoAnterior?.utilidad_bruta_anterior
@@ -5775,7 +5775,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tr>
             <tr>
               <td>3</td>
-              <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo</td>
+              <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable</td>
               <td>costo_ventas_anuales</td>
               <td><strong>Valor:</strong> ${costoAnterior}</td>
               <td><strong>Valor:</strong> ${costoPrevio}</td>
