@@ -2857,7 +2857,13 @@ const getScoreApalancamientoFromSummary = async (
       logger.warn(
         `${fileMethod} | ${customUuid} Valor de apalancamiento fuera de rango`
       )
-      return { error: true }
+      return {
+        error: true,
+        apalancamiento,
+        pasivo_largo_plazo_estado_balance_periodo_anterior:
+          pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
+        capital_contable_estado_balance: capitalContable.capital_contable
+      }
     }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1
@@ -4742,6 +4748,28 @@ const getAlgoritmoResult = async (req, res, next) => {
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
+      const desconocido = parametrosAlgoritmo.apalancamientoScore.find(
+        a => a.nombre && a.nombre.toUpperCase() === 'DESCONOCIDO'
+      )
+
+      reporteCredito._12_apalancamiento = {
+        descripcion: desconocido ? desconocido.nombre : 'DESCONOCIDO',
+        score: desconocido
+          ? Number(algoritmo_v?.v_alritmo) === 2
+            ? desconocido.v2
+            : desconocido.v1
+          : '0',
+        parametro:
+          apalancamiento.apalancamiento == null
+            ? 'null'
+            : apalancamiento.apalancamiento,
+        limite_inferior: 'null',
+        limite_superior: 'null',
+        pasivo_largo_plazo_estado_balance_periodo_anterior:
+          apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
+        capital_contable_estado_balance:
+          apalancamiento.capital_contable_estado_balance
+      }
     } else {
       logger.info(`${fileMethod} | ${customUuid} apalancamienro para el algoritmo es: ${JSON.stringify(apalancamiento)}`)
 
