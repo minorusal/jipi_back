@@ -14,6 +14,7 @@ const companiesService = require('../../services/companies')
 const paymentsService = require('../../services/payments')
 const hadesService = require('../../services/hades')
 const algorithmService = require('../../services/algorithm')
+const blocService = require('../../services/bloc')
 const cronosTypes = { certification: 'Certification', report: 'Report' }
 const uploadImageS3 = require('../../utils/uploadImageS3')
 const logger = require('../../utils/logs/logger')
@@ -4380,47 +4381,7 @@ const validacionBloc = async (req, res, next) => {
 }
 
 const consultaBlocEmpresaControlanteData = async (nombre, apellido = '') => {
-  const params = await utilitiesService.getParametros()
-
-  const getUrl = (param) => {
-    const conf = params.find(item => item.nombre === param)
-    return conf ? conf.valor : null
-  }
-
-  const sat69bUrl = getUrl('block_lista_sat_69B_presuntos_inexistentes')
-    ?.replace('||', encodeURIComponent(nombre))
-    .replace('||', encodeURIComponent(apellido))
-
-  const ofacUrl = getUrl('bloc_ofac')
-    ?.replace('||', encodeURIComponent(nombre))
-    .replace('||', encodeURIComponent(apellido))
-
-  const concursosUrl = getUrl('bloc_consursos_mercantiles')
-    ?.replace('||', encodeURIComponent(nombre))
-
-  const proveedoresUrl = getUrl('bloc_provedores_contratistas')
-    ?.replace('||', encodeURIComponent(nombre))
-    .replace('||', encodeURIComponent(apellido))
-
-  const requests = [
-    sat69bUrl ? axios.get(sat69bUrl) : Promise.resolve({ data: null }),
-    ofacUrl ? axios.get(ofacUrl) : Promise.resolve({ data: null }),
-    concursosUrl ? axios.get(concursosUrl) : Promise.resolve({ data: null }),
-    proveedoresUrl ? axios.get(proveedoresUrl) : Promise.resolve({ data: null })
-  ]
-
-  const results = await Promise.allSettled(requests)
-
-  const [sat69bResp, ofacResp, concursosResp, proveedoresResp] = results.map(r =>
-    r.status === 'fulfilled' ? r.value : { data: null }
-  )
-
-  return {
-    bloc_sat69b: sat69bResp.data,
-    bloc_ofac: ofacResp.data,
-    bloc_concursos_mercantiles: concursosResp.data,
-    bloc_proveedores_contratistas: proveedoresResp.data
-  }
+  return blocService.callAll(nombre, apellido)
 }
 
 const consultaBlocEmpresaControlante = async (req, res, next) => {
