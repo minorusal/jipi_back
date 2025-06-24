@@ -4010,7 +4010,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
         parseNumber(costoA) === 0 ||
         parseNumber(costoP) === 0
       ) {
-        return buildResponse('Costo de ventas no reportado en al menos un periodo', 2)
+        return buildResponse('No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable', 2)
       }
 
       const ubA = resultadoAnterior?.utilidad_bruta_anterior
@@ -5748,8 +5748,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
-              <th>#</th>
+              <th>No.</th>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
+              <th>Variables condicionales</th>
               <th>Periodo anterior (${yearAnterior})</th>
               <th>Periodo previo anterior (${yearPrevio})</th>
               <th>Resultado</th>
@@ -5758,70 +5759,80 @@ ${JSON.stringify(info_email_error, null, 2)}
           <tbody>
             <tr>
               <td>1</td>
-              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (OJO NO aplica si en un periodo contable o año se reportan cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO SE REPORTA NADA O SOLO SE REPORTA UNA DE ELLAS.)<br><small>proveedores, acreedores</small></td>
+              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (OJO NO aplica si en un periodo contable o año se reportan cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO SE REPORTA NADA O SOLO SE REPORTA UNA DE ELLAS.)</td>
+              <td>proveedores, acreedores</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msg(resProvAcre)}</td>
             </tr>
             <tr>
               <td>2</td>
-              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable<br><small>ventas_anuales</small></td>
+              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable</td>
+              <td>ventas_anuales</td>
               <td><strong>Valor:</strong> ${ventasAnterior}</td>
               <td><strong>Valor:</strong> ${ventasPrevio}</td>
               <td>${msg(resVentas)}</td>
             </tr>
             <tr>
               <td>3</td>
-              <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.<br><small>capital_contable</small></td>
-              <td><strong>Valor:</strong> ${capitalAnterior}</td>
-              <td><strong>Valor:</strong> ${capitalPrevio}</td>
-              <td>${msg(resCapital)}</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.<br><small>caja_bancos, saldo_inventarios</small></td>
-              <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
-              <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
-              <td>${msgCajaInv(resCajaInv)}</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.<br><small>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</small></td>
-              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
-              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
-              <td>${msg(resClientesInv)}</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos<br><small>proveedores</small></td>
-              <td><strong>Valor:</strong> ${provAnterior}</td>
-              <td><strong>Valor:</strong> ${provPrevio}</td>
-              <td>${msg(resProveedores)}</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td style="background-color: #000; color: #fff;">Costo de ventas no reportado en al menos un periodo<br><small>costo_ventas_anuales</small></td>
+              <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable</td>
+              <td>costo_ventas_anuales</td>
               <td><strong>Valor:</strong> ${costoAnterior}</td>
               <td><strong>Valor:</strong> ${costoPrevio}</td>
               <td>${msg(resCosto)}</td>
             </tr>
             <tr>
+              <td>4</td>
+              <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.</td>
+              <td>capital_contable</td>
+              <td><strong>Valor:</strong> ${capitalAnterior}</td>
+              <td><strong>Valor:</strong> ${capitalPrevio}</td>
+              <td>${msg(resCapital)}</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
+              <td>caja_bancos, saldo_inventarios</td>
+              <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msgCajaInv(resCajaInv)}</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
+              <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</td>
+              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msg(resClientesInv)}</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
+              <td>proveedores</td>
+              <td><strong>Valor:</strong> ${provAnterior}</td>
+              <td><strong>Valor:</strong> ${provPrevio}</td>
+              <td>${msg(resProveedores)}</td>
+            </tr>
+            <tr>
               <td>8</td>
-              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo<br><small>utilidad_bruta</small></td>
+              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo</td>
+              <td>utilidad_bruta</td>
               <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
               <td>${msg(resUBruta)}</td>
             </tr>
             <tr>
               <td>9</td>
-              <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo<br><small>utilidad_operativa</small></td>
+              <td style="background-color: #000; color: #fff;">Utilidad operativa no reportada en al menos un periodo</td>
+              <td>utilidad_operativa</td>
               <td><strong>Valor:</strong> ${utilidadOperativaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadOperativaPrevio}</td>
               <td>${msg(resUOperativa)}</td>
             </tr>
             <tr>
               <td>10</td>
-              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo<br><small>utilidad_neta</small></td>
+              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo</td>
+              <td>utilidad_neta</td>
               <td><strong>Valor:</strong> ${utilidadNetaAnterior}</td>
               <td><strong>Valor:</strong> ${utilidadNetaPrevio}</td>
               <td>${msg(resUNeta)}</td>
@@ -6981,9 +6992,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         .join('')
 
 
+      const environmentLabel =
+        process.env.NODE_ENV === 'production'
+          ? 'Ambiente productivo'
+          : 'Ambiente de desarrollo'
+
       htmlContent = `
         <div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">
           <h1 style="color:#0a3d8e; text-align:center; font-size: 10px;">Reporte de desglose de algoritmo</h1>
+          <p style="text-align:center; font-size:10px;">${environmentLabel}</p>
           <h3 style="font-size: 10px; color: #2ba2af; margin: 0 0 8px 0;">ℹ Resumen de resultados</h3>
           ${empresasTabla}
           <table style="border-collapse: collapse; width: 100%; margin-bottom: 10px; font-size: 10px;">
