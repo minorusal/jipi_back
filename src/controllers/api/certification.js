@@ -2056,8 +2056,10 @@ const getScoreApalancamiento = async (id_certification, customUuid, algoritmo_v)
       valor_algoritmo = '-30'
     }
 
-    const deuda = parseFloat(deudaTotalPCA.deuda_total)
-    const capital = parseFloat(capitalContable.capital_contable)
+    const parseNumber = require('../../utils/number')
+
+    const deuda = parseNumber(deudaTotalPCA.deuda_total)
+    const capital = parseNumber(capitalContable.capital_contable)
     const apalancamiento = deuda / capital
     logger.info(`${fileMethod} | ${customUuid} El apalancamiento obtenido de la certificación ID: ${id_certification} es: ${apalancamiento}`)
 
@@ -2820,8 +2822,10 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
-    const deuda = parseFloat(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
-    const capital = parseFloat(capitalContable.capital_contable)
+    const parseNumber = require('../../utils/number')
+
+    const deuda = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
+    const capital = parseNumber(capitalContable.capital_contable)
 
     if (!Number.isFinite(deuda) || !Number.isFinite(capital) || capital === 0) {
       logger.warn(
