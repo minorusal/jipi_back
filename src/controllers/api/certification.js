@@ -3979,6 +3979,18 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
         return buildResponse('Proveedores sin datos en ambos periodos', 2)
       }
 
+      const acreA = balanceAnterior?.acreedores_anterior
+      const acreP = balancePrevio?.acreedores_previo_anterior
+      if (
+        (isEmpty(provA) || isEmpty(acreA)) &&
+        (isEmpty(provP) || isEmpty(acreP))
+      ) {
+        return buildResponse(
+          'Proveedores y acreedores sin datos en ambos periodos',
+          2
+        )
+      }
+
       const ventasA = resultadoAnterior?.ventas_anuales_anterior
       const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
       if (
@@ -5615,6 +5627,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const provAnterior = val(balAnterior.proveedores, 'periodo anterior')
       const provPrevio = val(balPrevio.proveedores, 'periodo previo anterior')
+      const acreAnterior = val(balAnterior.acreedores, 'periodo anterior')
+      const acrePrevio = val(balPrevio.acreedores, 'periodo previo anterior')
 
       const resAnterior = partidasFinancierasResultados.find(
         p => p.tipo_periodo_estado_resultados === 'anterior'
@@ -5688,6 +5702,11 @@ ${JSON.stringify(info_email_error, null, 2)}
       const resProveedores =
         (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores)) &&
         (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores))
+      const resProvAcre =
+        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores) ||
+          isMissing(balAnterior.acreedores) || isZero(balAnterior.acreedores)) &&
+        (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores) ||
+          isMissing(balPrevio.acreedores) || isZero(balPrevio.acreedores))
       const resVentas =
         isMissing(resAnterior.ventas_anuales) ||
         isMissing(resPrevio.ventas_anuales) ||
@@ -5764,6 +5783,13 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td><strong>Valor:</strong> ${provPrevio}</td>
               <td>${msg(resProveedores)}</td>
               <td>proveedores – tabla: certification_partidas_estado_balance</td>
+            </tr>
+            <tr>
+              <td style="background-color: #000; color: #fff;">Proveedores y acreedores sin datos en ambos periodos<br><small>proveedores, acreedores</small></td>
+              <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
+              <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
+              <td>${msg(resProvAcre)}</td>
+              <td>proveedores, acreedores – tabla: certification_partidas_estado_balance</td>
             </tr>
             <tr>
               <td style="background-color: #000; color: #fff;">Ventas no reportadas en al menos un periodo<br><small>ventas_anuales</small></td>
