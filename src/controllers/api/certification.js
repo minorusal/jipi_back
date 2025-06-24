@@ -5748,6 +5748,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
           <thead style="background-color: #f2f2f2;">
             <tr>
+              <th>N°</th>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
               <th>Periodo anterior (${yearAnterior})</th>
               <th>Periodo previo anterior (${yearPrevio})</th>
@@ -5756,22 +5757,20 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             <tr>
+              <td>1</td>
               <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (OJO NO aplica si en un periodo contable o año se reportan cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO SE REPORTA NADA O SOLO SE REPORTA UNA DE ELLAS.)</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msg(resProvAcre)}</td>
             </tr>
             <tr>
-
               <td>2</td>
-
               <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable</td>
               <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
               <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
               <td>${msg(resCosto)}</td>
             </tr>
             <tr>
-
               <td>3</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable</td>
               <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
@@ -5799,14 +5798,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td><strong>Capital contable:</strong> ${capitalPrevio}</td>
               <td>${msg(resCapital)}</td>
             </tr>
-<tr>
-  <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES, no se reporta ninguna cifra en los 2 cierres contables en conjunto o años de presentación de los estados financieros. (No aplica si en un periodo contable o año sí reportan cifras y en otro año no)</td>
-  <td>7</td>
-  <td>proveedores</td>
-  <td><strong>Valor:</strong> ${provAnterior}</td>
-  <td><strong>Valor:</strong> ${provPrevio}</td>
-  <td>${msg(resProveedores)}</td>
-</tr>
             <tr>
               <td>7</td>
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
@@ -5829,10 +5820,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msg(resClientesInv)}</td>
             </tr>
             <tr>
-
-              <td style="background-color: #000; color: #fff;">Utilidad neta no reportada en al menos un periodo</td>
               <td>10</td>
-              <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
+              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES no se reporta en ninguno de los dos periodos contables evaluados.</td>
               <td><strong>Proveedores:</strong> ${provAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}</td>
               <td>${msg(resProveedores)}</td>
