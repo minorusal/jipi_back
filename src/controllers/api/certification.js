@@ -2808,7 +2808,6 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    let valor_algoritmo = '0'
     const [deudaTotalPCA, capitalContable] = await Promise.all([
       certificationService.deudaTotalPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
@@ -2821,62 +2820,17 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
-    if (!deudaTotalPCA.deuda_total) valor_algoritmo = '-30'
-
     const deuda = parseFloat(deudaTotalPCA.deuda_total)
     const capital = parseFloat(capitalContable.capital_contable)
-    const apalancamiento = deuda / capital
 
-    if (Number(algoritmo_v?.v_alritmo) === 2) {
-      const def = parametrosAlgoritmo.apalancamientoScore.find(
-        a => a.nombre === 'DESCONOCIDO'
+    if (!Number.isFinite(deuda) || !Number.isFinite(capital) || capital === 0) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} Valores no numéricos para calcular apalancamiento`
       )
-      if (!def) {
-        logger.error(
-          `${fileMethod} | ${customUuid} No se encontró configuración 'DESCONOCIDO' para apalancamiento`
-        )
-        return { error: true }
-      }
-      return {
-        score: def.v2,
-        descripcion_apalancamiento:
-          Number(algoritmo_v?.v_alritmo) === 2 ? 'algoritmo v2' : 'algoritmo v1',
-        deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
-        periodo_estado_balance_tipo: deudaTotalPCA.tipo,
-        periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
-        periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
-        periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
-        limite_inferior: def.limite_inferior,
-        limite_superior: def.limite_superior,
-        capital_contable_estado_balance: capitalContable.capital_contable,
-        apalancamiento
-      }
+      return { error: true }
     }
 
-    if (!Number.isFinite(apalancamiento)) {
-      const descripcion =
-        valor_algoritmo === '-30'
-          ? 'Indefinido por no reportar deuda total'
-          : 'DESCONOCIDO'
-
-      const scoreFinal = valor_algoritmo === '-30' ? '-30' : '0'
-
-      return {
-        score: scoreFinal,
-        descripcion_apalancamiento: descripcion,
-        deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
-        periodo_estado_balance_tipo: deudaTotalPCA.tipo,
-        periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
-        periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
-        periodo_previo_anterior_estado_balance: deudaTotalPCA.periodo_previo_anterior,
-        limite_inferior: '',
-        limite_superior: '',
-        capital_contable_estado_balance: capitalContable.capital_contable,
-        apalancamiento
-      }
-    }
-
-
+    const apalancamiento = deuda / capital
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2889,8 +2843,10 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1
+
     return {
-      score: valor_algoritmo !== '0' ? valor_algoritmo : (Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1),
+      score,
       descripcion_apalancamiento: apalScore.nombre,
       deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
       periodo_estado_balance_tipo: deudaTotalPCA.tipo,
