@@ -516,7 +516,8 @@ const startCronJobs = () => {
         }
     })
 
-    cron.schedule('0 23 * * 5', async () => {
+    // Nota: La libreria de cron no sabe que en México se quitó el horario de verano
+    cron.schedule('0 18 * * 5', async () => {
         try {
             logger.info('Cron que envia correo de estadisticas de nuevos registros semanales')
             const registros = await authService.getNuevosRegistrosSemanal();
@@ -525,9 +526,14 @@ const startCronJobs = () => {
         } catch (error) {
             logger.error(`Error en el cron que envia correo de estadisticas de nuevos registros semanales: ${JSON.stringify(error)}`)
         }
+    },
+    {
+      scheduled: true,
+      timezone: 'America/Mexico_City',
     })
 
-    cron.schedule('10 20 * * 1', async () => {
+    // Nota: La libreria de cron no sabe que en México se quitó el horario de verano
+    cron.schedule('0 12 * * 1', async () => {
         try {
             logger.info('Cron que envia correo semanal de estadisticas de saldo ocupado por empresa')
             const saldo_empresas = await solicitudCreditoService.getSaldoEmpresasResporte();
@@ -535,7 +541,12 @@ const startCronJobs = () => {
         } catch (error) {
             logger.error(`Error en el cron que envia correo semanal de estadisticas de saldo ocupado por empresa: ${JSON.stringify(error)}`)
         }
-    })
+    },
+    {
+      scheduled: true,
+      timezone: 'America/Mexico_City',
+    }
+  )
 
     // cron.schedule('* * * * *', async () => {
     //     try {
