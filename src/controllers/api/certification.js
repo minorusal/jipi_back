@@ -5750,8 +5750,6 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <th>No.</th>
               <th style="background-color: #000; color: #fff;">Variable condicionante</th>
-              <th>No.</th>
-              <th>Variables condicionales</th>
               <th>Periodo anterior (${yearAnterior})</th>
               <th>Periodo previo anterior (${yearPrevio})</th>
               <th>Resultado</th>
@@ -5761,80 +5759,62 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <td>1</td>
               <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (OJO NO aplica si en un periodo contable o año se reportan cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO SE REPORTA NADA O SOLO SE REPORTA UNA DE ELLAS.)</td>
-              <td>1</td>
-              <td>proveedores, acreedores</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msg(resProvAcre)}</td>
             </tr>
             <tr>
               <td>2</td>
-              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable</td>
-              <td>2</td>
-              <td>ventas_anuales</td>
-              <td><strong>Valor:</strong> ${ventasAnterior}</td>
-              <td><strong>Valor:</strong> ${ventasPrevio}</td>
-              <td>${msg(resVentas)}</td>
-            </tr>
-            <tr>
-              <td>3</td>
               <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable</td>
-              <td>3</td>
-              <td>costo_ventas_anuales</td>
-              <td><strong>Valor:</strong> ${costoAnterior}</td>
-              <td><strong>Valor:</strong> ${costoPrevio}</td>
+              <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
+              <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
               <td>${msg(resCosto)}</td>
             </tr>
             <tr>
-              <td>4</td>
+              <td>3</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable</td>
-              <td>4</td>
-              <td>utilidad_bruta</td>
-              <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
-              <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
+              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
+              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
               <td>${msg(resUBruta)}</td>
             </tr>
             <tr>
-              <td>5</td>
+              <td>4</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Operativa (PARTIDA 31) en al menos un cierre contable</td>
-              <td>5</td>
-              <td>utilidad_operativa</td>
-              <td><strong>Valor:</strong> ${utilidadOperativaAnterior}</td>
-              <td><strong>Valor:</strong> ${utilidadOperativaPrevio}</td>
+              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
+              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
               <td>${msg(resUOperativa)}</td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>5</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Neta (PARTIDA 37) en al menos un cierre contable</td>
-              <td>6</td>
-              <td>utilidad_neta</td>
-              <td><strong>Valor:</strong> ${utilidadNetaAnterior}</td>
-              <td><strong>Valor:</strong> ${utilidadNetaPrevio}</td>
+              <td><strong>Utilidad neta:</strong> ${utilidadNetaAnterior}</td>
+              <td><strong>Utilidad neta:</strong> ${utilidadNetaPrevio}</td>
               <td>${msg(resUNeta)}</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>6</td>
               <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.</td>
-              <td>7</td>
-              <td>capital_contable</td>
-              <td><strong>Valor:</strong> ${capitalAnterior}</td>
-              <td><strong>Valor:</strong> ${capitalPrevio}</td>
+              <td><strong>Capital contable:</strong> ${capitalAnterior}</td>
+              <td><strong>Capital contable:</strong> ${capitalPrevio}</td>
               <td>${msg(resCapital)}</td>
             </tr>
             <tr>
-              <td>8</td>
+              <td>7</td>
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
-              <td>8</td>
-              <td>caja_bancos, saldo_inventarios</td>
               <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msgCajaInv(resCajaInv)}</td>
             </tr>
             <tr>
+              <td>8</td>
+              <td style="background-color: #000; color: #fff;">No presenta Ventas en al menos un cierre contable.</td>
+              <td><strong>Ventas:</strong> ${ventasAnterior}</td>
+              <td><strong>Ventas:</strong> ${ventasPrevio}</td>
+              <td>${msg(resVentas)}</td>
+            </tr>
+            <tr>
               <td>9</td>
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
-              <td>9</td>
-              <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
               <td>${msg(resClientesInv)}</td>
@@ -5842,10 +5822,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             <tr>
               <td>10</td>
               <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
-              <td>10</td>
-              <td>proveedores</td>
-              <td><strong>Valor:</strong> ${provAnterior}</td>
-              <td><strong>Valor:</strong> ${provPrevio}</td>
+              <td><strong>Proveedores:</strong> ${provAnterior}</td>
+              <td><strong>Proveedores:</strong> ${provPrevio}</td>
               <td>${msg(resProveedores)}</td>
             </tr>
           </tbody>
