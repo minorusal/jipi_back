@@ -2834,12 +2834,15 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
-    const apalancamiento =
+    // Mismo cálculo utilizado en el ratio R10 de "Ratios financieros"
+  const apalancamiento =
       !isNaN(pasivo) && !isNaN(capital) && capital !== 0
         ? parseFloat((pasivo / capital).toFixed(1))
         : capital === 0
           ? null
           : NaN
+
+    const operacion = `${pasivo} / ${capital}`
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2872,7 +2875,8 @@ const getScoreApalancamientoFromSummary = async (
       limite_inferior: apalScore.limite_inferior,
       limite_superior: apalScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
-      apalancamiento
+      apalancamiento,
+      operacion
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -4746,11 +4750,12 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: apalancamiento.score,
         parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
-        limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
-        pasivo_largo_plazo_estado_balance_periodo_anterior:
-          apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
-        capital_contable_estado_balance:
-          apalancamiento.capital_contable_estado_balance
+      limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
+      pasivo_largo_plazo_estado_balance_periodo_anterior:
+        apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
+      capital_contable_estado_balance:
+        apalancamiento.capital_contable_estado_balance,
+      operacion: apalancamiento.operacion
       }
       console.log(JSON.stringify(reporteCredito._12_apalancamiento))
     }
@@ -6064,6 +6069,11 @@ ${JSON.stringify(info_email_error, null, 2)}
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
             )
+            if (val.operacion) {
+              rows.push(
+                `<tr><td>Operación</td><td>${val.operacion}</td></tr>`
+              )
+            }
           }
           if (resultado !== '-' && resultado !== null && resultado !== '') {
             rows.push(`<tr><td>Resultado obtenido</td><td>${resultado}</td></tr>`)
