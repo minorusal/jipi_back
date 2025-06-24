@@ -2810,24 +2810,24 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
-      certificationService.pasivoLargoPlazoPCA(id_certification),
+    const [deudaTotalPCA, capitalContable] = await Promise.all([
+      certificationService.deudaTotalPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
     ])
 
-    if (!pasivoLargoPlazoPCA || !capitalContable) {
+    if (!deudaTotalPCA || !capitalContable) {
       logger.warn(
-        `${fileMethod} | ${customUuid} Falta pasivo largo plazo o capital contable`
+        `${fileMethod} | ${customUuid} Falta deuda total o capital contable`
       )
       return { error: true }
     }
 
     const parseNumber = require('../../utils/number')
 
-    const pasivo = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
+    const deuda = parseNumber(deudaTotalPCA.deuda_total)
     const capital = parseNumber(capitalContable.capital_contable)
 
-    if (!Number.isFinite(pasivo) || !Number.isFinite(capital)) {
+    if (!Number.isFinite(deuda) || !Number.isFinite(capital)) {
       logger.warn(
         `${fileMethod} | ${customUuid} Valores no numéricos para calcular apalancamiento`
       )
@@ -2836,13 +2836,13 @@ const getScoreApalancamientoFromSummary = async (
 
     // Mismo cálculo utilizado en el ratio R10 de "Ratios financieros"
   const apalancamiento =
-      !isNaN(pasivo) && !isNaN(capital) && capital !== 0
-        ? parseFloat((pasivo / capital).toFixed(1))
+      !isNaN(deuda) && !isNaN(capital) && capital !== 0
+        ? parseFloat((deuda / capital).toFixed(1))
         : capital === 0
           ? null
           : NaN
 
-    const operacion = `${pasivo} / ${capital}`
+    const operacion = `${deuda} / ${capital}`
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2860,8 +2860,8 @@ const getScoreApalancamientoFromSummary = async (
       return {
         error: true,
         apalancamiento,
-        pasivo_largo_plazo_estado_balance_periodo_anterior:
-          pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
+        deuda_total_estado_balance_periodo_anterior:
+          deudaTotalPCA.deuda_total,
         capital_contable_estado_balance: capitalContable.capital_contable
       }
     }
@@ -2871,13 +2871,12 @@ const getScoreApalancamientoFromSummary = async (
     return {
       score,
       descripcion_apalancamiento: apalScore.nombre,
-      pasivo_largo_plazo_estado_balance_periodo_anterior:
-        pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
-      periodo_estado_balance_tipo: pasivoLargoPlazoPCA.tipo,
-      periodo_anterior_estado_balance: pasivoLargoPlazoPCA.periodo_anterior,
-      periodo_actual_estado_balance: pasivoLargoPlazoPCA.periodo_actual,
+      deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
+      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
+      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
+      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
       periodo_previo_anterior_estado_balance:
-        pasivoLargoPlazoPCA.periodo_previo_anterior,
+        deudaTotalPCA.periodo_previo_anterior,
       limite_inferior: apalScore.limite_inferior,
       limite_superior: apalScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
@@ -4765,8 +4764,8 @@ const getAlgoritmoResult = async (req, res, next) => {
             : apalancamiento.apalancamiento,
         limite_inferior: 'null',
         limite_superior: 'null',
-        pasivo_largo_plazo_estado_balance_periodo_anterior:
-          apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
+        deuda_total_estado_balance_periodo_anterior:
+          apalancamiento.deuda_total_estado_balance_periodo_anterior,
         capital_contable_estado_balance:
           apalancamiento.capital_contable_estado_balance
       }
@@ -4779,8 +4778,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
       limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
-      pasivo_largo_plazo_estado_balance_periodo_anterior:
-        apalancamiento.pasivo_largo_plazo_estado_balance_periodo_anterior,
+      deuda_total_estado_balance_periodo_anterior:
+        apalancamiento.deuda_total_estado_balance_periodo_anterior,
       capital_contable_estado_balance:
         apalancamiento.capital_contable_estado_balance,
       operacion: apalancamiento.operacion
@@ -6033,10 +6032,10 @@ ${JSON.stringify(info_email_error, null, 2)}
             if (key === '_12_apalancamiento') {
               formula = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
               if (
-                val.pasivo_largo_plazo_estado_balance_periodo_anterior !== undefined &&
+                val.deuda_total_estado_balance_periodo_anterior !== undefined &&
                 val.capital_contable_estado_balance !== undefined
               ) {
-              formula += `\nOperaci\u00F3n: ${formatMoney(val.pasivo_largo_plazo_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+              formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
               }
             } else {
               formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
@@ -6088,11 +6087,11 @@ ${JSON.stringify(info_email_error, null, 2)}
             const format = value =>
               value === undefined || value === null ? '-' : formatMoney(value)
             const pasivo = format(
-              val.pasivo_largo_plazo_estado_balance_periodo_anterior
+              val.deuda_total_estado_balance_periodo_anterior
             )
             const capital = format(val.capital_contable_estado_balance)
             const formulaResultado =
-              `Pasivo largo plazo (periodo contable anterior): ${pasivo} / ` +
+              `Deuda total (periodo contable anterior): ${pasivo} / ` +
               `Capital contable (periodo contable anterior): ${capital}`
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
@@ -6220,11 +6219,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           return `Anterior: (${withLabel('Proveedores', provA)} + ${withLabel('Acreedores', acreA)}) / ${withLabel('Costo ventas anuales', cvA)} * 360<br/>Previo: (${withLabel('Proveedores', provP)} + ${withLabel('Acreedores', acreP)}) / ${withLabel('Costo ventas anuales', cvP)} * 360`
         },
         r10_solvencia_deuda_total_sobre_capital: () => {
-          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const dtA = balanceData.deuda_total?.deuda_total_anterior
           const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
-          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const dtP = balanceData.deuda_total?.deuda_total_previo_anterior
           const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
-          return `Anterior: ${withLabel('Pasivo largo plazo', plA)} / ${withLabel('Capital contable', ccA)}<br/>Previo: ${withLabel('Pasivo largo plazo', plP)} / ${withLabel('Capital contable', ccP)}`
+          return `Anterior: ${withLabel('Deuda total', dtA)} / ${withLabel('Capital contable', ccA)}<br/>Previo: ${withLabel('Deuda total', dtP)} / ${withLabel('Capital contable', ccP)}`
         },
         r11_retorno_sobre_capital_acciones: () => {
           const uoA = resultsData.utilidad_operacion?.operacion_utilidad_operacion_anterior
@@ -6318,11 +6317,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           return `Anterior: (${withValue(provA)} + ${withValue(acreA)}) / ${withValue(cvA)} * 360<br/>Previo: (${withValue(provP)} + ${withValue(acreP)}) / ${withValue(cvP)} * 360`
         },
         r10_solvencia_deuda_total_sobre_capital: () => {
-          const plA = balanceData.total_pasivo_largo_plazo?.total_pasivo_largo_plazo_anterior
+          const dtA = balanceData.deuda_total?.deuda_total_anterior
           const ccA = balanceData.total_capital_contable?.total_capital_contable_anterior
-          const plP = balanceData.total_pasivo_largo_plazo?.total_pasivo_previo_anterior
+          const dtP = balanceData.deuda_total?.deuda_total_previo_anterior
           const ccP = balanceData.total_capital_contable?.total_capital_contable_previo_anterior
-          return `Anterior: ${withValue(plA)} / ${withValue(ccA)}<br/>Previo: ${withValue(plP)} / ${withValue(ccP)}`
+          return `Anterior: ${withValue(dtA)} / ${withValue(ccA)}<br/>Previo: ${withValue(dtP)} / ${withValue(ccP)}`
         },
         r11_retorno_sobre_capital_acciones: () => {
           const uoA = resultsData.utilidad_operacion?.operacion_utilidad_operacion_anterior
@@ -6357,7 +6356,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         r7_rotacion_inventarios_dias: '(Inventarios / Costo ventas anuales) * 360',
         r8_rotacion_cuentas_x_cobrar_dias: '(Clientes / Ventas anuales) * 360',
         r9_rotacion_pagos_dias: '(Proveedores + Acreedores) / Costo ventas anuales * 360',
-        r10_solvencia_deuda_total_sobre_capital: 'Pasivo largo plazo / Capital contable',
+        r10_solvencia_deuda_total_sobre_capital: 'Deuda total / Capital contable',
         r11_retorno_sobre_capital_acciones: 'Utilidad operación / Capital contable * 100',
         r12_rendimiento_capital: 'Utilidad neta / Capital contable * 100',
         r13_rendimiento_activos: 'Utilidad neta / Total activo * 100'
