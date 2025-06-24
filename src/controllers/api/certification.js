@@ -2835,7 +2835,12 @@ const getScoreApalancamientoFromSummary = async (
       certificationService.capitalContablePCA(id_certification)
     ])
 
-    if (!deudaTotalPCA || !capitalContable) return { error: true }
+    if (!deudaTotalPCA || !capitalContable) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} Falta deuda total o capital contable`
+      )
+      return { error: true }
+    }
 
     if (!deudaTotalPCA.deuda_total) valor_algoritmo = '-30'
 
@@ -2847,7 +2852,12 @@ const getScoreApalancamientoFromSummary = async (
       const def = parametrosAlgoritmo.apalancamientoScore.find(
         a => a.nombre === 'DESCONOCIDO'
       )
-      if (!def) return { error: true }
+      if (!def) {
+        logger.error(
+          `${fileMethod} | ${customUuid} No se encontró configuración 'DESCONOCIDO' para apalancamiento`
+        )
+        return { error: true }
+      }
       return {
         score: def.v2,
         descripcion_apalancamiento:
@@ -2915,7 +2925,12 @@ const getScoreApalancamientoFromSummary = async (
       const [inf, sup] = getLimits(a)
       return apalancamiento >= inf && apalancamiento <= sup
     })
-    if (!apalScore) return { error: true }
+    if (!apalScore) {
+      logger.warn(
+        `${fileMethod} | ${customUuid} Valor de apalancamiento fuera de rango`
+      )
+      return { error: true }
+    }
 
     return {
       score: valor_algoritmo !== '0' ? valor_algoritmo : (Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1),
