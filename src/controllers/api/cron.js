@@ -349,7 +349,6 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 </body>
 </html>
         `
-// 
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
