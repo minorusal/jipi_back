@@ -4021,7 +4021,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
         parseNumber(ubA) === 0 ||
         parseNumber(ubP) === 0
       ) {
-        return buildResponse('Utilidad bruta no reportada en al menos un periodo', 2)
+        return buildResponse('No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable', 2)
       }
 
       const uoA = resultadoAnterior?.utilidad_operativa_anterior
@@ -5783,6 +5783,14 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tr>
             <tr>
               <td>4</td>
+              <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable</td>
+              <td>utilidad_bruta</td>
+              <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
+              <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
+              <td>${msg(resUBruta)}</td>
+            </tr>
+            <tr>
+              <td>5</td>
               <td style="background-color: #000; color: #fff;">Si en al menos uno de los dos periodos contables no se tiene registrado un valor para capital contable, se ejecuta el algoritmo sin EEFF.</td>
               <td>capital_contable</td>
               <td><strong>Valor:</strong> ${capitalAnterior}</td>
@@ -5790,7 +5798,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msg(resCapital)}</td>
             </tr>
             <tr>
-              <td>5</td>
+              <td>6</td>
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de caja y bancos como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
               <td>caja_bancos, saldo_inventarios</td>
               <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
@@ -5798,7 +5806,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msgCajaInv(resCajaInv)}</td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>7</td>
               <td style="background-color: #000; color: #fff;">Si en cualquier periodo contable faltan tanto el valor de clientes y cuentas por cobrar como el de inventarios, se ejecuta el algoritmo sin EEFF.</td>
               <td>saldo_cliente_cuenta_x_cobrar, saldo_inventarios</td>
               <td><strong>Clientes y ctas x cobrar:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
@@ -5806,20 +5814,12 @@ ${JSON.stringify(info_email_error, null, 2)}
               <td>${msg(resClientesInv)}</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>8</td>
               <td style="background-color: #000; color: #fff;">Proveedores sin datos en ambos periodos</td>
               <td>proveedores</td>
               <td><strong>Valor:</strong> ${provAnterior}</td>
               <td><strong>Valor:</strong> ${provPrevio}</td>
               <td>${msg(resProveedores)}</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td style="background-color: #000; color: #fff;">Utilidad bruta no reportada en al menos un periodo</td>
-              <td>utilidad_bruta</td>
-              <td><strong>Valor:</strong> ${utilidadBrutaAnterior}</td>
-              <td><strong>Valor:</strong> ${utilidadBrutaPrevio}</td>
-              <td>${msg(resUBruta)}</td>
             </tr>
             <tr>
               <td>9</td>
