@@ -17078,8 +17078,10 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
       if (process.env.NODE_ENV == 'production') {
         await enviaCorreoReferenciasExternas(link, { ...contacto, empresa_var, empresa_envia_var })
       } else {
-        const MAILJET_EMAIL_DEFAULT = process.env.MAILJET_EMAIL_DEFAULT;
-        const MAILJET_EMAIL_DEFAULT_ARRAY = MAILJET_EMAIL_DEFAULT.split(',');
+        const MAILJET_EMAIL_DEFAULT = process.env.MAILJET_EMAIL_DEFAULT || '';
+        const MAILJET_EMAIL_DEFAULT_ARRAY = MAILJET_EMAIL_DEFAULT
+          ? MAILJET_EMAIL_DEFAULT.split(',')
+          : [];
         if (MAILJET_EMAIL_DEFAULT_ARRAY.length > 1) {
           for (const _email of MAILJET_EMAIL_DEFAULT_ARRAY) {
             await enviaCorreoReferenciasExternas(link, { ...contacto, correo: _email });
