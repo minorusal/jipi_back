@@ -6891,7 +6891,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           ${validacionesVersionTable}
           ${detallesTables}
         <div class="table-section">
-        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; table-layout: auto; font-family: Arial, Helvetica, sans-serif; font-size: 9px;">
           <caption>Ratios financieros</caption>
           <thead style="background-color: #f2f2f2;">
               <tr>
