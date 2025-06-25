@@ -6793,6 +6793,14 @@ ${JSON.stringify(info_email_error, null, 2)}
         ['_16_referencias_comerciales', '16. Referencias comerciales score', 'cat_resultado_referencias_proveedores_algoritmo']
       ]
 
+      const singleScoreTables = [
+        'cat_pais_algoritmo',
+        'cat_capital_contable_algoritmo',
+        'cat_tiempo_actividad_comercial_algoritmo',
+        'cat_apalancamiento_algoritmo',
+        'cat_flujo_neto_caja_algoritmo'
+      ]
+
       const referenceTables = variablesReference
         .map(([key, label, table]) => {
           const selected = String(rangos[key]?.descripcion || '').toLowerCase()
@@ -6803,7 +6811,6 @@ ${JSON.stringify(info_email_error, null, 2)}
               const opcion = opt.nombre ?? opt.descripcion ?? '-'
               const isSel = selected && opcion.toLowerCase() === selected
               const opcionHtml = isSel ? `<strong>${opcion}</strong>` : opcion
-              const singleScoreTables = ['cat_pais_algoritmo', 'cat_capital_contable_algoritmo', 'cat_tiempo_actividad_comercial_algoritmo']
               const scoreColumn = singleScoreTables.includes(table)
                 ? `<td style="padding: 4px 6px; border: 1px solid #ccc;">${v1}</td>`
                 : `<td style="padding: 4px 6px; border: 1px solid #ccc;">${v1}</td><td style="padding: 4px 6px; border: 1px solid #ccc;">${v2}</td>`
