@@ -2810,12 +2810,12 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    const [deudaTotalPCA, capitalContable] = await Promise.all([
-      certificationService.deudaTotalPCA(id_certification),
+    const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
+      certificationService.pasivoLargoPlazoPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
     ])
 
-    if (!deudaTotalPCA || !capitalContable) {
+    if (!pasivoLargoPlazoPCA || !capitalContable) {
       logger.warn(
         `${fileMethod} | ${customUuid} Falta deuda total o capital contable`
       )
@@ -2824,10 +2824,10 @@ const getScoreApalancamientoFromSummary = async (
 
     const parseNumber = require('../../utils/number')
 
-    const deuda = parseNumber(deudaTotalPCA.deuda_total)
+    const pasivo = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
     const capital = parseNumber(capitalContable.capital_contable)
 
-    if (!Number.isFinite(deuda) || !Number.isFinite(capital)) {
+    if (!Number.isFinite(pasivo) || !Number.isFinite(capital)) {
       logger.warn(
         `${fileMethod} | ${customUuid} Valores no numéricos para calcular apalancamiento`
       )
@@ -2836,13 +2836,13 @@ const getScoreApalancamientoFromSummary = async (
 
     // Mismo cálculo utilizado en el ratio R10 de "Ratios financieros"
   const apalancamiento =
-      !isNaN(deuda) && !isNaN(capital) && capital !== 0
-        ? parseFloat((deuda / capital).toFixed(1))
+      !isNaN(pasivo) && !isNaN(capital) && capital !== 0
+        ? parseFloat((pasivo / capital).toFixed(1))
         : capital === 0
           ? null
           : NaN
 
-    const operacion = `${deuda} / ${capital}`
+    const operacion = `${pasivo} / ${capital}`
 
     const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
       const [inf, sup] = getLimits(a)
@@ -2861,7 +2861,7 @@ const getScoreApalancamientoFromSummary = async (
         error: true,
         apalancamiento,
         deuda_total_estado_balance_periodo_anterior:
-          deudaTotalPCA.deuda_total,
+          pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
         capital_contable_estado_balance: capitalContable.capital_contable
       }
     }
@@ -2871,12 +2871,13 @@ const getScoreApalancamientoFromSummary = async (
     return {
       score,
       descripcion_apalancamiento: apalScore.nombre,
-      deuda_total_estado_balance_periodo_anterior: deudaTotalPCA.deuda_total,
-      periodo_estado_balance_tipo: deudaTotalPCA.tipo,
-      periodo_anterior_estado_balance: deudaTotalPCA.periodo_anterior,
-      periodo_actual_estado_balance: deudaTotalPCA.periodo_actual,
+      deuda_total_estado_balance_periodo_anterior:
+        pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
+      periodo_estado_balance_tipo: pasivoLargoPlazoPCA.tipo,
+      periodo_anterior_estado_balance: pasivoLargoPlazoPCA.periodo_anterior,
+      periodo_actual_estado_balance: pasivoLargoPlazoPCA.periodo_actual,
       periodo_previo_anterior_estado_balance:
-        deudaTotalPCA.periodo_previo_anterior,
+        pasivoLargoPlazoPCA.periodo_previo_anterior,
       limite_inferior: apalScore.limite_inferior,
       limite_superior: apalScore.limite_superior,
       capital_contable_estado_balance: capitalContable.capital_contable,
