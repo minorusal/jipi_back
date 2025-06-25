@@ -2194,7 +2194,7 @@ WHERE cer.certificacion_id = (
     const { result } = await mysqlLib.query(queryString)
     return result
   }
-
+// 
   async getCertificacionPartidaFinanciera(id_certification) {
     const queryString = `
      SELECT
@@ -2222,12 +2222,14 @@ WHERE cer.certificacion_id = (
         cpeb.acreedores,
         cpeb.inpuestos_x_pagar,
         cpeb.otros_pasivos,
+        cpeb.total_pasivo_circulante,
         cpeb.total_pasivo_largo_plazo,
         cpeb.pasivo_diferido,
         cpeb.capital_social,
         cpeb.resultado_ejercicios_anteriores,
         cpeb.resultado_ejercicios,
         cpeb.otro_capital,
+        cpeb.total_capital_contable_pat,
         cpeb.periodo_actual AS perioro_actual_estado_balance,
         cpeb.periodo_anterior AS perioro_anterior_estado_balance,
         cpeb.periodo_previo_anterior AS perioro_previo_anterior_estado_balance,

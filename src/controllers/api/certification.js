@@ -13015,33 +13015,107 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       resultados.dias_recomendacion_DSO = parseFloat(resultados.dias_recomendacion_DSO).toFixed(2)
     }
 
-
+// 
     const performance_financiero = {
+      // Partidas de estado de balance año anterior
       balance_anio_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.periodo_anterior ?? '-',
       balance_anio_anterior_caja_bancos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.caja_bancos ?? '-',
       balance_anio_anterior_saldo_clientes: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.saldo_cliente_cuenta_x_cobrar ?? '-',
       balance_anio_anterior_saldo_inventarios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.saldo_inventarios ?? '-',
-      balance_anio_anterior_deuda_corto_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.deuda_corto_plazo ?? '-',
-      balance_anio_anterior_deuda_total: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.deuda_total ?? '-',
-      balance_anio_anterior_capital_contable: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.capital_contable ?? '-',
+      balance_anio_anterior_deudores_diversos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.deudores_diversos ?? '-',
+      balance_anio_anterior_otros_activos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.otros_activos ?? '-',
+      balance_anio_anterior_total_activo_circulante: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.total_activo_circulante ?? '-',
+      balance_anio_anterior_total_activo_fijo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.total_activo_fijo ?? '-',
+      balance_anio_anterior_activo_intangible: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.activo_intangible ?? '-',
+      balance_anio_anterior_activo_diferido: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.activo_diferido ?? '-',
+      balance_anio_anterior_otros_activos_fijos_largo_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.otros_activos_fijos_largo_plazo ?? '-',
+      balance_anio_anterior_proveedores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.proveedores ?? '-',
+      balance_anio_anterior_acreedores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.acreedores ?? '-',
+      balance_anio_anterior_inpuestos_x_pagar: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.inpuestos_x_pagar ?? '-',
+      balance_anio_anterior_otros_pasivos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.otros_pasivos ?? '-',
+      balance_anio_anterior_total_pasivo_circulante: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.total_pasivo_circulante ?? '-',
+      balance_anio_anterior_total_pasivo_largo_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.total_pasivo_largo_plazo ?? '-',
+      balance_anio_anterior_pasivo_diferido: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.pasivo_diferido ?? '-',
+      balance_anio_anterior_capital_social: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.capital_social ?? '-',
+      balance_anio_anterior_resultado_ejercicios_anteriores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.resultado_ejercicios_anteriores ?? '-',
+      balance_anio_anterior_resultado_ejercicios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.resultado_ejercicios ?? '-',
+      balance_anio_anterior_otro_capital: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.otro_capital ?? '-',
+      balance_anio_anterior_total_capital_contable_pat: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.total_capital_contable_pat ?? '-',
 
-      balance_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.periodo_previo_anterior ?? '-',
+      // Partidas del estado de resultados año anterior
+      estado_resultados_anio_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.periodo_anterior ?? '-',
+      estado_resultados_anio_anterior_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.ventas_anuales ?? '-',
+      estado_resultados_anio_anterior_costo_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.costo_ventas_anuales ?? '-',
+      estado_resultados_anio_anterior_utilidad_operativa: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_operativa ?? '-',
+      estado_resultados_anio_anterior_utilidad_bruta: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_bruta ?? '-',
+      estado_resultados_anio_anterior_gastos_administracion: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.gastos_administracion ?? '-',
+      estado_resultados_anio_anterior_gastos_productos_financieros: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.gastos_productos_financieros ?? '-',
+      estado_resultados_anio_anterior_depreciacion_amortizacion: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.depreciacion_amortizacion ?? '-',
+      estado_resultados_anio_anterior_otros_ingresos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.otros_ingresos ?? '-',
+      estado_resultados_anio_anterior_otros_egresos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.otros_egresos ?? '-',
+      estado_resultados_anio_anterior_otros_gastos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.otros_gastos ?? '-',
+      estado_resultados_anio_anterior_utilidad_neta: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_neta ?? '-',
+
+      // Partidas de estado de balance año previo anterior
+      balance_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.periodo_anterior ?? '-',
       balance_anio_previo_anterior_caja_bancos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.caja_bancos ?? '-',
       balance_anio_previo_anterior_saldo_clientes: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_cliente_cuenta_x_cobrar ?? '-',
       balance_anio_previo_anterior_saldo_inventarios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_inventarios ?? '-',
-      balance_anio_previo_anterior_deuda_corto_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.deuda_corto_plazo ?? '-',
-      balance_anio_previo_anterior_deuda_total: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.deuda_total ?? '-',
-      balance_anio_previo_anterior_capital_contable: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.capital_contable ?? '-',
+      balance_anio_previo_anterior_deudores_diversos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.deudores_diversos ?? '-',
+      balance_anio_previo_anterior_otros_activos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.otros_activos ?? '-',
+      balance_anio_previo_anterior_total_activo_circulante: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.total_activo_circulante ?? '-',
+      balance_anio_previo_anterior_total_activo_fijo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.total_activo_fijo ?? '-',
+      balance_anio_previo_anterior_activo_intangible: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.activo_intangible ?? '-',
+      balance_anio_previo_anterior_activo_diferido: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.activo_diferido ?? '-',
+      balance_anio_previo_anterior_otros_activos_fijos_largo_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.otros_activos_fijos_largo_plazo ?? '-',
+      balance_anio_previo_anterior_proveedores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.proveedores ?? '-',
+      balance_anio_previo_anterior_acreedores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.acreedores ?? '-',
+      balance_anio_previo_anterior_inpuestos_x_pagar: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.inpuestos_x_pagar ?? '-',
+      balance_anio_previo_anterior_otros_pasivos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.otros_pasivos ?? '-',
+      balance_anio_previo_anterior_total_pasivo_circulante: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.total_pasivo_circulante ?? '-',
+      balance_anio_previo_anterior_total_pasivo_largo_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.total_pasivo_largo_plazo ?? '-',
+      balance_anio_previo_anterior_pasivo_diferido: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.pasivo_diferido ?? '-',
+      balance_anio_previo_anterior_capital_social: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.capital_social ?? '-',
+      balance_anio_previo_anterior_resultado_ejercicios_anteriores: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.resultado_ejercicios_anteriores ?? '-',
+      balance_anio_previo_anterior_resultado_ejercicios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.resultado_ejercicios ?? '-',
+      balance_anio_previo_anterior_otro_capital: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.otro_capital ?? '-',
+      balance_anio_previo_anterior_total_capital_contable_pat: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.total_capital_contable_pat ?? '-',
 
-      estado_resultados_anio_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.periodo_anterior ?? '-',
-      estado_resultados_anio_anterior_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.ventas_anuales ?? '-',
-      estado_resultados_anio_anterior_costo_ventas: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.costo_ventas_anuales ?? '-',
-      estado_resultados_anio_anterior_utilidad_operativa: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_operativa ?? '-',
-
-      estado_resultados_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.periodo_previo_anterior ?? '-',
+      // Partidas del estado de resultados
+      estado_resultados_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.periodo_anterior ?? '-',
       estado_resultados_anio_previo_anterior_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.ventas_anuales ?? '-',
-      estado_resultados_anio_previo_anterior_costo_ventas: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.costo_ventas_anuales ?? '-',
+      estado_resultados_anio_previo_anterior_costo_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.costo_ventas_anuales ?? '-',
       estado_resultados_anio_previo_anterior_utilidad_operativa: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.utilidad_operativa ?? '-',
+      estado_resultados_anio_previo_anterior_utilidad_bruta: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.utilidad_bruta ?? '-',
+      estado_resultados_anio_previo_anterior_gastos_administracion: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.gastos_administracion ?? '-',
+      estado_resultados_anio_previo_anterior_gastos_productos_financieros: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.gastos_productos_financieros ?? '-',
+      estado_resultados_anio_previo_anterior_depreciacion_amortizacion: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.depreciacion_amortizacion ?? '-',
+      estado_resultados_anio_previo_anterior_otros_ingresos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.otros_ingresos ?? '-',
+      estado_resultados_anio_previo_anterior_otros_egresos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.otros_egresos ?? '-',
+      estado_resultados_anio_previo_anterior_otros_gastos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.otros_gastos ?? '-',
+      estado_resultados_anio_previo_anterior_utilidad_neta: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.utilidad_neta ?? '-',
+
+      // balance_anio_anterior_deuda_corto_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.deuda_corto_plazo ?? '-',
+      // balance_anio_anterior_deuda_total: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.deuda_total ?? '-',
+      // balance_anio_anterior_capital_contable: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.capital_contable ?? '-',
+
+      // balance_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.periodo_previo_anterior ?? '-',
+      // balance_anio_previo_anterior_caja_bancos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.caja_bancos ?? '-',
+      // balance_anio_previo_anterior_saldo_clientes: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_cliente_cuenta_x_cobrar ?? '-',
+      // balance_anio_previo_anterior_saldo_inventarios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_inventarios ?? '-',
+      // balance_anio_previo_anterior_deuda_corto_plazo: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.deuda_corto_plazo ?? '-',
+      // balance_anio_previo_anterior_deuda_total: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.deuda_total ?? '-',
+      // balance_anio_previo_anterior_capital_contable: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.capital_contable ?? '-',
+
+      // estado_resultados_anio_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.periodo_anterior ?? '-',
+      // estado_resultados_anio_anterior_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.ventas_anuales ?? '-',
+      // estado_resultados_anio_anterior_costo_ventas: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.costo_ventas_anuales ?? '-',
+      // estado_resultados_anio_anterior_utilidad_operativa: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_operativa ?? '-',
+
+      // estado_resultados_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.periodo_previo_anterior ?? '-',
+      // estado_resultados_anio_previo_anterior_ventas_anuales: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.ventas_anuales ?? '-',
+      // estado_resultados_anio_previo_anterior_costo_ventas: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.costo_ventas_anuales ?? '-',
+      // estado_resultados_anio_previo_anterior_utilidad_operativa: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[1]?.utilidad_operativa ?? '-',
 
     }
 
@@ -13587,9 +13661,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     const tabla_1 = soloCompartirInfoEmpresa === 1 ?
       `
       <section style="width: 100%; margin: 0px 0px; margin-top: 30px; margin-bottom: 1rem; page-break-before: always;">
-        <div style="display: flex; flex-direction: column;">
-          <h3
-            style="
+  <div style="display: flex; flex-direction: column;">
+    <h3 style="
               font-size: 16px;
               font-weight: 700;
               color: #0a3d8e;
@@ -13598,393 +13671,1345 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
               margin-bottom: 5px !important;
               text-transform: uppercase;
               
-            "
-          >
-            SITUACIÓN Y PERFORMANCE FINANCIERO
-          </h3>
-        </div>
-        <div style="display: flex; width: 100%; align-items: center;">
-          <hr
-            style="
+            ">
+      SITUACIÓN Y PERFORMANCE FINANCIERO
+    </h3>
+  </div>
+  <div style="display: flex; width: 100%; align-items: center;">
+    <hr style="
               background: #0a3d8e;
               width: 97%;
               height: 2px;
               border: none;
               margin: 0px !important;
-            "
-          />
-          <div
-            style="
+            " />
+    <div style="
               height: 10px;
               width: 10px;
               border-radius: 50%;
               padding: 1px;
               background: #0a3d8e;
-            "
-          ></div>
-        </div>
-      </section>
-      <div
-          style="
+            "></div>
+  </div>
+</section>
+
+<div style="
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
             margin-bottom: 20px;
-          "
-        >
-          <p
-            style="
+          ">
+  <p style="
               color: #0a3d8e;
               margin: 0px;
               font-size: 12px;
               font-weight: 700;
-            "
-          >
-            Estado de Balance
-          </p>
-        </div>
-        <div
-          style="
+            ">
+    Partidas de Estado de Balance
+  </p>
+</div>
+
+
+
+<div style="
             background: #ffff;
             /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
             padding: 12px 12px;
             border: 1px solid #787878;
-          "
-        >
-          <div
-            style="
+          ">
+  <!-- Activo circulante -->
+  <div style="
               display: grid;
               grid-template-columns: 3fr 1.5fr 1.5fr;
               padding: 2.5px 0px;
               border-bottom: 1px solid #787878;
-            "
-          >
-            <div style="display: flex; align-items: flex-start;">
-              <p
-                style="
+            ">
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
                   font-size: 12px;
                   font-weight: 700;
-                "
-              >
-                Indicador
-              </p>
-            </div>
-            <div style="display: flex; align-items: flex-start;">
-              <p
-                style="
+                ">
+        Activo circulante
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
                   font-size: 12px;
                   font-weight: 700;
-                "
-              >
-                {_performance_financiero_balance_anio_anterior_indicador_}
-              </p>
-            </div>
-            <div style="display: flex; align-items: flex-start;">
-              <p
-                style="
+                ">
+        {_performance_financiero_balance_anio_anterior_indicador_}
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
                   margin: 0px;
                   margin-bottom: 5px;
                   color: #2ba2af;
                   font-size: 12px;
                   font-weight: 700;
-                "
-              >
-              {_performance_financiero_balance_anio_previo_anterior_indicador_}
-              </p>
-            </div>
-          </div>
-          <div>
-            <div
-              style="
+                ">
+        {_performance_financiero_balance_anio_previo_anterior_indicador_}
+      </p>
+    </div>
+  </div>
+  <div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                  Caja y Bancos:
-                </p>
-              </div>
+                  ">
+          Caja y Bancos:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_caja_bancos_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_caja_bancos_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_caja_bancos_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_caja_bancos_}
+        </p>
+      </div>
+    </div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                Saldo de Clientes:
-                </p>
-              </div>
+                  ">
+          Saldo de Clientes o cuentas por cobrar:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_saldo_clientes_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_saldo_clientes_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_saldo_clientes_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_saldo_clientes_}
+        </p>
+      </div>
+    </div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                Saldo de Inventarios:
-                </p>
-              </div>
+                  ">
+          Saldo de Inventarios:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_saldo_inventarios_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_saldo_inventarios_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_saldo_inventarios_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_saldo_inventarios_}
+        </p>
+      </div>
+    </div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                Deuda Total: de Corto Plazo:
-                </p>
-              </div>
+                  ">
+          Saldo de deudores diversos:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_deuda_corto_plazo_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_deudores_diversos_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_deudores_diversos_}
+        </p>
+      </div>
+    </div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                Deuda Total:
-                </p>
-              </div>
+                  ">
+          Otros activos circulantes:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_deuda_total_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_otros_activos_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_deuda_total_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_otros_activos_}
+        </p>
+      </div>
+    </div>
+    <div style="
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     color: #0a3d8e;
                     font-size: 12px;
                     font-weight: 700;
-                  "
-                >
-                Capital Contable:
-                </p>
-              </div>
+                  ">
+          Total de activo circulante:
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_anterior_capital_contable_}
-                </p>
-              </div>
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_activo_circulante_}
+        </p>
+      </div>
 
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
                     margin: 0px;
                     margin-bottom: 5px;
                     font-size: 12px;
                     font-weight: 500;
-                  "
-                >
-                {_performance_financiero_balance_anio_previo_anterior_capital_contable_}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_activo_circulante_}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div style="
+            background: #ffff;
+            /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          ">
+  <!-- Activo fijo -->
+  <div style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            ">
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        Activo fijo
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_anterior_indicador_}
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_previo_anterior_indicador_}
+      </p>
+    </div>
+  </div>
+  <div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Propiedades y Equipo (Maquinaria , Equipo Terrenos, edificios, flotillas):
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_activo_fijo_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_activo_fijo_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Activo Intangible:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_activo_intangible_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_activo_intangible_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Activo Diferido:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_activo_diferido_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_activo_diferido_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Otros activos fijos o de largo plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_otros_activos_fijos_largo_plazo_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_otros_activos_fijos_largo_plazo_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Total de activo fijo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_activos_fijo_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_activos_fijo_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Activo Total:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_activo_total_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_activo_total_}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div style="
+            background: #ffff;
+            /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          ">
+  <!-- Pasivo circulante -->
+  <div style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            ">
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        Pasivo circulante
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_anterior_indicador_}
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_previo_anterior_indicador_}
+      </p>
+    </div>
+  </div>
+  <div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Proveedores:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_proveedores_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_proveedores_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Acreedores y préstamos bancarios:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_acreedores_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_acreedores_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Impuestos por pagar:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_inpuestos_x_pagar_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_inpuestos_x_pagar_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Otros Pasivos de corto plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_otros_pasivos_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_otros_pasivos_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Total de pasivo corto plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_pasivo_circulante_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_pasivo_circulante_}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div style="
+            background: #ffff;
+            /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          ">
+  <!-- Pasivo de Largo Plazo -->
+  <div style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            ">
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        Pasivo de Largo Plazo
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_anterior_indicador_}
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_previo_anterior_indicador_}
+      </p>
+    </div>
+  </div>
+  <div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Préstamos bancarios de largo plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_pasivo_largo_plazo_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_pasivo_largo_plazo_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Otros pasivos de largo plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_pasivo_diferido_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_pasivo_diferido_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Total de pasivo de largo plazo:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_pasivos_largo_plazo_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_pasivos_largo_plazo_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Pasivo Total:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_pasivo_total_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_pasivo_total_}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div style="
+            background: #ffff;
+            /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
+            padding: 12px 12px;
+            border: 1px solid #787878;
+          ">
+  <!-- Capital contable o patrimonio -->
+  <div style="
+              display: grid;
+              grid-template-columns: 3fr 1.5fr 1.5fr;
+              padding: 2.5px 0px;
+              border-bottom: 1px solid #787878;
+            ">
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        Capital contable o patrimonio
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_anterior_indicador_}
+      </p>
+    </div>
+    <div style="display: flex; align-items: flex-start;">
+      <p style="
+                  margin: 0px;
+                  margin-bottom: 5px;
+                  color: #2ba2af;
+                  font-size: 12px;
+                  font-weight: 700;
+                ">
+        {_performance_financiero_balance_anio_previo_anterior_indicador_}
+      </p>
+    </div>
+  </div>
+  <div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Capital social:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_capital_social_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_capital_social_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Resultado de ejercicios anteriores:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_resultado_ejercicios_anteriores_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_anteriores_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Resultado de ejercicio:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_resultado_ejercicios_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_}
+        </p>
+      </div>
+    </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Otras cuentas de capital:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_otro_capital_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_otro_capital_}
+        </p>
+      </div>
+    </div>
+  </div>
+    <div style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              ">
+      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  ">
+          Total de Capital contable o patrimonio:
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_anterior_total_capital_contable_pat_}
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+        <p style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  ">
+          {_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
     `
       : '';
 
@@ -14007,7 +15032,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
               font-weight: 700;
             "
           >
-           Estado de Resultados
+           Partidas del estado de resultados
           </p>
         </div>
         <div
@@ -14131,7 +15156,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     font-weight: 700;
                   "
                 >
-                Costo de Ventas:
+                Costo de ventas anual:
                 </p>
               </div>
 
@@ -14144,7 +15169,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     font-weight: 500;
                   "
                 >
-                {_performance_financiero_estado_resultados_anio_anterior_costo_ventas_}
+                {_performance_financiero_estado_resultados_anio_anterior_costo_ventas_anuales_}
                 </p>
               </div>
 
@@ -14157,7 +15182,101 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     font-weight: 500;
                   "
                 >
-                {_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_}
+                {_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_anuales_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Utilidad bruta:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_utilidad_bruta_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_bruta_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Gastos de Administración:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_gastos_administracion_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_gastos_administracion_}
                 </p>
               </div>
             </div>
@@ -14205,6 +15324,382 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   "
                 >
                 {_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_operativa_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Depreciación y Amortización:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_depreciacion_amortizacion_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_depreciacion_amortizacion_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Otros ingresos:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_otros_ingresos_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_otros_ingresos_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Otros Gastos:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_otros_gastos_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_otros_gastos_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Gastos o Ingresos de productos financieros:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_gastos_productos_financieros_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_gastos_productos_financieros_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Otros Egresos:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_otros_egresos_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_otros_egresos_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Utilidad Neta:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_utilidad_neta_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_neta_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Total Partidas del estado de resultados:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_total_partidas_estado_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_total_partidas_estado_}
+                </p>
+              </div>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 3fr 1.5fr 1.5fr;
+                border-bottom: 1px solid #787878;
+              "
+            >
+              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    color: #0a3d8e;
+                    font-size: 12px;
+                    font-weight: 700;
+                  "
+                >
+                Suma de comprobación:
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_anterior_suma_comprobacion_}
+                </p>
+              </div>
+
+              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
+                <p
+                  style="
+                    margin: 0px;
+                    margin-bottom: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                  "
+                >
+                {_performance_financiero_estado_resultados_anio_previo_anterior_suma_comprobacion_}
                 </p>
               </div>
             </div>
@@ -15511,33 +17006,167 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
 
     // Balance
+  // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_indicador_}', performance_financiero.balance_anio_anterior_indicador);
+    // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_caja_bancos_}', performance_financiero.balance_anio_anterior_caja_bancos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_saldo_clientes_}', performance_financiero.balance_anio_anterior_saldo_clientes);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_saldo_inventarios_}', performance_financiero.balance_anio_anterior_saldo_inventarios);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_anterior_deuda_corto_plazo);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_total_}', performance_financiero.balance_anio_anterior_deuda_total);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_contable_}', performance_financiero.balance_anio_anterior_capital_contable);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deudores_diversos_}', performance_financiero.balance_anio_anterior_deudores_diversos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_activos_}', performance_financiero.balance_anio_anterior_otros_activos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activo_circulante_}', performance_financiero.balance_anio_anterior_total_activo_circulante);
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activo_fijo_}', performance_financiero.balance_anio_anterior_total_activo_fijo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_intangible_}', performance_financiero.balance_anio_anterior_activo_intangible);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_diferido_}', performance_financiero.balance_anio_anterior_activo_diferido);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_activos_fijos_largo_plazo_}', performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activos_fijo_}', (
+      Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
+      Number(performance_financiero.balance_anio_anterior_activo_intangible) +
+      Number(performance_financiero.balance_anio_anterior_activo_diferido) +
+      Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo))
+    );
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_total_}', (
+      Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
+      Number(performance_financiero.balance_anio_anterior_activo_intangible) +
+      Number(performance_financiero.balance_anio_anterior_activo_diferido) +
+      Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo) +
+      Number(performance_financiero.balance_anio_anterior_total_activo_circulante))
+    );
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_proveedores_}', performance_financiero.balance_anio_anterior_proveedores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_acreedores_}', performance_financiero.balance_anio_anterior_acreedores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_inpuestos_x_pagar_}', performance_financiero.balance_anio_anterior_inpuestos_x_pagar);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_pasivos_}', performance_financiero.balance_anio_anterior_otros_pasivos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_anterior_total_pasivo_circulante);
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivo_largo_plazo_}', performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_pasivo_diferido_}', performance_financiero.balance_anio_anterior_pasivo_diferido);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_social_}', performance_financiero.balance_anio_anterior_capital_social);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_resultado_ejercicios_anteriores_}', performance_financiero.balance_anio_anterior_resultado_ejercicios_anteriores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_resultado_ejercicios_}', performance_financiero.balance_anio_anterior_resultado_ejercicios);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otro_capital_}', performance_financiero.balance_anio_anterior_otro_capital);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_anterior_total_capital_contable_pat);
+
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_anterior_deuda_corto_plazo);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_total_}', performance_financiero.balance_anio_anterior_deuda_total);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_contable_}', performance_financiero.balance_anio_anterior_capital_contable);
 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_indicador_}', performance_financiero.balance_anio_previo_anterior_indicador);
+    // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_caja_bancos_}', performance_financiero.balance_anio_previo_anterior_caja_bancos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_saldo_clientes_}', performance_financiero.balance_anio_previo_anterior_saldo_clientes);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_saldo_inventarios_}', performance_financiero.balance_anio_previo_anterior_saldo_inventarios);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_total_}', performance_financiero.balance_anio_previo_anterior_deuda_total);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_capital_contable_}', performance_financiero.balance_anio_previo_anterior_capital_contable);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deudores_diversos_}', performance_financiero.balance_anio_previo_anterior_deudores_diversos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_activos_}', performance_financiero.balance_anio_previo_anterior_otros_activos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_activo_circulante);
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activo_fijo_}', performance_financiero.balance_anio_previo_anterior_total_activo_fijo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_intangible_}', performance_financiero.balance_anio_previo_anterior_activo_intangible);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_diferido_}', performance_financiero.balance_anio_previo_anterior_activo_diferido);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_activos_fijos_largo_plazo_}', performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activos_fijo_}', (
+      Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
+      Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
+      Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
+      Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo))
+    );
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_total_}', (
+      Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
+      Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
+      Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
+      Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo) +
+      Number(performance_financiero.balance_anio_previo_anterior_total_activo_circulante))
+    );
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_proveedores_}', performance_financiero.balance_anio_previo_anterior_proveedores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_acreedores_}', performance_financiero.balance_anio_previo_anterior_acreedores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_inpuestos_x_pagar_}', performance_financiero.balance_anio_previo_anterior_inpuestos_x_pagar);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_pasivos_}', performance_financiero.balance_anio_previo_anterior_otros_pasivos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante);
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivo_largo_plazo_}', performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_pasivo_diferido_}', performance_financiero.balance_anio_previo_anterior_pasivo_diferido);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
+    // 
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_capital_social_}', performance_financiero.balance_anio_previo_anterior_capital_social);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_anteriores_}', performance_financiero.balance_anio_previo_anterior_resultado_ejercicios_anteriores);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_}', performance_financiero.balance_anio_previo_anterior_resultado_ejercicios);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otro_capital_}', performance_financiero.balance_anio_previo_anterior_otro_capital);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat);
+    
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_total_}', performance_financiero.balance_anio_previo_anterior_deuda_total);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_capital_contable_}', performance_financiero.balance_anio_previo_anterior_capital_contable);
     logger.info(`${fileMethod} | ${customUuid} | Estado de balance HTML: ${JSON.stringify(strHTML_paso)}`)
 
     // Estado de Resultados
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_indicador_}', performance_financiero.estado_resultados_anio_anterior_indicador);
+    // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_ventas_anuales_}', performance_financiero.estado_resultados_anio_anterior_ventas_anuales);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_anterior_costo_ventas);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_costo_ventas_anuales_}', performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_utilidad_bruta_}', performance_financiero.estado_resultados_anio_anterior_utilidad_bruta);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_gastos_administracion_}', performance_financiero.estado_resultados_anio_anterior_gastos_administracion);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_utilidad_operativa_}', performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_depreciacion_amortizacion_}', performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_otros_ingresos_}', performance_financiero.estado_resultados_anio_anterior_otros_ingresos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_otros_gastos_}', performance_financiero.estado_resultados_anio_anterior_otros_gastos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_gastos_productos_financieros_}', performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_otros_egresos_}', performance_financiero.estado_resultados_anio_anterior_otros_egresos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_utilidad_neta_}', performance_financiero.estado_resultados_anio_anterior_utilidad_neta);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_total_partidas_estado_}', (
+      Number(performance_financiero.estado_resultados_anio_anterior_ventas_anuales) +
+      Number(performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales) +
+      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_bruta) +
+      Number(performance_financiero.estado_resultados_anio_anterior_gastos_administracion) +
+      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa) +
+      Number(performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion) +
+      Number(performance_financiero.estado_resultados_anio_anterior_otros_ingresos) +
+      Number(performance_financiero.estado_resultados_anio_anterior_otros_gastos) +
+      Number(performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros) +
+      Number(performance_financiero.estado_resultados_anio_anterior_otros_egresos) +
+      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta)
+    ));
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_anterior_resultado_ejercicios)));
+
+
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_anterior_costo_ventas);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_utilidad_operativa_}', performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_indicador_}', performance_financiero.estado_resultados_anio_previo_anterior_indicador);
+    // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_ventas_anuales_}', performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_anuales_}', performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_bruta_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_gastos_administracion_}', performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_operativa_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_depreciacion_amortizacion_}', performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_otros_ingresos_}', performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_otros_gastos_}', performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_gastos_productos_financieros_}', performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_otros_egresos_}', performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_neta_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta);
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_total_partidas_estado_}', (
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos) +
+      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta)
+    ));
+    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_previo_anterior_resultado_ejercicios)));
+
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_operativa_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
     logger.info(`${fileMethod} | ${customUuid} | Estado de resultados HTML: ${JSON.stringify(strHTML_paso)}`)
 
 
@@ -16856,7 +18485,7 @@ const consultaCertificacion = async (customUuid, idEmpresa) => {
 
     const demandas = await certificationService.getDemandas(idCertification)
     logger.info(`${fileMethod} | ${customUuid} | Demandas: ${JSON.stringify(demandas)}`)
-
+  // 
     const partidasFinancieras = await certificationService.getCertificacionPartidaFinanciera(idCertification)
     let data = partidasFinancieras.result
     logger.info(`${fileMethod} | ${customUuid} | Partidax: ${JSON.stringify(data)}`);
