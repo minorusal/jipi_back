@@ -6073,16 +6073,15 @@ ${JSON.stringify(info_email_error, null, 2)}
                 val.deuda_total_estado_balance_periodo_anterior !== undefined &&
                 val.capital_contable_estado_balance !== undefined
               ) {
-              formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
               }
             } else {
               formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
-              if (
-                key === '_14_payback' &&
-                val.deuda_corto_plazo_periodo_anterior !== undefined &&
-                val.utilida_operativa !== undefined
-              ) {
-                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+              if (key === '_14_payback') {
+                const op = val.operacion
+                  ? val.operacion
+                  : `${formatMoney(val.deuda_corto_plazo_periodo_anterior)} / ${formatMoney(val.utilida_operativa)}`
+                formula += `\nOperaci\u00F3n: ${op}`
               }
             }
           } else if (
@@ -6134,6 +6133,12 @@ ${JSON.stringify(info_email_error, null, 2)}
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
             )
+            if (val.operacion) {
+              rows.push(
+                `<tr><td>Operación</td><td>${val.operacion}</td></tr>`
+              )
+            }
+          } else if (key === '_14_payback') {
             if (val.operacion) {
               rows.push(
                 `<tr><td>Operación</td><td>${val.operacion}</td></tr>`
