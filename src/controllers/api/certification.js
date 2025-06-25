@@ -1345,7 +1345,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
     }
     logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
-    await certificationService.deleteReferenciaComercial(id_certification);
+    await certificationService.deleteReferenciasComerciales(id_certification);
     for (const referencia of referencias_comerciales) {
       const existe = await certificationService.existeReferenciaComercial(
         referencia.id_certification_referencia_comercial
