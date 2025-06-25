@@ -58,8 +58,7 @@ const certificateMyCompanyForTest = Joi.object({
 
 const validacionBlocSchema = Joi.object({
   nombre: Joi.string().required(),
-  apellido: Joi.string().allow('').optional(),
-  rfc: Joi.string().pattern(/^([A-Za-z]{3,4}\d{6}[A-Za-z0-9]{3})$/).required()
+  apellido: Joi.string().allow('').optional()
 })
 
 module.exports = {

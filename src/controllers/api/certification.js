@@ -4093,13 +4093,11 @@ const validacionBloc = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: validacionBloc`
   try {
     const { body } = req;
-    const { nombre, apellido, rfc } = body
+    const { nombre, apellido } = body
 
     let sin_incidencias = true
-    let message = 'RFC sin problemas'
+    let message = 'Sin incidencias'
     const asunto = []
-
-    const id_certification = await certificationService.getLastIdCertificationByRfc(rfc)
 
     const {
       bloc_sat69b,
@@ -4112,19 +4110,16 @@ const validacionBloc = async (req, res, next) => {
 
     if (bloc_sat69b) {
       const data_block_lista_sat_69B_presuntos_inexistentes = bloc_sat69b
-      if (Array.isArray(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes) && data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.length > 0) {
-        const rfcEncontrado = data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.find(inexistentes => inexistentes.rfc === rfc)
-        if (rfcEncontrado) {
-          sin_incidencias = false
-          message = 'RFC con problemas'
-          asunto.push({
-            listado69bInexistentes: data_block_lista_sat_69B_presuntos_inexistentes.inexistentes
-          })
-          logger.info(`${fileMethod} | Lista 69B response: ${JSON.stringify(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes)}`)
-
-          const guarda_bloc_69b = await certificationService.guardaBloc_sat69b(id_certification, data_block_lista_sat_69B_presuntos_inexistentes.inexistentes)
-          logger.info(`${fileMethod} | Lista 69B guardado: ${JSON.stringify(guarda_bloc_69b)}`)
-        }
+      if (
+        Array.isArray(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes) &&
+        data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.length > 0
+      ) {
+        sin_incidencias = false
+        message = 'Incidencias encontradas'
+        asunto.push({
+          listado69bInexistentes: data_block_lista_sat_69B_presuntos_inexistentes.inexistentes
+        })
+        logger.info(`${fileMethod} | Lista 69B response: ${JSON.stringify(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes)}`)
       }
     }
 
@@ -4132,53 +4127,41 @@ const validacionBloc = async (req, res, next) => {
       const data_bloc_ofac = bloc_ofac
       if (Array.isArray(data_bloc_ofac.ofac) && data_bloc_ofac.ofac.length > 0) {
         sin_incidencias = false
-        message = 'RFC con problemas'
+        message = 'Incidencias encontradas'
         asunto.push({
           ofac: data_bloc_ofac.ofac
         })
         logger.info(`${fileMethod} | OFAC response: ${JSON.stringify(data_bloc_ofac.ofac)}`)
-
-        const ofac = data_bloc_ofac.ofac
-        for (let i of ofac) {
-          const guarda_bloc_ofac = await certificationService.guardaBloc_ofac(id_certification, i)
-          logger.info(`${fileMethod} | OFAC guardado: ${JSON.stringify(guarda_bloc_ofac)}`)
-        }
       }
     }
 
     if (bloc_concursos_mercantiles) {
       const data_concursos_mercantiles = bloc_concursos_mercantiles
-      if (Array.isArray(data_concursos_mercantiles.informe) && data_concursos_mercantiles.informe.length > 0) {
+      if (
+        Array.isArray(data_concursos_mercantiles.informe) &&
+        data_concursos_mercantiles.informe.length > 0
+      ) {
         sin_incidencias = false
-        message = 'RFC con problemas'
+        message = 'Incidencias encontradas'
         asunto.push({
           concursosMercantiles: data_concursos_mercantiles.informe
         })
         logger.info(`${fileMethod} | Concursos mercantiles response: ${JSON.stringify(data_concursos_mercantiles.informe)}`)
-
-        const concursosMercantiles = data_concursos_mercantiles.informe
-        for (let i of concursosMercantiles) {
-          const guarda_bloc_concursos_mercantiles = await certificationService.guardaBloc_concursos_mercantiles(id_certification, i)
-          logger.info(`${fileMethod} | Concursos mercantiles guardado: ${JSON.stringify(guarda_bloc_concursos_mercantiles)}`)
-        }
       }
     }
 
     if (bloc_proveedores_contratistas) {
       const data_proveedores_contratistas = bloc_proveedores_contratistas
-      if (Array.isArray(data_proveedores_contratistas.multados) && data_proveedores_contratistas.multados.length > 0) {
+      if (
+        Array.isArray(data_proveedores_contratistas.multados) &&
+        data_proveedores_contratistas.multados.length > 0
+      ) {
         sin_incidencias = false
-        message = 'RFC con problemas'
+        message = 'Incidencias encontradas'
         asunto.push({
           proveedores_contratistas: data_proveedores_contratistas.multados
         })
         logger.info(`${fileMethod} | proveedores_contratistas response: ${JSON.stringify(data_proveedores_contratistas.multados)}`)
-
-        const proveedoresContratistas = data_proveedores_contratistas.multados
-        for (let i of proveedoresContratistas) {
-          const guarda_bloc_proveedores_contratistas = await certificationService.guardaBloc_proveedores_contratistas(id_certification, i)
-          logger.info(`${fileMethod} | proveedores contratistas guardado: ${JSON.stringify(guarda_bloc_proveedores_contratistas.multados)}`)
-        }
       }
     }
 

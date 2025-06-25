@@ -1040,8 +1040,8 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *   post:
  *     tags:
  *       - Certificación
- *     summary: Realiza la validación de un bloque basado en nombre, apellido y RFC.
- *     description: Este endpoint permite validar la existencia de incidencias para un RFC, retornando la información relacionada.
+ *     summary: Realiza la validación de un bloque basado en nombre y apellido.
+ *     description: Este endpoint permite validar la existencia de incidencias retornando la información relacionada.
  *     requestBody:
  *       required: true
  *       content:
@@ -1057,10 +1057,6 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                 type: string
  *                 description: El apellido de la entidad o persona (opcional, puede estar vacío).
  *                 example: ""
- *               rfc:
- *                 type: string
- *                 description: "El RFC que se valida. Formato: 3 o 4 letras, 6 dígitos y 3 caracteres alfanuméricos."
- *                 example: "AAA100303L51"
  *     responses:
  *       200:
  *         description: Respuesta exitosa con el resultado de la validación.
@@ -1076,7 +1072,7 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                 message:
  *                   type: string
  *                   description: Mensaje de la respuesta.
- *                   example: "RFC con problemas"
+ *                   example: "Incidencias encontradas"
  *                 asunto:
  *                   type: array
  *                   items:
@@ -1096,7 +1092,7 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                               description: El nombre asociado a la incidencia.
  *                               example: "A& J EXPORTACIONES SADECV"
  *       400:
- *         description: Error de validación en el RFC o en los datos proporcionados.
+ *         description: Error de validación en los datos proporcionados.
  *         content:
  *           application/json:
  *             schema:
