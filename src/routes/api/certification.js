@@ -1059,7 +1059,7 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                 example: ""
  *               rfc:
  *                 type: string
- *                 description: El RFC que se valida. Formato: 3 o 4 letras, 6 dígitos y 3 caracteres alfanuméricos.
+ *                 description: "El RFC que se valida. Formato: 3 o 4 letras, 6 dígitos y 3 caracteres alfanuméricos."
  *                 example: "AAA100303L51"
  *     responses:
  *       200:
