@@ -4108,6 +4108,8 @@ const validacionBloc = async (req, res, next) => {
       bloc_proveedores_contratistas
     } = await blocController.callAllBlocServices(nombre, apellido)
 
+    console.log(bloc_sat69b)
+
     if (bloc_sat69b) {
       const data_block_lista_sat_69B_presuntos_inexistentes = bloc_sat69b
       if (Array.isArray(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes) && data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.length > 0) {

@@ -207,7 +207,7 @@ class SolicituCreditoService {
     COALESCE(rc.plazo, rcd.plazo) AS plazo,
     COALESCE(rc.score, '') AS score,
     COALESCE(rc.monto_sugerido , '') AS linea_credito_sugerida,
-    "" AS ciudad,
+    cpa.nombre AS ciudad,
     "" AS consumo_mensual,
     "" AS metodo_pago,
     sol.estatus,
@@ -217,6 +217,7 @@ class SolicituCreditoService {
 FROM solicitud_credito sol 
 LEFT JOIN empresa emp ON emp.emp_id = sol.id_cliente 
 LEFT JOIN certification cert ON emp.emp_id = cert.id_empresa AND cert.estatus_certificacion <> 'cancelada' 
+LEFT JOIN cat_pais_algoritmo cpa ON cpa.id_pais_algoritmo = cert.id_pais 
 LEFT JOIN reporte_credito rc ON rc.id_reporte_credito = sol.id_solicitud_credito AND rc.id_reporte_credito IS NOT NULL 
 LEFT JOIN reporte_credito_descriptivo rcd 
   ON rcd.id_reporte_credito = sol.id_solicitud_credito 

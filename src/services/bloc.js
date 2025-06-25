@@ -6,7 +6,7 @@ const utilitiesService = require('./utilities')
 const logger = require('../utils/logs/logger')
 
 class BlocService {
-  constructor () {
+  constructor() {
     if (BlocService.instance == null) {
       this.table = 'bloc_responses'
       this.params = null
@@ -15,7 +15,7 @@ class BlocService {
     return BlocService.instance
   }
 
-  async loadConfig () {
+  async loadConfig() {
     try {
       this.params = await utilitiesService.getParametros()
     } catch (err) {
@@ -24,13 +24,13 @@ class BlocService {
     }
   }
 
-  getParamValue (name) {
+  getParamValue(name) {
     if (!this.params) return null
     const conf = this.params.find(item => item.nombre === name)
     return conf ? conf.valor : null
   }
 
-  async saveBlocResponse ({ request_json = null, endpoint_name, request_url = null, http_status = null, response_time_ms = null, response_json = null, error_message = null }) {
+  async saveBlocResponse({ request_json = null, endpoint_name, request_url = null, http_status = null, response_time_ms = null, response_json = null, error_message = null }) {
     const queryString = `INSERT INTO ${this.table} (
         request_json,
         endpoint_name,
@@ -52,7 +52,7 @@ class BlocService {
     return result
   }
 
-  async callEndpoint ({ paramName, urlTemplate = null, endpointName, replacements = [], requestData = null }) {
+  async callEndpoint({ paramName, urlTemplate = null, endpointName, replacements = [], requestData = null }) {
     let template = urlTemplate
     if (!template) {
       if (!this.params) {
@@ -123,15 +123,30 @@ class BlocService {
     return response
   }
 
-  async callAll (nombre, apellido = '') {
+  async callAll(nombre, apellido = '') {
     const globalConfig = await utilitiesService.getParametros()
-    this.params = globalConfig
+
+    let block_lista_sat_69B_presuntos_inexistentes = await globalConfig.find(
+      item => item.nombre === 'block_lista_sat_69B_presuntos_inexistentes'
+    ).valor
+
+     let bloc_ofac = await globalConfig.find(
+      item => item.nombre === 'bloc_ofac'
+    ).valor
+
+     let bloc_consursos_mercantiles = await globalConfig.find(
+      item => item.nombre === 'bloc_consursos_mercantiles'
+    ).valor
+
+    let bloc_provedores_contratistas = await globalConfig.find(
+      item => item.nombre === 'bloc_provedores_contratistas'
+    ).valor
 
     const endpoints = [
-      { param: 'block_lista_sat_69B_presuntos_inexistentes', name: 'sat69b', reps: [nombre, apellido] },
-      { param: 'bloc_ofac', name: 'ofac', reps: [nombre, apellido] },
-      { param: 'bloc_concursos_mercantiles', name: 'concursos_mercantiles', reps: [nombre] },
-      { param: 'bloc_proveedores_contratistas', name: 'proveedores_contratistas', reps: [nombre, apellido] }
+      { param: block_lista_sat_69B_presuntos_inexistentes, name: 'sat69b', reps: [nombre, apellido] },
+      { param: bloc_ofac, name: 'ofac', reps: [nombre, apellido] },
+      { param: bloc_consursos_mercantiles, name: 'concursos_mercantiles', reps: [nombre] },
+      { param: bloc_provedores_contratistas, name: 'proveedores_contratistas', reps: [nombre, apellido] }
     ]
 
     const configMap = {}
