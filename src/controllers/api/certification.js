@@ -2810,6 +2810,9 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
+    const [calculoBalance] = await certificationService.getCalculoEstadoBalance(
+      id_certification
+    )
     const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
       certificationService.pasivoLargoPlazoPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
@@ -2824,8 +2827,34 @@ const getScoreApalancamientoFromSummary = async (
 
     const parseNumber = require('../../utils/number')
 
-    const pasivo = parseNumber(pasivoLargoPlazoPCA.total_pasivo_largo_plazo)
-    const capital = parseNumber(capitalContable.capital_contable)
+    const pasivoAnterior = parseNumber(
+      calculoBalance?.total_pasivo_largo_plazo_anterior
+    )
+    const capitalAnterior = parseNumber(
+      calculoBalance?.total_capital_contable_anterior
+    )
+    const pasivoPrevio = parseNumber(
+      calculoBalance?.total_pasivo_largo_plazo_previo_anterior
+    )
+    const capitalPrevio = parseNumber(
+      calculoBalance?.total_capital_contable_previo_anterior
+    )
+
+    const solvenciaAnterior =
+      !isNaN(pasivoAnterior) && !isNaN(capitalAnterior) && capitalAnterior !== 0
+        ? parseFloat((pasivoAnterior / capitalAnterior).toFixed(1))
+        : capitalAnterior === 0
+          ? null
+          : NaN
+    const solvenciaPrevio =
+      !isNaN(pasivoPrevio) && !isNaN(capitalPrevio) && capitalPrevio !== 0
+        ? parseFloat((pasivoPrevio / capitalPrevio).toFixed(1))
+        : capitalPrevio === 0
+          ? null
+          : NaN
+
+    const pasivo = pasivoAnterior
+    const capital = capitalAnterior
 
     if (!Number.isFinite(pasivo) || !Number.isFinite(capital)) {
       logger.warn(
