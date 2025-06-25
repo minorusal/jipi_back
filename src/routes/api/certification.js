@@ -7,7 +7,7 @@ const certificationController = require('../../controllers/api/certification')
 const multerGuardarPDF = require('../../utils/multerPdf')
 const authMiddleware = require('../../utils/middlewares/authMiddleware') 
 
-const { createCertification, payCertification, certificateMyCompanyForTest } = require('../../utils/schemas/certification')
+const { createCertification, payCertification, certificateMyCompanyForTest, validacionBlocSchema } = require('../../utils/schemas/certification')
 const validation = require('../../utils/middlewares/validationHandler')
 const decryptMiddleware = require('../../utils/middlewares/cipherMiddleware')
 
@@ -1055,11 +1055,11 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                 example: "A& J EXPORTACIONES SADECV"
  *               apellido:
  *                 type: string
- *                 description: El apellido de la entidad o persona (puede estar vacío).
+ *                 description: El apellido de la entidad o persona (opcional, puede estar vacío).
  *                 example: ""
  *               rfc:
  *                 type: string
- *                 description: El RFC que se valida.
+ *                 description: El RFC que se valida. Formato: 3 o 4 letras, 6 dígitos y 3 caracteres alfanuméricos.
  *                 example: "AAA100303L51"
  *     responses:
  *       200:
@@ -1107,7 +1107,7 @@ router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddlew
  *                   description: Descripción del error.
  *                   example: "Faltan campos obligatorios o formato incorrecto."
  */
-router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ certificationController.validacionBloc)
+router.post('/validacionBloc', /*decryptMiddleware, authMiddleware,*/ validation(validacionBlocSchema), certificationController.validacionBloc)
 
 /**
  * @swagger
