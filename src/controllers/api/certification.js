@@ -17065,18 +17065,24 @@ const getHash = async (variable) => {
 
 // Enviamos invitaciones Referencias Externas
 const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id, contactos, empresa_var, empresa_envia_var) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: enviarReferenciasComercialesExternos`
   try {
 
     if (contactos.length == 0 || !id_empresa || !certificacion_id) return null
     const _empreaa = await companiesService.getEmpresa(id_empresa)
     const nombre_empresa = _empreaa?.[0]?.emp_razon_social ?? 'Credi'
 
+    let success = true
     for (const contacto of contactos) {
       const hash = await getHash(id_empresa + '_' + certificacion_id);
       const nuevo = await certificationService.insertExternalReference(hash, id_empresa, certificacion_id, contacto.correo, contacto.nombre, contacto.id_contacto, contacto.id_referencia, contacto.id_direccion, contacto.id_empresa_cliente_contacto)
       const link = `${process.env.URL_CALLBACK_STRIPE}/#/referencias-comerciales?hash=${hash}`
       if (process.env.NODE_ENV == 'production') {
-        await enviaCorreoReferenciasExternas(link, { ...contacto, empresa_var, empresa_envia_var })
+        const envio = await enviaCorreoReferenciasExternas(link, { ...contacto, empresa_var, empresa_envia_var })
+        if (!envio.success) {
+          logger.error(`${fileMethod} | Error al enviar correo a ${contacto.correo}: ${envio.error}`)
+          success = false
+        }
       } else {
         const MAILJET_EMAIL_DEFAULT = process.env.MAILJET_EMAIL_DEFAULT || '';
         const MAILJET_EMAIL_DEFAULT_ARRAY = MAILJET_EMAIL_DEFAULT
@@ -17084,16 +17090,26 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
           : [];
         if (MAILJET_EMAIL_DEFAULT_ARRAY.length > 1) {
           for (const _email of MAILJET_EMAIL_DEFAULT_ARRAY) {
-            await enviaCorreoReferenciasExternas(link, { ...contacto, correo: _email });
+            const envio = await enviaCorreoReferenciasExternas(link, { ...contacto, correo: _email });
+            if (!envio.success) {
+              logger.error(`${fileMethod} | Error al enviar correo a ${_email}: ${envio.error}`)
+              success = false
+            }
           }
         }
 
-        if (MAILJET_EMAIL_DEFAULT != '' && MAILJET_EMAIL_DEFAULT_ARRAY.length == 0) await enviaCorreoReferenciasExternas(link, process.env.MAILJET_EMAIL_DEFAULT, contacto.nombre, nombre_empresa);
+        if (MAILJET_EMAIL_DEFAULT != '' && MAILJET_EMAIL_DEFAULT_ARRAY.length == 0) {
+          const envio = await enviaCorreoReferenciasExternas(link, { ...contacto, correo: process.env.MAILJET_EMAIL_DEFAULT })
+          if (!envio.success) {
+            logger.error(`${fileMethod} | Error al enviar correo a ${process.env.MAILJET_EMAIL_DEFAULT}: ${envio.error}`)
+            success = false
+          }
+        }
       }
 
     }
 
-    return true;
+    return success;
 
   } catch (error) {
     console.log(error);
@@ -17170,9 +17186,10 @@ const enviaCorreoReferenciasExternas = async (link, contacto) => {
     const fecha = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 
     await certificationService.actualizaEstatusContacto(id_contacto, message_id, consulta_estatus_envio, fecha)
-
+    return { success: consulta_estatus_envio === 'sent', status: consulta_estatus_envio }
   } catch (error) {
-    console.log(error)
+    logger.error(`${fileMethod} | Error al enviar correo: ${error.message}`)
+    return { success: false, error: error.message }
   }
 }
 
