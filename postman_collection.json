@@ -1175,7 +1175,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{}"
+              "raw": "{\n  \"nombre\": \"\",\n  \"apellido\": \"\"\n}"
             }
           }
         },
