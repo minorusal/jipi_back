@@ -6800,7 +6800,8 @@ ${JSON.stringify(info_email_error, null, 2)}
         'cat_apalancamiento_algoritmo',
         'cat_flujo_neto_caja_algoritmo',
         'cat_ventas_anuales_algoritmo',
-        'cat_tipo_cifras_algoritmo'
+        'cat_tipo_cifras_algoritmo',
+        'cat_evolucion_ventas_algoritmo'
       ]
 
       const referenceTables = variablesReference
@@ -6818,7 +6819,8 @@ ${JSON.stringify(info_email_error, null, 2)}
                 'cat_capital_contable_algoritmo',
                 'cat_tiempo_actividad_comercial_algoritmo',
                 'cat_ventas_anuales_algoritmo',
-                'cat_tipo_cifras_algoritmo'
+                'cat_tipo_cifras_algoritmo',
+                'cat_evolucion_ventas_algoritmo'
               ]
               const scoreColumn = singleScoreTables.includes(table)
                 ? `<td style="padding: 4px 6px; border: 1px solid #ccc;">${v1}</td>`
