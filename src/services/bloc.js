@@ -135,16 +135,25 @@ class BlocService {
     ]
 
     const configMap = {}
-    for (const item of globalConfig) configMap[item.nombre] = item.valor
+    for (const item of globalConfig) {
+      if (item && item.nombre) {
+        configMap[item.nombre] = typeof item.valor === 'string' ? item.valor.trim() : item.valor
+      }
+    }
 
-    const reqs = endpoints.map(e =>
-      this.callEndpoint({
+    const reqs = endpoints.map(e => {
+      const url = configMap[e.param]
+      if (typeof url !== 'string' || url.trim() === '' || !/^https?:\/\//i.test(url)) {
+        return Promise.resolve({ data: null })
+      }
+
+      return this.callEndpoint({
         paramName: e.param,
-        urlTemplate: configMap[e.param],
+        urlTemplate: url,
         endpointName: e.name,
         replacements: e.reps
       })
-    )
+    })
     const results = await Promise.allSettled(reqs)
 
     const [sat69b, ofac, concursos, proveedores] = results.map(r =>
