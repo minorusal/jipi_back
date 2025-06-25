@@ -52,24 +52,28 @@ class BlocService {
     return result
   }
 
-  async callEndpoint ({ paramName, endpointName, replacements = [], requestData = null }) {
-    if (!this.params) {
-      await this.loadConfig()
+  async callEndpoint ({ paramName, urlTemplate = null, endpointName, replacements = [], requestData = null }) {
+    let template = urlTemplate
+    if (!template) {
       if (!this.params) {
-        try {
-          await this.saveBlocResponse({
-            request_json: requestData ? JSON.stringify(requestData) : null,
-            endpoint_name: endpointName,
-            error_message: 'Parameters not loaded'
-          })
-        } catch (err) {
-          logger.error(`Error saving bloc response: ${err.message}`)
+        await this.loadConfig()
+        if (!this.params) {
+          try {
+            await this.saveBlocResponse({
+              request_json: requestData ? JSON.stringify(requestData) : null,
+              endpoint_name: endpointName,
+              error_message: 'Parameters not loaded'
+            })
+          } catch (err) {
+            logger.error(`Error saving bloc response: ${err.message}`)
+          }
+          return { data: null }
         }
-        return { data: null }
       }
+
+      template = this.getParamValue(paramName)
     }
 
-    const template = this.getParamValue(paramName)
     if (!template) {
       try {
         await this.saveBlocResponse({
@@ -120,13 +124,27 @@ class BlocService {
   }
 
   async callAll (nombre, apellido = '') {
+    const globalConfig = await utilitiesService.getParametros()
+    this.params = globalConfig
+
     const endpoints = [
       { param: 'block_lista_sat_69B_presuntos_inexistentes', name: 'sat69b', reps: [nombre, apellido] },
       { param: 'bloc_ofac', name: 'ofac', reps: [nombre, apellido] },
       { param: 'bloc_concursos_mercantiles', name: 'concursos_mercantiles', reps: [nombre] },
       { param: 'bloc_proveedores_contratistas', name: 'proveedores_contratistas', reps: [nombre, apellido] }
     ]
-    const reqs = endpoints.map(e => this.callEndpoint({ paramName: e.param, endpointName: e.name, replacements: e.reps }))
+
+    const configMap = {}
+    for (const item of globalConfig) configMap[item.nombre] = item.valor
+
+    const reqs = endpoints.map(e =>
+      this.callEndpoint({
+        paramName: e.param,
+        urlTemplate: configMap[e.param],
+        endpointName: e.name,
+        replacements: e.reps
+      })
+    )
     const results = await Promise.allSettled(reqs)
 
     const [sat69b, ofac, concursos, proveedores] = results.map(r =>
