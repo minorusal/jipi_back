@@ -182,6 +182,34 @@ exports.createCompany = async (req, res, next) => {
     let message = 'Registro correcto'
     let codigo = []
 
+
+    if (codigo_promocion.length) {
+      // Se hace la busqueda del codigo ingresado y se validan las siguientes caracteristicas:
+      //  - Codigo este vigente
+      [codigo] = await companiesService.getCodigoVigente(codigo_promocion)
+      if (!codigo) {
+        codigo_estatus = false
+        message = 'El codigo ingresado no es valido o ya ha caducado'
+        return next(boom.badRequest(message))
+      }
+
+      // Si la consulta regresa resultados quiere decir que el codigo esta vigente,
+      // por lo tanto el valor que regresa se puede utilizar para el siguiente proceso
+    }
+
+    usuario.email = usuario.email.trim().toLowerCase()
+    const isEmailFormatValid = validateEmailRegex(usuario.email)
+
+    if (!isEmailFormatValid) return next(boom.badRequest('Provided email is from a public service or has an invalid format.'))
+
+    empresa.rfc = empresa.rfc.trim().toUpperCase()
+
+    const existeEmpresa = await companiesService.findRFC(empresa.rfc)
+    const existeUsuario = await userService.getByEmail(usuario.email)
+
+    if (existeEmpresa.length !== 0) return next(boom.badRequest('RFC already exists.'))
+    if (existeUsuario.length !== 0) return next(boom.badRequest('Email taken.'))
+
     // Valida RFC con KONESH
     const konesh_api_des = {}
 
@@ -236,33 +264,6 @@ exports.createCompany = async (req, res, next) => {
         // return next(boom.badRequest(message))
       }
     }
-
-    if (codigo_promocion.length) {
-      // Se hace la busqueda del codigo ingresado y se validan las siguientes caracteristicas:
-      //  - Codigo este vigente
-      [codigo] = await companiesService.getCodigoVigente(codigo_promocion)
-      if (!codigo) {
-        codigo_estatus = false
-        message = 'El codigo ingresado no es valido o ya ha caducado'
-        return next(boom.badRequest(message))
-      }
-
-      // Si la consulta regresa resultados quiere decir que el codigo esta vigente,
-      // por lo tanto el valor que regresa se puede utilizar para el siguiente proceso
-    }
-
-    usuario.email = usuario.email.trim().toLowerCase()
-    const isEmailFormatValid = validateEmailRegex(usuario.email)
-
-    if (!isEmailFormatValid) return next(boom.badRequest('Provided email is from a public service or has an invalid format.'))
-
-    empresa.rfc = empresa.rfc.trim().toUpperCase()
-
-    const existeEmpresa = await companiesService.findRFC(empresa.rfc)
-    const existeUsuario = await userService.getByEmail(usuario.email)
-
-    if (existeEmpresa.length !== 0) return next(boom.badRequest('RFC already exists.'))
-    if (existeUsuario.length !== 0) return next(boom.badRequest('Email taken.'))
 
     // usuario.password = await encryptPassword(usuario.password.trim())
     logger.info(`Pasword a cifrar: ${JSON.stringify(usuario.password.trim())} - ${fileMethod}`)
