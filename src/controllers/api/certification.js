@@ -6793,6 +6793,14 @@ ${JSON.stringify(info_email_error, null, 2)}
         ['_16_referencias_comerciales', '16. Referencias comerciales score', 'cat_resultado_referencias_proveedores_algoritmo']
       ]
 
+      const singleScoreTables = [
+        'cat_pais_algoritmo',
+        'cat_capital_contable_algoritmo',
+        'cat_tiempo_actividad_comercial_algoritmo',
+        'cat_apalancamiento_algoritmo',
+        'cat_flujo_neto_caja_algoritmo'
+      ]
+
       const referenceTables = variablesReference
         .map(([key, label, table]) => {
           const selected = String(rangos[key]?.descripcion || '').toLowerCase()
