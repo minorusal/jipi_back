@@ -6818,6 +6818,7 @@ ${JSON.stringify(info_email_error, null, 2)}
                 'cat_pais_algoritmo',
                 'cat_capital_contable_algoritmo',
                 'cat_tiempo_actividad_comercial_algoritmo',
+                'cat_apalancamiento_algoritmo',
                 'cat_ventas_anuales_algoritmo',
                 'cat_tipo_cifras_algoritmo',
                 'cat_evolucion_ventas_algoritmo'
