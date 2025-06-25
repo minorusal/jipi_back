@@ -9,6 +9,8 @@ const axios = require('axios')
 const konesh = require('../../services/konesh')
 const { globalAuth: { keyCipher } } = require('../../config')
 
+const DEFAULT_KONESH_TIMEOUT_MS = 15000
+
 let globalConfig = {}
 
 const loadGlobalConfig = async () => {
@@ -81,6 +83,12 @@ exports.validaListaService = async (req, res, next) => {
 
   const globalConfig = await utilitiesService.getParametros()
   const konesh_api = await exports.callKoneshApi(rfc, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
+
+  if (konesh_api.errorMessage) {
+    logger.error(`Error de comunicación con Konesh: ${konesh_api.errorMessage} - ${fileMethod}`)
+    return next(boom.gatewayTimeout(konesh_api.errorMessage))
+  }
+
   if (konesh_api.status === 200) {
 
       if (await descifra_konesh(konesh_api.data.transactionResponse01[0].data04) !== razon_social) {
@@ -437,18 +445,30 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
     list: { list: [textCifrado] }
   }
 
-  const headers = { headers: { 'Content-Type': 'application/json' } }
+  const timeoutMs = parseInt(globalConfig.find(item => item.nombre === 'konesh_timeout_ms')?.valor) || DEFAULT_KONESH_TIMEOUT_MS
+  const axiosConfig = { headers: { 'Content-Type': 'application/json' }, timeout: timeoutMs }
   let response
   let status
   let errorMessage = null
 
   try {
-    response = await axios.post(konesh_url_valid_rfc, request, headers)
+    response = await axios.post(konesh_url_valid_rfc, request, axiosConfig)
     status = response.status
+    response.errorMessage = null
   } catch (err) {
-    errorMessage = err.message
-    status = err.response ? err.response.status : null
+    if (err.code === 'ECONNABORTED') {
+      errorMessage = 'Tiempo de espera agotado al contactar a Konesh'
+      status = 504
+    } else if (err.message === 'Network Error') {
+      errorMessage = 'No se pudo conectar al servicio Konesh'
+      status = 503
+    } else {
+      errorMessage = err.message
+      status = err.response ? err.response.status : null
+    }
     response = err.response ? err.response : { status, data: null }
+    response.errorMessage = errorMessage
+    logger.error(`Error calling Konesh: ${errorMessage}`)
   }
 
   const responseTime = Date.now() - startTs
@@ -511,8 +531,9 @@ exports.genericKoneshRequest = async (req, res, next) => {
       }
     }
 
-    const headers = { headers: { 'Content-Type': 'application/json' } }
-    const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
+    const timeoutMs = parseInt(globalConfig.find(item => item.nombre === 'konesh_timeout_ms')?.valor) || DEFAULT_KONESH_TIMEOUT_MS
+    const axiosConfig = { headers: { 'Content-Type': 'application/json' }, timeout: timeoutMs }
+    const konesh_api = await axios.post(konesh_url_valid_rfc, request, axiosConfig)
     const data = konesh_api.data
 
     const konesh_api_des = {
@@ -551,6 +572,12 @@ exports.genericKoneshRequest = async (req, res, next) => {
 
     return res.json({ success: true, mensaje: 'RFC y razón social validados correctamente', data_konesh: konesh_api_des })
   } catch (error) {
+    if (error.code === 'ECONNABORTED') {
+      return next(boom.gatewayTimeout('Tiempo de espera agotado al contactar a Konesh'))
+    }
+    if (error.message === 'Network Error') {
+      return next(boom.badGateway('No se pudo conectar al servicio Konesh'))
+    }
     next(error)
   }
 }
