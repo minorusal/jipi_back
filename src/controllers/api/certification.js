@@ -17077,6 +17077,7 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
       const hash = await getHash(id_empresa + '_' + certificacion_id);
       const nuevo = await certificationService.insertExternalReference(hash, id_empresa, certificacion_id, contacto.correo, contacto.nombre, contacto.id_contacto, contacto.id_referencia, contacto.id_direccion, contacto.id_empresa_cliente_contacto)
       const link = `${process.env.URL_CALLBACK_STRIPE}/#/referencias-comerciales?hash=${hash}`
+      logger.info(`${fileMethod} | Request para envio de correo: ${JSON.stringify({ link, contacto: { ...contacto, empresa_var, empresa_envia_var } })}`)
       if (process.env.NODE_ENV == 'production') {
         const envio = await enviaCorreoReferenciasExternas(link, { ...contacto, empresa_var, empresa_envia_var })
         if (!envio.success) {
@@ -17157,6 +17158,8 @@ const enviaCorreoReferenciasExternas = async (link, contacto) => {
       ]
     }
 
+    logger.info(`${fileMethod} | Request para mailjet: ${JSON.stringify(request_email)}`)
+
     const envio_email = await mailjet
       .post('send', { version: 'v3.1' })
       .request(request_email)
@@ -17177,6 +17180,12 @@ const enviaCorreoReferenciasExternas = async (link, contacto) => {
     logger.info(`${fileMethod} | Respuesta del estatus del correo: ${JSON.stringify(result_estatus_envio)}`)
 
     const consulta_estatus_envio = result_estatus_envio.Data[0].Status
+
+    if (consulta_estatus_envio === 'sent') {
+      logger.info(`${fileMethod} | Correo enviado con exito, estatus ${consulta_estatus_envio}`)
+    } else {
+      logger.error(`${fileMethod} | El correo no se envio. Estatus: ${consulta_estatus_envio}`)
+    }
 
     const now = new Date()
 
