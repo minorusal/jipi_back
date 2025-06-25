@@ -17082,6 +17082,8 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
         if (!envio.success) {
           logger.error(`${fileMethod} | Error al enviar correo a ${contacto.correo}: ${envio.error}`)
           success = false
+        } else {
+          logger.info(`${fileMethod} | Correo enviado a ${contacto.correo} con estatus ${envio.status}`)
         }
       } else {
         const MAILJET_EMAIL_DEFAULT = process.env.MAILJET_EMAIL_DEFAULT || '';
@@ -17094,6 +17096,8 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
             if (!envio.success) {
               logger.error(`${fileMethod} | Error al enviar correo a ${_email}: ${envio.error}`)
               success = false
+            } else {
+              logger.info(`${fileMethod} | Correo enviado a ${_email} con estatus ${envio.status}`)
             }
           }
         }
@@ -17103,6 +17107,8 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
           if (!envio.success) {
             logger.error(`${fileMethod} | Error al enviar correo a ${process.env.MAILJET_EMAIL_DEFAULT}: ${envio.error}`)
             success = false
+          } else {
+            logger.info(`${fileMethod} | Correo enviado a ${process.env.MAILJET_EMAIL_DEFAULT} con estatus ${envio.status}`)
           }
         }
       }
@@ -17112,7 +17118,7 @@ const enviarReferenciasComercialesExternos = async (id_empresa, certificacion_id
     return success;
 
   } catch (error) {
-    console.log(error);
+    logger.error(`${fileMethod} | Error general: ${error.message}`)
     return false
   }
 
