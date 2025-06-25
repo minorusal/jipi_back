@@ -13083,7 +13083,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       estado_resultados_anio_anterior_utilidad_neta: datos_reporte?.partidasFinancieras?.certification_partidas_estado_resultados_contables?.[0]?.utilidad_neta ?? '-',
 
       // Partidas de estado de balance año previo anterior
-      balance_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.periodo_anterior ?? '-',
+      balance_anio_previo_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.periodo_previo_anterior ?? '-',
       balance_anio_previo_anterior_caja_bancos: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.caja_bancos ?? '-',
       balance_anio_previo_anterior_saldo_clientes: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_cliente_cuenta_x_cobrar ?? '-',
       balance_anio_previo_anterior_saldo_inventarios: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[1]?.saldo_inventarios ?? '-',
@@ -13231,7 +13231,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     // if (performance_financiero.balance_anio_previo_anterior_deuda_total != '-') performance_financiero.balance_anio_previo_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_previo_anterior_deuda_total);
     // if (performance_financiero.balance_anio_previo_anterior_capital_contable != '-') performance_financiero.balance_anio_previo_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_previo_anterior_capital_contable);
 
-    if (performance_financiero.estado_resultados_anio_anterior_indicador != '-') performance_financiero.estado_resultados_anio_anterior_indicador = formatter.format(performance_financiero.estado_resultados_anio_anterior_indicador);
     if (performance_financiero.estado_resultados_anio_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_anterior_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales != '-') performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
@@ -13247,7 +13246,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     // if (performance_financiero.estado_resultados_anio_anterior_costo_ventas != '-') performance_financiero.estado_resultados_anio_anterior_costo_ventas = formatter.format(performance_financiero.estado_resultados_anio_anterior_costo_ventas);
     // if (performance_financiero.estado_resultados_anio_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
 
-    if (performance_financiero.estado_resultados_anio_previo_anterior_indicador != '-') performance_financiero.estado_resultados_anio_previo_anterior_indicador = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_indicador);
     if (performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales != '-') performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
@@ -14837,6 +14835,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             margin-bottom: 20px;
             break-inside: avoid;
             page-break-inside: avoid;
+            page-break-before: always;
           "
         >
           <p
@@ -14856,6 +14855,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); */
             padding: 12px 12px;
             border: 1px solid #787878;
+            break-inside: avoid;
+            page-break-inside: avoid;
           "
         >
           <div
@@ -14864,6 +14865,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
               grid-template-columns: 3fr 1.5fr 1.5fr;
               padding: 2.5px 0px;
               border-bottom: 1px solid #787878;
+              break-inside: avoid;
+              page-break-inside: avoid;
             "
           >
             <div style="display: flex; align-items: flex-start;">
@@ -14912,6 +14915,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -14959,6 +14964,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15006,6 +15013,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15053,6 +15062,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15100,6 +15111,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15147,6 +15160,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15194,6 +15209,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15241,6 +15258,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15288,6 +15307,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15335,6 +15356,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -15382,6 +15405,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 display: grid;
                 grid-template-columns: 3fr 1.5fr 1.5fr;
                 border-bottom: 1px solid #787878;
+                break-inside: avoid;
+                page-break-inside: avoid;
               "
             >
               <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
@@ -16776,7 +16801,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_total_}', performance_financiero.balance_anio_anterior_deuda_total);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_contable_}', performance_financiero.balance_anio_anterior_capital_contable);
 
-    strHTML_paso = strHTML_paso.replace(/{_performance_financiero_balance_anio_previo_anterior_indicador_}/g, performance_financiero.balance_anio_anterior_indicador);
+    strHTML_paso = strHTML_paso.replace(/{_performance_financiero_balance_anio_previo_anterior_indicador_}/g, performance_financiero.balance_anio_previo_anterior_indicador);
 
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_caja_bancos_}', performance_financiero.balance_anio_previo_anterior_caja_bancos);
@@ -17441,8 +17466,27 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     //  Demandas
     // _certification?.demandas
 
+    const totalDemandas = datos_reporte?.demandas?.length || 0;
+    const mensaje = `
+      <p style="font-size: 13px; font-weight: 600; margin: 10px 0;">
+        Presentamos 5 demandas de un total de ${totalDemandas}
+      </p>
+    `;
+
+
     strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.map(
-      (demanda) => (`          
+      (demanda) => (`     
+      p
+          style="
+            color: #0a3d8e;
+            margin: 0px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+          "
+        >
+          {_demandas_mensaje_}
+      </p>        
       <div
       style="
         background: #ffff;
@@ -18073,6 +18117,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_mercado_objetivo_importaciones_display_}', _mercado_objetivo_importaciones_display_);
     strHTML_paso = strHTML_paso.replace('{_mercado_objetivo_exportaciones_display_}', _mercado_objetivo_exportaciones_display_);
     //
+    strHTML_paso = strHTML_paso.replace('{_demandas_mensaje_}', mensaje);
 
     const options = {
       format: "A4",
