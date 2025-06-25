@@ -91,12 +91,14 @@ class BlocService {
     const startTs = Date.now()
     let response
     let status
+    let errorMsg = null
     try {
       response = await axios.get(url)
       status = response.status
     } catch (err) {
       status = err.response ? err.response.status : null
-      response = { data: null }
+      errorMsg = err.message
+      response = err.response || { data: null }
     }
     const responseTime = Date.now() - startTs
 
@@ -107,7 +109,8 @@ class BlocService {
         request_url: url,
         http_status: status,
         response_time_ms: responseTime,
-        response_json: response ? JSON.stringify(response.data) : null
+        response_json: response ? JSON.stringify(response.data) : null,
+        error_message: errorMsg
       })
     } catch (err) {
       logger.error(`Error saving bloc response: ${err.message}`)

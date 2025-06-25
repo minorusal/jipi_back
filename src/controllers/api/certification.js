@@ -4100,14 +4100,15 @@ const validacionBloc = async (req, res, next) => {
 
     const id_certification = await certificationService.getLastIdCertificationByRfc(rfc)
 
-    const globalConfig = await utilitiesService.getParametros()
+    const {
+      bloc_sat69b,
+      bloc_ofac,
+      bloc_concursos_mercantiles,
+      bloc_proveedores_contratistas
+    } = await blocService.callAll(nombre, apellido)
 
-    const block_lista_sat_69B_presuntos_inexistentes = await globalConfig.find(item => item.nombre === 'block_lista_sat_69B_presuntos_inexistentes').valor
-    const block_lista_sat_69B_presuntos_inexistentes_url = block_lista_sat_69B_presuntos_inexistentes.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(apellido))
-    const blocListaSat69BResponse = await axios.get(block_lista_sat_69B_presuntos_inexistentes_url)
-
-    if (blocListaSat69BResponse.status === 200) {
-      const { data: data_block_lista_sat_69B_presuntos_inexistentes } = blocListaSat69BResponse
+    if (bloc_sat69b) {
+      const data_block_lista_sat_69B_presuntos_inexistentes = bloc_sat69b
       if (Array.isArray(data_block_lista_sat_69B_presuntos_inexistentes.inexistentes) && data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.length > 0) {
         const rfcEncontrado = data_block_lista_sat_69B_presuntos_inexistentes.inexistentes.find(inexistentes => inexistentes.rfc === rfc)
         if (rfcEncontrado) {
@@ -4124,11 +4125,8 @@ const validacionBloc = async (req, res, next) => {
       }
     }
 
-    const bloc_ofac = await globalConfig.find(item => item.nombre === 'bloc_ofac').valor
-    const bloc_ofac_url = bloc_ofac.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(apellido))
-    const blocOfac = await axios.get(bloc_ofac_url)
-    if (blocOfac.status === 200) {
-      const { data: data_bloc_ofac } = blocOfac
+    if (bloc_ofac) {
+      const data_bloc_ofac = bloc_ofac
       if (Array.isArray(data_bloc_ofac.ofac) && data_bloc_ofac.ofac.length > 0) {
         sin_incidencias = false
         message = 'RFC con problemas'
@@ -4145,11 +4143,8 @@ const validacionBloc = async (req, res, next) => {
       }
     }
 
-    const bloc_consursos_mercantiles = await globalConfig.find(item => item.nombre === 'bloc_consursos_mercantiles').valor
-    const bloc_consursos_mercantiles_url = bloc_consursos_mercantiles.replace("||", encodeURIComponent(nombre))
-    const blocConcursosMercantiles = await axios.get(bloc_consursos_mercantiles_url)
-    if (blocConcursosMercantiles.status === 200) {
-      const { data: data_concursos_mercantiles } = blocConcursosMercantiles
+    if (bloc_concursos_mercantiles) {
+      const data_concursos_mercantiles = bloc_concursos_mercantiles
       if (Array.isArray(data_concursos_mercantiles.informe) && data_concursos_mercantiles.informe.length > 0) {
         sin_incidencias = false
         message = 'RFC con problemas'
@@ -4166,11 +4161,8 @@ const validacionBloc = async (req, res, next) => {
       }
     }
 
-    const bloc_provedores_contratistas = await globalConfig.find(item => item.nombre === 'bloc_provedores_contratistas').valor
-    const bloc_provedores_contratistas_url = bloc_provedores_contratistas.replace("||", encodeURIComponent(nombre)).replace("||", encodeURIComponent(apellido))
-    const blocProveedoresContratistas = await axios.get(bloc_provedores_contratistas_url)
-    if (blocProveedoresContratistas.status === 200) {
-      const { data: data_proveedores_contratistas } = blocProveedoresContratistas
+    if (bloc_proveedores_contratistas) {
+      const data_proveedores_contratistas = bloc_proveedores_contratistas
       if (Array.isArray(data_proveedores_contratistas.multados) && data_proveedores_contratistas.multados.length > 0) {
         sin_incidencias = false
         message = 'RFC con problemas'
