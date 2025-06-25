@@ -6803,7 +6803,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               const opcion = opt.nombre ?? opt.descripcion ?? '-'
               const isSel = selected && opcion.toLowerCase() === selected
               const opcionHtml = isSel ? `<strong>${opcion}</strong>` : opcion
-              const scoreColumn = table === 'cat_pais_algoritmo'
+              const singleScoreTables = ['cat_pais_algoritmo', 'cat_capital_contable_algoritmo']
+              const scoreColumn = singleScoreTables.includes(table)
                 ? `<td style="padding: 4px 6px; border: 1px solid #ccc;">${v1}</td>`
                 : `<td style="padding: 4px 6px; border: 1px solid #ccc;">${v1}</td><td style="padding: 4px 6px; border: 1px solid #ccc;">${v2}</td>`
               return `
@@ -6813,9 +6814,9 @@ ${JSON.stringify(info_email_error, null, 2)}
                 </tr>`
             })
             .join('')
-          const colSpan = table === 'cat_pais_algoritmo' ? 2 : 3
+          const colSpan = singleScoreTables.includes(table) ? 2 : 3
           const rows = rowItems || `<tr><td colspan="${colSpan}" style="padding: 4px 6px; border: 1px solid #ccc; text-align: center;">No hay información disponible</td></tr>`
-          const header = table === 'cat_pais_algoritmo'
+          const header = singleScoreTables.includes(table)
             ? `<tr><th>Opción</th><th>Score</th></tr>`
             : `<tr><th>Opción</th><th>Score V1</th><th>Score V2</th></tr>`
           return `
