@@ -3055,19 +3055,45 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       dioMayor90 = dio >= 90
     }
 
+    let rotacionRules = parametrosAlgoritmo.rotacionCtasXCobrarScore
+
+    if (!Array.isArray(rotacionRules) || rotacionRules.length === 0) {
+      const rangosBD = await algorithmService.getGeneralSummary()
+      rotacionRules = rangosBD.rotacionCtasXCobrarScore || []
+    }
+
     let rotScore = null
+
     if (!noDso || !noDio) {
-      rotScore = parametrosAlgoritmo.rotacionCtasXCobrarScore.find(r => {
+      rotScore = rotacionRules.find(r => {
         const sup = r.limite_superior == null ? 9999999999 : r.limite_superior
         return (
-          (dso >= r.limite_inferior && dso <= sup) ||
-          (dio >= r.limite_inferior && dio <= sup)
+          (!noDso && dso >= r.limite_inferior && dso <= sup) ||
+          (!noDio && dio >= r.limite_inferior && dio <= sup)
         )
       })
     }
 
     if (!rotScore) {
-      rotScore = await certificationService.getDefaultRotacionScore()
+      if (noDso && noDio) {
+        rotScore = rotacionRules.find(r =>
+          r.nombre && r.nombre.toLowerCase().includes('no reportar ambos')
+        )
+      } else if (noDso) {
+        rotScore = rotacionRules.find(r =>
+          r.nombre && r.nombre.toLowerCase().includes('no reportar saldo en clientes')
+        )
+      } else if (noDio) {
+        rotScore = rotacionRules.find(r =>
+          r.nombre && r.nombre.toLowerCase().includes('no reportar saldo en inventarios')
+        )
+      }
+    }
+
+    if (!rotScore) {
+      rotScore = rotacionRules.find(r =>
+        r.nombre && r.nombre.toLowerCase().includes('desconocido')
+      )
     }
 
     if (!rotScore) return { error: true }
