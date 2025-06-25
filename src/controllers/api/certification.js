@@ -15,6 +15,7 @@ const paymentsService = require('../../services/payments')
 const hadesService = require('../../services/hades')
 const algorithmService = require('../../services/algorithm')
 const blocService = require('../../services/bloc')
+const blocController = require('./bloc')
 const cronosTypes = { certification: 'Certification', report: 'Report' }
 const uploadImageS3 = require('../../utils/uploadImageS3')
 const logger = require('../../utils/logs/logger')
@@ -4105,7 +4106,7 @@ const validacionBloc = async (req, res, next) => {
       bloc_ofac,
       bloc_concursos_mercantiles,
       bloc_proveedores_contratistas
-    } = await blocService.callAll(nombre, apellido)
+    } = await blocController.callAllBlocServices(nombre, apellido)
 
     if (bloc_sat69b) {
       const data_block_lista_sat_69B_presuntos_inexistentes = bloc_sat69b
@@ -4183,7 +4184,11 @@ const validacionBloc = async (req, res, next) => {
     return res.json({
       sin_incidencias,
       message,
-      asunto
+      asunto,
+      bloc_sat69b,
+      bloc_ofac,
+      bloc_concursos_mercantiles,
+      bloc_proveedores_contratistas
     })
 
   } catch (error) {
