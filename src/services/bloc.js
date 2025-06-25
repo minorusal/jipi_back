@@ -126,29 +126,6 @@ class BlocService {
   async callAll(nombre, apellido = '') {
     const globalConfig = await utilitiesService.getParametros()
 
-    let block_lista_sat_69B_presuntos_inexistentes = await globalConfig.find(
-      item => item.nombre === 'block_lista_sat_69B_presuntos_inexistentes'
-    ).valor
-
-     let bloc_ofac = await globalConfig.find(
-      item => item.nombre === 'bloc_ofac'
-    ).valor
-
-     let bloc_consursos_mercantiles = await globalConfig.find(
-      item => item.nombre === 'bloc_consursos_mercantiles'
-    ).valor
-
-    let bloc_provedores_contratistas = await globalConfig.find(
-      item => item.nombre === 'bloc_provedores_contratistas'
-    ).valor
-
-    const endpoints = [
-      { param: block_lista_sat_69B_presuntos_inexistentes, name: 'sat69b', reps: [nombre, apellido] },
-      { param: bloc_ofac, name: 'ofac', reps: [nombre, apellido] },
-      { param: bloc_consursos_mercantiles, name: 'concursos_mercantiles', reps: [nombre] },
-      { param: bloc_provedores_contratistas, name: 'proveedores_contratistas', reps: [nombre, apellido] }
-    ]
-
     const configMap = {}
     for (const item of globalConfig) {
       if (item && item.nombre) {
@@ -156,11 +133,40 @@ class BlocService {
       }
     }
 
+    const endpoints = [
+      {
+        param: 'block_lista_sat_69B_presuntos_inexistentes',
+        name: 'sat69b',
+        reps: [nombre, apellido]
+      },
+      {
+        param: 'bloc_ofac',
+        name: 'ofac',
+        reps: [nombre, apellido]
+      },
+      {
+        param: 'bloc_consursos_mercantiles',
+        name: 'concursos_mercantiles',
+        reps: [nombre]
+      },
+      {
+        param: 'bloc_provedores_contratistas',
+        name: 'proveedores_contratistas',
+        reps: [nombre, apellido]
+      }
+    ]
+
     const reqs = endpoints.map(e => {
-      const url = configMap[e.param]
-      if (typeof url !== 'string' || url.trim() === '' || !/^https?:\/\//i.test(url)) {
+      let urlTemplate = configMap[e.param]
+      if (typeof urlTemplate !== 'string' || urlTemplate.trim() === '' || !/^https?:\/\//i.test(urlTemplate)) {
         return Promise.resolve({ data: null })
       }
+
+      // Reemplazo de || por valores reales
+      let url = urlTemplate
+      e.reps.forEach(rep => {
+        url = url.replace('||', encodeURIComponent(rep))
+      })
 
       return this.callEndpoint({
         paramName: e.param,
@@ -169,6 +175,7 @@ class BlocService {
         replacements: e.reps
       })
     })
+
     const results = await Promise.allSettled(reqs)
 
     const [sat69b, ofac, concursos, proveedores] = results.map(r =>
@@ -182,6 +189,7 @@ class BlocService {
       bloc_proveedores_contratistas: proveedores.data
     }
   }
+
 }
 
 module.exports = Object.freeze(new BlocService())
