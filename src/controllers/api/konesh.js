@@ -77,38 +77,11 @@ exports.validaListaService = async (req, res, next) => {
     logger.info(`Request de endpoint: ${JSON.stringify(parsedData)} -  ${fileMethod}`)
 
 
-    const konesh_api_des = {}
+  const konesh_api_des = {}
 
-    const globalConfig = await utilitiesService.getParametros()
-    const konesh_url_valid_rfc = await globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
-
-    logger.info(`Se obtiene URL Konesh de BD: ${konesh_url_valid_rfc} -  ${fileMethod}`)
-
-    const textCifrado = await cifra_konesh(rfc)
-    logger.info(`Se cifra el rfc recibido: ${textCifrado} -  ${fileMethod}`)
-    if (textCifrado === null) {
-      return next(boom.badRequest(`Ocurrio un error al intentar cifrar el texto claro`))
-    }
-
-    const request = {
-      "credentials": {
-        "usuario": await globalConfig.find(item => item.nombre === 'konesh_usuario').valor,
-        "token": await globalConfig.find(item => item.nombre === 'konesh_token').valor,
-        "password": await globalConfig.find(item => item.nombre === 'konesh_password').valor,
-        "cuenta": await globalConfig.find(item => item.nombre === 'konesh_cuenta').valor,
-      },
-      "issuer": {
-        "rfc": await globalConfig.find(item => item.nombre === 'konesh_issuer').valor,
-      },
-      "list": {
-        "list": [textCifrado]
-      }
-    }
-    logger.info(`Se forma el request para consumir konesh - ${JSON.stringify(request)} - ${fileMethod}`)
-
-    const headers = { headers: { "Content-Type": "application/json" } }
-    const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
-    if (konesh_api.status === 200) {
+  const globalConfig = await utilitiesService.getParametros()
+  const konesh_api = await exports.callKoneshApi(rfc, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
+  if (konesh_api.status === 200) {
 
       if (await descifra_konesh(konesh_api.data.transactionResponse01[0].data04) !== razon_social) {
         times_razon_social++
@@ -445,7 +418,8 @@ exports.cifra = async (req, res, next) => {
   }
 }
 
-exports.callKoneshApi = async (rfc, globalConfig) => {
+exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
+  const { emp_id = null, razon_social_req = null } = opts
   const startTs = Date.now()
   const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
   const textCifrado = await cifra_konesh(rfc)
@@ -464,24 +438,37 @@ exports.callKoneshApi = async (rfc, globalConfig) => {
   }
 
   const headers = { headers: { 'Content-Type': 'application/json' } }
-  const response = await axios.post(konesh_url_valid_rfc, request, headers)
+  let response
+  let status
+  let errorMessage = null
+
+  try {
+    response = await axios.post(konesh_url_valid_rfc, request, headers)
+    status = response.status
+  } catch (err) {
+    errorMessage = err.message
+    status = err.response ? err.response.status : null
+    response = err.response ? err.response : { status, data: null }
+  }
 
   const responseTime = Date.now() - startTs
 
   try {
     const data = response.data
     await koneshService.saveKoneshResponse({
+      emp_id,
       rfc,
+      razon_social_req,
       request_ts: new Date(startTs).toISOString().slice(0, 19).replace('T', ' '),
       response_time_ms: responseTime,
-      http_status: response.status,
-      konesh_status: await descifra_konesh(data.transactionResponse01[0].data02),
-      error_message: await descifra_konesh(data.transactionResponse01[0].data03),
-      name_sat: await descifra_konesh(data.transactionResponse01[0].data04),
-      postal_code: await descifra_konesh(data.transactionResponse01[0].data05),
-      transaction_id: await descifra_konesh(data.transactionResponse02),
-      transaction_date: await descifra_konesh(data.transactionResponse03),
-      node: await descifra_konesh(data.transactionResponse04),
+      http_status: status,
+      konesh_status: data?.transactionResponse01 ? await descifra_konesh(data.transactionResponse01[0].data02) : null,
+      error_message: errorMessage || (data?.transactionResponse01 ? await descifra_konesh(data.transactionResponse01[0].data03) : null),
+      name_sat: data?.transactionResponse01 ? await descifra_konesh(data.transactionResponse01[0].data04) : null,
+      postal_code: data?.transactionResponse01 ? await descifra_konesh(data.transactionResponse01[0].data05) : null,
+      transaction_id: data ? await descifra_konesh(data.transactionResponse02) : null,
+      transaction_date: data ? await descifra_konesh(data.transactionResponse03) : null,
+      node: data ? await descifra_konesh(data.transactionResponse04) : null,
       raw_response: data
     })
   } catch (err) {
