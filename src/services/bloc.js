@@ -123,8 +123,8 @@ class BlocService {
     const endpoints = [
       { param: 'block_lista_sat_69B_presuntos_inexistentes', name: 'sat69b', reps: [nombre, apellido] },
       { param: 'bloc_ofac', name: 'ofac', reps: [nombre, apellido] },
-      { param: 'bloc_consursos_mercantiles', name: 'concursos_mercantiles', reps: [nombre] },
-      { param: 'bloc_provedores_contratistas', name: 'proveedores_contratistas', reps: [nombre, apellido] }
+      { param: 'bloc_concursos_mercantiles', name: 'concursos_mercantiles', reps: [nombre] },
+      { param: 'bloc_proveedores_contratistas', name: 'proveedores_contratistas', reps: [nombre, apellido] }
     ]
     const reqs = endpoints.map(e => this.callEndpoint({ paramName: e.param, endpointName: e.name, replacements: e.reps }))
     const results = await Promise.allSettled(reqs)
