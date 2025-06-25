@@ -1403,7 +1403,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
           return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`))
         }
   
-        const [empresa_destino] = await companiesService.getEmpresaById(empresa_cliente.insertId)
+        const [empresa_destino] = await companiesService.getEmpresaByIdContacto(rc.insertId)
         logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
         if (referencia.contactos.length > 0) {
           for (const contacto of referencia.contactos) {
