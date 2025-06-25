@@ -30,31 +30,58 @@ class BlocService {
     return conf ? conf.valor : null
   }
 
-  async saveBlocResponse ({ request_json = null, endpoint_name, request_url = null, http_status = null, response_time_ms = null, response_json = null }) {
+  async saveBlocResponse ({ request_json = null, endpoint_name, request_url = null, http_status = null, response_time_ms = null, response_json = null, error_message = null }) {
     const queryString = `INSERT INTO ${this.table} (
         request_json,
         endpoint_name,
         request_url,
         http_status,
         response_time_ms,
-        response_json
+        response_json,
+        error_message
       ) VALUES (
         ${request_json ? mysqlLib.escape(request_json) : 'NULL'},
         ${mysqlLib.escape(endpoint_name)},
         ${request_url ? mysqlLib.escape(request_url) : 'NULL'},
         ${http_status ?? 'NULL'},
         ${response_time_ms ?? 'NULL'},
-        ${response_json ? mysqlLib.escape(response_json) : 'NULL'}
+        ${response_json ? mysqlLib.escape(response_json) : 'NULL'},
+        ${error_message ? mysqlLib.escape(error_message) : 'NULL'}
       )`
     const { result } = await mysqlLib.query(queryString)
     return result
   }
 
   async callEndpoint ({ paramName, endpointName, replacements = [], requestData = null }) {
-    if (!this.params) await this.loadConfig()
+    if (!this.params) {
+      await this.loadConfig()
+      if (!this.params) {
+        try {
+          await this.saveBlocResponse({
+            request_json: requestData ? JSON.stringify(requestData) : null,
+            endpoint_name: endpointName,
+            error_message: 'Parameters not loaded'
+          })
+        } catch (err) {
+          logger.error(`Error saving bloc response: ${err.message}`)
+        }
+        return { data: null }
+      }
+    }
 
     const template = this.getParamValue(paramName)
-    if (!template) return { data: null }
+    if (!template) {
+      try {
+        await this.saveBlocResponse({
+          request_json: requestData ? JSON.stringify(requestData) : null,
+          endpoint_name: endpointName,
+          error_message: 'Endpoint not configured'
+        })
+      } catch (err) {
+        logger.error(`Error saving bloc response: ${err.message}`)
+      }
+      return { data: null }
+    }
 
     let url = template
     for (const rep of replacements) {

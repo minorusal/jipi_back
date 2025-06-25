@@ -6,5 +6,6 @@ CREATE TABLE bloc_responses (
     http_status SMALLINT,
     response_time_ms INT,
     response_json LONGTEXT,
+    error_message TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
