@@ -13156,24 +13156,86 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     if (performance_financiero.balance_anio_anterior_caja_bancos != '-') performance_financiero.balance_anio_anterior_caja_bancos = formatter.format(performance_financiero.balance_anio_anterior_caja_bancos);
     if (performance_financiero.balance_anio_anterior_saldo_clientes != '-') performance_financiero.balance_anio_anterior_saldo_clientes = formatter.format(performance_financiero.balance_anio_anterior_saldo_clientes);
     if (performance_financiero.balance_anio_anterior_saldo_inventarios != '-') performance_financiero.balance_anio_anterior_saldo_inventarios = formatter.format(performance_financiero.balance_anio_anterior_saldo_inventarios);
-    if (performance_financiero.balance_anio_anterior_deuda_corto_plazo != '-') performance_financiero.balance_anio_anterior_deuda_corto_plazo = formatter.format(performance_financiero.balance_anio_anterior_deuda_corto_plazo);
-    if (performance_financiero.balance_anio_anterior_deuda_total != '-') performance_financiero.balance_anio_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_anterior_deuda_total);
-    if (performance_financiero.balance_anio_anterior_capital_contable != '-') performance_financiero.balance_anio_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_anterior_capital_contable);
-
+    if (performance_financiero.balance_anio_anterior_deudores_diversos != '-') performance_financiero.balance_anio_anterior_deudores_diversos = formatter.format(performance_financiero.balance_anio_anterior_deudores_diversos);
+    if (performance_financiero.balance_anio_anterior_otros_activos != '-') performance_financiero.balance_anio_anterior_otros_activos = formatter.format(performance_financiero.balance_anio_anterior_otros_activos);
+    if (performance_financiero.balance_anio_anterior_total_activo_circulante != '-') performance_financiero.balance_anio_anterior_total_activo_circulante = formatter.format(performance_financiero.balance_anio_anterior_total_activo_circulante);
+    if (performance_financiero.balance_anio_anterior_total_activo_fijo != '-') performance_financiero.balance_anio_anterior_total_activo_fijo = formatter.format(performance_financiero.balance_anio_anterior_total_activo_fijo);
+    if (performance_financiero.balance_anio_anterior_activo_intangible != '-') performance_financiero.balance_anio_anterior_activo_intangible = formatter.format(performance_financiero.balance_anio_anterior_activo_intangible);
+    if (performance_financiero.balance_anio_anterior_activo_diferido != '-') performance_financiero.balance_anio_anterior_activo_diferido = formatter.format(performance_financiero.balance_anio_anterior_activo_diferido);
+    if (performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo != '-') performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo = formatter.format(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo);
+    if (performance_financiero.balance_anio_anterior_proveedores != '-') performance_financiero.balance_anio_anterior_proveedores = formatter.format(performance_financiero.balance_anio_anterior_proveedores);
+    if (performance_financiero.balance_anio_anterior_acreedores != '-') performance_financiero.balance_anio_anterior_acreedores = formatter.format(performance_financiero.balance_anio_anterior_acreedores);
+    if (performance_financiero.balance_anio_anterior_inpuestos_x_pagar != '-') performance_financiero.balance_anio_anterior_inpuestos_x_pagar = formatter.format(performance_financiero.balance_anio_anterior_inpuestos_x_pagar);
+    if (performance_financiero.balance_anio_anterior_otros_pasivos != '-') performance_financiero.balance_anio_anterior_otros_pasivos = formatter.format(performance_financiero.balance_anio_anterior_otros_pasivos);
+    if (performance_financiero.balance_anio_anterior_total_pasivo_circulante != '-') performance_financiero.balance_anio_anterior_total_pasivo_circulante = formatter.format(performance_financiero.balance_anio_anterior_total_pasivo_circulante);
+    if (performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo != '-') performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo = formatter.format(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo);
+    if (performance_financiero.balance_anio_anterior_pasivo_diferido != '-') performance_financiero.balance_anio_anterior_pasivo_diferido = formatter.format(performance_financiero.balance_anio_anterior_pasivo_diferido);
+    if (performance_financiero.balance_anio_anterior_capital_social != '-') performance_financiero.balance_anio_anterior_capital_social = formatter.format(performance_financiero.balance_anio_anterior_capital_social);
+    if (performance_financiero.balance_anio_anterior_resultado_ejercicios_anteriores != '-') performance_financiero.balance_anio_anterior_resultado_ejercicios_anteriores = formatter.format(performance_financiero.balance_anio_anterior_resultado_ejercicios_anteriores);
+    if (performance_financiero.balance_anio_anterior_resultado_ejercicios != '-') performance_financiero.balance_anio_anterior_resultado_ejercicios = formatter.format(performance_financiero.balance_anio_anterior_resultado_ejercicios);
+    if (performance_financiero.balance_anio_anterior_otro_capital != '-') performance_financiero.balance_anio_anterior_otro_capital = formatter.format(performance_financiero.balance_anio_anterior_otro_capital);
+    if (performance_financiero.balance_anio_anterior_total_capital_contable_pat != '-') performance_financiero.balance_anio_anterior_total_capital_contable_pat = formatter.format(performance_financiero.balance_anio_anterior_total_capital_contable_pat);
+    // if (performance_financiero.balance_anio_anterior_deuda_corto_plazo != '-') performance_financiero.balance_anio_anterior_deuda_corto_plazo = formatter.format(performance_financiero.balance_anio_anterior_deuda_corto_plazo);
+    // if (performance_financiero.balance_anio_anterior_deuda_total != '-') performance_financiero.balance_anio_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_anterior_deuda_total);
+    // if (performance_financiero.balance_anio_anterior_capital_contable != '-') performance_financiero.balance_anio_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_anterior_capital_contable);
+    
     if (performance_financiero.balance_anio_previo_anterior_caja_bancos != '-') performance_financiero.balance_anio_previo_anterior_caja_bancos = formatter.format(performance_financiero.balance_anio_previo_anterior_caja_bancos);
     if (performance_financiero.balance_anio_previo_anterior_saldo_clientes != '-') performance_financiero.balance_anio_previo_anterior_saldo_clientes = formatter.format(performance_financiero.balance_anio_previo_anterior_saldo_clientes);
     if (performance_financiero.balance_anio_previo_anterior_saldo_inventarios != '-') performance_financiero.balance_anio_previo_anterior_saldo_inventarios = formatter.format(performance_financiero.balance_anio_previo_anterior_saldo_inventarios);
-    if (performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo != '-') performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo = formatter.format(performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
-    if (performance_financiero.balance_anio_previo_anterior_deuda_total != '-') performance_financiero.balance_anio_previo_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_previo_anterior_deuda_total);
-    if (performance_financiero.balance_anio_previo_anterior_capital_contable != '-') performance_financiero.balance_anio_previo_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_previo_anterior_capital_contable);
+    if (performance_financiero.balance_anio_previo_anterior_deudores_diversos != '-') performance_financiero.balance_anio_previo_anterior_deudores_diversos = formatter.format(performance_financiero.balance_anio_previo_anterior_deudores_diversos);
+    if (performance_financiero.balance_anio_previo_anterior_otros_activos != '-') performance_financiero.balance_anio_previo_anterior_otros_activos = formatter.format(performance_financiero.balance_anio_previo_anterior_otros_activos);
+    if (performance_financiero.balance_anio_previo_anterior_total_activo_circulante != '-') performance_financiero.balance_anio_previo_anterior_total_activo_circulante = formatter.format(performance_financiero.balance_anio_previo_anterior_total_activo_circulante);
+    if (performance_financiero.balance_anio_previo_anterior_total_activo_fijo != '-') performance_financiero.balance_anio_previo_anterior_total_activo_fijo = formatter.format(performance_financiero.balance_anio_previo_anterior_total_activo_fijo);
+    if (performance_financiero.balance_anio_previo_anterior_activo_intangible != '-') performance_financiero.balance_anio_previo_anterior_activo_intangible = formatter.format(performance_financiero.balance_anio_previo_anterior_activo_intangible);
+    if (performance_financiero.balance_anio_previo_anterior_activo_diferido != '-') performance_financiero.balance_anio_previo_anterior_activo_diferido = formatter.format(performance_financiero.balance_anio_previo_anterior_activo_diferido);
+    if (performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo != '-') performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo = formatter.format(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo);
+    if (performance_financiero.balance_anio_previo_anterior_proveedores != '-') performance_financiero.balance_anio_previo_anterior_proveedores = formatter.format(performance_financiero.balance_anio_previo_anterior_proveedores);
+    if (performance_financiero.balance_anio_previo_anterior_acreedores != '-') performance_financiero.balance_anio_previo_anterior_acreedores = formatter.format(performance_financiero.balance_anio_previo_anterior_acreedores);
+    if (performance_financiero.balance_anio_previo_anterior_inpuestos_x_pagar != '-') performance_financiero.balance_anio_previo_anterior_inpuestos_x_pagar = formatter.format(performance_financiero.balance_anio_previo_anterior_inpuestos_x_pagar);
+    if (performance_financiero.balance_anio_previo_anterior_otros_pasivos != '-') performance_financiero.balance_anio_previo_anterior_otros_pasivos = formatter.format(performance_financiero.balance_anio_previo_anterior_otros_pasivos);
+    if (performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante != '-') performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante = formatter.format(performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante);
+    if (performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo != '-') performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo = formatter.format(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo);
+    if (performance_financiero.balance_anio_previo_anterior_pasivo_diferido != '-') performance_financiero.balance_anio_previo_anterior_pasivo_diferido = formatter.format(performance_financiero.balance_anio_previo_anterior_pasivo_diferido);
+    if (performance_financiero.balance_anio_previo_anterior_capital_social != '-') performance_financiero.balance_anio_previo_anterior_capital_social = formatter.format(performance_financiero.balance_anio_previo_anterior_capital_social);
+    if (performance_financiero.balance_anio_previo_anterior_resultado_ejercicios_anteriores != '-') performance_financiero.balance_anio_previo_anterior_resultado_ejercicios_anteriores = formatter.format(performance_financiero.balance_anio_previo_anterior_resultado_ejercicios_anteriores);
+    if (performance_financiero.balance_anio_previo_anterior_resultado_ejercicios != '-') performance_financiero.balance_anio_previo_anterior_resultado_ejercicios = formatter.format(performance_financiero.balance_anio_previo_anterior_resultado_ejercicios);
+    if (performance_financiero.balance_anio_previo_anterior_otro_capital != '-') performance_financiero.balance_anio_previo_anterior_otro_capital = formatter.format(performance_financiero.balance_anio_previo_anterior_otro_capital);
+    if (performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat != '-') performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat = formatter.format(performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat);
+    // if (performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo != '-') performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo = formatter.format(performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
+    // if (performance_financiero.balance_anio_previo_anterior_deuda_total != '-') performance_financiero.balance_anio_previo_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_previo_anterior_deuda_total);
+    // if (performance_financiero.balance_anio_previo_anterior_capital_contable != '-') performance_financiero.balance_anio_previo_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_previo_anterior_capital_contable);
 
+    if (performance_financiero.estado_resultados_anio_anterior_indicador != '-') performance_financiero.estado_resultados_anio_anterior_indicador = formatter.format(performance_financiero.estado_resultados_anio_anterior_indicador);
     if (performance_financiero.estado_resultados_anio_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_anterior_ventas_anuales);
-    if (performance_financiero.estado_resultados_anio_anterior_costo_ventas != '-') performance_financiero.estado_resultados_anio_anterior_costo_ventas = formatter.format(performance_financiero.estado_resultados_anio_anterior_costo_ventas);
+    if (performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales != '-') performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
+    if (performance_financiero.estado_resultados_anio_anterior_utilidad_bruta != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_bruta = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_bruta);
+    if (performance_financiero.estado_resultados_anio_anterior_gastos_administracion != '-') performance_financiero.estado_resultados_anio_anterior_gastos_administracion = formatter.format(performance_financiero.estado_resultados_anio_anterior_gastos_administracion);
+    if (performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros != '-') performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros = formatter.format(performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros);
+    if (performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion != '-') performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion = formatter.format(performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion);
+    if (performance_financiero.estado_resultados_anio_anterior_otros_ingresos != '-') performance_financiero.estado_resultados_anio_anterior_otros_ingresos = formatter.format(performance_financiero.estado_resultados_anio_anterior_otros_ingresos);
+    if (performance_financiero.estado_resultados_anio_anterior_otros_egresos != '-') performance_financiero.estado_resultados_anio_anterior_otros_egresos = formatter.format(performance_financiero.estado_resultados_anio_anterior_otros_egresos);
+    if (performance_financiero.estado_resultados_anio_anterior_otros_gastos != '-') performance_financiero.estado_resultados_anio_anterior_otros_gastos = formatter.format(performance_financiero.estado_resultados_anio_anterior_otros_gastos);
+    if (performance_financiero.estado_resultados_anio_anterior_utilidad_neta != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_neta = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_neta);
+    // if (performance_financiero.estado_resultados_anio_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_anterior_ventas_anuales);
+    // if (performance_financiero.estado_resultados_anio_anterior_costo_ventas != '-') performance_financiero.estado_resultados_anio_anterior_costo_ventas = formatter.format(performance_financiero.estado_resultados_anio_anterior_costo_ventas);
+    // if (performance_financiero.estado_resultados_anio_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa);
 
+    if (performance_financiero.estado_resultados_anio_previo_anterior_indicador != '-') performance_financiero.estado_resultados_anio_previo_anterior_indicador = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_indicador);
     if (performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales);
-    if (performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas != '-') performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales != '-') performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales);
     if (performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta != '-') performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion != '-') performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros != '-') performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion != '-') performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos != '-') performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos != '-') performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos != '-') performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos);
+    if (performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta != '-') performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta);
+    // if (performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales != '-') performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales);
+    // if (performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas != '-') performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas);
+    // if (performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa != '-') performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa = formatter.format(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
 
     if (ratio_financiero.ratio_financiero_ventas_anuales != '-') ratio_financiero.ratio_financiero_ventas_anuales = formatter.format(ratio_financiero.ratio_financiero_ventas_anuales);
     if (ratio_financiero.ratio_financiero_evolucion_Ventas != '-') ratio_financiero.ratio_financiero_evolucion_Ventas = formatter.format(ratio_financiero.ratio_financiero_evolucion_Ventas);
@@ -13718,7 +13780,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             padding: 12px 12px;
             border: 1px solid #787878;
           ">
-  <!-- Activo circulante -->
   <div style="
               display: grid;
               grid-template-columns: 3fr 1.5fr 1.5fr;
@@ -13955,45 +14016,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </p>
       </div>
     </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Total de activo circulante:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_total_activo_circulante_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_total_activo_circulante_}
-        </p>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -14010,7 +14032,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             padding: 12px 12px;
             border: 1px solid #787878;
           ">
-  <!-- Activo fijo -->
   <div style="
               display: grid;
               grid-template-columns: 3fr 1.5fr 1.5fr;
@@ -14205,84 +14226,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     font-weight: 500;
                   ">
           {_performance_financiero_balance_anio_previo_anterior_otros_activos_fijos_largo_plazo_}
-        </p>
-      </div>
-    </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Total de activo fijo:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_total_activos_fijo_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_total_activos_fijo_}
-        </p>
-      </div>
-    </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Activo Total:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_activo_total_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_activo_total_}
         </p>
       </div>
     </div>
@@ -14500,45 +14443,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
         </p>
       </div>
     </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Total de pasivo corto plazo:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_total_pasivo_circulante_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_total_pasivo_circulante_}
-        </p>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -14671,84 +14575,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     font-weight: 500;
                   ">
           {_performance_financiero_balance_anio_previo_anterior_pasivo_diferido_}
-        </p>
-      </div>
-    </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Total de pasivo de largo plazo:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_total_pasivos_largo_plazo_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_total_pasivos_largo_plazo_}
-        </p>
-      </div>
-    </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Pasivo Total:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_pasivo_total_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_pasivo_total_}
         </p>
       </div>
     </div>
@@ -14967,45 +14793,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       </div>
     </div>
   </div>
-    <div style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              ">
-      <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  ">
-          Total de Capital contable o patrimonio:
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_anterior_total_capital_contable_pat_}
-        </p>
-      </div>
-
-      <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-        <p style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  ">
-          {_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}
-        </p>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -15022,6 +14809,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
             justify-content: center;
             align-items: flex-start;
             margin-bottom: 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
           "
         >
           <p
@@ -15606,100 +15395,6 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   "
                 >
                 {_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_neta_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  "
-                >
-                Total Partidas del estado de resultados:
-                </p>
-              </div>
-
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  "
-                >
-                {_performance_financiero_estado_resultados_anio_anterior_total_partidas_estado_}
-                </p>
-              </div>
-
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  "
-                >
-                {_performance_financiero_estado_resultados_anio_previo_anterior_total_partidas_estado_}
-                </p>
-              </div>
-            </div>
-            <div
-              style="
-                display: grid;
-                grid-template-columns: 3fr 1.5fr 1.5fr;
-                border-bottom: 1px solid #787878;
-              "
-            >
-              <div style="display: flex; align-items: flex-start; padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    color: #0a3d8e;
-                    font-size: 12px;
-                    font-weight: 700;
-                  "
-                >
-                Suma de comprobación:
-                </p>
-              </div>
-
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  "
-                >
-                {_performance_financiero_estado_resultados_anio_anterior_suma_comprobacion_}
-                </p>
-              </div>
-
-              <div style="display: flex; align-items: flex-start;  padding: 3px 0px;">
-                <p
-                  style="
-                    margin: 0px;
-                    margin-bottom: 5px;
-                    font-size: 12px;
-                    font-weight: 500;
-                  "
-                >
-                {_performance_financiero_estado_resultados_anio_previo_anterior_suma_comprobacion_}
                 </p>
               </div>
             </div>
@@ -17007,97 +16702,98 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     // Balance
   // 
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_indicador_}', performance_financiero.balance_anio_anterior_indicador);
+    strHTML_paso = strHTML_paso.replace(/{_performance_financiero_balance_anio_anterior_indicador_}/g, performance_financiero.balance_anio_anterior_indicador);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_caja_bancos_}', performance_financiero.balance_anio_anterior_caja_bancos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_saldo_clientes_}', performance_financiero.balance_anio_anterior_saldo_clientes);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_saldo_inventarios_}', performance_financiero.balance_anio_anterior_saldo_inventarios);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deudores_diversos_}', performance_financiero.balance_anio_anterior_deudores_diversos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_activos_}', performance_financiero.balance_anio_anterior_otros_activos);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activo_circulante_}', performance_financiero.balance_anio_anterior_total_activo_circulante);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activo_circulante_}', performance_financiero.balance_anio_anterior_total_activo_circulante);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activo_fijo_}', performance_financiero.balance_anio_anterior_total_activo_fijo);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_intangible_}', performance_financiero.balance_anio_anterior_activo_intangible);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_diferido_}', performance_financiero.balance_anio_anterior_activo_diferido);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_activos_fijos_largo_plazo_}', performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activos_fijo_}', (
-      Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
-      Number(performance_financiero.balance_anio_anterior_activo_intangible) +
-      Number(performance_financiero.balance_anio_anterior_activo_diferido) +
-      Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo))
-    );
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_total_}', (
-      Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
-      Number(performance_financiero.balance_anio_anterior_activo_intangible) +
-      Number(performance_financiero.balance_anio_anterior_activo_diferido) +
-      Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo) +
-      Number(performance_financiero.balance_anio_anterior_total_activo_circulante))
-    );
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_activos_fijo_}', (
+    //   Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
+    //   Number(performance_financiero.balance_anio_anterior_activo_intangible) +
+    //   Number(performance_financiero.balance_anio_anterior_activo_diferido) +
+    //   Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo))
+    // );
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_activo_total_}', (
+    //   Number(performance_financiero.balance_anio_anterior_total_activo_fijo) +
+    //   Number(performance_financiero.balance_anio_anterior_activo_intangible) +
+    //   Number(performance_financiero.balance_anio_anterior_activo_diferido) +
+    //   Number(performance_financiero.balance_anio_anterior_otros_activos_fijos_largo_plazo) +
+    //   Number(performance_financiero.balance_anio_anterior_total_activo_circulante))
+    // );
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_proveedores_}', performance_financiero.balance_anio_anterior_proveedores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_acreedores_}', performance_financiero.balance_anio_anterior_acreedores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_inpuestos_x_pagar_}', performance_financiero.balance_anio_anterior_inpuestos_x_pagar);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otros_pasivos_}', performance_financiero.balance_anio_anterior_otros_pasivos);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_anterior_total_pasivo_circulante);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_anterior_total_pasivo_circulante);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivo_largo_plazo_}', performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_pasivo_diferido_}', performance_financiero.balance_anio_anterior_pasivo_diferido);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_anterior_otros_pasivos_largo_plazo)));
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_social_}', performance_financiero.balance_anio_anterior_capital_social);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_resultado_ejercicios_anteriores_}', performance_financiero.balance_anio_anterior_resultado_ejercicios_anteriores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_resultado_ejercicios_}', performance_financiero.balance_anio_anterior_resultado_ejercicios);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_otro_capital_}', performance_financiero.balance_anio_anterior_otro_capital);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_anterior_total_capital_contable_pat);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_anterior_total_capital_contable_pat);
 
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_anterior_deuda_corto_plazo);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_deuda_total_}', performance_financiero.balance_anio_anterior_deuda_total);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_capital_contable_}', performance_financiero.balance_anio_anterior_capital_contable);
 
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_indicador_}', performance_financiero.balance_anio_previo_anterior_indicador);
+    strHTML_paso = strHTML_paso.replace(/{_performance_financiero_balance_anio_previo_anterior_indicador_}/g, performance_financiero.balance_anio_anterior_indicador);
+
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_caja_bancos_}', performance_financiero.balance_anio_previo_anterior_caja_bancos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_saldo_clientes_}', performance_financiero.balance_anio_previo_anterior_saldo_clientes);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_saldo_inventarios_}', performance_financiero.balance_anio_previo_anterior_saldo_inventarios);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deudores_diversos_}', performance_financiero.balance_anio_previo_anterior_deudores_diversos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_activos_}', performance_financiero.balance_anio_previo_anterior_otros_activos);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_activo_circulante);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_activo_circulante);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activo_fijo_}', performance_financiero.balance_anio_previo_anterior_total_activo_fijo);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_intangible_}', performance_financiero.balance_anio_previo_anterior_activo_intangible);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_diferido_}', performance_financiero.balance_anio_previo_anterior_activo_diferido);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_activos_fijos_largo_plazo_}', performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activos_fijo_}', (
-      Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
-      Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
-      Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
-      Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo))
-    );
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_total_}', (
-      Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
-      Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
-      Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
-      Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo) +
-      Number(performance_financiero.balance_anio_previo_anterior_total_activo_circulante))
-    );
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_activos_fijo_}', (
+    //   Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo))
+    // );
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_activo_total_}', (
+    //   Number(performance_financiero.balance_anio_previo_anterior_total_activo_fijo) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_activo_intangible) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_activo_diferido) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_otros_activos_fijos_largo_plazo) +
+    //   Number(performance_financiero.balance_anio_previo_anterior_total_activo_circulante))
+    // );
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_proveedores_}', performance_financiero.balance_anio_previo_anterior_proveedores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_acreedores_}', performance_financiero.balance_anio_previo_anterior_acreedores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_inpuestos_x_pagar_}', performance_financiero.balance_anio_previo_anterior_inpuestos_x_pagar);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otros_pasivos_}', performance_financiero.balance_anio_previo_anterior_otros_pasivos);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivo_circulante_}', performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivo_largo_plazo_}', performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_pasivo_diferido_}', performance_financiero.balance_anio_previo_anterior_pasivo_diferido);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_pasivos_largo_plazo_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_pasivo_total_}', (Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_circulante) + Number(performance_financiero.balance_anio_previo_anterior_total_pasivo_largo_plazo) + Number(performance_financiero.balance_anio_previo_anterior_otros_pasivos_largo_plazo)));
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_capital_social_}', performance_financiero.balance_anio_previo_anterior_capital_social);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_anteriores_}', performance_financiero.balance_anio_previo_anterior_resultado_ejercicios_anteriores);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_}', performance_financiero.balance_anio_previo_anterior_resultado_ejercicios);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otro_capital_}', performance_financiero.balance_anio_previo_anterior_otro_capital);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat);
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat);
     
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_total_}', performance_financiero.balance_anio_previo_anterior_deuda_total);
@@ -17118,20 +16814,20 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_gastos_productos_financieros_}', performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_otros_egresos_}', performance_financiero.estado_resultados_anio_anterior_otros_egresos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_utilidad_neta_}', performance_financiero.estado_resultados_anio_anterior_utilidad_neta);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_total_partidas_estado_}', (
-      Number(performance_financiero.estado_resultados_anio_anterior_ventas_anuales) +
-      Number(performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales) +
-      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_bruta) +
-      Number(performance_financiero.estado_resultados_anio_anterior_gastos_administracion) +
-      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa) +
-      Number(performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion) +
-      Number(performance_financiero.estado_resultados_anio_anterior_otros_ingresos) +
-      Number(performance_financiero.estado_resultados_anio_anterior_otros_gastos) +
-      Number(performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros) +
-      Number(performance_financiero.estado_resultados_anio_anterior_otros_egresos) +
-      Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta)
-    ));
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_anterior_resultado_ejercicios)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_total_partidas_estado_}', (
+    //   Number(performance_financiero.estado_resultados_anio_anterior_ventas_anuales) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_costo_ventas_anuales) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_utilidad_bruta) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_gastos_administracion) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_utilidad_operativa) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_depreciacion_amortizacion) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_otros_ingresos) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_otros_gastos) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_gastos_productos_financieros) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_otros_egresos) +
+    //   Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta)
+    // ));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_anterior_resultado_ejercicios)));
 
 
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_anterior_costo_ventas);
@@ -17150,20 +16846,20 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_gastos_productos_financieros_}', performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_otros_egresos_}', performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_neta_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta);
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_total_partidas_estado_}', (
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos) +
-      Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta)
-    ));
-    strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_previo_anterior_resultado_ejercicios)));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_total_partidas_estado_}', (
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_ventas_anuales) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas_anuales) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_bruta) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_administracion) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_depreciacion_amortizacion) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_ingresos) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_gastos) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_gastos_productos_financieros) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_otros_egresos) +
+    //   Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta)
+    // ));
+    // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_suma_comprobacion_}', (Number(performance_financiero.estado_resultados_anio_previo_anterior_utilidad_neta) - Number(performance_financiero.balance_anio_previo_previo_anterior_resultado_ejercicios)));
 
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_costo_ventas_}', performance_financiero.estado_resultados_anio_previo_anterior_costo_ventas);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_estado_resultados_anio_previo_anterior_utilidad_operativa_}', performance_financiero.estado_resultados_anio_previo_anterior_utilidad_operativa);
