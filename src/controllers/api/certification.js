@@ -17612,9 +17612,9 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     `;
 
 
-    strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.map(
+    strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.slice(0, 5).map(
       (demanda) => (`     
-      p
+      <p
           style="
             color: #0a3d8e;
             margin: 0px;
