@@ -3867,6 +3867,24 @@ WHERE cer.certificacion_id = (
     return result[0] || null
   }
 
+  async totalPasivoCirculanteAnterior(id_certification) {
+    const id = mysqlLib.escape(id_certification)
+    const queryString = `
+    SELECT
+      total_pasivo_circulante,
+      periodo_actual,
+      periodo_anterior,
+      periodo_previo_anterior
+    FROM certification_partidas_estado_balance
+    WHERE
+      tipo = 'anterior'
+      AND id_certification = ${id}
+    LIMIT 1;
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return result[0] || null
+  }
+
   async getScorePayback(payback) {
     const queryString = `
     SELECT
