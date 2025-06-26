@@ -6227,7 +6227,11 @@ ${JSON.stringify(info_email_error, null, 2)}
           }
           rows.push(`<tr style="background:#e3f2fd;"><td>Score asignado</td><td style="color:#0a3d8e; font-weight:bold;">${score}</td></tr>`)
           rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
-          rows.push(`<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`)
+          if (key !== '_15_rotacion_ctas_x_cobrar') {
+            rows.push(
+              `<tr><td>Observaciones adicionales</td><td style="white-space: pre-line;">${explicacion}</td></tr>`
+            )
+          }
           let tableHtml = `
             <div class="table-section" style="margin-bottom: 10px;">
             <h3 style="font-size: 8px;">${titulo}</h3>
