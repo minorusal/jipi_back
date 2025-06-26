@@ -3015,9 +3015,10 @@ const getScorePaybackFromSummary = async (
     `file: src/controllers/api/certification.js - method: getScorePaybackFromSummary`
   try {
     let scoreOverride = null
-    const [deudaCortoPlazo, utilidadOperativa] = await Promise.all([
+    const [deudaCortoPlazo, utilidadOperativa, calculoBalance] = await Promise.all([
       certificationService.deudaCortoPlazo(id_certification),
-      certificationService.utilidadOperativa(id_certification)
+      certificationService.utilidadOperativa(id_certification),
+      certificationService.getCalculoEstadoBalance(id_certification)
     ])
 
     if (!utilidadOperativa) return { error: true }
@@ -3027,10 +3028,12 @@ const getScorePaybackFromSummary = async (
     let payback = null
     let paybackScore
 
+    const totalPasivoLargoPlazo = calculoBalance
+      ? calculoBalance.total_pasivo_largo_plazo_anterior
+      : null
+
     const deudaReportada =
-      deudaCortoPlazo &&
-      deudaCortoPlazo.otros_pasivos !== undefined &&
-      deudaCortoPlazo.otros_pasivos !== null
+      totalPasivoLargoPlazo !== undefined && totalPasivoLargoPlazo !== null
 
     if (!deudaReportada) {
       paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
@@ -3040,7 +3043,7 @@ const getScorePaybackFromSummary = async (
       )
     } else {
       payback =
-        parseFloat(deudaCortoPlazo.otros_pasivos) /
+        parseFloat(totalPasivoLargoPlazo) /
         parseFloat(utilidadOperativa.utilidad_operativa)
 
       if (payback < 0) {
@@ -3066,9 +3069,7 @@ const getScorePaybackFromSummary = async (
 
     return {
       score,
-      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo
-        ? deudaCortoPlazo.otros_pasivos
-        : null,
+      deuda_corto_plazo_periodo_anterior: totalPasivoLargoPlazo,
       periodo_actual: deudaCortoPlazo ? deudaCortoPlazo.periodo_actual : null,
       periodo_anterior: deudaCortoPlazo ? deudaCortoPlazo.periodo_anterior : null,
       periodo_previo_anterior: deudaCortoPlazo
