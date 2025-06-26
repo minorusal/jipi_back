@@ -3090,6 +3090,10 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
     }
 
     let rotScore = null
+    let explicacion = ''
+
+    const formatNum = n =>
+      isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
 
     for (const r of rotacionRules) {
       const sup = r.limite_superior == null ? Infinity : r.limite_superior
@@ -3097,6 +3101,12 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       const matchDio = !noDio && dio >= r.limite_inferior && dio <= sup
       if (matchDso || matchDio) {
         rotScore = r
+        const valor = matchDso ? dso : dio
+        const etiqueta = matchDso ? 'DSO' : 'DIO'
+        const limInf = r.limite_inferior == null ? '-∞' : formatNum(r.limite_inferior)
+        const limSup = r.limite_superior == null ? '∞' : formatNum(r.limite_superior)
+        const sc = Number(algoritmo_v?.v_alritmo) === 2 ? r.v2 : r.v1
+        explicacion = `${etiqueta} = ${formatNum(valor)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`
         break
       }
     }
@@ -3123,6 +3133,30 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       )
     }
 
+    if (!explicacion) {
+      const lines = []
+      for (const r of rotacionRules) {
+        const limSup = r.limite_superior == null ? Infinity : r.limite_superior
+        const supTxt = r.limite_superior == null ? '∞' : formatNum(r.limite_superior)
+        const infTxt = r.limite_inferior == null ? '-∞' : formatNum(r.limite_inferior)
+        if (!noDso) {
+          if (dso < r.limite_inferior) {
+            lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${infTxt}-${supTxt}] porque está por debajo del límite.`)
+          } else if (dso > limSup) {
+            lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${infTxt}-${supTxt}] porque está por encima del límite.`)
+          }
+        }
+        if (!noDio) {
+          if (dio < r.limite_inferior) {
+            lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${infTxt}-${supTxt}] porque está por debajo del límite.`)
+          } else if (dio > limSup) {
+            lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${infTxt}-${supTxt}] porque está por encima del límite.`)
+          }
+        }
+      }
+      explicacion = lines.join('\n')
+    }
+
     if (!rotScore) return { error: true }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? rotScore.v2 : rotScore.v1
@@ -3143,7 +3177,8 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
       dsoMayor90,
-      dioMayor90
+      dioMayor90,
+      explicacion
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -4943,7 +4978,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         parametro_dso: 'null',
         parametro_dio: 'null',
         limite_inferior: 'null',
-        limite_superior: 'null'
+        limite_superior: 'null',
+        explicacion: 'Sin información'
       }
     } else {
       logger.info(`${fileMethod} | ${customUuid} Rotacion de cuentas por cobrar para el algoritmo es: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
@@ -4958,7 +4994,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         costo_ventas_anuales: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.costo_ventas_anuales,
         saldo_cliente_cuenta_x_cobrar: rotacion_ctas_x_cobrar.saldo_cliente_cuenta_x_cobrar,
         limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
-        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior,
+        explicacion: rotacion_ctas_x_cobrar.explicacion
       }
     }
 
@@ -6069,7 +6106,9 @@ ${JSON.stringify(info_email_error, null, 2)}
               }
             })
           }
-          const explicacion = `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
+          const explicacion = val.explicacion
+            ? val.explicacion
+            : `El ${key.replace(/_/g, ' ')} es ${descripcion}, por eso el score es ${score}`
           let formula = '-'
           if (
             key === '_15_rotacion_ctas_x_cobrar' &&
