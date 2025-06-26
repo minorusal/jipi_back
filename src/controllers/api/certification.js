@@ -3018,12 +3018,10 @@ const getScorePaybackFromSummary = async (
   const [
     deudaCortoPlazo,
     utilidadOperativa,
-    calculoBalance,
     estadoBalanceAnterior
   ] = await Promise.all([
     certificationService.deudaCortoPlazo(id_certification),
     certificationService.utilidadOperativa(id_certification),
-    certificationService.getCalculoEstadoBalance(id_certification),
     certificationService.getEstadoBalanceData(id_certification, 'anterior')
   ])
 
@@ -3041,15 +3039,9 @@ const getScorePaybackFromSummary = async (
     const pasivoDiferidoAnterior = parseFloat(
       estadoBalanceAnterior?.pasivo_diferido_anterior ?? 0
     )
-    const pasivoCirculanteAnterior =
-      calculoBalance?.total_pasivo_circulante_anterior != null
-        ? parseFloat(calculoBalance.total_pasivo_circulante_anterior)
-        : (
-            parseFloat(estadoBalanceAnterior?.proveedores_anterior ?? 0) +
-            parseFloat(estadoBalanceAnterior?.acreedores_anterior ?? 0) +
-            parseFloat(estadoBalanceAnterior?.inpuestos_x_pagar_anterior ?? 0) +
-            parseFloat(estadoBalanceAnterior?.otros_pasivos_anterior ?? 0)
-          )
+    const pasivoCirculanteAnterior = parseFloat(
+      estadoBalanceAnterior?.total_pasivo_circulante_anterior ?? 0
+    )
 
     const totalPasivoLargoPlazo =
       pasivoLargoPlazoAnterior + pasivoDiferidoAnterior + pasivoCirculanteAnterior
