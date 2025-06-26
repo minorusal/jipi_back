@@ -18731,7 +18731,56 @@ const getDemandasBloc = async (req, res, next) => {
   try {
     const { nombre } = req.params
 
-    const data = await obtenerDemandas(nombre)
+    const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
+    const block_demandas_url = block_demandas
+      .replace('||', encodeURIComponent(nombre))
+      .replace('||', encodeURIComponent(''))
+
+    const startTs = Date.now()
+    let response
+    let status
+    let errorMsg = null
+
+    try {
+      response = await axios.get(block_demandas_url)
+      status = response.status
+    } catch (err) {
+      status = err.response ? err.response.status : null
+      errorMsg = err.message
+      response = err.response || { data: null }
+
+      const responseTimeErr = Date.now() - startTs
+      try {
+        await blocService.saveBlocResponse({
+          endpoint_name: 'block_demandas',
+          request_url: block_demandas_url,
+          http_status: status,
+          response_time_ms: responseTimeErr,
+          response_json: response ? JSON.stringify(response.data) : null,
+          error_message: errorMsg
+        })
+      } catch (e) {
+        logger.error(`Error saving bloc response: ${e.message}`)
+      }
+
+      throw err
+    }
+
+    const responseTime = Date.now() - startTs
+    try {
+      await blocService.saveBlocResponse({
+        endpoint_name: 'block_demandas',
+        request_url: block_demandas_url,
+        http_status: status,
+        response_time_ms: responseTime,
+        response_json: response ? JSON.stringify(response.data) : null,
+        error_message: errorMsg
+      })
+    } catch (e) {
+      logger.error(`Error saving bloc response: ${e.message}`)
+    }
+
+    const data = response.data
 
     logger.info(`${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify({
       error: false,
