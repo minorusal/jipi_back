@@ -2975,18 +2975,41 @@ const getScorePaybackFromSummary = async (
       certificationService.utilidadOperativa(id_certification)
     ])
 
-    if (!deudaCortoPlazo || !utilidadOperativa) return { error: true }
+    if (!utilidadOperativa) return { error: true }
 
     if (utilidadOperativa.utilidad_operativa == 0) scoreOverride = 'N/A'
 
-    const payback =
-      parseFloat(deudaCortoPlazo.otros_pasivos) /
-      parseFloat(utilidadOperativa.utilidad_operativa)
+    let payback = null
+    let paybackScore
 
-    const paybackScore = parametrosAlgoritmo.paybackScore.find(p => {
-      const sup = p.limite_superior == null ? 9999999999 : p.limite_superior
-      return payback >= p.limite_inferior && payback <= sup
-    })
+    const deudaReportada =
+      deudaCortoPlazo &&
+      deudaCortoPlazo.otros_pasivos !== undefined &&
+      deudaCortoPlazo.otros_pasivos !== null
+
+    if (!deudaReportada) {
+      paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
+        p.nombre &&
+        p.nombre.toLowerCase().includes('indefinido') &&
+        p.nombre.toLowerCase().includes('corto')
+      )
+    } else {
+      payback =
+        parseFloat(deudaCortoPlazo.otros_pasivos) /
+        parseFloat(utilidadOperativa.utilidad_operativa)
+
+      if (payback < 0) {
+        paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
+          p.nombre && p.nombre.toLowerCase().includes('negativo')
+        )
+      } else {
+        paybackScore = parametrosAlgoritmo.paybackScore.find(p => {
+          const sup = p.limite_superior == null ? 9999999999 : p.limite_superior
+          return payback >= p.limite_inferior && payback <= sup
+        })
+      }
+    }
+
     if (!paybackScore) return { error: true }
 
     const score =
@@ -2998,10 +3021,14 @@ const getScorePaybackFromSummary = async (
 
     return {
       score,
-      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.otros_pasivos,
-      periodo_actual: deudaCortoPlazo.periodo_actual,
-      periodo_anterior: deudaCortoPlazo.periodo_anterior,
-      periodo_previo_anterior: deudaCortoPlazo.periodo_previo_anterior,
+      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo
+        ? deudaCortoPlazo.otros_pasivos
+        : null,
+      periodo_actual: deudaCortoPlazo ? deudaCortoPlazo.periodo_actual : null,
+      periodo_anterior: deudaCortoPlazo ? deudaCortoPlazo.periodo_anterior : null,
+      periodo_previo_anterior: deudaCortoPlazo
+        ? deudaCortoPlazo.periodo_previo_anterior
+        : null,
       utilida_operativa: utilidadOperativa.utilidad_operativa,
       payback,
       descripcion: paybackScore.nombre,
