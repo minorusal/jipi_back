@@ -3016,11 +3016,11 @@ const getScorePaybackFromSummary = async (
   try {
     let scoreOverride = null
   const [
-    deudaCortoPlazo,
+    pasivoCirculanteData,
     utilidadOperativa,
     estadoBalanceAnterior
   ] = await Promise.all([
-    certificationService.deudaCortoPlazo(id_certification),
+    certificationService.totalPasivoCirculanteAnterior(id_certification),
     certificationService.utilidadOperativa(id_certification),
     certificationService.getEstadoBalanceData(id_certification, 'anterior')
   ])
@@ -3040,14 +3040,11 @@ const getScorePaybackFromSummary = async (
       estadoBalanceAnterior?.pasivo_diferido_anterior ?? 0
     )
     const pasivoCirculanteAnterior = parseFloat(
-      estadoBalanceAnterior?.total_pasivo_circulante_anterior ?? 0
+      pasivoCirculanteData?.total_pasivo_circulante ?? 0
     )
 
-    const totalPasivoLargoPlazo =
-      pasivoLargoPlazoAnterior + pasivoDiferidoAnterior + pasivoCirculanteAnterior
-
     const deudaReportada =
-      totalPasivoLargoPlazo !== undefined && totalPasivoLargoPlazo !== null
+      pasivoCirculanteAnterior !== undefined && pasivoCirculanteAnterior !== null
 
     if (!deudaReportada) {
       paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
@@ -3057,9 +3054,9 @@ const getScorePaybackFromSummary = async (
       )
     } else {
       payback =
-        parseFloat(totalPasivoLargoPlazo) /
+        parseFloat(pasivoCirculanteAnterior) /
         parseFloat(utilidadOperativa.utilidad_operativa)
-      operacionPayback = `(${pasivoLargoPlazoAnterior} + ${pasivoDiferidoAnterior} + ${pasivoCirculanteAnterior}) / ${utilidadOperativa.utilidad_operativa}`
+      operacionPayback = `${pasivoCirculanteAnterior} / ${utilidadOperativa.utilidad_operativa}`
 
       if (payback < 0) {
         paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
@@ -3084,14 +3081,14 @@ const getScorePaybackFromSummary = async (
 
     return {
       score,
-      deuda_corto_plazo_periodo_anterior: totalPasivoLargoPlazo,
+      deuda_corto_plazo_periodo_anterior: pasivoCirculanteAnterior,
       pasivo_largo_plazo_anterior: pasivoLargoPlazoAnterior,
       pasivo_diferido_anterior: pasivoDiferidoAnterior,
       pasivo_circulante_anterior: pasivoCirculanteAnterior,
-      periodo_actual: deudaCortoPlazo ? deudaCortoPlazo.periodo_actual : null,
-      periodo_anterior: deudaCortoPlazo ? deudaCortoPlazo.periodo_anterior : null,
-      periodo_previo_anterior: deudaCortoPlazo
-        ? deudaCortoPlazo.periodo_previo_anterior
+      periodo_actual: pasivoCirculanteData ? pasivoCirculanteData.periodo_actual : null,
+      periodo_anterior: pasivoCirculanteData ? pasivoCirculanteData.periodo_anterior : null,
+      periodo_previo_anterior: pasivoCirculanteData
+        ? pasivoCirculanteData.periodo_previo_anterior
         : null,
       utilida_operativa: utilidadOperativa.utilidad_operativa,
       payback,
