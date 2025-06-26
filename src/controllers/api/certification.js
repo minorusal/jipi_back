@@ -3014,6 +3014,7 @@ const getScorePaybackFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScorePaybackFromSummary`
   try {
+    const parseNumber = require('../../utils/number')
     let scoreOverride = null
   const [
     pasivoCirculanteData,
@@ -3033,13 +3034,13 @@ const getScorePaybackFromSummary = async (
     let paybackScore
     let operacionPayback = null
 
-    const pasivoLargoPlazoAnterior = parseFloat(
+    const pasivoLargoPlazoAnterior = parseNumber(
       estadoBalanceAnterior?.pasivo_largo_plazo_anterior ?? 0
     )
-    const pasivoDiferidoAnterior = parseFloat(
+    const pasivoDiferidoAnterior = parseNumber(
       estadoBalanceAnterior?.pasivo_diferido_anterior ?? 0
     )
-    const pasivoCirculanteAnterior = parseFloat(
+    const pasivoCirculanteAnterior = parseNumber(
       pasivoCirculanteData?.total_pasivo_circulante ?? 0
     )
 
@@ -3054,9 +3055,12 @@ const getScorePaybackFromSummary = async (
       )
     } else {
       payback =
-        parseFloat(pasivoCirculanteAnterior) /
-        parseFloat(utilidadOperativa.utilidad_operativa)
+        pasivoCirculanteAnterior /
+        parseNumber(utilidadOperativa.utilidad_operativa)
       operacionPayback = `${pasivoCirculanteAnterior} / ${utilidadOperativa.utilidad_operativa}`
+      if (Number.isFinite(payback)) {
+        payback = Number(payback.toFixed(2))
+      }
 
       if (payback < 0) {
         paybackScore = parametrosAlgoritmo.paybackScore.find(p =>
@@ -3393,8 +3397,12 @@ const getScorePayback = async (id_certification, customUuid) => {
 
     if (utilidadOperativa.utilidad_operativa == 0) score = 'N/A'
 
-    const payback = parseFloat(deudaCortoPlazo.deuda_corto_plazo) / parseFloat(utilidadOperativa.utilidad_operativa)
-    const getScore = await certificationService.getScorePayback(payback)
+    const parseNumber = require('../../utils/number')
+    const payback =
+      parseNumber(deudaCortoPlazo.deuda_corto_plazo) /
+      parseNumber(utilidadOperativa.utilidad_operativa)
+    const roundedPayback = Number.isFinite(payback) ? Number(payback.toFixed(2)) : payback
+    const getScore = await certificationService.getScorePayback(roundedPayback)
     if (!getScore || getScore.length === 0) {
       logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el escore de payback: ${JSON.stringify(payback)}`)
       return { error: true }
@@ -3409,7 +3417,7 @@ const getScorePayback = async (id_certification, customUuid) => {
       periodo_anterior: deudaCortoPlazo.periodo_anterior,
       periodo_previo_anterior: deudaCortoPlazo.periodo_previo_anterior,
       utilida_operativa: utilidadOperativa.utilidad_operativa,
-      payback: payback,
+      payback: roundedPayback,
       descripcion: getScore.nombre,
       limite_inferior: getScore.limite_inferior,
       limite_superior: getScore.limite_superior
