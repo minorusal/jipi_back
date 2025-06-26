@@ -549,6 +549,24 @@ exports.editCompany = async (req, res, next) => {
     const [datos_usuario] = await companiesService.getUsuariosById(id_usuario)
     const [datos_empresa] = await companiesService.getCompanyByID(id)
 
+    const { rfc, razon_social } = body
+
+    const konesh_api = await callKoneshApi(rfc, globalConfig, { emp_id: id, razon_social_req: razon_social })
+    if (konesh_api.status === 200) {
+      const rfcValid = await descifra_konesh(konesh_api.data.transactionResponse01[0].data02)
+      const razonSat = await descifra_konesh(konesh_api.data.transactionResponse01[0].data04)
+
+      if (rfcValid === 'false') {
+        return next(boom.badRequest('El rfc no es valido'))
+      }
+
+      if (razonSat !== razon_social) {
+        return next(boom.badRequest('La razón social proporcionada no coincide con la registrada en el SAT'))
+      }
+    } else {
+      return next(boom.badRequest(`Ocurrio un error al consumir konesh: ${konesh_api.status}`))
+    }
+
     const results = await companiesService.editEmpresa(id, body)
 
     const [valores] = await companiesService.getEmpresaValores(id)
