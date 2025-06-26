@@ -2980,7 +2980,7 @@ const getScorePaybackFromSummary = async (
     if (utilidadOperativa.utilidad_operativa == 0) scoreOverride = 'N/A'
 
     const payback =
-      parseFloat(deudaCortoPlazo.deuda_corto_plazo) /
+      parseFloat(deudaCortoPlazo.otros_pasivos) /
       parseFloat(utilidadOperativa.utilidad_operativa)
 
     const paybackScore = parametrosAlgoritmo.paybackScore.find(p => {
@@ -2998,7 +2998,7 @@ const getScorePaybackFromSummary = async (
 
     return {
       score,
-      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.deuda_corto_plazo,
+      deuda_corto_plazo_periodo_anterior: deudaCortoPlazo.otros_pasivos,
       periodo_actual: deudaCortoPlazo.periodo_actual,
       periodo_anterior: deudaCortoPlazo.periodo_anterior,
       periodo_previo_anterior: deudaCortoPlazo.periodo_previo_anterior,
