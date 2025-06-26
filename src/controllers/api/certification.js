@@ -4551,12 +4551,45 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     const reporteCredito = {}
 
-    const pais = await getPaisScoreFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
+    const [
+      pais,
+      sector_riesgo,
+      capital_contable,
+      plantilla_laboral,
+      sector_cliente_final,
+      tiempo_actividad,
+      influencia_controlante,
+      ventas_anuales,
+      tipo_cifras,
+      incidencias_legales,
+      evolucion_ventas,
+      apalancamiento,
+      flujo_neto,
+      payback,
+      rotacion_ctas_x_cobrar,
+      referencias_comerciales,
+      alerta_endeudamiento_comercial,
+      alerta_promedio_plazo_credito
+    ] = await Promise.all([
+      getPaisScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getSectorRiesgoScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScorePlantillaLaboralFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreClienteFinalFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreTiempoActividadFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getControlanteScoreFromSummary(id_certification, parametrosAlgoritmo, customUuid),
+      getScoreVentasAnualesFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreTipoCifrasFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreIncidenciasLegalesFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreEvolucionVentasFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreApalancamientoFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreCajaBancosFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScorePaybackFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreRotacionCtasXCobrasScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getScoreReferenciasComercialesFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid),
+      getAlertaEndeudamientoComercial(id_certification, customUuid),
+      getAlertaPromedioPlazoCredito(id_certification, customUuid)
+    ])
     if (!pais || pais.error) {
       const msg = 'No se pudo obtener información del país'
       logger.warn(`${fileMethod} | ${customUuid} ${msg} en la certificación`)
@@ -4574,7 +4607,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 01: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_riesgo = await getSectorRiesgoScoreFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (sector_riesgo.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener sector riesgo en la certificación con ID: ${JSON.stringify(sector_riesgo)}`))
@@ -4589,12 +4621,10 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 02: ${JSON.stringify(reporteCredito)}`)
 
-    const capital_contable = await getScoreCapitalContableFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     reporteCredito._03_capital_contable = buildCapitalContableReport(capital_contable, algoritmo_v, fileMethod, customUuid)
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 03: ${JSON.stringify(reporteCredito)}`)
 
-    const plantilla_laboral = await getScorePlantillaLaboralFromSummary(id_certification, algoritmo_v, parametrosAlgoritmo, customUuid)
     if (plantilla_laboral.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener plantilla laboral en la certificación con ID: ${JSON.stringify(plantilla_laboral)}`))
@@ -4612,12 +4642,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 04: ${JSON.stringify(reporteCredito)}`)
 
-    const sector_cliente_final = await getScoreClienteFinalFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (sector_cliente_final.error) {
       logger.warn(
         `${fileMethod} | ${customUuid} No se pudo obtener información para obtener sector cliente final en la certificación con ID: ${JSON.stringify(sector_cliente_final)}`
@@ -4640,12 +4664,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 05: ${JSON.stringify(reporteCredito)}`)
 
-    const tiempo_actividad = await getScoreTiempoActividadFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (tiempo_actividad.error) {
       logger.warn(
         `${fileMethod} | ${customUuid} No se pudo obtener información para obtener tiempo actividad final en la certificación con ID: ${JSON.stringify(tiempo_actividad)}`
@@ -4665,12 +4683,6 @@ const getAlgoritmoResult = async (req, res, next) => {
     }
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 06: ${JSON.stringify(reporteCredito)}`)
-
-    const influencia_controlante = await getControlanteScoreFromSummary(
-      id_certification,
-      parametrosAlgoritmo,
-      customUuid
-    )
 
     logger.info(
       `${fileMethod} | ${customUuid} Influencia controlante para el algoritmo es: ${JSON.stringify(
@@ -4722,12 +4734,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 07: ${JSON.stringify(reporteCredito)}`)
 
-    const ventas_anuales = await getScoreVentasAnualesFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (ventas_anuales.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener ventas anuales en la certificación con ID: ${JSON.stringify(ventas_anuales)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4754,12 +4760,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 08: ${JSON.stringify(reporteCredito)}`)
 
-    const tipo_cifras = await getScoreTipoCifrasFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (tipo_cifras.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener tipo cifras en la certificación con ID: ${JSON.stringify(tipo_cifras)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4780,12 +4780,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 09: ${JSON.stringify(reporteCredito)}`)
 
-    const incidencias_legales = await getScoreIncidenciasLegalesFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (incidencias_legales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`)
       return next(boom.badRequest(`No se pudo obtener información para obtener incidencias legales en la certificación con ID: ${JSON.stringify(incidencias_legales)}`))
@@ -4801,12 +4795,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 10: ${JSON.stringify(reporteCredito)}`)
 
-    const evolucion_ventas = await getScoreEvolucionVentasFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (evolucion_ventas.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para obtener evolucion ventas en la certificación con ID: ${JSON.stringify(evolucion_ventas)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4842,12 +4830,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 11: ${JSON.stringify(reporteCredito)}`)
 
-    const apalancamiento = await getScoreApalancamientoFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (apalancamiento.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para apalancamiento en la certificación con ID: ${JSON.stringify(apalancamiento)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4893,12 +4875,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 12: ${JSON.stringify(reporteCredito)}`)
 
-    const flujo_neto = await getScoreCajaBancosFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (flujo_neto.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para flujo neto en la certificación con ID: ${JSON.stringify(flujo_neto)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4930,12 +4906,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 13: ${JSON.stringify(reporteCredito)}`)
 
-    const payback = await getScorePaybackFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (payback.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para payback en la certificación con ID: ${JSON.stringify(payback)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -4965,12 +4935,6 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito 14: ${JSON.stringify(reporteCredito)}`)
 
-    const rotacion_ctas_x_cobrar = await getScoreRotacionCtasXCobrasScoreFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (rotacion_ctas_x_cobrar.error) {
       logger.info(`${fileMethod} | ${customUuid} No se pudo obtener información para rotacion de cuentas por cobrar en la certificación con ID: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
       logger.info(`${fileMethod} | ${customUuid} Se asigna score 0 para version 2 de algoritmo `)
@@ -5013,12 +4977,6 @@ const getAlgoritmoResult = async (req, res, next) => {
     }
     reporteCredito.dpo = dpo
 
-    const referencias_comerciales = await getScoreReferenciasComercialesFromSummary(
-      id_certification,
-      algoritmo_v,
-      parametrosAlgoritmo,
-      customUuid
-    )
     if (referencias_comerciales.error) {
       logger.warn(`${fileMethod} | ${customUuid} No se pudo obtener información para referencias comerciales en la certificación con ID: ${JSON.stringify(referencias_comerciales)}`)
     }
@@ -5103,15 +5061,11 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     let porcentaje_endeudamiento_comercial = null
     let promedio_plazo_credito = null
-
-    const alerta_endeudamiento_comercial = await getAlertaEndeudamientoComercial(id_certification, customUuid)
     if (alerta_endeudamiento_comercial.error) {
       logger.info(`${fileMethod} | ${customUuid} No se obtuvo alerta de endeudamiento comercial : ${JSON.stringify(alerta_endeudamiento_comercial)}`)
     } else {
       porcentaje_endeudamiento_comercial = alerta_endeudamiento_comercial
     }
-
-    const alerta_promedio_plazo_credito = await getAlertaPromedioPlazoCredito(id_certification, customUuid)
     if (alerta_promedio_plazo_credito.error) {
       logger.info(`${fileMethod} | ${customUuid} No se obtuvo alerta de endeudamiento comercial : ${JSON.stringify(alerta_promedio_plazo_credito)}`)
     } else {
@@ -5207,10 +5161,14 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} El ID del cliente para la empresa es: ${JSON.stringify(id_cliente)}`)
 
-    const calculos_estado_balance = await calculoEstadoBalance(customUuid, id_certification)
-    const calculos_estado_resultados = await calculosEstadoResultados(customUuid, id_certification)
-    const ratio_financiero = await calculoRatiosFinancieros(customUuid, id_certification, calculos_estado_balance, calculos_estado_resultados)
-    const alerta_preventiva_reserva = await calculoVariacionesSignificativasIndicadoresFinancieros(customUuid, id_certification, calculos_estado_balance, calculos_estado_resultados)
+    const [calculos_estado_balance, calculos_estado_resultados] = await Promise.all([
+      calculoEstadoBalance(customUuid, id_certification),
+      calculosEstadoResultados(customUuid, id_certification)
+    ])
+    const [ratio_financiero, alerta_preventiva_reserva] = await Promise.all([
+      calculoRatiosFinancieros(customUuid, id_certification, calculos_estado_balance, calculos_estado_resultados),
+      calculoVariacionesSignificativasIndicadoresFinancieros(customUuid, id_certification, calculos_estado_balance, calculos_estado_resultados)
+    ])
 
     reporteCredito.alerta_preventiva_reserva = alerta_preventiva_reserva
     reporteCredito.calculos_estado_balance = calculos_estado_balance
