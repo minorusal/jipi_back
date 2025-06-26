@@ -3091,18 +3091,14 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
 
     let rotScore = null
 
-    if (!noDso) {
-      rotScore = rotacionRules.find(r => {
-        const sup = r.limite_superior == null ? Infinity : r.limite_superior
-        return dso >= r.limite_inferior && dso <= sup
-      })
-    }
-
-    if (!rotScore && !noDio) {
-      rotScore = rotacionRules.find(r => {
-        const sup = r.limite_superior == null ? Infinity : r.limite_superior
-        return dio >= r.limite_inferior && dio <= sup
-      })
+    for (const r of rotacionRules) {
+      const sup = r.limite_superior == null ? Infinity : r.limite_superior
+      const matchDso = !noDso && dso >= r.limite_inferior && dso <= sup
+      const matchDio = !noDio && dio >= r.limite_inferior && dio <= sup
+      if (matchDso || matchDio) {
+        rotScore = r
+        break
+      }
     }
 
     if (!rotScore) {
