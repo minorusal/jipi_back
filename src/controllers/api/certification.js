@@ -7081,6 +7081,64 @@ ${JSON.stringify(info_email_error, null, 2)}
   }
 }
 
+const sendEmailNodeMailerInformativo = async ({ pdfBuffer }) => {
+  const fileMethod = `file: src/controllers/api/certification.js - method: sendEmailNodeMailerInformativo`
+  try {
+    const globalConfig = await utilitiesService.getParametros()
+
+    let lista_contactos_error_reporte_credito = await globalConfig.find(
+      item => item.nombre === 'lista_contactos_error_reporte_credito'
+    ).valor
+    if (typeof lista_contactos_error_reporte_credito === 'string') {
+      try {
+        lista_contactos_error_reporte_credito = JSON.parse(lista_contactos_error_reporte_credito.trim())
+      } catch (err) {
+        logger.error(`${fileMethod} | Error al parsear lista de contactos: ${err.message}`)
+        return
+      }
+    }
+
+    const email_sender_error_reporte_credito = await globalConfig.find(
+      item => item.nombre === 'email_sender_error_reporte_credito'
+    ).valor
+
+    const password_email_sender_error_reporte_credito = await globalConfig.find(
+      item => item.nombre === 'password_email_sender_error_reporte_credito'
+    ).valor
+
+    const transporter = nodemailer.createTransport({
+      host: 'credibusiness.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: email_sender_error_reporte_credito,
+        pass: password_email_sender_error_reporte_credito
+      }
+    })
+
+    const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
+    const mailOptions = {
+      from: `"credibusiness" <${email_sender_error_reporte_credito}>`,
+      to: lista_contactos_error_reporte_credito.map(d => d.Email).join(','),
+      subject: `[${envLabel}] Reporte de crédito informativo`,
+      html: `<div style="font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 1.6; color: #333;">` +
+        `<p>Se adjunta el Reporte de Crédito Informativo en formato PDF.</p>` +
+        `</div>`,
+      attachments: [
+        {
+          filename: 'reporte_credito_informativo.pdf',
+          content: pdfBuffer,
+          contentType: 'application/pdf'
+        }
+      ]
+    }
+
+    const info = await transporter.sendMail(mailOptions)
+    return info
+  } catch (error) {
+    logger.info(`Error en el envio de correo electronico: ${error} - ${fileMethod}`)
+  }
+}
 
 const calculoRatiosFinancieros = async (customUuid, id_certification, calculos_estado_balance, calculos_estado_resultados) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: calculoRatiosFinancieros`
@@ -12959,6 +13017,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
     location = await subirReporteCreditoS3(archivo64)
     logger.info(`${fileMethod} | ${customUuid} | Archivo en AWS: ${JSON.stringify(location)}`)
 
+    await sendEmailNodeMailerInformativo({ pdfBuffer })
 
     return {
       error: false,
