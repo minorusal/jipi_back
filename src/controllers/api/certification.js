@@ -17647,9 +17647,10 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     // _certification?.demandas
 
     const totalDemandas = datos_reporte?.demandas?.length || 0;
+    const displayedDemandas = Math.min(totalDemandas, 5);
     const mensaje = `
       <p style="font-size: 13px; font-weight: 600; margin: 10px 0;">
-        Presentamos 5 demandas de un total de ${totalDemandas}
+        Presentamos ${displayedDemandas} demandas de un total de ${totalDemandas}
       </p>
     `;
 
