@@ -138,7 +138,7 @@ const loadAlgorithmConstants = async () => {
 
 loadAlgorithmConstants()
 
-async function obtenerDemandas (nombre) {
+async function obtenerDemandas(nombre) {
   const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
   const block_demandas_url = block_demandas
     .replace('||', encodeURIComponent(nombre))
@@ -604,7 +604,7 @@ const iniciaCertificacion = async (req, res, next) => {
 
     const uniqueIncidencias = []
     const seenKeys = new Set()
-    
+
     if (certificacion.result.length > 0) {
       await certificationService.deleteDemandas(certificacion.result[0].id_certification)
     }
@@ -1396,21 +1396,21 @@ const guardaReferenciasComerciales = async (req, res, next) => {
           logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(rc)}`)
           return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(rc)}`))
         }
-  
+
         const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencia, rc.insertId)
         logger.info(`${fileMethod} | Se obtiene la empresa cliente ${JSON.stringify(empresa_cliente)}`)
         if (!empresa_cliente) {
           logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`)
           return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`))
         }
-  
+
         const [empresa_destino] = await companiesService.getEmpresaByIdContacto(rc.insertId)
         logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
         if (referencia.contactos.length > 0) {
           for (const contacto of referencia.contactos) {
             const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
             const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
-  
+
             const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification)
             if (exist_email) {
               const contactoInsertSi = await certificationService.insertaContacto(contacto, 'enviado', rc.insertId)
@@ -1424,7 +1424,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
                 logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`)
                 return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`))
               }
-  
+
               contactos.push({
                 nombre: contacto.nombre_contacto,
                 correo: contacto.correo_contacto,
@@ -1511,7 +1511,7 @@ const getReferenciaComercialForm = async (req, res, next) => {
       referencia.empresa_cliente = empresas_cliente
       referencias_comerciales.push(referencia)
     }
-    
+
     return res.json({
       id_certification,
       referencias_comerciales
@@ -2468,8 +2468,8 @@ const getControlanteScoreFromSummary = async (
       ? accionistas.result.find(a => parseInt(a.controlante) === 1)
       : null
 
-  const nombreEmpresaControlante = accionistaControlante?.razon_social || null
-  const rfcEmpresaControlante = accionistaControlante?.rfc || null
+    const nombreEmpresaControlante = accionistaControlante?.razon_social || null
+    const rfcEmpresaControlante = accionistaControlante?.rfc || null
 
     let respuestaDemandas = { data: { demandas: [] } }
     if (nombreEmpresaControlante) {
@@ -2507,11 +2507,11 @@ const getControlanteScoreFromSummary = async (
     const blocData = nombreEmpresaControlante
       ? await consultaBlocEmpresaControlanteData(nombreEmpresaControlante)
       : {
-          bloc_sat69b: null,
-          bloc_ofac: null,
-          bloc_concursos_mercantiles: null,
-          bloc_proveedores_contratistas: null
-        }
+        bloc_sat69b: null,
+        bloc_ofac: null,
+        bloc_concursos_mercantiles: null,
+        bloc_proveedores_contratistas: null
+      }
 
     logger.info(
       `${fileMethod} | ${customUuid} Bloc data: ${JSON.stringify(blocData)}`
@@ -2752,7 +2752,7 @@ const getScoreEvolucionVentasFromSummary = async (
     ])
 
     if (anioAnterior === null || anioAnterior === undefined ||
-        previoAnterior === null || previoAnterior === undefined) {
+      previoAnterior === null || previoAnterior === undefined) {
       return { error: true }
     }
 
@@ -2779,7 +2779,7 @@ const getScoreEvolucionVentasFromSummary = async (
       evolucion_ventas: evolucion
     }
 
-    
+
 
     const evoScore = parametrosAlgoritmo.evolucionVentasScore.find(e => {
       const [inf, sup] = getLimits(e)
@@ -2865,7 +2865,7 @@ const getScoreApalancamientoFromSummary = async (
     }
 
     // Mismo cálculo utilizado en el ratio R10 de "Ratios financieros"
-  const apalancamiento =
+    const apalancamiento =
       !isNaN(pasivo) && !isNaN(capital) && capital !== 0
         ? parseFloat((pasivo / capital).toFixed(1))
         : capital === 0
@@ -3090,76 +3090,66 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
     }
 
     let rotScore = null
-    let explicacion = ''
+    const lines = []
+    const formatNum = n => isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
 
-    const formatNum = n =>
-      isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
+    // Recorremos todos los rangos con DIO primero
+    if (!noDio) {
+      for (const r of rotacionRules) {
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue;
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior);
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior);
+        const limInf = formatNum(inf);
+        const limSup = formatNum(sup);
+        if (dio >= inf && dio <= sup) {
+          rotScore = r;
+          const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
+          lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
+          break;
+        } else {
+          if (dio < inf) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
+          else if (dio > sup) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
+        }
+      }
+    }
 
-    for (const r of rotacionRules) {
-      const sup = r.limite_superior == null ? Infinity : r.limite_superior
-      const matchDso = !noDso && dso >= r.limite_inferior && dso <= sup
-      const matchDio = !noDio && dio >= r.limite_inferior && dio <= sup
-      if (matchDso || matchDio) {
-        rotScore = r
-        const valor = matchDso ? dso : dio
-        const etiqueta = matchDso ? 'DSO' : 'DIO'
-        const limInf = r.limite_inferior == null ? '-∞' : formatNum(r.limite_inferior)
-        const limSup = r.limite_superior == null ? '∞' : formatNum(r.limite_superior)
-        const sc = Number(algoritmo_v?.v_alritmo) === 2 ? r.v2 : r.v1
-        explicacion = `${etiqueta} = ${formatNum(valor)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`
-        break
+    // Si no se encontró score con DIO, evaluamos DSO en todos los rangos
+    if (!rotScore && !noDso) {
+      for (const r of rotacionRules) {
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue;
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior);
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior);
+        const limInf = formatNum(inf);
+        const limSup = formatNum(sup);
+        if (dso >= inf && dso <= sup) {
+          rotScore = r;
+          const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
+          lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
+          break;
+        } else {
+          if (dso < inf) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
+          else if (dso > sup) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
+        }
       }
     }
 
     if (!rotScore) {
       if (noDso && noDio) {
-        rotScore = rotacionRules.find(r =>
-          r.nombre && r.nombre.toLowerCase().includes('no reportar ambos')
-        )
+        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos'))
       } else if (noDso) {
-        rotScore = rotacionRules.find(r =>
-          r.nombre && r.nombre.toLowerCase().includes('no reportar saldo en clientes')
-        )
+        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en clientes'))
       } else if (noDio) {
-        rotScore = rotacionRules.find(r =>
-          r.nombre && r.nombre.toLowerCase().includes('no reportar saldo en inventarios')
-        )
+        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en inventarios'))
       }
     }
 
     if (!rotScore) {
-      rotScore = rotacionRules.find(r =>
-        r.nombre && r.nombre.toLowerCase().includes('desconocido')
-      )
-    }
-
-    if (!explicacion) {
-      const lines = []
-      for (const r of rotacionRules) {
-        const limSup = r.limite_superior == null ? Infinity : r.limite_superior
-        const supTxt = r.limite_superior == null ? '∞' : formatNum(r.limite_superior)
-        const infTxt = r.limite_inferior == null ? '-∞' : formatNum(r.limite_inferior)
-        if (!noDso) {
-          if (dso < r.limite_inferior) {
-            lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${infTxt}-${supTxt}] porque está por debajo del límite.`)
-          } else if (dso > limSup) {
-            lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${infTxt}-${supTxt}] porque está por encima del límite.`)
-          }
-        }
-        if (!noDio) {
-          if (dio < r.limite_inferior) {
-            lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${infTxt}-${supTxt}] porque está por debajo del límite.`)
-          } else if (dio > limSup) {
-            lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${infTxt}-${supTxt}] porque está por encima del límite.`)
-          }
-        }
-      }
-      explicacion = lines.join('\n')
+      rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
     }
 
     if (!rotScore) return { error: true }
 
-    const score = Number(algoritmo_v?.v_alritmo) === 2 ? rotScore.v2 : rotScore.v1
+    const score = Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScore.v2) : Number(rotScore.v1)
 
     return {
       score,
@@ -3178,13 +3168,14 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
       dsoMayor90,
       dioMayor90,
-      explicacion
+      explicacion: lines.join('\n')
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return { error: true }
   }
 }
+
 
 const getScoreReferenciasComercialesFromSummary = async (
   id_certification,
@@ -3797,7 +3788,7 @@ const cuentaConCapital = async (idCertification, customUuid) => {
 
     const capital_previo_anterior = await certificationService.obtieneCapitalPrevioAnterior(idCertification)
     logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_previo_anterior)}`)
-    
+
     const isEmpty = (value) => value === '0.00' || value === '0' || value === undefined || value === null || value === 0
 
     if (isEmpty(capital_anterior[0].capital) || isEmpty(capital_previo_anterior[0].capital)) {
@@ -3993,77 +3984,77 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       'previo_anterior'
     )
 
-      const provA = balanceAnterior?.proveedores_anterior
-      const provP = balancePrevio?.proveedores_previo_anterior
-      if (isEmpty(provA) && isEmpty(provP)) {
-        return buildResponse('Proveedores sin datos en ambos periodos', 2)
-      }
+    const provA = balanceAnterior?.proveedores_anterior
+    const provP = balancePrevio?.proveedores_previo_anterior
+    if (isEmpty(provA) && isEmpty(provP)) {
+      return buildResponse('Proveedores sin datos en ambos periodos', 2)
+    }
 
-      const acreA = balanceAnterior?.acreedores_anterior
-      const acreP = balancePrevio?.acreedores_previo_anterior
-      if (
-        (isEmpty(provA) || isEmpty(acreA)) &&
-        (isEmpty(provP) || isEmpty(acreP))
-      ) {
-        return buildResponse(
-          'Proveedores y acreedores sin datos en ambos periodos',
-          2
-        )
-      }
+    const acreA = balanceAnterior?.acreedores_anterior
+    const acreP = balancePrevio?.acreedores_previo_anterior
+    if (
+      (isEmpty(provA) || isEmpty(acreA)) &&
+      (isEmpty(provP) || isEmpty(acreP))
+    ) {
+      return buildResponse(
+        'Proveedores y acreedores sin datos en ambos periodos',
+        2
+      )
+    }
 
-      const ventasA = resultadoAnterior?.ventas_anuales_anterior
-      const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
-      if (
-        isEmpty(ventasA) ||
-        isEmpty(ventasP) ||
-        parseNumber(ventasA) === 0 ||
-        parseNumber(ventasP) === 0
-      ) {
-        return buildResponse('Ventas no reportadas en al menos un periodo', 2)
-      }
+    const ventasA = resultadoAnterior?.ventas_anuales_anterior
+    const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
+    if (
+      isEmpty(ventasA) ||
+      isEmpty(ventasP) ||
+      parseNumber(ventasA) === 0 ||
+      parseNumber(ventasP) === 0
+    ) {
+      return buildResponse('Ventas no reportadas en al menos un periodo', 2)
+    }
 
-      const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
-      const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
-      if (
-        isEmpty(costoA) ||
-        isEmpty(costoP) ||
-        parseNumber(costoA) === 0 ||
-        parseNumber(costoP) === 0
-      ) {
-        return buildResponse('No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable', 2)
-      }
+    const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
+    const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
+    if (
+      isEmpty(costoA) ||
+      isEmpty(costoP) ||
+      parseNumber(costoA) === 0 ||
+      parseNumber(costoP) === 0
+    ) {
+      return buildResponse('No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable', 2)
+    }
 
-      const ubA = resultadoAnterior?.utilidad_bruta_anterior
-      const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
-      if (
-        isEmpty(ubA) ||
-        isEmpty(ubP) ||
-        parseNumber(ubA) === 0 ||
-        parseNumber(ubP) === 0
-      ) {
-        return buildResponse('No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable', 2)
-      }
+    const ubA = resultadoAnterior?.utilidad_bruta_anterior
+    const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
+    if (
+      isEmpty(ubA) ||
+      isEmpty(ubP) ||
+      parseNumber(ubA) === 0 ||
+      parseNumber(ubP) === 0
+    ) {
+      return buildResponse('No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable', 2)
+    }
 
-      const uoA = resultadoAnterior?.utilidad_operativa_anterior
-      const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
-      if (
-        isEmpty(uoA) ||
-        isEmpty(uoP) ||
-        parseNumber(uoA) === 0 ||
-        parseNumber(uoP) === 0
-      ) {
-        return buildResponse('Utilidad operativa no reportada en al menos un periodo', 2)
-      }
+    const uoA = resultadoAnterior?.utilidad_operativa_anterior
+    const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
+    if (
+      isEmpty(uoA) ||
+      isEmpty(uoP) ||
+      parseNumber(uoA) === 0 ||
+      parseNumber(uoP) === 0
+    ) {
+      return buildResponse('Utilidad operativa no reportada en al menos un periodo', 2)
+    }
 
-      const unA = resultadoAnterior?.utilidad_neta_anterior
-      const unP = resultadoPrevio?.utilidad_neta_previo_anterior
-      const isEmptyUtilidadNeta = v => isEmpty(v) || parseNumber(v) === 0
-      if (isEmptyUtilidadNeta(unA) || isEmptyUtilidadNeta(unP)) {
-        return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
-      }
+    const unA = resultadoAnterior?.utilidad_neta_anterior
+    const unP = resultadoPrevio?.utilidad_neta_previo_anterior
+    const isEmptyUtilidadNeta = v => isEmpty(v) || parseNumber(v) === 0
+    if (isEmptyUtilidadNeta(unA) || isEmptyUtilidadNeta(unP)) {
+      return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
+    }
 
 
-      return buildResponse('Partidas financieras completas', 1)
+    return buildResponse('Partidas financieras completas', 1)
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
     return buildResponse(JSON.stringify(error), 2)
@@ -4877,12 +4868,12 @@ const getAlgoritmoResult = async (req, res, next) => {
         score: apalancamiento.score,
         parametro: apalancamiento.apalancamiento == null ? 'null' : apalancamiento.apalancamiento,
         limite_inferior: apalancamiento.limite_inferior == '' ? 'null' : apalancamiento.limite_inferior,
-      limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
-      deuda_total_estado_balance_periodo_anterior:
-        apalancamiento.deuda_total_estado_balance_periodo_anterior,
-      capital_contable_estado_balance:
-        apalancamiento.capital_contable_estado_balance,
-      operacion: apalancamiento.operacion
+        limite_superior: apalancamiento.limite_superior == '' ? 'null' : apalancamiento.limite_superior,
+        deuda_total_estado_balance_periodo_anterior:
+          apalancamiento.deuda_total_estado_balance_periodo_anterior,
+        capital_contable_estado_balance:
+          apalancamiento.capital_contable_estado_balance,
+        operacion: apalancamiento.operacion
       }
       console.log(JSON.stringify(reporteCredito._12_apalancamiento))
     }
@@ -5139,11 +5130,11 @@ const getAlgoritmoResult = async (req, res, next) => {
       rotacionCtasXCobrarScore: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : rotacion_ctas_x_cobrar.score,
       referenciasProveedoresScore: referencias_comerciales.score,
     }
-    
+
     logger.info(`${fileMethod} | ${customUuid} Los scors resultantes para el algoritmo son: ${JSON.stringify(scores)}`)
-    
+
     let g45 = 0
-    
+
     for (const key in scores) {
       if (key === 'customUuid') continue
       const valorNumerico = parseInt(scores[key], 10)
@@ -5151,7 +5142,7 @@ const getAlgoritmoResult = async (req, res, next) => {
         g45 += valorNumerico
       }
     }
-    
+
     logger.info(`${fileMethod} | ${customUuid} G45: Sumatoria de scors: ${g45}`)
     scores.sumatoria_scors_g45 = g45
     scores.customUuid = customUuid
@@ -5471,7 +5462,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
       `
 
-      
+
       const moneyFormatterAlg = new Intl.NumberFormat('es-MX', {
         style: 'currency',
         currency: 'MXN'
@@ -5726,14 +5717,14 @@ ${JSON.stringify(info_email_error, null, 2)}
       const scoreLcData = await certificationService.getAllScoreLc().catch(() => [])
       const scoreLcRows = Array.isArray(scoreLcData)
         ? scoreLcData
-            .map(
-              ({ score, porcentaje_lc }, idx) => `
+          .map(
+            ({ score, porcentaje_lc }, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${score}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${porcentaje_lc}%</td>
           </tr>`
-            )
-            .join('')
+          )
+          .join('')
         : ''
 
       const scoreClassData = await certificationService
@@ -5743,14 +5734,14 @@ ${JSON.stringify(info_email_error, null, 2)}
       const buildRows = data =>
         Array.isArray(data)
           ? data
-              .map(
-                ({ score_min, score_max, class: clase }, idx) => `
+            .map(
+              ({ score_min, score_max, class: clase }, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${score_min} - ${score_max}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${clase}</td>
           </tr>`
-              )
-              .join('')
+            )
+            .join('')
           : ''
       const scoreClassRowsA = buildRows(scoreClassA)
       const scoreClassRowsB = buildRows(scoreClassB)
@@ -5760,15 +5751,15 @@ ${JSON.stringify(info_email_error, null, 2)}
         (rangos_bd && rangos_bd.cat_score_descripcion_algoritmo) || []
       const scoreDescripcionRows = Array.isArray(scoreDescripcionData)
         ? scoreDescripcionData
-            .map(
-              ({ score, wording_underwriting, porcentaje_lc }, idx) => `
+          .map(
+            ({ score, wording_underwriting, porcentaje_lc }, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${score}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${wording_underwriting}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${porcentaje_lc}%</td>
           </tr>`
-            )
-            .join('')
+          )
+          .join('')
         : ''
 
       const scoreTables = `
@@ -5922,8 +5913,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       const buildRefRowsConsideradas = refs =>
         Array.isArray(refs)
           ? refs
-              .map(
-                (ref, idx) => `
+            .map(
+              (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
@@ -5931,15 +5922,15 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
           </tr>`
-              )
-              .join('')
+            )
+            .join('')
           : ''
 
       const buildRefRowsDescartadas = refs =>
         Array.isArray(refs)
           ? refs
-              .map(
-                (ref, idx) => `
+            .map(
+              (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
@@ -5948,8 +5939,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
           </tr>`
-              )
-              .join('')
+            )
+            .join('')
           : ''
 
       const refConsideradasRows = buildRefRowsConsideradas(referenciasConsideradas)
@@ -6656,26 +6647,26 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const buildFinancialRows = (arr, periodKey, body, prefix) => {
         const map = {}
-        ;(arr || []).forEach(item => {
-          const period = item[periodKey]
-          Object.entries(item || {}).forEach(([k, v]) => {
-            if (
-              [
-                'id_certification',
-                'id_tipo_cifra',
-                'compartir_balance',
-                'compartir_resultado',
-                'compartir_info_empresa',
-                periodKey
-              ].includes(k) ||
-              k.startsWith('periodo') ||
-              k.startsWith('perioro')
-            )
-              return
-            if (!map[k]) map[k] = {}
-            map[k][period] = v
+          ; (arr || []).forEach(item => {
+            const period = item[periodKey]
+            Object.entries(item || {}).forEach(([k, v]) => {
+              if (
+                [
+                  'id_certification',
+                  'id_tipo_cifra',
+                  'compartir_balance',
+                  'compartir_resultado',
+                  'compartir_info_empresa',
+                  periodKey
+                ].includes(k) ||
+                k.startsWith('periodo') ||
+                k.startsWith('perioro')
+              )
+                return
+              if (!map[k]) map[k] = {}
+              map[k][period] = v
+            })
           })
-        })
         return Object.entries(map)
           .map(([field, vals], idx) => {
             const label = partidasLabels[field] || field.replace(/_/g, ' ')
@@ -6695,12 +6686,10 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${formLabel}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${reqPath}</td>
             <td style="padding: 6px 8px; border: 1px solid #ddd;">${field}</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
-            }</td>
-            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${
-              previo !== undefined && previo !== null ? formatMoney(previo) : '-'
-            }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${anterior !== undefined && anterior !== null ? formatMoney(anterior) : '-'
+              }</td>
+            <td style="padding: 6px 8px; border: 1px solid #ddd; text-align:right;">${previo !== undefined && previo !== null ? formatMoney(previo) : '-'
+              }</td>
           </tr>`
           })
           .join('')
@@ -10887,7 +10876,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
       : [];
 
 
-  const filasReferencias = referenciasValidas.map(ref => `
+    const filasReferencias = referenciasValidas.map(ref => `
   <tr>
     <td style="padding: 8px; border: 1px solid #ddd;">${ref.rfc || '-'}</td>
     <td style="padding: 8px; border: 1px solid #ddd;">${ref.razon_social || '-'}</td>
@@ -13112,7 +13101,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       resultados.dias_recomendacion_DSO = parseFloat(resultados.dias_recomendacion_DSO).toFixed(2)
     }
 
-// 
+    // 
     const performance_financiero = {
       // Partidas de estado de balance año anterior
       balance_anio_anterior_indicador: datos_reporte?.partidasFinancieras?.certification_partidas_estado_balance?.[0]?.periodo_anterior ?? '-',
@@ -13275,7 +13264,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     // if (performance_financiero.balance_anio_anterior_deuda_corto_plazo != '-') performance_financiero.balance_anio_anterior_deuda_corto_plazo = formatter.format(performance_financiero.balance_anio_anterior_deuda_corto_plazo);
     // if (performance_financiero.balance_anio_anterior_deuda_total != '-') performance_financiero.balance_anio_anterior_deuda_total = formatter.format(performance_financiero.balance_anio_anterior_deuda_total);
     // if (performance_financiero.balance_anio_anterior_capital_contable != '-') performance_financiero.balance_anio_anterior_capital_contable = formatter.format(performance_financiero.balance_anio_anterior_capital_contable);
-    
+
     if (performance_financiero.balance_anio_previo_anterior_caja_bancos != '-') performance_financiero.balance_anio_previo_anterior_caja_bancos = formatter.format(performance_financiero.balance_anio_previo_anterior_caja_bancos);
     if (performance_financiero.balance_anio_previo_anterior_saldo_clientes != '-') performance_financiero.balance_anio_previo_anterior_saldo_clientes = formatter.format(performance_financiero.balance_anio_previo_anterior_saldo_clientes);
     if (performance_financiero.balance_anio_previo_anterior_saldo_inventarios != '-') performance_financiero.balance_anio_previo_anterior_saldo_inventarios = formatter.format(performance_financiero.balance_anio_previo_anterior_saldo_inventarios);
@@ -16823,7 +16812,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
 
     // Balance
-  // 
+    // 
     strHTML_paso = strHTML_paso.replace(/{_performance_financiero_balance_anio_anterior_indicador_}/g, performance_financiero.balance_anio_anterior_indicador);
     // 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_anterior_caja_bancos_}', performance_financiero.balance_anio_anterior_caja_bancos);
@@ -16916,7 +16905,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_resultado_ejercicios_}', performance_financiero.balance_anio_previo_anterior_resultado_ejercicios);
     strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_otro_capital_}', performance_financiero.balance_anio_previo_anterior_otro_capital);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_total_capital_contable_pat_}', performance_financiero.balance_anio_previo_anterior_total_capital_contable_pat);
-    
+
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_corto_plazo_}', performance_financiero.balance_anio_previo_anterior_deuda_corto_plazo);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_deuda_total_}', performance_financiero.balance_anio_previo_anterior_deuda_total);
     // strHTML_paso = strHTML_paso.replace('{_performance_financiero_balance_anio_previo_anterior_capital_contable_}', performance_financiero.balance_anio_previo_anterior_capital_contable);
@@ -18323,7 +18312,7 @@ const consultaCertificacion = async (customUuid, idEmpresa) => {
 
     const demandas = await certificationService.getDemandas(idCertification)
     logger.info(`${fileMethod} | ${customUuid} | Demandas: ${JSON.stringify(demandas)}`)
-  // 
+    // 
     const partidasFinancieras = await certificationService.getCertificacionPartidaFinanciera(idCertification)
     let data = partidasFinancieras.result
     logger.info(`${fileMethod} | ${customUuid} | Partidax: ${JSON.stringify(data)}`);
