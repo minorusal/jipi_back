@@ -3237,6 +3237,7 @@ WHERE cer.certificacion_id = (
       cpe.acreedores as acreedores_${periodo},
       cpe.inpuestos_x_pagar as inpuestos_x_pagar_${periodo},
       cpe.otros_pasivos as otros_pasivos_${periodo},
+      cpe.total_pasivo_circulante as total_pasivo_circulante_${periodo},
       cpe.total_pasivo_largo_plazo as pasivo_largo_plazo_${periodo},
       cpe.pasivo_diferido as pasivo_diferido_${periodo},
       cpe.resultado_ejercicios_anteriores as resultado_ejercicios_anteriores_${periodo},
