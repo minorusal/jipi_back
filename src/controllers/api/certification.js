@@ -138,6 +138,51 @@ const loadAlgorithmConstants = async () => {
 
 loadAlgorithmConstants()
 
+// Procesa generación de PDF y envío de correo de manera asíncrona
+async function processReporteCreditoAsync ({
+  customUuid,
+  id_cliente,
+  id_proveedor,
+  id_reporte_credito,
+  reporteCredito,
+  id_certification
+}) {
+  const fileMethod = `file: src/controllers/api/certification.js - method: processReporteCreditoAsync`
+  try {
+    const location = await generarReporteCredito(customUuid, id_cliente, id_reporte_credito, reporteCredito, id_certification)
+    reporteCredito.reporte_pdf = location.archivo
+    logger.info(`${fileMethod} | ${customUuid} Reporte de credito pdf: ${JSON.stringify(location)}`)
+    reporteCredito.id_reporte_credito = id_reporte_credito
+    await certificationService.insertReporteCredito(id_certification, reporteCredito, customUuid)
+
+    if (location?.archivo) {
+      const empresa_info = await certificationService.getUsuarioEmail(id_proveedor)
+      const [{ usu_nombre: nombre, usu_email: email }] = empresa_info
+      const templateID = 6967845
+
+      const cliente = await certificationService.consultaEmpresaInfo(id_cliente)
+      const _cliente = cliente?.result?.[0]?.emp_razon_social || 'No encontrado'
+
+      const proveedor = await certificationService.consultaEmpresaInfo(id_proveedor)
+      const _proveedor = proveedor?.result?.[0]?.emp_razon_social || 'No encontrado'
+
+      await sendCompaniEmail({
+        email,
+        nombre,
+        templateID,
+        empresa: _cliente,
+        empresa_envia: _proveedor
+      })
+    }
+  } catch (error) {
+    const errorJSON = serializeError(error)
+    errorJSON.origenError = `Error en proceso as\u00edncrono`
+    errorJSON.customUuid = customUuid
+    await sendEmailNodeMailer({ info_email_error: errorJSON })
+    logger.error(`${fileMethod} | ${customUuid} Error proceso as\u00edncrono: ${error.message}`)
+  }
+}
+
 async function obtenerDemandas(nombre) {
   const block_demandas = await globalConfig.find(item => item.nombre === 'block_demandas').valor
   const block_demandas_url = block_demandas
@@ -5194,50 +5239,17 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     await certificationService.updateSolicitudCredito(monto_solicitado, plazo, id_reporte_credito)
 
-    const location = await generarReporteCredito(customUuid, id_cliente, id_reporte_credito, reporteCredito, id_certification)
-    reporteCredito.reporte_pdf = location.archivo
-    logger.info(`${fileMethod} | ${customUuid} Reporte de credito pdf: ${JSON.stringify(location)}`)
-    logger.info(`${fileMethod} | ${customUuid} Reporte de credito final: ${JSON.stringify(reporteCredito)}`)
-    reporteCredito.id_reporte_credito = id_reporte_credito
-    await certificationService.insertReporteCredito(id_certification, reporteCredito, customUuid)
-
-    if (location?.archivo) {
-      const empresa_info = await certificationService.getUsuarioEmail(id_proveedor);
-      logger.info(`${fileMethod} | ${customUuid} Inicia empresa_info: ${JSON.stringify(empresa_info)}`);
-
-      const [{ usu_nombre: nombre, usu_email: email }] = empresa_info;
-      const templateID = 6967845;
-
-      const cliente = await certificationService.consultaEmpresaInfo(id_cliente)
-      const _cliente = cliente?.result?.[0]?.emp_razon_social || 'No encontrado';
-      logger.info(`${fileMethod} | ${customUuid} cliente: ${JSON.stringify(_cliente,)}`);
-
-      const proveedor = await certificationService.consultaEmpresaInfo(id_proveedor);
-      const _proveedor = proveedor?.result?.[0]?.emp_razon_social || 'No encontrado';
-      logger.info(`${fileMethod} | ${customUuid} proveedor: ${JSON.stringify(
-        {
-          email,
-          nombre,
-          templateID,
-          empresa: _cliente,
-          empresa_envia: _proveedor
-        }
-      )}`);
-
-      const resultado = await sendCompaniEmail({
-        email,
-        nombre,
-        templateID,
-        empresa: _cliente,
-        empresa_envia: _proveedor
-      });
-
-      if (resultado.success) {
-        logger.info(`${fileMethod} | ${customUuid} Correo enviado con éxito a ${email}`);
-      } else {
-        logger.warn(`${fileMethod} | ${customUuid} Error al enviar el correo: ${resultado.error}`);
-      }
-    }
+    // Ejecutar generación de PDF y envío de correo de forma asíncrona
+    processReporteCreditoAsync({
+      customUuid,
+      id_cliente,
+      id_proveedor,
+      id_reporte_credito,
+      reporteCredito,
+      id_certification
+    }).catch(err => {
+      logger.error(`${fileMethod} | ${customUuid} Error en proceso asíncrono: ${err.message}`)
+    })
 
     return res.json({
       error: false,
