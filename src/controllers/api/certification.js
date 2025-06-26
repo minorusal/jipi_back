@@ -3090,8 +3090,12 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
     }
 
     let rotScore = null
+    let metricUsed = null
     const lines = []
-    const formatNum = n => isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
+    const formatNum = n =>
+      isNaN(Number(n))
+        ? '-'
+        : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
 
     // Recorremos todos los rangos con DIO primero
     if (!noDio) {
@@ -3103,6 +3107,7 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
         const limSup = formatNum(sup);
         if (dio >= inf && dio <= sup) {
           rotScore = r;
+          metricUsed = { tipo: 'DIO', valor: dio };
           const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
           lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
           break;
@@ -3123,6 +3128,7 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
         const limSup = formatNum(sup);
         if (dso >= inf && dso <= sup) {
           rotScore = r;
+          metricUsed = { tipo: 'DSO', valor: dso };
           const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
           lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
           break;
@@ -3136,15 +3142,21 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
     if (!rotScore) {
       if (noDso && noDio) {
         rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos'))
+        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DSO y DIO' }
       } else if (noDso) {
         rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en clientes'))
+        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DSO' }
       } else if (noDio) {
         rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en inventarios'))
+        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DIO' }
       }
     }
 
     if (!rotScore) {
       rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
+      if (!metricUsed) {
+        metricUsed = { tipo: null, valor: 'DIO fuera de todos los rangos definidos' }
+      }
     }
 
     if (!rotScore) return { error: true }
@@ -3168,7 +3180,8 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
       dsoMayor90,
       dioMayor90,
-      explicacion: lines.join('\n')
+      explicacion: lines.join('\n'),
+      metricUsed
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -4970,7 +4983,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         parametro_dio: 'null',
         limite_inferior: 'null',
         limite_superior: 'null',
-        explicacion: 'Sin información'
+        explicacion: 'Sin información',
+        metricUsed: { tipo: null, valor: '-' }
       }
     } else {
       logger.info(`${fileMethod} | ${customUuid} Rotacion de cuentas por cobrar para el algoritmo es: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
@@ -4986,7 +5000,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         saldo_cliente_cuenta_x_cobrar: rotacion_ctas_x_cobrar.saldo_cliente_cuenta_x_cobrar,
         limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
         limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior,
-        explicacion: rotacion_ctas_x_cobrar.explicacion
+        explicacion: rotacion_ctas_x_cobrar.explicacion,
+        metricUsed: rotacion_ctas_x_cobrar.metricUsed
       }
     }
 
@@ -6161,12 +6176,17 @@ ${JSON.stringify(info_email_error, null, 2)}
               )} * 100`
             }
           }
-          const resultado =
-            val.parametro_dso ??
-            val.parametro_dio ??
-            val.parametro ??
-            val.valor ??
-            '-'
+          let resultado
+          if (val.metricUsed && val.metricUsed.valor !== undefined) {
+            resultado = val.metricUsed.valor
+          } else {
+            resultado =
+              val.parametro_dso ??
+              val.parametro_dio ??
+              val.parametro ??
+              val.valor ??
+              '-'
+          }
           const num = key.match(/_(\d+)_/)?.[1]
           const etiqueta = labelMap[key] || key.replace(/^_\d+_/, '').replace(/_/g, ' ')
           let titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
