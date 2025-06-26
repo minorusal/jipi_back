@@ -3,6 +3,11 @@
 const mysqlLib = require('../lib/db')
 const certificationService = require('./certification')
 
+// Simple in-memory cache for getGeneralSummary results
+let cachedGeneralSummary = null
+let cachedGeneralSummaryTimestamp = 0
+const GENERAL_SUMMARY_CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
 class AlgorithmService {
   async getLastCertificationId (clientId) {
     const query = `
@@ -67,6 +72,11 @@ class AlgorithmService {
    * These values are not tied to any particular certification.
    */
   async getGeneralSummary () {
+    const now = Date.now()
+    if (cachedGeneralSummary && (now - cachedGeneralSummaryTimestamp) < GENERAL_SUMMARY_CACHE_TTL_MS) {
+      return cachedGeneralSummary
+    }
+
     const ranges = await certificationService.getAllAlgorithmRanges()
 
     const mapTable = (table) => {
@@ -96,7 +106,7 @@ class AlgorithmService {
       })
     }
 
-    return {
+    const summary = {
       paisScore: mapTable('cat_pais_algoritmo'),
       sectorRiesgoScore: mapTable('cat_sector_riesgo_sectorial_algoritmo'),
       capitalContableScore: mapTable('cat_capital_contable_algoritmo'),
@@ -115,6 +125,10 @@ class AlgorithmService {
       referenciasProveedoresScore: mapTable('cat_resultado_referencias_proveedores_algoritmo'),
       scoreDescripcion: mapTable('cat_score_descripcion_algoritmo')
     }
+
+    cachedGeneralSummary = summary
+    cachedGeneralSummaryTimestamp = now
+    return summary
   }
 
   /**
