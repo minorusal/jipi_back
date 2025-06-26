@@ -1787,19 +1787,19 @@ WHERE cer.certificacion_id = (
       'cat_score_descripcion_algoritmo'
     ];
 
-    const results = {};
+    const queries = tables.map(table => {
+      const queryString = `SELECT * FROM ${table};`;
+      return mysqlLib
+        .query(queryString)
+        .then(({ result }) => [table, result])
+        .catch(error => {
+          logger.error(`Error fetching ranges for table ${table}: ${error.message}`);
+          return [table, []];
+        });
+    });
 
-    for (const table of tables) {
-      try {
-        const queryString = `SELECT * FROM ${table};`;
-        const { result } = await mysqlLib.query(queryString);
-        results[table] = result;
-      } catch (error) {
-        logger.error(`Error fetching ranges for table ${table}: ${error.message}`);
-        results[table] = [];
-      }
-    }
-
+    const entries = await Promise.all(queries);
+    const results = Object.fromEntries(entries);
     return results;
   }
 
