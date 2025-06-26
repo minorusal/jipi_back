@@ -18297,7 +18297,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_mercado_objetivo_importaciones_display_}', _mercado_objetivo_importaciones_display_);
     strHTML_paso = strHTML_paso.replace('{_mercado_objetivo_exportaciones_display_}', _mercado_objetivo_exportaciones_display_);
     //
-    strHTML_paso = strHTML_paso.replace('{_demandas_mensaje_}', mensaje);
+    strHTML_paso = strHTML_paso.replace(/{_demandas_mensaje_}/g, mensaje);
 
     const options = {
       format: "A4",
