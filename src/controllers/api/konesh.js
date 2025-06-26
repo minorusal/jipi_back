@@ -201,7 +201,9 @@ exports.validaRfcKonesh = async ({ rfc, razon_social, idEmpresa, tipo, keyCipher
   }
 
   const headers = { headers: { "Content-Type": "application/json" } }
+  const startTs = Date.now()
   const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
+  const responseTime = Date.now() - startTs
 
   const data = konesh_api.data
 
@@ -229,6 +231,27 @@ exports.validaRfcKonesh = async ({ rfc, razon_social, idEmpresa, tipo, keyCipher
     transactionResponse02: await descifra_konesh(data.transactionResponse02),
     transactionResponse03: await descifra_konesh(data.transactionResponse03),
     transactionResponse04: await descifra_konesh(data.transactionResponse04),
+  }
+
+  try {
+    await koneshService.saveKoneshResponse({
+      emp_id: idEmpresa,
+      rfc,
+      razon_social_req: razon_social,
+      request_ts: new Date(startTs).toISOString().slice(0, 19).replace('T', ' '),
+      response_time_ms: responseTime,
+      http_status: konesh_api.status,
+      konesh_status: konesh_api_des.transactionResponse01?.[0]?.data02 || null,
+      error_message: null,
+      name_sat: konesh_api_des.transactionResponse01?.[0]?.data04 || null,
+      postal_code: konesh_api_des.transactionResponse01?.[0]?.data05 || null,
+      transaction_id: konesh_api_des.transactionResponse02 || null,
+      transaction_date: konesh_api_des.transactionResponse03 || null,
+      node: konesh_api_des.transactionResponse04 || null,
+      raw_response: data
+    })
+  } catch (err) {
+    logger.error(`Error saving konesh response log: ${err.message}`)
   }
 
   await koneshService.saveKonesh(konesh_api_des)
