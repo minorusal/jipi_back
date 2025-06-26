@@ -3836,6 +3836,7 @@ WHERE cer.certificacion_id = (
     const queryString = `
     SELECT
       deuda_corto_plazo,
+      otros_pasivos,
       tipo,
       periodo_actual,
       periodo_anterior,
