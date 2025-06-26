@@ -3042,10 +3042,14 @@ const getScorePaybackFromSummary = async (
       estadoBalanceAnterior?.pasivo_diferido_anterior ?? 0
     )
     const pasivoCirculanteAnterior =
-      parseFloat(estadoBalanceAnterior?.proveedores_anterior ?? 0) +
-      parseFloat(estadoBalanceAnterior?.acreedores_anterior ?? 0) +
-      parseFloat(estadoBalanceAnterior?.inpuestos_x_pagar_anterior ?? 0) +
-      parseFloat(estadoBalanceAnterior?.otros_pasivos_anterior ?? 0)
+      calculoBalance?.total_pasivo_circulante_anterior != null
+        ? parseFloat(calculoBalance.total_pasivo_circulante_anterior)
+        : (
+            parseFloat(estadoBalanceAnterior?.proveedores_anterior ?? 0) +
+            parseFloat(estadoBalanceAnterior?.acreedores_anterior ?? 0) +
+            parseFloat(estadoBalanceAnterior?.inpuestos_x_pagar_anterior ?? 0) +
+            parseFloat(estadoBalanceAnterior?.otros_pasivos_anterior ?? 0)
+          )
 
     const totalPasivoLargoPlazo =
       pasivoLargoPlazoAnterior + pasivoDiferidoAnterior + pasivoCirculanteAnterior
