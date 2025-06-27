@@ -5824,7 +5824,8 @@ ${JSON.stringify(info_email_error, null, 2)}
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.rfc ?? '-'}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.razon_social ?? '-'}</td>
-            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.estatus_referencia ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || '-'}</td>
           </tr>`
             )
             .join('')
@@ -5862,6 +5863,7 @@ ${JSON.stringify(info_email_error, null, 2)}
               <th style="background-color: #000; color: #fff;">ID</th>
               <th>RFC</th>
               <th>Razón social</th>
+              <th>Vigencia</th>
               <th>Motivo descarte</th>
             </tr>
           </thead>
