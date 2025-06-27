@@ -17530,6 +17530,13 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       </p>
     `;
 
+    if (datos_reporte?.demandas) {
+      datos_reporte.demandas.sort((a, b) => {
+        const fechaA = a.fecha_demanda && a.fecha_demanda !== 'undefined' ? new Date(a.fecha_demanda) : new Date(0);
+        const fechaB = b.fecha_demanda && b.fecha_demanda !== 'undefined' ? new Date(b.fecha_demanda) : new Date(0);
+        return fechaB - fechaA; // Orden descendente (más reciente primero)
+      });
+    }
 
     strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.slice(0, 5).map(
       (demanda, i) => (`     
