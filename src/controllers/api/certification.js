@@ -5942,7 +5942,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           value = '-'
         }
         let descripcion = '-'
-        if (rangos[key] && typeof rangos[key] === 'object') {
+        if (Number(version_algoritmo) === 2 && Number(value) === 0) {
+          descripcion = 'Se ejecuta v2 de algoritmo el score por default es 0'
+        } else if (rangos[key] && typeof rangos[key] === 'object') {
           descripcion =
             rangos[key].descripcion ?? rangos[key].caso ?? rangos[key].tipo ?? '-'
         }
