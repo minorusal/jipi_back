@@ -537,6 +537,7 @@ async function guardarYEnviarReporte (reporte, scores, datosCliente) {
 
 /**
  * Orquesta la ejecución completa del nuevo algoritmo.
+ * Devuelve el reporte, los scores calculados y el score final.
  */
 async function getAlgoritmoResultV2 (req, res, next) {
   const fileMethod = 'controllers/api/creditEvaluation.js - getAlgoritmoResultV2'
@@ -564,6 +565,7 @@ async function getAlgoritmoResultV2 (req, res, next) {
     return res.json({
       error: false,
       reporte,
+      score: scores.wording.score,
       scores: { ...scores, montoSugerido }
     })
   } catch (err) {
