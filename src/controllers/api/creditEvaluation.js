@@ -5,6 +5,7 @@ const certificationService = require('../../services/certification')
 const algorithmService = require('../../services/algorithm')
 const utilitiesService = require('../../services/utilities')
 const logger = require('../../utils/logs/logger')
+const { getLimits } = require('../../utils/numberUtils')
 
 // Valores por defecto de configuración del algoritmo
 let algorithmConstants = {
@@ -106,16 +107,55 @@ async function calcularVariablesAlgoritmo (id_certification, algoritmo_v, parame
     sector,
     capital,
     plantilla,
-    ventas
+    ventas,
+    clienteFinal,
+    tiempoActividad,
+    influenciaControlante,
+    tipoCifras,
+    incidenciasLegales,
+    evolucionVentas,
+    apalancamiento,
+    flujoNeto,
+    payback,
+    rotacionCtas,
+    referenciasComerciales
   ] = await Promise.all([
     getCountryScore(id_certification, algoritmo_v, parametros),
     getSectorScore(id_certification, algoritmo_v, parametros),
     getCapitalScore(id_certification, algoritmo_v, parametros),
     getPlantillaScore(id_certification, algoritmo_v, parametros),
-    getVentasScore(id_certification, algoritmo_v, parametros)
+    getVentasScore(id_certification, algoritmo_v, parametros),
+    getClienteFinalScore(id_certification, algoritmo_v, parametros),
+    getTiempoActividadScore(id_certification, algoritmo_v, parametros),
+    getInfluenciaControlanteScore(id_certification, algoritmo_v, parametros),
+    getTipoCifrasScore(id_certification, algoritmo_v, parametros),
+    getIncidenciasLegalesScore(id_certification, algoritmo_v, parametros),
+    getEvolucionVentasScore(id_certification, algoritmo_v, parametros),
+    getApalancamientoScore(id_certification, algoritmo_v, parametros),
+    getFlujoNetoScore(id_certification, algoritmo_v, parametros),
+    getPaybackScore(id_certification, algoritmo_v, parametros),
+    getRotacionCtasXCobrarScore(id_certification, algoritmo_v, parametros),
+    getReferenciasComercialesScore(id_certification, algoritmo_v, parametros)
   ])
 
-  return { pais, sector, capital, plantilla, ventas }
+  return {
+    pais,
+    sector,
+    capital,
+    plantilla,
+    ventas,
+    clienteFinal,
+    tiempoActividad,
+    influenciaControlante,
+    tipoCifras,
+    incidenciasLegales,
+    evolucionVentas,
+    apalancamiento,
+    flujoNeto,
+    payback,
+    rotacionCtas,
+    referenciasComerciales
+  }
 }
 
 async function getCountryScore (id_certification, algoritmo_v, parametros) {
@@ -163,6 +203,192 @@ async function getVentasScore (id_certification, algoritmo_v, parametros) {
   const config = await certificationService.getScoreVentasAnualesAnioAnterior(ventas.ventas_anuales)
   if (!config) return { error: true }
   return { nombre: config.nombre, valor_algoritmo: config.valor_algoritmo }
+}
+
+async function getClienteFinalScore (id_certification, algoritmo_v, parametros) {
+  const info = await certificationService.getScoreClienteFinal(id_certification, { v_alritmo: algoritmo_v })
+  if (!info) return { error: true }
+  const cfg = parametros.sectorClienteFinalScore.find(s => s.nombre === info.nombre)
+  const score = cfg ? (algoritmo_v === 2 ? cfg.v2 : cfg.v1) : info.valor_algoritmo
+  return { nombre: info.nombre, valor_algoritmo: score }
+}
+
+async function getTiempoActividadScore (id_certification, algoritmo_v, parametros) {
+  const info = await certificationService.getScoreTiempoActividad(id_certification)
+  if (!info) return { error: true }
+  const cfg = parametros.tiempoActividadScore.find(t => t.nombre === info.nombre)
+  const score = cfg ? (algoritmo_v === 2 ? cfg.v2 : cfg.v1) : info.valor_algoritmo
+  return { nombre: info.nombre, valor_algoritmo: score }
+}
+
+async function getInfluenciaControlanteScore (id_certification, algoritmo_v, parametros) {
+  const accionistas = await certificationService.getAccionistas(id_certification)
+  const controlante = accionistas && accionistas.result ? accionistas.result.find(a => parseInt(a.controlante) === 1) : null
+  const regla = controlante ? 'Positivo' : 'Desconocido'
+  const cat = await certificationService.getInfluenciaControlanteScore(regla)
+  if (!cat) return { error: true }
+  return { regla, valor_algoritmo: cat.valor_algoritmo }
+}
+
+async function getTipoCifrasScore (id_certification, algoritmo_v, parametros) {
+  const idTipo = await certificationService.getTipoCifra(id_certification)
+  if (idTipo == null) return { error: true }
+  const info = await certificationService.getScoreTipoCifra(idTipo)
+  if (!info) return { error: true }
+  const cfg = parametros.tipoCifrasScore.find(t => t.nombre === info.nombre)
+  const score = cfg ? (algoritmo_v === 2 ? cfg.v2 : cfg.v1) : info.valor_algoritmo
+  return { descripcion: info.nombre, valor_algoritmo: score }
+}
+
+async function getIncidenciasLegalesScore (id_certification, algoritmo_v, parametros) {
+  const data = await certificationService.getDemandas(id_certification)
+  if (!data || !data.result) return { error: true }
+  let countMerc = 0
+  let penal = false
+  let tipo = null
+  let fecha = null
+  for (const inc of data.result) {
+    tipo = inc.tipo_demanda
+    fecha = inc.fecha_demanda
+    if (tipo === 'mercantil') {
+      const diff = (new Date() - new Date(fecha)) / (1000 * 60 * 60 * 24)
+      if (diff <= 365) countMerc++
+    } else if (tipo === 'penal') {
+      penal = true
+    }
+  }
+  let caso = 'NINGUNA'
+  if (penal) caso = '>= 1 INCIDENCIA PENAL ( no importando el año)'
+  else if (countMerc === 1) caso = '1 INCIDENCIA MERCANTIL <= 1 AÑO'
+  else if (countMerc >= 2) caso = '2 INCIDENCIAS MERCANTILES <= 1 AÑO'
+  const cat = parametros.incidenciasLegalesScore.find(i => i.nombre === caso)
+  if (!cat) return { error: true }
+  const score = algoritmo_v === 2 ? cat.v2 : cat.v1
+  return { score, tipo: penal || countMerc ? tipo : null, fecha: penal || countMerc ? fecha : null, caso: cat.nombre }
+}
+
+async function getEvolucionVentasScore (id_certification, algoritmo_v, parametros) {
+  const [anteriorRow, previoRow] = await Promise.all([
+    certificationService.getVentasAnualesAnioAnterior(id_certification),
+    certificationService.getVentasAnualesAnioPrevioAnterior(id_certification)
+  ])
+  if (!anteriorRow || !previoRow) return { error: true }
+  const anterior = parseFloat(anteriorRow.ventas_anuales)
+  const previo = parseFloat(previoRow.ventas_anuales)
+  const evolucion = ((anterior - previo) / previo) * 100
+  if (!Number.isFinite(evolucion)) {
+    return {
+      score: '0',
+      nombre: `(${anterior} - ${previo}) / ${previo} * 100`,
+      rango_numerico: 'null'
+    }
+  }
+  const conf = parametros.evolucionVentasScore.find(e => {
+    const [inf, sup] = getLimits(e)
+    return evolucion >= inf && evolucion <= sup
+  })
+  if (!conf) return { error: true }
+  const score = algoritmo_v === 2 ? conf.v2 : conf.v1
+  return { nombre: conf.nombre, rango_numerico: conf.rango, valor_algoritmo: score }
+}
+
+async function getApalancamientoScore (id_certification, algoritmo_v, parametros) {
+  const [pasivo, capital] = await Promise.all([
+    certificationService.pasivoLargoPlazoPCA(id_certification),
+    certificationService.capitalContablePCA(id_certification)
+  ])
+  if (!pasivo || !capital) return { error: true }
+  const valor = parseFloat(pasivo.total_pasivo_largo_plazo) / parseFloat(capital.capital_contable)
+  if (!Number.isFinite(valor)) return { error: true }
+  const config = parametros.apalancamientoScore.find(a => {
+    return valor >= parseFloat(a.limite_inferior) && valor <= parseFloat(a.limite_superior)
+  })
+  if (!config) return { error: true }
+  const score = algoritmo_v === 2 ? config.v2 : config.v1
+  return { descripcion_apalancamiento: config.nombre, valor_algoritmo: score, apalancamiento: valor }
+}
+
+async function getFlujoNetoScore (id_certification, algoritmo_v, parametros) {
+  const data = await certificationService.cajaBancoPCA(id_certification)
+  if (!data) return { error: true }
+  const config = parametros.flujoNetoScore.find(c => {
+    const [inf, sup] = getLimits(c)
+    return data.caja_bancos >= inf && data.caja_bancos <= sup
+  })
+  if (!config) return { error: true }
+  const score = algoritmo_v === 2 ? config.v2 : config.v1
+  return { descripcion: config.nombre, valor_algoritmo: score }
+}
+
+async function getPaybackScore (id_certification, algoritmo_v, parametros) {
+  const [pasivoData, utilidad] = await Promise.all([
+    certificationService.totalPasivoCirculanteAnterior(id_certification),
+    certificationService.utilidadOperativa(id_certification)
+  ])
+  if (!pasivoData || !utilidad) return { error: true }
+  const deuda = parseFloat(pasivoData.total_pasivo_circulante)
+  const util = parseFloat(utilidad.utilidad_operativa)
+  if (util === 0) return { score: 'N/A' }
+  const payback = deuda / util
+  const info = await certificationService.getScorePayback(payback)
+  if (!info) return { error: true }
+  return { descripcion: info.nombre, valor_algoritmo: info.valor_algoritmo, payback }
+}
+
+async function getRotacionCtasXCobrarScore (id_certification, algoritmo_v, parametros) {
+  const [saldoCli, ventas, inventarios, costoVentas] = await Promise.all([
+    certificationService.saldoClienteCuentaXCobrar(id_certification),
+    certificationService.ventasAnuales(id_certification),
+    certificationService.saldoInventarios(id_certification),
+    certificationService.costoVentasAnuales(id_certification)
+  ])
+  if (!saldoCli || !ventas || !inventarios || !costoVentas) return { error: true }
+  const dso = ventas.ventas_anuales ? (parseFloat(saldoCli.saldo_cliente_cuenta_x_cobrar) / parseFloat(ventas.ventas_anuales)) * 360 : 0
+  const dio = costoVentas.costo_ventas_anuales ? (parseFloat(inventarios.saldo_inventarios) / parseFloat(costoVentas.costo_ventas_anuales)) * 360 : 0
+  const info = await certificationService.getScoreRotacion(Math.round(dso), Math.round(dio))
+  if (!info) return { error: true }
+  return { descripcion: info.nombre, valor_algoritmo: info.valor_algoritmo }
+}
+
+async function getReferenciasComercialesScore (id_certification, algoritmo_v, parametros) {
+  const refs = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
+  if (!refs) return { error: true }
+  if (refs.length === 0) {
+    const sin = await certificationService.getResultadoReferenciaById(6, { v_alritmo: algoritmo_v })
+    if (!sin) return { error: true }
+    return { descripcion: sin.nombre, valor_algoritmo: sin.valor_algoritmo }
+  }
+  let buenas = 0
+  let malas = 0
+  let regulares = 0
+  let porcentaje_deuda = 0
+  let dias_atraso = 0
+  for (const r of refs) {
+    const [cal] = await certificationService.getCalificacionsReferencias(r.id_certification_referencia_comercial)
+    if (!cal) return { error: true }
+    const c = String(cal.calificacion_referencia || '').toLowerCase()
+    if (c === 'mala') {
+      malas++
+      porcentaje_deuda = Math.max(porcentaje_deuda, cal.porcentaje_deuda || 0)
+      dias_atraso = Math.max(dias_atraso, cal.dias_atraso || 0)
+    } else if (c === 'buena') buenas++
+    else if (c === 'regular') regulares++
+  }
+  let catalogoId = 6
+  if (buenas === 0 && malas > 0 && regulares === 0 && porcentaje_deuda >= algorithmConstants.ref_malas_porcentaje && dias_atraso >= algorithmConstants.ref_malas_dias) {
+    catalogoId = 4
+  } else if (buenas >= 2 && buenas <= 3 && malas === 0 && regulares === 0) {
+    catalogoId = 2
+  } else if (buenas >= 4 && malas === 0 && regulares === 0) {
+    catalogoId = 1
+  } else if (regulares > 0) {
+    catalogoId = 5
+  } else if (buenas === 1 && malas === 0 && regulares === 0) {
+    catalogoId = 3
+  }
+  const cat = await certificationService.getResultadoReferenciaById(catalogoId, { v_alritmo: algoritmo_v })
+  if (!cat) return { error: true }
+  return { descripcion: cat.nombre, valor_algoritmo: cat.valor_algoritmo }
 }
 
 /**
