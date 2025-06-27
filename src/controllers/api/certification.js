@@ -3905,163 +3905,6 @@ const checkInfoAlgoritmo = async (req, res, next) => {
   }
 }
 
-const cuentaConCapital = async (idCertification, customUuid) => {
-  const fileMethod = `file: src/controllers/api/certification.js - method: cuentaConCapital`
-  try {
-    logger.info(`${fileMethod} | ${customUuid} Validación 1: Se evalua [Con al menos no tener un periodo contable se va a algoritmo v2]`)
-
-    const capital_anterior = await certificationService.obtieneCapitalAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} El capital anterior obtenido es: ${JSON.stringify(capital_anterior)}`)
-
-    const capital_previo_anterior = await certificationService.obtieneCapitalPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} El capital previo anterior obtenido es: ${JSON.stringify(capital_previo_anterior)}`)
-
-    const isEmpty = (value) => value === '0.00' || value === '0' || value === undefined || value === null || value === 0
-
-    if (isEmpty(capital_anterior[0].capital) || isEmpty(capital_previo_anterior[0].capital)) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
-      return false
-    } else {
-      logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
-      return true
-    }
-  } catch (error) {
-    logger.error(`${fileMethod} | ${customUuid} Se retorna false por error catch: ${error}`)
-    return false
-  }
-}
-
-const cuentaCajaBancos = async (idCertification, customUuid) => {
-  const fileMethod = `file: src/controllers/api/certification.js - method: cuentaCajaBancos`
-  try {
-    logger.info(`${fileMethod} | ${customUuid} Validación 2: Se evalua [Si en cualquier periodo faltan caja y bancos e inventarios se usa algoritmo v2]`)
-
-    const caja_bancos_anterior = await certificationService.obtieneCajaBancosAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Caja bancos anterior obtenido es: ${JSON.stringify(caja_bancos_anterior)}`)
-
-    const caja_bancos_previo_anterior = await certificationService.obtieneCajaBancosPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Caja bancos previo anterior obtenido es: ${JSON.stringify(caja_bancos_previo_anterior)}`)
-
-    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(idCertification)
-    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(idCertification)
-
-    const caja_banco_anterior = caja_bancos_anterior[0].caja_bancos
-    const caja_banco_previo_anterior = caja_bancos_previo_anterior[0].caja_bancos
-
-    const inventario_anterior = inventarios_anterior[0].inventarios
-    const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
-
-    const isEmpty = value => value === '0.00' || value === undefined || value === null || value === 0
-
-    const faltaPeriodoAnterior =
-      isEmpty(caja_banco_anterior) && isEmpty(inventario_anterior)
-    const faltaPeriodoPrevio =
-      isEmpty(caja_banco_previo_anterior) && isEmpty(inventario_previo_anterior)
-
-    if (faltaPeriodoAnterior || faltaPeriodoPrevio) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Caja y bancos e inventarios ausentes en al menos un periodo]`)
-      logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
-      return false
-    }
-
-    logger.info(`${fileMethod} | ${customUuid} NO se cumple la condición: [Caja y bancos e inventarios ausentes en al menos un periodo]`)
-    logger.info(`${fileMethod} | ${customUuid} caja_banco_anterior: ${caja_banco_anterior}`)
-    logger.info(`${fileMethod} | ${customUuid} caja_banco_previo_anterior: ${caja_banco_previo_anterior}`)
-    logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
-    logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
-    return true
-  } catch (error) {
-    logger.error(`${fileMethod} | ${customUuid} Se retorna false por error catch: ${error}`)
-    return false
-  }
-}
-
-const cuentaClienteCuentasXCobrar = async (idCertification, customUuid) => {
-  const fileMethod = `file: src/controllers/api/certification.js - method: cuentaClienteCuentasXCobrar`
-  try {
-    logger.info(`${fileMethod} | ${customUuid} Validación 3: Se evalua [Con no tener clientes y cuentas por cobrar mas inventarios en cualquier periodo contable se va a algoritmo v2]`)
-
-    const cliente_cuentas_x_cobrar_anterior = await certificationService.obtieneClienteCuentasCobrarAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Clientes y cuentas por cobrar anterior obtenido es: ${JSON.stringify(cliente_cuentas_x_cobrar_anterior)}`)
-
-    const cliente_cuentas_x_cobrar_previo_anterior = await certificationService.obtieneClienteCuentasCobrarPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Clientes y cuentas por cobrar previo anterior obtenido es: ${JSON.stringify(cliente_cuentas_x_cobrar_previo_anterior)}`)
-
-    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_anterior)}`)
-
-    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(idCertification)
-    logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_previo_anterior)}`)
-
-    const clientes_cuentas_x_cobrar_anterior = cliente_cuentas_x_cobrar_anterior[0].saldo_cliente_cuenta_x_cobrar
-    const clientes_cuentas_x_cobrar_previo_anterior = cliente_cuentas_x_cobrar_previo_anterior[0].saldo_cliente_cuenta_x_cobrar
-
-    const inventario_anterior = inventarios_anterior[0].inventarios
-    const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
-
-    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
-
-    const faltaPeriodoAnterior =
-      isEmpty(clientes_cuentas_x_cobrar_anterior) &&
-      isEmpty(inventario_anterior)
-
-    const faltaPeriodoPrevio =
-      isEmpty(clientes_cuentas_x_cobrar_previo_anterior) &&
-      isEmpty(inventario_previo_anterior)
-
-    if (faltaPeriodoAnterior || faltaPeriodoPrevio) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Clientes y cuentas por cobrar e inventarios ausentes en al menos un periodo]`)
-      logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_anterior: ${clientes_cuentas_x_cobrar_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} clientes_cuentas_x_cobrar_previo_anterior: ${clientes_cuentas_x_cobrar_previo_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
-      return false
-    }
-
-    return true
-
-  } catch (error) {
-    logger.error(`${fileMethod} | ${customUuid} Se retorna false por error catch: ${error}`)
-    return false
-  }
-}
-
-const cuentaInventarios = async (id_certification, customUuid) => {
-  const fileMethod = `file: src/controllers/api/certification.js - method: cuentaInventarios`
-  try {
-    logger.info(`${fileMethod} | ${customUuid} Validación 4: Se evalua [Con no tener inventarios mas clientes en cualquier periodo contable se va a algoritmo v2]`)
-
-    const inventarios_anterior = await certificationService.obtieneInventariosAnterior(id_certification)
-    logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_anterior)}`)
-
-    const inventarios_previo_anterior = await certificationService.obtieneInventariosPrevioAnterior(id_certification)
-    logger.info(`${fileMethod} | ${customUuid} Inventarios previo anterior obtenido es: ${JSON.stringify(inventarios_previo_anterior)}`)
-
-    const inventario_anterior = inventarios_anterior[0].inventarios
-    const inventario_previo_anterior = inventarios_previo_anterior[0].inventarios
-
-    const isEmpty = (value) => value === '0.00' || value === undefined || value === null || value === 0
-
-    if (
-      isEmpty(inventario_anterior) ||
-      isEmpty(inventario_previo_anterior)
-    ) {
-      logger.info(`${fileMethod} | ${customUuid} SI se cumple la condición: [Con al menos no tener un periodo contable se va a algoritmo v2]`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_anterior: ${inventario_anterior}`)
-      logger.info(`${fileMethod} | ${customUuid} inventario_previo_anterior: ${inventario_previo_anterior}`)
-      return false
-    }
-
-    return true
-
-  } catch (error) {
-    logger.error(`${fileMethod} | ${customUuid} Se retorna false por error catch: ${error}`)
-    return false
-  }
-}
 
 const obtienePartidasFinancieras = async (id_certification, customUuid) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: obtienePartidasFinancieras`
@@ -4090,10 +3933,6 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       return buildResponse('No existen partidas financieras', 2)
     }
 
-    // Se omiten las validaciones de capital contable, caja y bancos e inventarios
-    // para la selección de versión, pues no están contempladas en la tabla de reglas.
-
-
     const [balanceAnterior] = await certificationService.getEstadoBalanceData(
       id_certification,
       'anterior'
@@ -4110,74 +3949,81 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       id_certification,
       'previo_anterior'
     )
+    const [capitalAnterior] = await certificationService.obtieneCapitalAnterior(
+      id_certification
+    )
+    const [capitalPrevio] = await certificationService.obtieneCapitalPrevioAnterior(
+      id_certification
+    )
 
-    const provA = balanceAnterior?.proveedores_anterior
-    const provP = balancePrevio?.proveedores_previo_anterior
-    if (isEmpty(provA) && isEmpty(provP)) {
-      return buildResponse('Proveedores sin datos en ambos periodos', 2)
+    // 1. Capital contable faltante
+    if (isEmpty(capitalAnterior?.capital) || isEmpty(capitalPrevio?.capital)) {
+      return buildResponse('Capital contable faltante en al menos un periodo', 2)
     }
 
+    // 2. Caja y Bancos junto con Inventarios faltantes en cualquier periodo
+    const cajaA = balanceAnterior?.caja_bancos_anterior
+    const cajaP = balancePrevio?.caja_bancos_previo_anterior
+    const invA = balanceAnterior?.inventarios_anterior
+    const invP = balancePrevio?.inventarios_previo_anterior
+    if ((isEmpty(cajaA) && isEmpty(invA)) || (isEmpty(cajaP) && isEmpty(invP))) {
+      return buildResponse('Faltan Caja y Bancos junto con Inventarios', 2)
+    }
+
+    // 3. Clientes y Cuentas por Cobrar junto con Proveedores faltantes
+    const cliA = balanceAnterior?.cliente_anterior
+    const cliP = balancePrevio?.cliente_previo_anterior
+    const provA = balanceAnterior?.proveedores_anterior
+    const provP = balancePrevio?.proveedores_previo_anterior
+    if ((isEmpty(cliA) && isEmpty(provA)) || (isEmpty(cliP) && isEmpty(provP))) {
+      return buildResponse('Clientes y Cuentas por Cobrar junto con Proveedores faltantes', 2)
+    }
+
+    // 4. Proveedores + Acreedores ausentes en ambos periodos
     const acreA = balanceAnterior?.acreedores_anterior
     const acreP = balancePrevio?.acreedores_previo_anterior
     if (
-      (isEmpty(provA) || isEmpty(acreA)) &&
-      (isEmpty(provP) || isEmpty(acreP))
+      isEmpty(provA) &&
+      isEmpty(acreA) &&
+      isEmpty(provP) &&
+      isEmpty(acreP)
     ) {
-      return buildResponse(
-        'Proveedores y acreedores sin datos en ambos periodos',
-        2
-      )
+      return buildResponse('Proveedores y Acreedores sin datos en ambos periodos', 2)
     }
 
+    // 5. Ventas
     const ventasA = resultadoAnterior?.ventas_anuales_anterior
     const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
-    if (
-      isEmpty(ventasA) ||
-      isEmpty(ventasP) ||
-      parseNumber(ventasA) === 0 ||
-      parseNumber(ventasP) === 0
-    ) {
+    if (isEmpty(ventasA) || isEmpty(ventasP)) {
       return buildResponse('Ventas no reportadas en al menos un periodo', 2)
     }
 
+    // 6. Costo de Ventas
     const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
     const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
-    if (
-      isEmpty(costoA) ||
-      isEmpty(costoP) ||
-      parseNumber(costoA) === 0 ||
-      parseNumber(costoP) === 0
-    ) {
-      return buildResponse('No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable', 2)
+    if (isEmpty(costoA) || isEmpty(costoP)) {
+      return buildResponse('Costo de Ventas no reportado en al menos un periodo', 2)
     }
 
+    // 7. Utilidad Bruta
     const ubA = resultadoAnterior?.utilidad_bruta_anterior
     const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
-    if (
-      isEmpty(ubA) ||
-      isEmpty(ubP) ||
-      parseNumber(ubA) === 0 ||
-      parseNumber(ubP) === 0
-    ) {
-      return buildResponse('No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable', 2)
+    if (isEmpty(ubA) || isEmpty(ubP)) {
+      return buildResponse('Utilidad Bruta no reportada en al menos un periodo', 2)
     }
 
+    // 8. Utilidad Operativa
     const uoA = resultadoAnterior?.utilidad_operativa_anterior
     const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
-    if (
-      isEmpty(uoA) ||
-      isEmpty(uoP) ||
-      parseNumber(uoA) === 0 ||
-      parseNumber(uoP) === 0
-    ) {
-      return buildResponse('Utilidad operativa no reportada en al menos un periodo', 2)
+    if (isEmpty(uoA) || isEmpty(uoP)) {
+      return buildResponse('Utilidad Operativa no reportada en al menos un periodo', 2)
     }
 
+    // 9. Utilidad Neta
     const unA = resultadoAnterior?.utilidad_neta_anterior
     const unP = resultadoPrevio?.utilidad_neta_previo_anterior
-    const isEmptyUtilidadNeta = v => isEmpty(v) || parseNumber(v) === 0
-    if (isEmptyUtilidadNeta(unA) || isEmptyUtilidadNeta(unP)) {
-      return buildResponse('Utilidad neta no reportada en al menos un periodo', 2)
+    if (isEmpty(unA) || isEmpty(unP)) {
+      return buildResponse('Utilidad Neta no reportada en al menos un periodo', 2)
     }
 
 
@@ -5547,9 +5393,6 @@ ${JSON.stringify(info_email_error, null, 2)}
       const cxcAnterior = val(balAnterior.saldo_cliente_cuenta_x_cobrar, 'periodo anterior')
       const cxcPrevio = val(balPrevio.saldo_cliente_cuenta_x_cobrar, 'periodo previo anterior')
 
-      const inventariosEncontrados =
-        balAnterior.saldo_inventarios != null || balPrevio.saldo_inventarios != null
-
       const provAnterior = val(balAnterior.proveedores, 'periodo anterior')
       const provPrevio = val(balPrevio.proveedores, 'periodo previo anterior')
       const acreAnterior = val(balAnterior.acreedores, 'periodo anterior')
@@ -5611,22 +5454,19 @@ ${JSON.stringify(info_email_error, null, 2)}
         (isMissing(balPrevio.saldo_inventarios) || isZero(balPrevio.saldo_inventarios))
 
       const resCajaInv = faltaCajaInvAnterior || faltaCajaInvPrevio
-      const faltaClientesInvAnterior =
+
+      const faltaClientesProvAnterior =
         (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
           isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
-        (isMissing(balAnterior.saldo_inventarios) ||
-          isZero(balAnterior.saldo_inventarios))
+        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores))
 
-      const faltaClientesInvPrevio =
+      const faltaClientesProvPrevio =
         (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
           isZero(balPrevio.saldo_cliente_cuenta_x_cobrar)) &&
-        (isMissing(balPrevio.saldo_inventarios) ||
-          isZero(balPrevio.saldo_inventarios))
-
-      const resClientesInv = faltaClientesInvAnterior || faltaClientesInvPrevio
-      const resProveedores =
-        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores)) &&
         (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores))
+
+      const resClientesProv = faltaClientesProvAnterior || faltaClientesProvPrevio
+
       const resProvAcre =
         (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores) ||
           isMissing(balAnterior.acreedores) || isZero(balAnterior.acreedores)) &&
@@ -5657,16 +5497,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         isMissing(resPrevio.utilidad_neta) ||
         isZero(resAnterior.utilidad_neta) ||
         isZero(resPrevio.utilidad_neta)
-      const msg = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
-      const msgCajaInv = c => {
-        if (!c) {
-          return '❌ No se cumple la condición.'
-        }
-        const periodos = []
-        if (faltaCajaInvAnterior) periodos.push('periodo anterior')
-        if (faltaCajaInvPrevio) periodos.push('periodo previo anterior')
-        return `✅ Se cumple la condición en ${periodos.join(' y ')}. Se ejecuta algoritmo V2.`
-      }
+
+
+      const msgSin = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo sin EEFF.' : '❌ No se cumple la condición.')
+      const msgV2 = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo V2.' : '❌ No se cumple la condición.')
 
       const validacionesVersionTable = `
         <h3 style="font-size: 9px; font-family: 'Segoe UI', Arial, sans-serif;">Validaciones para selección de versión de algoritmo</h3>
@@ -5683,87 +5517,66 @@ ${JSON.stringify(info_email_error, null, 2)}
           <tbody>
             <tr>
               <td>1</td>
-              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios(PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o  2 cierres contables en conjunto  o años de presentación de los estados financieros. (ojo NO aplica si en un periodo contable o año si reporta cifras DE AL MENOS  UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO REPORTA NADA O AL MENOS REPORTA UNA DE ELLAS.</td>
-              <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
-              <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
-              <td>${msg(resProvAcre)}</td>
+              <td style="background-color: #000; color: #fff;">Capital contable (PARTIDA 39) sin información en algún periodo.</td>
+              <td><strong>Capital contable:</strong> ${capitalAnterior}</td>
+              <td><strong>Capital contable:</strong> ${capitalPrevio}</td>
+              <td>${msgSin(resCapital)}</td>
             </tr>
             <tr>
               <td>2</td>
-              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable.</td>
-              <td><strong>Ventas:</strong> ${ventasAnterior}</td>
-              <td><strong>Ventas:</strong> ${ventasPrevio}</td>
-              <td>${msg(resVentas)}</td>
+              <td style="background-color: #000; color: #fff;">Caja y Bancos (PARTIDA 2) y Inventarios sin información en algún periodo.</td>
+              <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msgSin(resCajaInv)}</td>
             </tr>
             <tr>
               <td>3</td>
-              <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable.</td>
-              <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
-              <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
-              <td>${msg(resCosto)}</td>
+              <td style="background-color: #000; color: #fff;">Clientes y Cuentas por Cobrar (PARTIDA 4) y Proveedores (PARTIDA 13) sin información en algún periodo.</td>
+              <td><strong>Clientes:</strong> ${cxcAnterior}<br><strong>Proveedores:</strong> ${provAnterior}</td>
+              <td><strong>Clientes:</strong> ${cxcPrevio}<br><strong>Proveedores:</strong> ${provPrevio}</td>
+              <td>${msgSin(resClientesProv)}</td>
             </tr>
             <tr>
               <td>4</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta(PARTIDA 29) en al menos un cierre contable.</td>
-              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
-              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
-              <td>${msg(resUBruta)}</td>
+              <td style="background-color: #000; color: #fff;">Proveedores (PARTIDA 13) y Acreedores y Préstamos Bancarios (PARTIDA 14) sin datos en ambos periodos.</td>
+              <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
+              <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
+              <td>${msgV2(resProvAcre)}</td>
             </tr>
             <tr>
               <td>5</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Operativa (PARTIDA 31)en al menos un cierre contable.</td>
-              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
-              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
-              <td>${msg(resUOperativa)}</td>
+              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable.</td>
+              <td><strong>Ventas:</strong> ${ventasAnterior}</td>
+              <td><strong>Ventas:</strong> ${ventasPrevio}</td>
+              <td>${msgV2(resVentas)}</td>
             </tr>
             <tr>
               <td>6</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Neta (PARTIDA 37) en al menos un cierre contable.</td>
-              <td><strong>Utilidad neta:</strong> ${utilidadNetaAnterior}</td>
-              <td><strong>Utilidad neta:</strong> ${utilidadNetaPrevio}</td>
-              <td>${msg(resUNeta)}</td>
+              <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable.</td>
+              <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
+              <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
+              <td>${msgV2(resCosto)}</td>
             </tr>
             <tr>
               <td>7</td>
-              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES, no se reporta ninguna cifra en los 2 cierres contables en conjunto o años de presentación de los estados financieros. (No aplica si en un periodo contable o año sí reportan cifras y en otro año no)</td>
-              <td><strong>Proveedores:</strong> ${provAnterior}</td>
-              <td><strong>Proveedores:</strong> ${provPrevio}</td>
-              <td>${msg(resProveedores)}</td>
+              <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable.</td>
+              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
+              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
+              <td>${msgV2(resUBruta)}</td>
             </tr>
             <tr>
               <td>8</td>
-              <td style="background-color: #000; color: #fff;">No presenta Ventas en al menos un cierre contable.</td>
-              <td><strong>Ventas:</strong> ${ventasAnterior}</td>
-              <td><strong>Ventas:</strong> ${ventasPrevio}</td>
-              <td>${msg(resVentas)}</td>
+              <td style="background-color: #000; color: #fff;">No presenta Utilidad Operativa (PARTIDA 31) en al menos un cierre contable.</td>
+              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
+              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
+              <td>${msgV2(resUOperativa)}</td>
             </tr>
             <tr>
               <td>9</td>
-              <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas en al menos un cierre contable.</td>
-              <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
-              <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
-              <td>${msg(resCosto)}</td>
-            </tr>
-            <tr>
-              <td>10</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta en al menos un cierre contable.</td>
-              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
-              <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
-              <td>${msg(resUBruta)}</td>
-            </tr>
-            <tr>
-              <td>11</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Operativa en al menos un cierre contable.</td>
-              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
-              <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
-              <td>${msg(resUOperativa)}</td>
-            </tr>
-            <tr>
-              <td>12</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Neta en al menos un cierre contable.</td>
+              <td style="background-color: #000; color: #fff;">No presenta Utilidad Neta (PARTIDA 37) en al menos un cierre contable.</td>
               <td><strong>Utilidad neta:</strong> ${utilidadNetaAnterior}</td>
               <td><strong>Utilidad neta:</strong> ${utilidadNetaPrevio}</td>
-              <td>${msg(resUNeta)}</td>
+              <td>${msgV2(resUNeta)}</td>
             </tr>
           </tbody>
         </table>
