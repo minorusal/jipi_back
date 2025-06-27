@@ -3976,71 +3976,97 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       id_certification
     )
 
-    // 1. Capital contable faltante
+    // 1. Capital
     if (isEmpty(capitalAnterior?.capital) || isEmpty(capitalPrevio?.capital)) {
-      return buildResponse('Capital contable faltante en al menos un periodo', 2)
+      return buildResponse(
+        'Capital - Periodo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF. Periodo previo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF',
+        2
+      )
     }
 
-    // 2. Caja y Bancos junto con Inventarios faltantes en cualquier periodo
+    // 2. Caja y bancos
     const cajaA = balanceAnterior?.caja_bancos_anterior
     const cajaP = balancePrevio?.caja_bancos_previo_anterior
+    if (isEmpty(cajaA) || isEmpty(cajaP)) {
+      return buildResponse(
+        'Caja y bancos - Periodo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF. Periodo previo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF',
+        2
+      )
+    }
+
     const invA = balanceAnterior?.inventarios_anterior
     const invP = balancePrevio?.inventarios_previo_anterior
-    if ((isEmpty(cajaA) && isEmpty(invA)) || (isEmpty(cajaP) && isEmpty(invP))) {
-      return buildResponse('Faltan Caja y Bancos junto con Inventarios', 2)
-    }
 
-    // 3. Clientes y Cuentas por Cobrar junto con Proveedores faltantes
+    // 3. Clientes y cuentas por cobrar
     const cliA = balanceAnterior?.cliente_anterior
     const cliP = balancePrevio?.cliente_previo_anterior
+    if ((isEmpty(cliA) && isEmpty(invA)) || (isEmpty(cliP) && isEmpty(invP))) {
+      return buildResponse(
+        'Clientes y cuentas por cobrar - Periodo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF. Periodo previo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF',
+        2
+      )
+    }
+
+    // 4. Inventarios
+    if ((isEmpty(invA) && isEmpty(cliA)) || (isEmpty(invP) && isEmpty(cliP))) {
+      return buildResponse(
+        'Inventarios - Periodo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF. Periodo previo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF',
+        2
+      )
+    }
+
+    // 5. Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14)
     const provA = balanceAnterior?.proveedores_anterior
     const provP = balancePrevio?.proveedores_previo_anterior
-    if ((isEmpty(cliA) && isEmpty(provA)) || (isEmpty(cliP) && isEmpty(provP))) {
-      return buildResponse('Clientes y Cuentas por Cobrar junto con Proveedores faltantes', 2)
-    }
-
-    // 4. Proveedores + Acreedores no reportados conjuntamente en ambos periodos
     const acreA = balanceAnterior?.acreedores_anterior
     const acreP = balancePrevio?.acreedores_previo_anterior
-    const periodoAnteriorSinAmbos = isEmpty(provA) || isEmpty(acreA)
-    const periodoPrevioSinAmbos = isEmpty(provP) || isEmpty(acreP)
-    if (periodoAnteriorSinAmbos && periodoPrevioSinAmbos) {
-      return buildResponse('Proveedores y Acreedores sin datos en ambos periodos', 2)
+    const ambosCerosAnterior = isEmpty(provA) && isEmpty(acreA)
+    const ambosCerosPrevio = isEmpty(provP) && isEmpty(acreP)
+    if (ambosCerosAnterior && ambosCerosPrevio) {
+      return buildResponse(
+        'Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14) - Si ambas partidas están en ceros en ambos periodos contables, se va a algoritmo versión 2. Si al menos uno de los dos rubros reporta 1 peso o más en cualquiera de los dos periodos, se va a algoritmo versión 1',
+        2
+      )
     }
 
-    // 5. Ventas
+    // 6. Ventas (PARTIDA 27)
     const ventasA = resultadoAnterior?.ventas_anuales_anterior
     const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
     if (isEmpty(ventasA) || isEmpty(ventasP)) {
-      return buildResponse('Ventas no reportadas en al menos un periodo', 2)
+      return buildResponse(
+        'Ventas (PARTIDA 27) - No presenta esta partida en al menos un período contable',
+        2
+      )
     }
 
-    // 6. Costo de Ventas
+    // 7. Costo de Ventas (PARTIDA 28)
     const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
     const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
     if (isEmpty(costoA) || isEmpty(costoP)) {
-      return buildResponse('Costo de Ventas no reportado en al menos un periodo', 2)
+      return buildResponse(
+        'Costo de Ventas (PARTIDA 28) - No presenta esta partida en al menos un período contable',
+        2
+      )
     }
 
-    // 7. Utilidad Bruta
+    // 8. Utilidad Bruta (PARTIDA 29)
     const ubA = resultadoAnterior?.utilidad_bruta_anterior
     const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
     if (isEmpty(ubA) || isEmpty(ubP)) {
-      return buildResponse('Utilidad Bruta no reportada en al menos un periodo', 2)
+      return buildResponse(
+        'Utilidad Bruta (PARTIDA 29) - No presenta esta partida en al menos un período contable',
+        2
+      )
     }
 
-    // 8. Utilidad Operativa
+    // 9. Utilidad Operativa (PARTIDA 31)
     const uoA = resultadoAnterior?.utilidad_operativa_anterior
     const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
     if (isEmpty(uoA) || isEmpty(uoP)) {
-      return buildResponse('Utilidad Operativa no reportada en al menos un periodo', 2)
-    }
-
-    // 9. Utilidad Neta
-    const unA = resultadoAnterior?.utilidad_neta_anterior
-    const unP = resultadoPrevio?.utilidad_neta_previo_anterior
-    if (isEmpty(unA) || isEmpty(unP)) {
-      return buildResponse('Utilidad Neta no reportada en al menos un periodo', 2)
+      return buildResponse(
+        'Utilidad Operativa (PARTIDA 31) - No presenta esta partida en al menos un período contable',
+        2
+      )
     }
 
 
@@ -5425,8 +5451,6 @@ ${JSON.stringify(info_email_error, null, 2)}
       const utilidadBrutaPrevio = val(resPrevio.utilidad_bruta, 'periodo previo anterior')
       const utilidadOperativaAnterior = val(resAnterior.utilidad_operativa, 'periodo anterior')
       const utilidadOperativaPrevio = val(resPrevio.utilidad_operativa, 'periodo previo anterior')
-      const utilidadNetaAnterior = val(resAnterior.utilidad_neta, 'periodo anterior')
-      const utilidadNetaPrevio = val(resPrevio.utilidad_neta, 'periodo previo anterior')
 
       const extractYear = str => {
         const match = /(\d{4})/.exec(str || '')
@@ -5454,36 +5478,24 @@ ${JSON.stringify(info_email_error, null, 2)}
       const isZero = v => normalizeNumber(v) === 0
       const resCapital =
         isMissing(balAnterior.capital_contable) ||
-        isMissing(balPrevio.capital_contable) ||
-        isZero(balAnterior.capital_contable) ||
-        isZero(balPrevio.capital_contable)
-      const faltaCajaInvAnterior =
-        (isMissing(balAnterior.caja_bancos) || isZero(balAnterior.caja_bancos)) &&
-        (isMissing(balAnterior.saldo_inventarios) || isZero(balAnterior.saldo_inventarios))
+        isMissing(balPrevio.capital_contable)
 
-      const faltaCajaInvPrevio =
-        (isMissing(balPrevio.caja_bancos) || isZero(balPrevio.caja_bancos)) &&
-        (isMissing(balPrevio.saldo_inventarios) || isZero(balPrevio.saldo_inventarios))
+      const resCaja =
+        isMissing(balAnterior.caja_bancos) || isMissing(balPrevio.caja_bancos)
 
-      const resCajaInv = faltaCajaInvAnterior || faltaCajaInvPrevio
+      const resClientesInv =
+        ((isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) || isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
+          (isMissing(balAnterior.saldo_inventarios) || isZero(balAnterior.saldo_inventarios))) ||
+        ((isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) || isZero(balPrevio.saldo_cliente_cuenta_x_cobrar)) &&
+          (isMissing(balPrevio.saldo_inventarios) || isZero(balPrevio.saldo_inventarios)))
 
-      const faltaClientesProvAnterior =
-        (isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
-          isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
-        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores))
-
-      const faltaClientesProvPrevio =
-        (isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
-          isZero(balPrevio.saldo_cliente_cuenta_x_cobrar)) &&
-        (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores))
-
-      const resClientesProv = faltaClientesProvAnterior || faltaClientesProvPrevio
+      const resInventariosCli = resClientesInv
 
       const resProvAcre =
-        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores) ||
-          isMissing(balAnterior.acreedores) || isZero(balAnterior.acreedores)) &&
-        (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores) ||
-          isMissing(balPrevio.acreedores) || isZero(balPrevio.acreedores))
+        isZero(balAnterior.proveedores) &&
+        isZero(balAnterior.acreedores) &&
+        isZero(balPrevio.proveedores) &&
+        isZero(balPrevio.acreedores)
       const resVentas =
         isMissing(resAnterior.ventas_anuales) ||
         isMissing(resPrevio.ventas_anuales) ||
@@ -5504,11 +5516,6 @@ ${JSON.stringify(info_email_error, null, 2)}
         isMissing(resPrevio.utilidad_operativa) ||
         isZero(resAnterior.utilidad_operativa) ||
         isZero(resPrevio.utilidad_operativa)
-      const resUNeta =
-        isMissing(resAnterior.utilidad_neta) ||
-        isMissing(resPrevio.utilidad_neta) ||
-        isZero(resAnterior.utilidad_neta) ||
-        isZero(resPrevio.utilidad_neta)
 
 
       const msgSin = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo sin EEFF.' : '❌ No se cumple la condición.')
@@ -5529,66 +5536,66 @@ ${JSON.stringify(info_email_error, null, 2)}
           <tbody>
             <tr>
               <td>1</td>
-              <td style="background-color: #000; color: #fff;">Capital contable (PARTIDA 39) sin información en algún periodo.</td>
-              <td><strong>Capital contable:</strong> ${capitalAnterior}</td>
-              <td><strong>Capital contable:</strong> ${capitalPrevio}</td>
+              <td style="background-color: #000; color: #fff;">Capital<br>Periodo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF<br>Periodo previo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF</td>
+              <td><strong>Capital:</strong> ${capitalAnterior}</td>
+              <td><strong>Capital:</strong> ${capitalPrevio}</td>
               <td>${msgSin(resCapital)}</td>
             </tr>
             <tr>
               <td>2</td>
-              <td style="background-color: #000; color: #fff;">Caja y Bancos (PARTIDA 2) y Inventarios sin información en algún periodo.</td>
-              <td><strong>Caja y bancos:</strong> ${cajaAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
-              <td><strong>Caja y bancos:</strong> ${cajaPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
-              <td>${msgSin(resCajaInv)}</td>
+              <td style="background-color: #000; color: #fff;">Caja y bancos<br>Periodo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF<br>Periodo previo anterior: Con al menos no tener un período contable se va a algoritmo sin EEFF</td>
+              <td><strong>Caja y bancos:</strong> ${cajaAnterior}</td>
+              <td><strong>Caja y bancos:</strong> ${cajaPrevio}</td>
+              <td>${msgSin(resCaja)}</td>
             </tr>
             <tr>
               <td>3</td>
-              <td style="background-color: #000; color: #fff;">Clientes y Cuentas por Cobrar (PARTIDA 4) y Proveedores (PARTIDA 13) sin información en algún periodo.</td>
-              <td><strong>Clientes:</strong> ${cxcAnterior}<br><strong>Proveedores:</strong> ${provAnterior}</td>
-              <td><strong>Clientes:</strong> ${cxcPrevio}<br><strong>Proveedores:</strong> ${provPrevio}</td>
-              <td>${msgSin(resClientesProv)}</td>
+              <td style="background-color: #000; color: #fff;">Clientes y cuentas por cobrar<br>Periodo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF<br>Periodo previo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF</td>
+              <td><strong>Clientes y CxC:</strong> ${cxcAnterior}<br><strong>Inventarios:</strong> ${invAnterior}</td>
+              <td><strong>Clientes y CxC:</strong> ${cxcPrevio}<br><strong>Inventarios:</strong> ${invPrevio}</td>
+              <td>${msgSin(resClientesInv)}</td>
             </tr>
             <tr>
               <td>4</td>
-              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (ojo NO aplica si en un periodo contable o año si reporta cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO REPORTA NADA O AL MENOS REPORTA UNA DE ELLAS.</td>
+              <td style="background-color: #000; color: #fff;">Inventarios<br>Periodo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF<br>Periodo previo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF</td>
+              <td><strong>Inventarios:</strong> ${invAnterior}<br><strong>Clientes y CxC:</strong> ${cxcAnterior}</td>
+              <td><strong>Inventarios:</strong> ${invPrevio}<br><strong>Clientes y CxC:</strong> ${cxcPrevio}</td>
+              <td>${msgSin(resInventariosCli)}</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td style="background-color: #000; color: #fff;">Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14)<br>Si ambas partidas están en ceros en ambos periodos contables, se va a algoritmo versión 2.<br>Si al menos uno de los dos rubros reporta 1 peso o más en cualquiera de los dos periodos, se va a algoritmo versión 1.</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msgV2(resProvAcre)}</td>
             </tr>
             <tr>
-              <td>5</td>
-              <td style="background-color: #000; color: #fff;">No presenta Ventas (PARTIDA 27) en al menos un cierre contable.</td>
+              <td>6</td>
+              <td style="background-color: #000; color: #fff;">Ventas (PARTIDA 27)<br>No presenta esta partida en al menos un período contable.</td>
               <td><strong>Ventas:</strong> ${ventasAnterior}</td>
               <td><strong>Ventas:</strong> ${ventasPrevio}</td>
               <td>${msgV2(resVentas)}</td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>7</td>
               <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable.</td>
               <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
               <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
               <td>${msgV2(resCosto)}</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>8</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable.</td>
               <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
               <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
               <td>${msgV2(resUBruta)}</td>
             </tr>
             <tr>
-              <td>8</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Operativa (PARTIDA 31) en al menos un cierre contable.</td>
+              <td>9</td>
+              <td style="background-color: #000; color: #fff;">Utilidad Operativa (PARTIDA 31)<br>No presenta esta partida en al menos un período contable.</td>
               <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
               <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
               <td>${msgV2(resUOperativa)}</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td style="background-color: #000; color: #fff;">No presenta Utilidad Neta (PARTIDA 37) en al menos un cierre contable.</td>
-              <td><strong>Utilidad neta:</strong> ${utilidadNetaAnterior}</td>
-              <td><strong>Utilidad neta:</strong> ${utilidadNetaPrevio}</td>
-              <td>${msgV2(resUNeta)}</td>
             </tr>
           </tbody>
         </table>
