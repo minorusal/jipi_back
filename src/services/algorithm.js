@@ -83,7 +83,13 @@ class AlgorithmService {
       const rows = ranges[table]
       if (!Array.isArray(rows)) return []
       return rows.map(r => {
-        const entry = { nombre: r.nombre, v1: r.valor_algoritmo }
+        const entry = {
+          nombre: r.nombre ?? r.descripcion,
+          v1: r.valor_algoritmo
+        }
+        if (Object.prototype.hasOwnProperty.call(r, 'descripcion')) {
+          entry.descripcion = r.descripcion
+        }
         const idField = Object.keys(r).find(k => k.startsWith('id_'))
         if (idField) {
           entry.id = r[idField]
