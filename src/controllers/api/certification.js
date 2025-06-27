@@ -16458,7 +16458,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_prueba_acida_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #ffffff;">
-                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Grado de Endeudamiento</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Grado General de Endeudamiento</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -16466,7 +16466,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                     <td style="font-size: 12px; font-weight: 500; padding: 10px; border: 1px solid #ddd;">{_grado_general_endeudamiento_previo_anterior_}</td>
                 </tr>
                 <tr style="background-color: #f2f8fc;">
-                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Apalancamiento</td>
+                    <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Apalancamiento Financiero</td>
                     <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACLElEQVR4nO1WzU4UQRCeu8aDYZmq2SEGJOq7KJ5Fn0DBA9EXIY5b3RNPnsgKnhTfBIWLbPWg8caPFwSiqZ5u3ZjNTvfuHPdLKplkqqu+ru6vqpNkhhkiUL3OFphw3RB+YoLPTPizNvu9yypdM2U3T9oGU95lQs0KL4zC3+OMFV4xYf9bAbdaST7oZQ+Z8NQmIDg3BFvcyx5Vvezu97fpNTH5ZsJV+Wd9hAjhaaWylel2rvC57MgF7B+W6WIz4fklVrg9VI31yXeubIBLQ7AxyseXfSR5DS9krcSIrgTXZ+7LPjJ5EwFPwvmcHOo5DCZgFLzxZR/vN56AJUG442LpGKldymVqOvMQAgPduS2xREFS2UYCLDqvS7/V5BtCwMXs11WAZyEEdl3JVlsk8MTF/NBMQMGBdS7y5bYISJ+oZQlfAgjgmTj/KDrXQwmMsmE/ieX6wlkzAarl1yaBg82bN7wcAwjAvjhXZXYnaQlHGu+5Cuy1eglDEXkJ07VQGUYQsDIcaHja6GzKbm7HLsG5DJapkxf5clQjErCC0p3ZdjIljIL3LpYKXjR4tZB5NchAmTQ5E7ysjxOPvxYdiFpcqWzFj+NJSEhyP46NTu/Hrv87F4YeJDsyWJKQM/9X9iu51Mk0qHrpA2kg/kkmN5o1PhZtS7MSk2+RGit8Zwh/+bJPvPP/caRxjgk2Ax+lFzL7ox4goRAZiZZZ4UfpatLbne1Jk7H/QqU2wwxJjT9fDxf2N4KlawAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                     </td>
@@ -16491,7 +16491,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
               </tr>
               
               <tr style="background-color: #f2f8fc;">
-                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación Cuentas por Cobrar</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rotación de Cuentas por Cobrar</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+0lEQVR4nO2aQQ6DMAwE/QxvX9RT/19zakLfQRVRUEVBjSgIJ+xKPkCEk9EGO4eIZEqbcNV7iLDYpdB7COld7vdH5x+VEg+TfE4mheQfNSRfevaevzyQS/O4qcXn1N5pTCfaOiQzf1prWvMXSA6EJxD0MO1Pa3ezfqP8WBo/DYg6K79YDdI3rLBzQwy5+VeDeBMIUpojKCykehApRCCIM+H0jsDLz/yvI9WBiIOxJIKAjkRuLbBqGctvx/Jr7CMdOztqOqKglkMjagERB2NJBAEdidxaYNWyE5RfbwJBnAnVO6IW26N+6LWhcxcG3lc4ioFRi+3sFQ5KfOgF0BbNq3WbIGwAAAAASUVORK5CYII=" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -16515,7 +16515,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_solvencia_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Retorno sobre Capital</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Retorno sobre Capital de Acciones</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -16523,7 +16523,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_retorno_capital_acciones_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #f2f8fc;">
-                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Capital</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento del Capital</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
@@ -16531,7 +16531,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   <td style="font-size: 12px; font-weight: 500; border: 1px solid #ddd; padding: 8px;">{_rendimiento_capital_previo_anterior_}</td>
               </tr>
               <tr style="background-color: #ffffff;">
-                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento sobre Activos</td>
+                  <td style="color: #0a3d8e; font-size: 12px; font-weight: 500; padding: 10px; white-space: nowrap;">Rendimiento de los Activos</td>
                   <td style="width: 40px; text-align: center; vertical-align: middle; padding: 5px;">
                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABOUlEQVR4nO2TPU7DQBCFhyI7b2xokeAScAmKhJ8iNwkNPy1cgZwFbhBCR8EZUOhCQzMZtKuRhSw7XqMUKTKSZVlrf29m/B7RrrayLIRzZZ4r8B3vFsKo8T0iMZFxb/gKsPplDSIKPMUzZX7MFlDmtwQEboyoNODWIa+1Ri4VWCnwY0Vxmi8ALJMA0X4CER0kAWBZwYviSJkX3sh1NtwnmPuHd1HEgPu/ExjRngLPLvoSn3sJGPNZHL3hHwzTucjEBb9M5LgXvBIJYRQ7dhfNKvhgcBJ3HhuwEK7+BW8VJYIC776aKW26FJg6/MOIio3CrcGSuWHshpfloTJ/ph8tMnH4RW4Y18Op2ZK5YewWkMqSixiuPmHshq+xpHaEMauU+aHNknHX9f17Iykv+VOIjNss2RbGXW1f/QJ2UPnMq9ECDgAAAABJRU5ErkJggg==" style="height: 20px; width: 20px; margin-right: 5px; vertical-align: middle;" />
                   </td>
