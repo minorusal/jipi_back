@@ -6115,17 +6115,29 @@ ${JSON.stringify(info_email_error, null, 2)}
         if (value === undefined || value === null || value === '') {
           value = scores[scoreKeyMap[key]] ?? '-'
         }
-        return `<tr style="background:#e3f2fd;"><td>${label}</td><td style="color:#0a3d8e; font-weight:bold;">${value}</td></tr>`
+        let descripcion = '-'
+        if (rangos[key] && typeof rangos[key] === 'object') {
+          descripcion =
+            rangos[key].descripcion ?? rangos[key].caso ?? rangos[key].tipo ?? '-'
+        }
+        return `<tr style="background:#e3f2fd;"><td>${label}</td><td>${descripcion}</td><td style="color:#0a3d8e; font-weight:bold;">${value}</td></tr>`
       }).join('')
 
       const sumatoriaScoresTable = `
         <div class="table-section" style="margin-bottom: 10px;">
         <h3 style="font-size: 8px;">Sumatoria de scores</h3>
         <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">Etiqueta</th>
+              <th>¿Qué se evalúa?</th>
+              <th>Score</th>
+            </tr>
+          </thead>
           <tbody>
             ${sumatoriaScoreRows}
             <tr style="background:#0a3d8e; color:#fff; font-weight:bold;">
-              <td>Total</td>
+              <td colspan="2">Total</td>
               <td>${sumatoriaScores}</td>
             </tr>
           </tbody>
