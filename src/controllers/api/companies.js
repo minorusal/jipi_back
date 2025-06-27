@@ -560,7 +560,8 @@ exports.editCompany = async (req, res, next) => {
         return next(boom.badRequest('El rfc no es valido'))
       }
 
-      if (razonSat !== razon_social) {
+      const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+      if (razonSat !== razonSocialUpper) {
         return next(boom.badRequest('La razón social proporcionada no coincide con la registrada en el SAT'))
       }
     } else {

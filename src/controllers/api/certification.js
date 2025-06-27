@@ -8952,7 +8952,8 @@ const validacionesReferenciasComercialesValidas = async (data, empresa_referenci
 
     if (activa_api_sat == 'true') {
       // RFC y Razon Social concuerdan
-      if (razon_social_konesh !== razon_social_contacto) {
+      const razonSocialUpper = razon_social_contacto ? razon_social_contacto.toUpperCase() : razon_social_contacto
+      if (razon_social_konesh !== razonSocialUpper) {
         const mensaje_rfc_vs_razon_social_false = await globalConfig.find(item => item.nombre === 'mensaje_rfc_vs_razon_social_false').valor
         causa_referencia_invalida.push(mensaje_rfc_vs_razon_social_false)
         referencia_valida = false

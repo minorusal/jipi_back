@@ -80,7 +80,8 @@ exports.validaListaService = async (req, res, next) => {
 
 
   const globalConfig = await utilitiesService.getParametros()
-  const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razon_social, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
+  const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+  const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razonSocialUpper, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
 
   const konesh_api_des = result ? result.data_konesh : {}
 
@@ -91,7 +92,7 @@ exports.validaListaService = async (req, res, next) => {
 
   if (apiResponse.status === 200 && result) {
 
-      if (konesh_api_des.transactionResponse01[0].data04 !== razon_social) {
+      if (konesh_api_des.transactionResponse01[0].data04 !== razonSocialUpper) {
         times_razon_social++
         message.push('La razón social capturada no corresponde a la razón social del SAT')
         await koneshService.updateContadorKoneshRazonSocialNoIgual(times_razon_social, idEmpresa)
@@ -209,7 +210,8 @@ exports.validaRfcKonesh = async ({ rfc, razon_social, idEmpresa, tipo, keyCipher
 
   const razonDesencriptada = await descifra_konesh(data.transactionResponse01[0].data04)
 
-  if (razonDesencriptada !== razon_social) {
+  const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+  if (razonDesencriptada !== razonSocialUpper) {
     times++
     await koneshService.updateContadorKonesh(times, idEmpresa)
     return {
@@ -509,6 +511,7 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
 }
 
 const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts = {}) => {
+  const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
   const apiResponse = await exports.callKoneshApi(rfc, globalConfig, opts)
 
   if (apiResponse.status !== 200) {
@@ -540,7 +543,7 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
       detalle: problematicEntry[0],
       data_konesh: konesh_api_des
     }
-  } else if (konesh_api_des.transactionResponse01[0].data04 !== razon_social) {
+  } else if (konesh_api_des.transactionResponse01[0].data04 !== razonSocialUpper) {
     result = {
       success: false,
       mensaje: 'La razón social proporcionada no coincide con la registrada en el SAT',
@@ -572,7 +575,8 @@ exports.genericKoneshRequest = async (req, res, next) => {
       return res.json({ success: false, mensaje: 'El consumo a la API de Konesh está desactivado' })
     }
 
-    const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razon_social, globalConfig)
+    const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+    const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razonSocialUpper, globalConfig)
 
     if (apiResponse.errorMessage) {
       return next(boom.gatewayTimeout(apiResponse.errorMessage))
