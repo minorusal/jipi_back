@@ -2640,7 +2640,9 @@ const getControlanteScoreFromSummary = async (
 
     const reglasConfiguradas =
       Array.isArray(parametrosAlgoritmo?.influenciaControlanteScore)
-        ? parametrosAlgoritmo.influenciaControlanteScore.map(r => r.nombre)
+        ? parametrosAlgoritmo.influenciaControlanteScore
+            .map(r => r.nombre)
+            .filter(Boolean)
         : []
 
     const reglaDesconocido = reglasConfiguradas.find(r =>
