@@ -62,15 +62,6 @@ const SCORE_KEYS = [
   '_16_referencias_comerciales'
 ]
 
-const V2_ZERO_KEYS = [
-  '_03_capital_contable',
-  '_08_ventas_anuales',
-  '_11_evolucion_ventas',
-  '_12_apalancamiento',
-  '_13_flujo_neto',
-  '_14_payback',
-  '_15_rotacion_ctas_x_cobrar'
-]
 
 let referenciasCatalogo = {}
 
@@ -5903,16 +5894,13 @@ ${JSON.stringify(info_email_error, null, 2)}
         _16_referencias_comerciales: 'referenciasProveedoresScore'
       }
 
-      const isV2 = Number(version_algoritmo) === 2
-
-      const sumatoriaScores = SCORE_KEYS.reduce((acc, key) => {
-        let val = rangos[key]?.score
-        if (isV2 && V2_ZERO_KEYS.includes(key)) val = '0'
-        const s = parseInt(val, 10)
-        if (!isNaN(s)) return acc + s
-        const alt = parseInt(scores[scoreKeyMap[key]], 10)
-        return isNaN(alt) ? acc : acc + alt
-      }, 0)
+      const sumatoriaScores =
+        scores.sumatoria_scors_g45 !== undefined
+          ? scores.sumatoria_scors_g45
+          : SCORE_KEYS.reduce((acc, key) => {
+              const val = parseInt(scores[scoreKeyMap[key]], 10)
+              return isNaN(val) ? acc : acc + val
+            }, 0)
 
       const scoreLabelMap = {
         _01_pais: '1. País score',
@@ -5935,12 +5923,9 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const sumatoriaScoreRows = SCORE_KEYS.map(key => {
         const label = scoreLabelMap[key] || key
-        let value = rangos[key]?.score
-        if (isV2 && V2_ZERO_KEYS.includes(key)) {
-          value = '0'
-        }
+        let value = scores[scoreKeyMap[key]]
         if (value === undefined || value === null || value === '') {
-          value = scores[scoreKeyMap[key]] ?? '-'
+          value = '-'
         }
         let descripcion = '-'
         if (rangos[key] && typeof rangos[key] === 'object') {
