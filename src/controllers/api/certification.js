@@ -3979,15 +3979,12 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       return buildResponse('Clientes y Cuentas por Cobrar junto con Proveedores faltantes', 2)
     }
 
-    // 4. Proveedores + Acreedores ausentes en ambos periodos
+    // 4. Proveedores + Acreedores no reportados conjuntamente en ambos periodos
     const acreA = balanceAnterior?.acreedores_anterior
     const acreP = balancePrevio?.acreedores_previo_anterior
-    if (
-      isEmpty(provA) &&
-      isEmpty(acreA) &&
-      isEmpty(provP) &&
-      isEmpty(acreP)
-    ) {
+    const periodoAnteriorSinAmbos = isEmpty(provA) || isEmpty(acreA)
+    const periodoPrevioSinAmbos = isEmpty(provP) || isEmpty(acreP)
+    if (periodoAnteriorSinAmbos && periodoPrevioSinAmbos) {
       return buildResponse('Proveedores y Acreedores sin datos en ambos periodos', 2)
     }
 
