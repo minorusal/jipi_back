@@ -3997,25 +3997,22 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
     const invA = balanceAnterior?.inventarios_anterior
     const invP = balancePrevio?.inventarios_previo_anterior
 
-    // 3. Clientes y cuentas por cobrar
+    // 3. Clientes y cuentas por cobrar (PARTIDA 4) + Inventarios (PARTIDA 7)
     const cliA = balanceAnterior?.cliente_anterior
     const cliP = balancePrevio?.cliente_previo_anterior
-    if ((isEmpty(cliA) && isEmpty(invA)) || (isEmpty(cliP) && isEmpty(invP))) {
+    if (
+      isEmpty(cliA) ||
+      isEmpty(invA) ||
+      isEmpty(cliP) ||
+      isEmpty(invP)
+    ) {
       return buildResponse(
-        'Clientes y cuentas por cobrar - Periodo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF. Periodo previo anterior: Con no tener este + Inventarios en cualquier período contable, se va a algoritmo sin EEFF',
+        'Clientes y cuentas por cobrar + Inventarios - Si no se reportan conjuntamente en al menos uno de los dos periodos contables se va a algoritmo sin EEFF',
         2
       )
     }
 
-    // 4. Inventarios
-    if ((isEmpty(invA) && isEmpty(cliA)) || (isEmpty(invP) && isEmpty(cliP))) {
-      return buildResponse(
-        'Inventarios - Periodo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF. Periodo previo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF',
-        2
-      )
-    }
-
-    // 5. Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14)
+    // 4. Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14)
     const provA = balanceAnterior?.proveedores_anterior
     const provP = balancePrevio?.proveedores_previo_anterior
     const acreA = balanceAnterior?.acreedores_anterior
@@ -4029,7 +4026,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       )
     }
 
-    // 6. Ventas (PARTIDA 27)
+    // 5. Ventas (PARTIDA 27)
     const ventasA = resultadoAnterior?.ventas_anuales_anterior
     const ventasP = resultadoPrevio?.ventas_anuales_previo_anterior
     if (isEmpty(ventasA) || isEmpty(ventasP)) {
@@ -4039,7 +4036,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       )
     }
 
-    // 7. Costo de Ventas (PARTIDA 28)
+    // 6. Costo de Ventas (PARTIDA 28)
     const costoA = resultadoAnterior?.costo_ventas_anuales_anterior
     const costoP = resultadoPrevio?.costo_ventas_anuales_previo_anterior
     if (isEmpty(costoA) || isEmpty(costoP)) {
@@ -4049,7 +4046,7 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       )
     }
 
-    // 8. Utilidad Bruta (PARTIDA 29)
+    // 7. Utilidad Bruta (PARTIDA 29)
     const ubA = resultadoAnterior?.utilidad_bruta_anterior
     const ubP = resultadoPrevio?.utilidad_bruta_previo_anterior
     if (isEmpty(ubA) || isEmpty(ubP)) {
@@ -4059,12 +4056,22 @@ const obtienePartidasFinancieras = async (id_certification, customUuid) => {
       )
     }
 
-    // 9. Utilidad Operativa (PARTIDA 31)
+    // 8. Utilidad Operativa (PARTIDA 31)
     const uoA = resultadoAnterior?.utilidad_operativa_anterior
     const uoP = resultadoPrevio?.utilidad_operativa_previo_anterior
     if (isEmpty(uoA) || isEmpty(uoP)) {
       return buildResponse(
         'Utilidad Operativa (PARTIDA 31) - No presenta esta partida en al menos un período contable',
+        2
+      )
+    }
+
+    // 9. Utilidad Neta (PARTIDA 37)
+    const unA = resultadoAnterior?.utilidad_neta_anterior
+    const unP = resultadoPrevio?.utilidad_neta_previo_anterior
+    if (isEmpty(unA) || isEmpty(unP)) {
+      return buildResponse(
+        'Utilidad Neta (PARTIDA 37) - No presenta esta partida en al menos un período contable',
         2
       )
     }
@@ -5451,6 +5458,8 @@ ${JSON.stringify(info_email_error, null, 2)}
       const utilidadBrutaPrevio = val(resPrevio.utilidad_bruta, 'periodo previo anterior')
       const utilidadOperativaAnterior = val(resAnterior.utilidad_operativa, 'periodo anterior')
       const utilidadOperativaPrevio = val(resPrevio.utilidad_operativa, 'periodo previo anterior')
+      const utilidadNetaAnterior = val(resAnterior.utilidad_neta, 'periodo anterior')
+      const utilidadNetaPrevio = val(resPrevio.utilidad_neta, 'periodo previo anterior')
 
       const extractYear = str => {
         const match = /(\d{4})/.exec(str || '')
@@ -5484,12 +5493,14 @@ ${JSON.stringify(info_email_error, null, 2)}
         isMissing(balAnterior.caja_bancos) || isMissing(balPrevio.caja_bancos)
 
       const resClientesInv =
-        ((isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) || isZero(balAnterior.saldo_cliente_cuenta_x_cobrar)) &&
-          (isMissing(balAnterior.saldo_inventarios) || isZero(balAnterior.saldo_inventarios))) ||
-        ((isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) || isZero(balPrevio.saldo_cliente_cuenta_x_cobrar)) &&
-          (isMissing(balPrevio.saldo_inventarios) || isZero(balPrevio.saldo_inventarios)))
-
-      const resInventariosCli = resClientesInv
+        isMissing(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
+        isMissing(balAnterior.saldo_inventarios) ||
+        isMissing(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
+        isMissing(balPrevio.saldo_inventarios) ||
+        isZero(balAnterior.saldo_cliente_cuenta_x_cobrar) ||
+        isZero(balAnterior.saldo_inventarios) ||
+        isZero(balPrevio.saldo_cliente_cuenta_x_cobrar) ||
+        isZero(balPrevio.saldo_inventarios)
 
       const resProvAcre =
         isZero(balAnterior.proveedores) &&
@@ -5516,6 +5527,11 @@ ${JSON.stringify(info_email_error, null, 2)}
         isMissing(resPrevio.utilidad_operativa) ||
         isZero(resAnterior.utilidad_operativa) ||
         isZero(resPrevio.utilidad_operativa)
+      const resUNeta =
+        isMissing(resAnterior.utilidad_neta) ||
+        isMissing(resPrevio.utilidad_neta) ||
+        isZero(resAnterior.utilidad_neta) ||
+        isZero(resPrevio.utilidad_neta)
 
 
       const msgSin = c => (c ? '✅ Se cumple la condición. Se ejecuta algoritmo sin EEFF.' : '❌ No se cumple la condición.')
@@ -5557,45 +5573,45 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tr>
             <tr>
               <td>4</td>
-              <td style="background-color: #000; color: #fff;">Inventarios<br>Periodo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF<br>Periodo previo anterior: Con no tener este + clientes en cualquier período contable, se va a algoritmo sin EEFF</td>
-              <td><strong>Inventarios:</strong> ${invAnterior}<br><strong>Clientes y CxC:</strong> ${cxcAnterior}</td>
-              <td><strong>Inventarios:</strong> ${invPrevio}<br><strong>Clientes y CxC:</strong> ${cxcPrevio}</td>
-              <td>${msgSin(resInventariosCli)}</td>
-            </tr>
-            <tr>
-              <td>5</td>
               <td style="background-color: #000; color: #fff;">Proveedores (PARTIDA 13) + Acreedores y préstamos bancarios (PARTIDA 14)<br>Si ambas partidas están en ceros en ambos periodos contables, se va a algoritmo versión 2.<br>Si al menos uno de los dos rubros reporta 1 peso o más en cualquiera de los dos periodos, se va a algoritmo versión 1.</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msgV2(resProvAcre)}</td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>5</td>
               <td style="background-color: #000; color: #fff;">Ventas (PARTIDA 27)<br>No presenta esta partida en al menos un período contable.</td>
               <td><strong>Ventas:</strong> ${ventasAnterior}</td>
               <td><strong>Ventas:</strong> ${ventasPrevio}</td>
               <td>${msgV2(resVentas)}</td>
             </tr>
             <tr>
-              <td>7</td>
+              <td>6</td>
               <td style="background-color: #000; color: #fff;">No presenta Costo de Ventas (PARTIDA 28) en al menos un cierre contable.</td>
               <td><strong>Costo de ventas:</strong> ${costoAnterior}</td>
               <td><strong>Costo de ventas:</strong> ${costoPrevio}</td>
               <td>${msgV2(resCosto)}</td>
             </tr>
             <tr>
-              <td>8</td>
+              <td>7</td>
               <td style="background-color: #000; color: #fff;">No presenta Utilidad Bruta (PARTIDA 29) en al menos un cierre contable.</td>
               <td><strong>Utilidad bruta:</strong> ${utilidadBrutaAnterior}</td>
               <td><strong>Utilidad bruta:</strong> ${utilidadBrutaPrevio}</td>
               <td>${msgV2(resUBruta)}</td>
             </tr>
             <tr>
-              <td>9</td>
+              <td>8</td>
               <td style="background-color: #000; color: #fff;">Utilidad Operativa (PARTIDA 31)<br>No presenta esta partida en al menos un período contable.</td>
               <td><strong>Utilidad operativa:</strong> ${utilidadOperativaAnterior}</td>
               <td><strong>Utilidad operativa:</strong> ${utilidadOperativaPrevio}</td>
               <td>${msgV2(resUOperativa)}</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td style="background-color: #000; color: #fff;">Utilidad Neta (PARTIDA 37)<br>No presenta esta partida en al menos un período contable.</td>
+              <td><strong>Utilidad neta:</strong> ${utilidadNetaAnterior}</td>
+              <td><strong>Utilidad neta:</strong> ${utilidadNetaPrevio}</td>
+              <td>${msgV2(resUNeta)}</td>
             </tr>
           </tbody>
         </table>
