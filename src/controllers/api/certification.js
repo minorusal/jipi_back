@@ -5503,10 +5503,10 @@ ${JSON.stringify(info_email_error, null, 2)}
         isZero(balPrevio.saldo_inventarios)
 
       const resProvAcre =
-        isZero(balAnterior.proveedores) &&
-        isZero(balAnterior.acreedores) &&
-        isZero(balPrevio.proveedores) &&
-        isZero(balPrevio.acreedores)
+        (isMissing(balAnterior.proveedores) || isZero(balAnterior.proveedores)) &&
+        (isMissing(balAnterior.acreedores) || isZero(balAnterior.acreedores)) &&
+        (isMissing(balPrevio.proveedores) || isZero(balPrevio.proveedores)) &&
+        (isMissing(balPrevio.acreedores) || isZero(balPrevio.acreedores))
       const resVentas =
         isMissing(resAnterior.ventas_anuales) ||
         isMissing(resPrevio.ventas_anuales) ||
