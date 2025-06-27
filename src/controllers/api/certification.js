@@ -17508,18 +17508,8 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
 
     strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.slice(0, 5).map(
-      (demanda) => (`     
-      <p
-          style="
-            color: #0a3d8e;
-            margin: 0px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 1rem;
-          "
-        >
-          {_demandas_mensaje_}
-      </p>        
+      (demanda, i) => (`     
+      ${i == 0 ? mensaje : ''}        
       <div
       style="
         background: #ffff;
