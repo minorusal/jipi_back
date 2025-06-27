@@ -10,6 +10,7 @@ const authMiddleware = require('../../utils/middlewares/authMiddleware')
 const { createCertification, payCertification, certificateMyCompanyForTest, validacionBlocSchema } = require('../../utils/schemas/certification')
 const validation = require('../../utils/middlewares/validationHandler')
 const decryptMiddleware = require('../../utils/middlewares/cipherMiddleware')
+const creditEvaluationController = require('../../controllers/api/creditEvaluation')
 
 router.post('/', decryptMiddleware, authMiddleware, certificationController.postCertification)
 router.post('/documentosCertificacion',decryptMiddleware, authMiddleware, certificationController.uploadDocuments)
@@ -1032,6 +1033,8 @@ router.get('/getTiempoActividadComercialAlgoritmo', /*authMiddleware,*/ certific
 // Certification partidas financieras catalogos
 router.get('/getTipoCifrasAlgoritmo', /*authMiddleware,*/ certificationController.getTipoCifrasAlgoritmo)
 router.post('/getResultAlgoritmo', /*decryptMiddleware, authMiddleware,*/ certificationController.getAlgoritmoResult)
+// Ruta alternativa para evaluar el crédito con el nuevo flujo
+router.post('/runCreditEvaluation', creditEvaluationController.getAlgoritmoResultV2)
 router.post('/generaReporteInformativoCredito', /*decryptMiddleware, authMiddleware,*/ certificationController.generaReporteInformativoCredito)
 
 /**
