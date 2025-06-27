@@ -62,6 +62,25 @@ const SCORE_KEYS = [
   '_16_referencias_comerciales'
 ]
 
+const SCORE_KEY_MAP = {
+  _01_pais: 'paisScore',
+  _02_sector_riesgo: 'sectorRiesgoScore',
+  _03_capital_contable: 'capitalContableScore',
+  _04_plantilla_laboral: 'plantillaLaboralScore',
+  _05_sector_cliente_final: 'sectorClienteFinalScore',
+  _06_tiempo_actividad: 'tiempoActividadScore',
+  _07_influencia_controlante: 'influenciaControlanteScore',
+  _08_ventas_anuales: 'ventasAnualesScore',
+  _09_tipo_cifras: 'tipoCifrasScore',
+  _10_incidencias_legales: 'incidenciasLegalesScore',
+  _11_evolucion_ventas: 'evolucionVentasScore',
+  _12_apalancamiento: 'apalancamientoScore',
+  _13_flujo_neto: 'flujoNetoScore',
+  _14_payback: 'paybackScore',
+  _15_rotacion_ctas_x_cobrar: 'rotacionCtasXCobrarScore',
+  _16_referencias_comerciales: 'referenciasProveedoresScore'
+}
+
 
 let referenciasCatalogo = {}
 
@@ -5060,15 +5079,10 @@ const getAlgoritmoResult = async (req, res, next) => {
 
     logger.info(`${fileMethod} | ${customUuid} Los scors resultantes para el algoritmo son: ${JSON.stringify(scores)}`)
 
-    let g45 = 0
-
-    for (const key in scores) {
-      if (key === 'customUuid') continue
-      const valorNumerico = parseInt(scores[key], 10)
-      if (!isNaN(valorNumerico)) {
-        g45 += valorNumerico
-      }
-    }
+    const g45 = SCORE_KEYS.reduce((acc, key) => {
+      const val = parseFloat(scores[SCORE_KEY_MAP[key]])
+      return Number.isNaN(val) ? acc : acc + val
+    }, 0)
 
     logger.info(`${fileMethod} | ${customUuid} G45: Sumatoria de scors: ${g45}`)
     scores.sumatoria_scors_g45 = g45
@@ -5875,31 +5889,12 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
-      const scoreKeyMap = {
-        _01_pais: 'paisScore',
-        _02_sector_riesgo: 'sectorRiesgoScore',
-        _03_capital_contable: 'capitalContableScore',
-        _04_plantilla_laboral: 'plantillaLaboralScore',
-        _05_sector_cliente_final: 'sectorClienteFinalScore',
-        _06_tiempo_actividad: 'tiempoActividadScore',
-        _07_influencia_controlante: 'influenciaControlanteScore',
-        _08_ventas_anuales: 'ventasAnualesScore',
-        _09_tipo_cifras: 'tipoCifrasScore',
-        _10_incidencias_legales: 'incidenciasLegalesScore',
-        _11_evolucion_ventas: 'evolucionVentasScore',
-        _12_apalancamiento: 'apalancamientoScore',
-        _13_flujo_neto: 'flujoNetoScore',
-        _14_payback: 'paybackScore',
-        _15_rotacion_ctas_x_cobrar: 'rotacionCtasXCobrarScore',
-        _16_referencias_comerciales: 'referenciasProveedoresScore'
-      }
-
       const sumatoriaScores =
         scores.sumatoria_scors_g45 !== undefined
           ? scores.sumatoria_scors_g45
           : SCORE_KEYS.reduce((acc, key) => {
-              const val = parseInt(scores[scoreKeyMap[key]], 10)
-              return isNaN(val) ? acc : acc + val
+              const val = parseFloat(scores[SCORE_KEY_MAP[key]])
+              return Number.isNaN(val) ? acc : acc + val
             }, 0)
 
       const scoreLabelMap = {
@@ -5923,7 +5918,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const sumatoriaScoreRows = SCORE_KEYS.map(key => {
         const label = scoreLabelMap[key] || key
-        let value = scores[scoreKeyMap[key]]
+        let value = scores[SCORE_KEY_MAP[key]]
         if (value === undefined || value === null || value === '') {
           value = '-'
         }
