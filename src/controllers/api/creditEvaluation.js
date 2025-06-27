@@ -475,7 +475,18 @@ async function guardarYEnviarReporte (reporte, scores, datosCliente) {
     sector: '_02_sector_riesgo',
     capital: '_03_capital_contable',
     plantilla: '_04_plantilla_laboral',
-    ventas: '_08_ventas_anuales'
+    clienteFinal: '_05_sector_cliente_final',
+    tiempoActividad: '_06_tiempo_actividad',
+    influenciaControlante: '_07_influencia_controlante',
+    ventas: '_08_ventas_anuales',
+    tipoCifras: '_09_tipo_cifras',
+    incidenciasLegales: '_10_incidencias_legales',
+    evolucionVentas: '_11_evolucion_ventas',
+    apalancamiento: '_12_apalancamiento',
+    flujoNeto: '_13_flujo_neto',
+    payback: '_14_payback',
+    rotacionCtas: '_15_rotacion_ctas_x_cobrar',
+    referenciasComerciales: '_16_referencias_comerciales'
   }
 
   for (const [k, v] of Object.entries(reporte.variables)) {
@@ -485,9 +496,18 @@ async function guardarYEnviarReporte (reporte, scores, datosCliente) {
     }
   }
 
+  const montoSugerido = (scores.porcentajeLc / 100) * monto_solicitado
+  reporteCredito.monto_sugerido = montoSugerido
+  if (scores.wording) {
+    reporteCredito.wording_underwriting = scores.wording.wording_underwriting
+    reporteCredito.score = scores.wording.score
+  }
+
   const pdfLocation = await generarPdfReporte(reporte, scores, customUuid)
   reporteCredito.reporte_pdf = pdfLocation.file
-  reporteCredito.score = scores.g45
+  if (!reporteCredito.score) {
+    reporteCredito.score = scores.g45
+  }
 
   await certificationService.insertReporteCredito(id_certification, reporteCredito, customUuid)
 
@@ -539,10 +559,12 @@ async function getAlgoritmoResultV2 (req, res, next) {
     const scores = await calcularScoresFinales(reporte)
     await guardarYEnviarReporte(reporte, scores, datos)
 
+    const montoSugerido = (scores.porcentajeLc / 100) * datos.monto_solicitado
+
     return res.json({
       error: false,
       reporte,
-      scores
+      scores: { ...scores, montoSugerido }
     })
   } catch (err) {
     logger.error(`${fileMethod} | ${err.message}`)
