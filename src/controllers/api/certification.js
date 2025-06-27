@@ -5889,11 +5889,30 @@ ${JSON.stringify(info_email_error, null, 2)}
         </table>
         </div>`
 
+      const scoresForTable = {
+        paisScore: rangos._01_pais?.score,
+        sectorRiesgoScore: rangos._02_sector_riesgo?.score,
+        capitalContableScore: Number(version_algoritmo) === 2 ? '0' : rangos._03_capital_contable?.score,
+        plantillaLaboralScore: rangos._04_plantilla_laboral?.score,
+        sectorClienteFinalScore: rangos._05_sector_cliente_final?.score,
+        tiempoActividadScore: rangos._06_tiempo_actividad?.score,
+        influenciaControlanteScore: rangos._07_influencia_controlante?.score ?? rangos._07_influencia_controlante_score,
+        ventasAnualesScore: Number(version_algoritmo) === 2 ? '0' : rangos._08_ventas_anuales?.score,
+        tipoCifrasScore: rangos._09_tipo_cifras?.score,
+        incidenciasLegalesScore: rangos._10_incidencias_legales?.score,
+        evolucionVentasScore: Number(version_algoritmo) === 2 ? '0' : rangos._11_evolucion_ventas?.score,
+        apalancamientoScore: Number(version_algoritmo) === 2 ? '0' : rangos._12_apalancamiento?.score,
+        flujoNetoScore: Number(version_algoritmo) === 2 ? '0' : rangos._13_flujo_neto?.score,
+        paybackScore: Number(version_algoritmo) === 2 ? '0' : rangos._14_payback?.score,
+        rotacionCtasXCobrarScore: Number(version_algoritmo) === 2 ? '0' : rangos._15_rotacion_ctas_x_cobrar?.score,
+        referenciasProveedoresScore: rangos._16_referencias_comerciales?.score
+      }
+
       const sumatoriaScores =
         scores.sumatoria_scors_g45 !== undefined
           ? scores.sumatoria_scors_g45
           : SCORE_KEYS.reduce((acc, key) => {
-              const val = parseFloat(scores[SCORE_KEY_MAP[key]])
+              const val = parseFloat(scoresForTable[SCORE_KEY_MAP[key]])
               return Number.isNaN(val) ? acc : acc + val
             }, 0)
 
@@ -5918,7 +5937,7 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const sumatoriaScoreRows = SCORE_KEYS.map(key => {
         const label = scoreLabelMap[key] || key
-        let value = scores[SCORE_KEY_MAP[key]]
+        let value = scoresForTable[SCORE_KEY_MAP[key]]
         if (value === undefined || value === null || value === '') {
           value = '-'
         }
