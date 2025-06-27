@@ -139,7 +139,7 @@ const loadAlgorithmConstants = async () => {
 loadAlgorithmConstants()
 
 // Procesa generación de PDF y envío de correo de manera asíncrona
-async function processReporteCreditoAsync ({
+async function processReporteCreditoAsync({
   customUuid,
   id_cliente,
   id_proveedor,
@@ -2895,6 +2895,7 @@ const getScoreApalancamientoFromSummary = async (
   parametrosAlgoritmo,
   customUuid
 ) => {
+  console.log(JSON.stringify(parametrosAlgoritmo.apalancamientoScore))
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
@@ -2951,36 +2952,32 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
-    // Mismo cálculo utilizado en el ratio R10 de "Ratios financieros"
     const apalancamiento =
-      !isNaN(pasivo) && !isNaN(capital) && capital !== 0
+      capital !== 0
         ? parseFloat((pasivo / capital).toFixed(1))
-        : capital === 0
-          ? null
-          : NaN
+        : null
 
     const operacion = `${pasivo} / ${capital}`
 
-    const apalScore = parametrosAlgoritmo.apalancamientoScore.find(a => {
-      const [inf, sup] = getLimits(a)
-      return (
-        apalancamiento !== null &&
-        !Number.isNaN(apalancamiento) &&
-        apalancamiento >= inf &&
-        apalancamiento <= sup
-      )
-    })
-    if (!apalScore) {
-      logger.warn(
-        `${fileMethod} | ${customUuid} Valor de apalancamiento fuera de rango`
-      )
-      return {
-        error: true,
-        apalancamiento,
-        deuda_total_estado_balance_periodo_anterior:
-          pasivoLargoPlazoPCA.total_pasivo_largo_plazo,
-        capital_contable_estado_balance: capitalContable.capital_contable
+    const apalancamientoValido = apalancamiento !== null && !Number.isNaN(apalancamiento)
+
+    let apalScore = null
+
+    if (apalancamientoValido) {
+      for (const a of parametrosAlgoritmo.apalancamientoScore) {
+        if (a.limite_inferior !== null && a.limite_superior !== null) {
+          const inf = parseFloat(a.limite_inferior)
+          const sup = parseFloat(a.limite_superior)
+          if (apalancamiento >= inf && apalancamiento <= sup) {
+            apalScore = a
+            break
+          }
+        }
       }
+    } else {
+      apalScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
+        a.nombre && a.nombre.toLowerCase().includes('no report')
+      )
     }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1
@@ -3006,6 +3003,11 @@ const getScoreApalancamientoFromSummary = async (
     return { error: true }
   }
 }
+
+
+
+
+
 
 const getScoreCajaBancosFromSummary = async (
   id_certification,
@@ -3058,15 +3060,15 @@ const getScorePaybackFromSummary = async (
   try {
     const parseNumber = require('../../utils/number')
     let scoreOverride = null
-  const [
-    pasivoCirculanteData,
-    utilidadOperativa,
-    estadoBalanceAnterior
-  ] = await Promise.all([
-    certificationService.totalPasivoCirculanteAnterior(id_certification),
-    certificationService.utilidadOperativa(id_certification),
-    certificationService.getEstadoBalanceData(id_certification, 'anterior')
-  ])
+    const [
+      pasivoCirculanteData,
+      utilidadOperativa,
+      estadoBalanceAnterior
+    ] = await Promise.all([
+      certificationService.totalPasivoCirculanteAnterior(id_certification),
+      certificationService.utilidadOperativa(id_certification),
+      certificationService.getEstadoBalanceData(id_certification, 'anterior')
+    ])
 
     if (!utilidadOperativa) return { error: true }
 
