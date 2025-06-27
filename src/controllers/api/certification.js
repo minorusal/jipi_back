@@ -5730,6 +5730,16 @@ ${JSON.stringify(info_email_error, null, 2)}
         _15_rotacion_ctas_x_cobrar: 'Rotaci\u00F3n ctas x cobrar'
       }
 
+      const skipTablesV2 = new Set([
+        '_03_capital_contable',
+        '_08_ventas_anuales',
+        '_11_evolucion_ventas',
+        '_12_apalancamiento',
+        '_13_flujo_neto',
+        '_14_payback',
+        '_15_rotacion_ctas_x_cobrar'
+      ])
+
       const moneyFormatter = new Intl.NumberFormat('es-MX', {
         style: 'currency',
         currency: 'MXN'
@@ -5977,6 +5987,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           SCORE_KEYS.includes(key) && val && typeof val === 'object'
         )
         .map(([key, val]) => {
+          const skipV2 = Number(version_algoritmo) === 2 && skipTablesV2.has(key)
           const descripcion = val.descripcion ?? val.caso ?? val.tipo ?? '-'
           const score = val.score ?? '-'
           const tableName = tableMap[key]
@@ -6071,6 +6082,13 @@ ${JSON.stringify(info_email_error, null, 2)}
           let titulo = num ? `${parseInt(num, 10)}. ${etiqueta}` : etiqueta
           if (num && parseInt(num, 10) <= 16) {
             titulo += ' score'
+          }
+          if (skipV2) {
+            return `
+            <div class="table-section" style="margin-bottom: 10px;">
+            <h3 style="font-size: 8px;">${titulo}</h3>
+            <p>No se consideran en la version2 del algoritmo</p>
+            </div>`
           }
           const rows = []
           if (formula !== '-' && formula !== null && formula !== '') {
