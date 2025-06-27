@@ -5538,7 +5538,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             </tr>
             <tr>
               <td>4</td>
-              <td style="background-color: #000; color: #fff;">Proveedores (PARTIDA 13) y Acreedores y Préstamos Bancarios (PARTIDA 14) sin datos en ambos periodos.</td>
+              <td style="background-color: #000; color: #fff;">La cuenta de PROVEEDORES (PARTIDA 13) (+) la cuenta Acreedores y préstamos bancarios (PARTIDA 14) NO SON REPORTADAS CONJUNTAMENTE EN LOS 2 PERIODOS CONTABLES EVALUADOS (ES DECIR, SI NO HAY AMBAS PARTIDAS CONTABLES EN CONJUNTO PARA 2 PERÍODOS o 2 cierres contables en conjunto o años de presentación de los estados financieros. (ojo NO aplica si en un periodo contable o año si reporta cifras DE AL MENOS UNA DE ESTAS PARTIDAS (13 O 14) Y EN OTRO PERIODO CONTABLE NO REPORTA NADA O AL MENOS REPORTA UNA DE ELLAS.</td>
               <td><strong>Proveedores:</strong> ${provAnterior}<br><strong>Acreedores:</strong> ${acreAnterior}</td>
               <td><strong>Proveedores:</strong> ${provPrevio}<br><strong>Acreedores:</strong> ${acrePrevio}</td>
               <td>${msgV2(resProvAcre)}</td>
