@@ -1,9 +1,14 @@
 'use strict'
 
 const boom = require('boom')
+const path = require('path')
+const ejs = require('ejs')
+const html_to_pdf = require('html-pdf-node')
 const certificationService = require('../../services/certification')
 const algorithmService = require('../../services/algorithm')
 const utilitiesService = require('../../services/utilities')
+const uploadImageS3 = require('../../utils/uploadImageS3')
+const { sendCompaniEmail } = require('./mailjet-controler')
 const logger = require('../../utils/logs/logger')
 
 // Valores por defecto de configuración del algoritmo
@@ -84,7 +89,9 @@ async function obtenerDatosIniciales (req) {
     parametrosAlgoritmo,
     algoritmo_v,
     monto_solicitado,
-    plazo
+    plazo,
+    id_cliente,
+    id_reporte_credito
   }
 }
 
@@ -195,14 +202,88 @@ function calcularScoresFinales (reporte) {
   return { g45, g46, g49, g51, g52 }
 }
 
+async function generarPdfReporte (reporte, scores, uuid) {
+  const templatePath = path.join(
+    __dirname,
+    '../../utils/pdfs/templates/credit-evaluation.ejs'
+  )
+  const html = await ejs.renderFile(templatePath, { reporte, scores })
+  const options = {
+    format: 'A4',
+    printBackground: true,
+    margin: { top: 10, right: 10, bottom: 10, left: 10 }
+  }
+  const pdfBuffer = await html_to_pdf.generatePdf({ content: html }, options)
+  const pdf64 = `data:application/pdf;base64,${pdfBuffer.toString('base64')}`
+  const location = await uploadImageS3.uploadPdf(pdf64, 'reporteCredito')
+  logger.info(`generarPdfReporte | ${uuid} | location: ${JSON.stringify(location)}`)
+  return location
+}
+
 /**
  * Guarda el reporte y envía las notificaciones correspondientes.
  * Esta función solo registra la acción en bitácora por simplicidad.
  */
 async function guardarYEnviarReporte (reporte, scores, datosCliente) {
-  logger.info(`Guardar reporte para certificación ${datosCliente.id_certification}`)
-  logger.info(`Scores finales: ${JSON.stringify(scores)}`)
-  return { saved: true }
+  const {
+    id_certification,
+    customUuid,
+    id_cliente,
+    id_reporte_credito,
+    monto_solicitado,
+    plazo
+  } = datosCliente
+
+  logger.info(`Guardar reporte para certificación ${id_certification}`)
+  const reporteCredito = {
+    id_reporte_credito,
+    monto_solicitado,
+    plazo
+  }
+
+  const map = {
+    pais: '_01_pais',
+    sector: '_02_sector_riesgo',
+    capital: '_03_capital_contable',
+    plantilla: '_04_plantilla_laboral',
+    ventas: '_08_ventas_anuales'
+  }
+
+  for (const [k, v] of Object.entries(reporte.variables)) {
+    const key = map[k]
+    if (key) {
+      reporteCredito[key] = { descripcion: v.nombre, score: v.valor_algoritmo }
+    }
+  }
+
+  const pdfLocation = await generarPdfReporte(reporte, scores, customUuid)
+  reporteCredito.reporte_pdf = pdfLocation.file
+  reporteCredito.score = scores.g45
+
+  await certificationService.insertReporteCredito(id_certification, reporteCredito, customUuid)
+
+  if (pdfLocation?.file) {
+    const [solicitud] = await certificationService.getSolicitudCreditoById(id_reporte_credito)
+    if (solicitud) {
+      const empresa_info = await certificationService.getUsuarioEmail(solicitud.id_proveedor)
+      if (empresa_info && empresa_info[0]) {
+        const [{ usu_nombre: nombre, usu_email: email }] = empresa_info
+        const cliente = await certificationService.consultaEmpresaInfo(id_cliente)
+        const _cliente = cliente?.result?.[0]?.emp_razon_social || 'No encontrado'
+        const proveedor = await certificationService.consultaEmpresaInfo(solicitud.id_proveedor)
+        const _proveedor = proveedor?.result?.[0]?.emp_razon_social || 'No encontrado'
+        await sendCompaniEmail({
+          email,
+          nombre,
+          templateID: 6967845,
+          empresa: _cliente,
+          empresa_envia: _proveedor
+        })
+      }
+    }
+  }
+
+  return { saved: true, pdf: pdfLocation.file }
 }
 
 /**

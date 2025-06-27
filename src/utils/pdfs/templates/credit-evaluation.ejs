@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+    h1 { color:#0a3d8e; text-align:center; }
+    table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
+    th, td { border:1px solid #ccc; padding:6px; }
+    th { background:#f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Reporte de Crédito</h1>
+  <h2>Variables</h2>
+  <table>
+    <thead>
+      <tr><th>Variable</th><th>Valor</th></tr>
+    </thead>
+    <tbody>
+      <% for (const [nombre, val] of Object.entries(reporte.variables)) { %>
+        <tr><td><%= nombre %></td><td><%= val.valor_algoritmo %></td></tr>
+      <% } %>
+    </tbody>
+  </table>
+  <h2>Scores</h2>
+  <table>
+    <tbody>
+      <% for (const [nombre, val] of Object.entries(scores)) { %>
+        <tr><td><%= nombre %></td><td><%= val %></td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</body>
+</html>
