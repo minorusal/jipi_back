@@ -2638,13 +2638,28 @@ const getControlanteScoreFromSummary = async (
         v == null || (Array.isArray(v) ? v.length === 0 : Object.keys(v).length === 0)
       )
 
+    const reglasConfiguradas =
+      Array.isArray(parametrosAlgoritmo?.influenciaControlanteScore)
+        ? parametrosAlgoritmo.influenciaControlanteScore.map(r => r.nombre)
+        : []
+
+    const reglaDesconocido = reglasConfiguradas.find(r =>
+      r.toLowerCase().includes('desconocido')
+    )
+    const reglaPositivo = reglasConfiguradas.find(r =>
+      r.toLowerCase().includes('positivo')
+    )
+    const reglaNegativa = reglasConfiguradas.find(r =>
+      ['aes', 'bloc', 'demanda'].some(k => r.toLowerCase().includes(k))
+    )
+
     let regla = ''
     if (!accionistaControlante) {
-      regla = 'Desconocido'
+      regla = reglaDesconocido || 'Regla no definida'
     } else if (sinDemandas && sinBlocInfo) {
-      regla = 'Positivo'
+      regla = reglaPositivo || 'Regla no definida'
     } else {
-      regla = 'AES O EN BLOC ANTE DEMANDAS MERCANTILES RECIENTES <1 AÑO Y MÁS DE 2 D'
+      regla = reglaNegativa || 'Regla no definida'
     }
 
     const cat = await certificationService.getInfluenciaControlanteScore(regla)
