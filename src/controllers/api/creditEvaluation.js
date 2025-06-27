@@ -180,19 +180,22 @@ function construirReporteCredito (variables, algoritmo_v, monto, plazo) {
 /**
  * Calcula los scores finales y la clase del reporte.
  */
-function calcularScoresFinales (reporte) {
+async function calcularScoresFinales (reporte) {
   const valores = Object.values(reporte.variables)
     .map(v => parseFloat(v.valor_algoritmo))
     .map(v => (Number.isNaN(v) ? 0 : v))
-  const promedio = valores.length
-    ? valores.reduce((a, b) => a + b, 0) / valores.length
-    : 0
-  const g45 = promedio
+
+  const g45 = valores.reduce((a, b) => a + b, 0)
   const g46 = algorithmConstants.logitFactor * g45 + algorithmConstants.logitConstant
   const g49 = Math.exp(g46) / (1 + Math.exp(g46))
-  const g51 = g49 * 100
-  const g52 = g51 >= 80 ? 1 : g51 >= 60 ? 2 : 3
-  return { g45, g46, g49, g51, g52 }
+  const g48 = 1 - g49
+  const g51 = g48 * 100
+
+  const g52 = await certificationService.getClass(g51)
+  const wording = await certificationService.getWordingUnderwriting(g52)
+  const porcentajeLc = await certificationService.getScoreLc(g52)
+
+  return { g45, g46, g49, g48, g51, g52, wording, porcentajeLc }
 }
 
 /**
@@ -226,7 +229,7 @@ async function getAlgoritmoResultV2 (req, res, next) {
       datos.plazo
     )
 
-    const scores = calcularScoresFinales(reporte)
+    const scores = await calcularScoresFinales(reporte)
     await guardarYEnviarReporte(reporte, scores, datos)
 
     return res.json({
