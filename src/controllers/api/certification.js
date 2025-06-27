@@ -6180,12 +6180,6 @@ ${JSON.stringify(info_email_error, null, 2)}
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
             if (key === '_12_apalancamiento') {
               formula = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
-              if (
-                val.deuda_total_estado_balance_periodo_anterior !== undefined &&
-                val.capital_contable_estado_balance !== undefined
-              ) {
-                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
-              }
             } else {
               formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
               if (key === '_14_payback') {
