@@ -5822,10 +5822,8 @@ ${JSON.stringify(info_email_error, null, 2)}
               (ref, idx) => `
           <tr style="background-color:${idx % 2 === 0 ? '#ffffff' : '#f5f5f5'};">
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.id_certification_referencia_comercial}</td>
-            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.calificacion_referencia ?? '-'}</td>
-            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.linea_credito ?? '-'}</td>
-            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.porcentaje_deuda ?? '-'}</td>
-            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.dias_atraso ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.rfc ?? '-'}</td>
+            <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.razon_social ?? '-'}</td>
             <td style="padding: 4px 6px; border: 1px solid #ddd;">${ref.motivo_descartada || ref.observaciones || ref.estatus_referencia || '-'}</td>
           </tr>`
             )
@@ -5862,10 +5860,8 @@ ${JSON.stringify(info_email_error, null, 2)}
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">ID</th>
-              <th>Calificación</th>
-              <th>Línea de crédito</th>
-              <th>Porcentaje de deuda</th>
-              <th>Días de atraso</th>
+              <th>RFC</th>
+              <th>Razón social</th>
               <th>Motivo descarte</th>
             </tr>
           </thead>
