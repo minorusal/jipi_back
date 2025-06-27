@@ -6243,17 +6243,13 @@ ${JSON.stringify(info_email_error, null, 2)}
               val.deuda_total_estado_balance_periodo_anterior
             )
             const capital = format(val.capital_contable_estado_balance)
-            const formulaResultado =
-              `Deuda total (periodo contable anterior): ${pasivo} / ` +
-              `Capital contable (periodo contable anterior): ${capital}`
+            const formulaResultado = val.operacion
+              ? val.operacion
+              : `Deuda total (periodo contable anterior): ${pasivo} / ` +
+                `Capital contable (periodo contable anterior): ${capital}`
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
             )
-            if (val.operacion) {
-              rows.push(
-                `<tr><td>Operación</td><td>${val.operacion}</td></tr>`
-              )
-            }
           } else if (key === '_14_payback') {
             if (val.operacion) {
               rows.push(
