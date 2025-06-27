@@ -181,8 +181,12 @@ function construirReporteCredito (variables, algoritmo_v, monto, plazo) {
  * Calcula los scores finales y la clase del reporte.
  */
 function calcularScoresFinales (reporte) {
-  const valores = Object.values(reporte.variables).map(v => v.valor_algoritmo || 0)
-  const promedio = valores.reduce((a, b) => a + b, 0) / valores.length
+  const valores = Object.values(reporte.variables)
+    .map(v => parseFloat(v.valor_algoritmo))
+    .map(v => (Number.isNaN(v) ? 0 : v))
+  const promedio = valores.length
+    ? valores.reduce((a, b) => a + b, 0) / valores.length
+    : 0
   const g45 = promedio
   const g46 = algorithmConstants.logitFactor * g45 + algorithmConstants.logitConstant
   const g49 = Math.exp(g46) / (1 + Math.exp(g46))
