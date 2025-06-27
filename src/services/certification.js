@@ -4143,8 +4143,9 @@ WHERE cer.certificacion_id = (
 
     const table1 = await fetchTable('score_classes_a')
     const table2 = await fetchTable('score_classes_b')
+    const table3 = await fetchTable('score_classes_c')
 
-    return { table1, table2 }
+    return { table1, table2, table3 }
   }
 
   async saveAlgoritm(id_certification, scores, g45, c46, g46, g49, g48, g51, g52, wu, c48, porcentajeLc) {
