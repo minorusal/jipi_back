@@ -4412,7 +4412,7 @@ const generaReporteInformativoCredito = async (req, res, next) => {
 
   try {
     const { body } = req;
-    const { id_cliente, id_proveedor, id_reporte_credito, monto_solicitado, plazo } = body
+    const { id_cliente, id_proveedor, id_reporte_credito, monto_solicitado, plazo, mensaje_bloc, mensaje_konesh } = body
 
     if (!id_cliente || !id_reporte_credito || !monto_solicitado || !plazo) return next(boom.badRequest(`Información incompleta`))
 
@@ -4576,7 +4576,7 @@ const generaReporteInformativoCredito = async (req, res, next) => {
     await certificationService.updateSolicitudCredito(monto_solicitado, plazo, id_reporte_credito)
 
     //console.log('bloc--', consulta_bloc)
-    const location = await generarReporteInformativoo(customUuid, id_cliente, id_reporte_credito, reporteInformativoCredito, id_certification);
+    const location = await generarReporteInformativoo(customUuid, id_cliente, id_reporte_credito, reporteInformativoCredito, id_certification, mensaje_bloc, mensaje_konesh);
     reporteInformativoCredito.reporte_pdf = location.archivo;
     logger.info(`${fileMethod} | ${customUuid} Reporte de crédito generado: ${JSON.stringify(location)}`);
     logger.info(`${fileMethod} | ${customUuid} Reporte de credito final-x: ${JSON.stringify(reporteInformativoCredito)}`)
@@ -6180,6 +6180,12 @@ ${JSON.stringify(info_email_error, null, 2)}
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
             if (key === '_12_apalancamiento') {
               formula = `${etiqueta}: ${val.parametro}\nL\u00EDmite inferior: ${val.limite_inferior}\nL\u00EDmite superior: ${val.limite_superior}`
+              if (
+                val.deuda_total_estado_balance_periodo_anterior !== undefined &&
+                val.capital_contable_estado_balance !== undefined
+              ) {
+                formula += `\nOperaci\u00F3n: ${formatMoney(val.deuda_total_estado_balance_periodo_anterior)} / ${formatMoney(val.capital_contable_estado_balance)}`
+              }
             } else {
               formula = `${etiqueta}: ${formatMoney(val.parametro)}\nL\u00EDmite inferior: ${formatMoney(val.limite_inferior)}\nL\u00EDmite superior: ${formatMoney(val.limite_superior)}`
               if (key === '_14_payback') {
@@ -9363,7 +9369,7 @@ const sendEmailInTimeOutTime = async (email_empresa, nombre_empresa) => {
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_credito, _reporte_credito, id_certification) => {
+const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_credito, _reporte_credito, id_certification, mensaje_bloc, mensaje_konesh) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: generarReporteInformativo`
 
   try {
@@ -9626,19 +9632,19 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     logger.info(`${fileMethod} | objetivo empresaID: ${JSON.stringify(idEmpresa)}`)
 
+// Quitar
+    // let consulta_bloc = await consultaBlocLocal(idEmpresa);
 
-    let consulta_bloc = await consultaBlocLocal(idEmpresa);
-
-    logger.info(`${fileMethod} | consulta_bloc: ${JSON.stringify(consulta_bloc)}`)
+    // logger.info(`${fileMethod} | consulta_bloc: ${JSON.stringify(consulta_bloc)}`)
 
 
     // Extraer bloc del objeto de respuesta
-    const bloc_concursos_mercantiles = consulta_bloc.data?.bloc_concursos_mercantiles || [];
-    const bloc_importadores_exportadores = consulta_bloc.data?.bloc_importadores_exportadores || [];
-    const bloc_lista_69_incumplidos = consulta_bloc.data?.bloc_lista_69_incumplidos || [];
-    const bloc_ofac = consulta_bloc.data?.bloc_ofac || [];
-    const bloc_proveedores_contratistas = consulta_bloc.data?.bloc_proveedores_contratistas || [];
-    const bloc_sat69b = consulta_bloc.data?.bloc_sat69b || [];
+    const bloc_concursos_mercantiles = [];
+    const bloc_importadores_exportadores = [];
+    const bloc_lista_69_incumplidos = [];
+    const bloc_ofac = [];
+    const bloc_proveedores_contratistas = [];
+    const bloc_sat69b = [];
 
 
     const { strHTML } = idEmpresa;
@@ -9988,9 +9994,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
 
     // Agregar mensaje si el contador es 2
-    const contadorKonesh = infoEmpresa?.result?.[0]?.contador_konesh ?? null;
-
-    const mensajeErrorRFC = contadorKonesh !== null && contadorKonesh <= 2
+    const mensajeErrorRFC = (mensaje_bloc.message.length > 0) || (mensaje_konesh.mensaje.length > 0)
       ? `
         <div style="
          display: flex;
@@ -10005,7 +10009,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
          border-radius: 10px;
          ">
             <p style="color: #b71c1c; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
-              ⚠️ Detectamos que el RFC ingresado no coincide con su razón social investigada. Por lo anterior, no podemos emitir una recomendación de crédito. Si tienes dudas, verifica los datos con la documentación oficial de la empresa.
+              ⚠️ ${encabezado.razon_social} reportada en SAT con RFC invalido, no vigente, o lista OFAC, GAFI, etc.
             </p>
           </div>
         `
