@@ -578,7 +578,7 @@ exports.genericKoneshRequest = async (req, res, next) => {
 
     const activa_api_sat = globalConfig.find(item => item.nombre === 'activa_api_sat')?.valor
     if (activa_api_sat !== 'true') {
-      return res.json({ success: false, mensaje: 'El consumo a la API de Konesh está desactivado' })
+      return res.json({ success: true, mensaje: 'El consumo a la API de Konesh está desactivado' })
     }
 
     const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
