@@ -2936,9 +2936,13 @@ const getScoreApalancamientoFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
-    const [calculoBalance] = await certificationService.getCalculoEstadoBalance(
-      id_certification
-    )
+    const [
+      estadoBalanceAnterior,
+      estadoBalancePrevioAnterior
+    ] = await Promise.all([
+      certificationService.getEstadoBalanceData(id_certification, 'anterior'),
+      certificationService.getEstadoBalanceData(id_certification, 'previo_anterior')
+    ])
     const [pasivoLargoPlazoPCA, capitalContable] = await Promise.all([
       certificationService.pasivoLargoPlazoPCA(id_certification),
       certificationService.capitalContablePCA(id_certification)
@@ -2953,18 +2957,26 @@ const getScoreApalancamientoFromSummary = async (
 
     const parseNumber = require('../../utils/number')
 
-    const pasivoAnterior = parseNumber(
-      calculoBalance?.total_pasivo_largo_plazo_anterior
-    )
-    const capitalAnterior = parseNumber(
-      calculoBalance?.total_capital_contable_anterior
-    )
-    const pasivoPrevio = parseNumber(
-      calculoBalance?.total_pasivo_largo_plazo_previo_anterior
-    )
-    const capitalPrevio = parseNumber(
-      calculoBalance?.total_capital_contable_previo_anterior
-    )
+    const toFloat = (value) => parseNumber(value)
+
+    const pasivoAnterior =
+      toFloat(estadoBalanceAnterior?.pasivo_largo_plazo_anterior) +
+      toFloat(estadoBalanceAnterior?.pasivo_diferido_anterior) +
+      toFloat(estadoBalanceAnterior?.total_pasivo_circulante_anterior)
+    const capitalAnterior =
+      toFloat(estadoBalanceAnterior?.capital_social_anterior) +
+      toFloat(estadoBalanceAnterior?.resultado_ejercicios_anteriores_anterior) +
+      toFloat(estadoBalanceAnterior?.resultado_ejercicios_anterior) +
+      toFloat(estadoBalanceAnterior?.otro_capital_anterior)
+    const pasivoPrevio =
+      toFloat(estadoBalancePrevioAnterior?.pasivo_largo_plazo_previo_anterior) +
+      toFloat(estadoBalancePrevioAnterior?.pasivo_diferido_previo_anterior) +
+      toFloat(estadoBalancePrevioAnterior?.total_pasivo_circulante_previo_anterior)
+    const capitalPrevio =
+      toFloat(estadoBalancePrevioAnterior?.capital_social_previo_anterior) +
+      toFloat(estadoBalancePrevioAnterior?.resultado_ejercicios_anteriores_previo_anterior) +
+      toFloat(estadoBalancePrevioAnterior?.resultado_ejercicios_previo_anterior) +
+      toFloat(estadoBalancePrevioAnterior?.otro_capital_previo_anterior)
 
     const solvenciaAnterior =
       !isNaN(pasivoAnterior) && !isNaN(capitalAnterior) && capitalAnterior !== 0
