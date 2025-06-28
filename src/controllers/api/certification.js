@@ -17667,7 +17667,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                 font-weight: 500;
               "
             >
-            ${(demanda.tipo?.length > 0 || demanda.tipo === 'undefined') ? demanda.tipo : '-'}
+            ${(demanda.tipo_demanda?.length > 0 || demanda.tipo_demanda === 'undefined') ? demanda.tipo_demanda : '-'}
             </p>
           </div>              
 
@@ -18742,12 +18742,14 @@ const getDemandasBloc = async (req, res, next) => {
 
     const startTs = Date.now()
     let response
+    let response_encoding
     let status
     let errorMsg = null
-
     try {
-      response = await axios.get(block_demandas_url)
-      status = response.status
+      response = await axios.get(block_demandas_url, { responseType: 'arraybuffer' });
+      const dataString = Buffer.from(response.data, 'binary').toString('latin1');
+      response_encoding = JSON.parse(dataString);
+      status = response.status;
     } catch (err) {
       status = err.response ? err.response.status : null
       errorMsg = err.message
@@ -18784,7 +18786,7 @@ const getDemandasBloc = async (req, res, next) => {
       logger.error(`Error saving bloc response: ${e.message}`)
     }
 
-    const data = response.data
+    const data = response_encoding
 
     logger.info(`${fileMethod} | Respuesta exitosa que regresara el endpoint: ${JSON.stringify({
       error: false,
