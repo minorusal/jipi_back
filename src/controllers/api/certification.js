@@ -5648,8 +5648,8 @@ ${JSON.stringify(info_email_error, null, 2)}
 
       const scoreClassData = await certificationService
         .getAllScoreClasses()
-        .catch(() => ({ table1: [], table2: [] }))
-      const { table1: scoreClassA, table2: scoreClassB } = scoreClassData
+        .catch(() => ({ table1: [], table2: [], table3: [] }))
+      const { table1: scoreClassA, table2: scoreClassB, table3: scoreClassC } = scoreClassData
       const buildRows = data =>
         Array.isArray(data)
           ? data
@@ -5664,6 +5664,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           : ''
       const scoreClassRowsA = buildRows(scoreClassA)
       const scoreClassRowsB = buildRows(scoreClassB)
+      const scoreClassRowsC = buildRows(scoreClassC)
 
 
       const scoreDescripcionData =
@@ -5684,7 +5685,7 @@ ${JSON.stringify(info_email_error, null, 2)}
       const scoreTables = `
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Score vs Clases (Tabla 1)</caption>
+          <caption>score_classes_a</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">Score</th>
@@ -5698,7 +5699,7 @@ ${JSON.stringify(info_email_error, null, 2)}
         </div>
         <div class="table-section">
         <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
-          <caption>Score vs Clases (Tabla 2)</caption>
+          <caption>score_classes_b</caption>
           <thead style="background-color: #f2f2f2;">
             <tr>
               <th style="background-color: #000; color: #fff;">Score</th>
@@ -5707,6 +5708,20 @@ ${JSON.stringify(info_email_error, null, 2)}
           </thead>
           <tbody>
             ${scoreClassRowsB}
+          </tbody>
+        </table>
+        </div>
+        <div class="table-section">
+        <table border="1" cellspacing="0" cellpadding="6" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 10px;">
+          <caption>score_classes_c</caption>
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="background-color: #000; color: #fff;">Score</th>
+              <th>Clase</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${scoreClassRowsC}
           </tbody>
         </table>
         </div>
