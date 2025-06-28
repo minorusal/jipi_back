@@ -519,6 +519,9 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
   }
 
   const data = apiResponse.data
+  if (!data || !Array.isArray(data.transactionResponse01) || !data.transactionResponse01[0]) {
+    return { apiResponse, result: null }
+  }
   const konesh_api_des = {
     transactionResponse01: [{
       data01: await descifra_konesh(data.transactionResponse01[0].data01),
