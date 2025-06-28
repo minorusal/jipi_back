@@ -2957,7 +2957,7 @@ const getScoreApalancamientoFromSummary = async (
 
     const parseNumber = require('../../utils/number')
 
-    const toFloat = (value) => parseNumber(value)
+    const toFloat = (value) => parseNumber(value ?? 0)
 
     const pasivoAnterior =
       toFloat(estadoBalanceAnterior?.pasivo_largo_plazo_anterior) +
