@@ -520,6 +520,9 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
 
   const data = apiResponse.data
   if (!data || !Array.isArray(data.transactionResponse01) || !data.transactionResponse01[0]) {
+    if (data && data.result === 'INVALID' && data.stage === 'AUTHENTICATION') {
+      apiResponse.errorMessage = data.message
+    }
     return { apiResponse, result: null }
   }
   const konesh_api_des = {
