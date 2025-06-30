@@ -1,12 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 
-function collectRoutes(dir, prefix, paths) {
+function collectRoutes(dir, prefix, paths, tags) {
   if (!fs.existsSync(dir)) return;
   const files = fs.readdirSync(dir).filter(f => f.endsWith('.js'));
   files.forEach(file => {
     const content = fs.readFileSync(path.join(dir, file), 'utf8');
     const fileName = file.replace(/\.js$/, '').replace(/\.ga$/, '');
+    if (!tags.find(t => t.name === fileName)) {
+      tags.push({ name: fileName });
+    }
     const base = `${prefix}${fileName === 'index' ? '' : '/' + fileName}`;
     const regex = /router\.(get|post|put|delete|patch)\s*\(\s*['"`]([^'"`]*)['"`]/g;
     let match;
@@ -15,16 +18,17 @@ function collectRoutes(dir, prefix, paths) {
       const route = match[2];
       const full = `${base}${route}`.replace(/\/\/+/, '/');
       if (!paths[full]) paths[full] = {};
-      paths[full][method] = { responses: { 200: { description: 'Success' } } };
+      paths[full][method] = { tags: [fileName], responses: { 200: { description: 'Success' } } };
     }
   });
 }
 
 module.exports = function generateOpenApi(port) {
   const paths = {};
-  collectRoutes(path.join(__dirname, '../routes/api'), '/api', paths);
-  collectRoutes(path.join(__dirname, '../routes/legacy'), '', paths);
-  collectRoutes(path.join(__dirname, '../routes/api_arcsa_v2'), '/api_arcsa_v2', paths);
+  const tags = [];
+  collectRoutes(path.join(__dirname, '../routes/api'), '/api', paths, tags);
+  collectRoutes(path.join(__dirname, '../routes/legacy'), '', paths, tags);
+  collectRoutes(path.join(__dirname, '../routes/api_arcsa_v2'), '/api_arcsa_v2', paths, tags);
 
   return {
     openapi: '3.0.0',
@@ -32,6 +36,7 @@ module.exports = function generateOpenApi(port) {
     servers: [
       { url: `http://localhost:${port || 3000}`, description: 'Servidor local' }
     ],
+    tags,
     paths
   };
 };
