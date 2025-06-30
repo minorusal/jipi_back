@@ -8,7 +8,7 @@ const logger = require('../src/utils/logs/logger')
 const { startCronJobs } = require('./controllers/api/cron')
 const express = require('express')
 const swaggerUi = require('swagger-ui-express')
-const swaggerJsdoc = require('swagger-jsdoc')
+const generateOpenApi = require('./utils/generateOpenApi')
 const routes = require('./routes')// Aquí se importan las rutas desarrolladas en Arcsa, es decir, lo "nuevo" [apiRoutes] y las desarrolladas por la consultora [legacyRoutes]
 const helmet = require('helmet')
 const cors = require('cors')
@@ -19,27 +19,7 @@ const app = express()
 
 startCronJobs()
 
-// Configuración de Swagger
-const swaggerOptions = {
-  definition: {
-      openapi: '3.0.0',
-      info: {
-          title: 'Credibusiness',
-          version: '1.0.0',
-          description: 'Descripción de mi API',
-      },
-      servers: [
-          {
-              url: `http://localhost:${port || 3000}`,
-              description: 'Servidor local',
-          },
-      ],
-  },
-  apis: ['./src/routes/api/*.js'],
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-
+const swaggerDocs = generateOpenApi(port)
 // Servir la documentación de Swagger en la ruta /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
