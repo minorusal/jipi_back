@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+    body { font-family: Arial, sans-serif; padding: 20px; color: #333; font-size:12px; }
     h1 { color:#0a3d8e; text-align:center; }
-    h2 { background:#0a3d8e; color:#fff; padding:4px; font-size:14px; margin-top:20px; page-break-after: avoid; }
-    table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; page-break-inside: avoid; break-inside: avoid; }
+    h2 { background:#0a3d8e; color:#fff; padding:4px; font-size:13px; margin-top:20px; page-break-after: avoid; }
+    table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:11px; page-break-inside: avoid; break-inside: avoid; }
     .table-section { page-break-inside: avoid; break-inside: avoid; }
     th, td { border:1px solid #ccc; padding:6px; }
     th { background:#f0f0f0; }
   </style>
 </head>
 <body>
-  <h1>Parámetros del Algoritmo</h1>
+  <h1>Reporte de valores para ejecución del algoritmo</h1>
+  <p style="text-align:right;font-size:11px;">Fecha de emisión: <%= fechaEmision %></p>
   <% for (const [nombre, filas] of Object.entries(resumenValores)) { %>
     <div class="table-section">
     <h2><%= nombre %></h2>

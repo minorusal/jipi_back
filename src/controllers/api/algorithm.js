@@ -92,9 +92,14 @@ const getParametrosAlgoritmoPdf = async (req, res, next) => {
   const fileMethod = 'file: src/controllers/api/algorithm.js - method: getParametrosAlgoritmoPdf'
   try {
     const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
+    // Remove scoreDescripcion from the report
+    const { scoreDescripcion, ...cleanSummary } = parametrosAlgoritmo
 
     const templatePath = path.join(__dirname, '../../utils/pdfs/templates/algorithm-summary.ejs')
-    const html = await ejs.renderFile(templatePath, { resumenValores: parametrosAlgoritmo })
+    const html = await ejs.renderFile(templatePath, {
+      resumenValores: cleanSummary,
+      fechaEmision: new Date().toLocaleDateString('es-ES')
+    })
 
     const options = {
       format: 'A4',
