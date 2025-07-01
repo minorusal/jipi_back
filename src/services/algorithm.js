@@ -94,11 +94,13 @@ class AlgorithmService {
         if (idField) {
           entry.id = r[idField]
         }
-        if (Object.prototype.hasOwnProperty.call(r, 'valor_algoritmo_v2')) {
+        const hasV2 = Object.prototype.hasOwnProperty.call(r, 'valor_algoritmo_v2')
+        if (hasV2) {
           entry.v2 = r.valor_algoritmo_v2
         } else {
           entry.v2 = r.valor_algoritmo
         }
+        entry.has_v2 = hasV2
         if (Object.prototype.hasOwnProperty.call(r, 'limite_inferior')) {
           entry.limite_inferior = r.limite_inferior
         }
