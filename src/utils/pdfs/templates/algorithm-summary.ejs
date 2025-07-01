@@ -25,7 +25,9 @@
         <tr>
           <th>Nombre</th>
           <th>V1</th>
-          <th>V2</th>
+          <% if (filas[0].has_v2) { %>
+            <th>V2</th>
+          <% } %>
           <% if ('limite_inferior' in filas[0]) { %>
             <th>Límite inferior</th>
             <th>Límite superior</th>
@@ -40,7 +42,9 @@
           <tr>
             <td><%= row.nombre %></td>
             <td><%= row.v1 %></td>
-            <td><%= row.v2 %></td>
+            <% if (row.has_v2) { %>
+              <td><%= row.v2 %></td>
+            <% } %>
             <% if (row.limite_inferior !== undefined) { %>
               <td><%= row.limite_inferior %></td>
               <td><%= row.limite_superior %></td>
