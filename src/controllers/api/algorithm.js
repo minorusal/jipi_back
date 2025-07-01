@@ -88,6 +88,31 @@ const getAlgorithmSummaryPdf = async (req, res, next) => {
   }
 }
 
+const getParametrosAlgoritmoPdf = async (req, res, next) => {
+  const fileMethod = 'file: src/controllers/api/algorithm.js - method: getParametrosAlgoritmoPdf'
+  try {
+    const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
+
+    const templatePath = path.join(__dirname, '../../utils/pdfs/templates/algorithm-summary.ejs')
+    const html = await ejs.renderFile(templatePath, { resumenValores: parametrosAlgoritmo })
+
+    const options = {
+      format: 'A4',
+      printBackground: true,
+      margin: { top: 10, right: 10, bottom: 10, left: 10 }
+    }
+
+    const pdfBuffer = await html_to_pdf.generatePdf({ content: html }, options)
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename=parametros-algoritmo.pdf')
+    return res.send(pdfBuffer)
+  } catch (error) {
+    logger.error(`${fileMethod} | ${error.message}`)
+    next(error)
+  }
+}
+
 const updateAlgorithmRanges = async (req, res, next) => {
   const fileMethod = 'file: src/controllers/api/algorithm.js - method: updateAlgorithmRanges'
   try {
@@ -108,5 +133,6 @@ module.exports = {
   getAlgorithmResult,
   getAlgorithmSummary,
   getAlgorithmSummaryPdf,
+  getParametrosAlgoritmoPdf,
   updateAlgorithmRanges
 }

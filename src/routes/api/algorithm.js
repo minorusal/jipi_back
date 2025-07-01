@@ -29,5 +29,16 @@ router.get('/summary', algorithmController.getAlgorithmSummary)
  */
 router.get('/summary/pdf', algorithmController.getAlgorithmSummaryPdf)
 
+/**
+ * @swagger
+ * /api/algorithm/parametros/pdf:
+ *   get:
+ *     summary: Genera un PDF con los parámetros del algoritmo
+ *     responses:
+ *       200:
+ *         description: PDF generado
+ */
+router.get('/parametros/pdf', algorithmController.getParametrosAlgoritmoPdf)
+
 router.put('/ranges', algorithmController.updateAlgorithmRanges)
 module.exports = router
