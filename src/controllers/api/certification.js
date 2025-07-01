@@ -2708,6 +2708,27 @@ const getScoreVentasAnualesFromSummary = async (
     const ventasAnualesAnioAnterior =
       await certificationService.getVentasAnualesAnioAnterior(id_certification)
 
+    const returnUnknown = () => {
+      if (Number(algoritmo_v?.v_alritmo) === 2) {
+        const unknown = parametrosAlgoritmo.ventasAnualesScore.find(v => v.use_v2)
+        if (unknown) {
+          const result = {
+            score: unknown.v2,
+            descripcion: unknown.nombre,
+            limite_inferior: unknown.limite_inferior,
+            limite_superior: unknown.limite_superior,
+            ventas_anuales: null,
+            periodo_anterior_estado_resultados: ventasAnualesAnioAnterior?.periodo_anterior
+          }
+          logger.info(
+            `${fileMethod} | ${customUuid} Se aplica regla de ventas anuales desconocidas: ${JSON.stringify(result)}`
+          )
+          return result
+        }
+      }
+      return { error: true }
+    }
+
     if (
       !ventasAnualesAnioAnterior ||
       ventasAnualesAnioAnterior.ventas_anuales == null
@@ -2717,7 +2738,7 @@ const getScoreVentasAnualesFromSummary = async (
           ventasAnualesAnioAnterior
         )}`
       )
-      return { error: true }
+      return returnUnknown()
     }
 
     const ventasAnuales = Number(ventasAnualesAnioAnterior.ventas_anuales)
@@ -2725,13 +2746,17 @@ const getScoreVentasAnualesFromSummary = async (
       logger.warn(
         `${fileMethod} | ${customUuid} El valor de ventas anuales obtenido no es numérico: ${ventasAnualesAnioAnterior.ventas_anuales}`
       )
-      return { error: true }
+      return returnUnknown()
     }
 
     const ventaScore = parametrosAlgoritmo.ventasAnualesScore.find(v => {
       const limiteSuperior =
         v.limite_superior == null ? 9999999999 : v.limite_superior
-      return ventasAnuales >= v.limite_inferior && ventasAnuales <= limiteSuperior
+      const inRange = ventasAnuales >= v.limite_inferior && ventasAnuales <= limiteSuperior
+      if (Number(algoritmo_v?.v_alritmo) === 2) {
+        return inRange
+      }
+      return inRange && !v.use_v2
     })
 
     if (!ventaScore) {

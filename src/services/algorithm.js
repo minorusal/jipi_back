@@ -99,6 +99,9 @@ class AlgorithmService {
         } else {
           entry.v2 = r.valor_algoritmo
         }
+        if (Object.prototype.hasOwnProperty.call(r, 'use_v2')) {
+          entry.use_v2 = Boolean(r.use_v2)
+        }
         if (Object.prototype.hasOwnProperty.call(r, 'limite_inferior')) {
           entry.limite_inferior = r.limite_inferior
         }
