@@ -25,9 +25,11 @@
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>V1</th>
           <% if (filas[0].has_v2) { %>
+            <th>V1</th>
             <th>V2</th>
+          <% } else { %>
+            <th>Score</th>
           <% } %>
           <% if ('limite_inferior' in filas[0]) { %>
             <th>Límite inferior</th>
