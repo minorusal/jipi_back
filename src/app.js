@@ -4,6 +4,7 @@
 process.env.TZ = 'America/Mexico_City'
 
 const { server: { port } } = require('./config')
+const net = require('net')
 const logger = require('../src/utils/logs/logger')
 const { startCronJobs } = require('./controllers/api/cron')
 const express = require('express')
@@ -19,10 +20,6 @@ const app = express()
 
 startCronJobs()
 
-const swaggerDocs = generateOpenApi(port)
-// Servir la documentación de Swagger en la ruta /api-docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 app.use(cors())
 app.use(helmet())
 app.use(express.urlencoded({ extended: true, limit: '100mb' })) // Aumentar el límite de tamaño de solicitud
@@ -30,15 +27,45 @@ app.use(express.json({ limit: '100mb' }))
 app.use(compression({ level: 9 }))
 
 const upload = multer();  // Instancia de multer (no hay almacenamiento, solo procesamiento)
- //app.use(upload.none()); 
+ //app.use(upload.none());
 
 app.use('/', routes)
 
 app.use(handleErrMidleware())
 
-app.listen(port || 3000, () => {
-  logger.info(`Api levantada en el puerto: ${port}`);
-  console.log('Running server on port: ', port)
-})
+async function checkPort (p) {
+  return new Promise((resolve) => {
+    const server = net.createServer()
+    server.once('error', () => resolve(false))
+    server.once('listening', () => server.close(() => resolve(true)))
+    server.listen(p)
+  })
+}
+
+async function findAvailablePort (start) {
+  let current = start
+  // eslint-disable-next-line no-await-in-loop
+  while (!(await checkPort(current))) {
+    current += 1
+  }
+  return current
+}
+
+(async () => {
+  const basePort = port || 3000
+  const finalPort = await findAvailablePort(basePort)
+  if (finalPort !== basePort) {
+    logger.info(`Puerto ${basePort} en uso, se usará ${finalPort}`)
+  }
+
+  const swaggerDocs = generateOpenApi(finalPort)
+  // Servir la documentación de Swagger en la ruta /api-docs
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+  app.listen(finalPort, () => {
+    logger.info(`Api levantada en el puerto: ${finalPort}`)
+    console.log('Running server on port: ', finalPort)
+  })
+})()
 
 module.exports = app
