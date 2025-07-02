@@ -29,9 +29,6 @@ app.use(compression({ level: 9 }))
 const upload = multer();  // Instancia de multer (no hay almacenamiento, solo procesamiento)
  //app.use(upload.none());
 
-app.use('/', routes)
-
-app.use(handleErrMidleware())
 
 async function checkPort (p) {
   return new Promise((resolve) => {
@@ -61,6 +58,10 @@ async function findAvailablePort (start) {
   const swaggerDocs = generateOpenApi(finalPort)
   // Servir la documentación de Swagger en la ruta /api-docs
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+
+  app.use('/', routes)
+
+  app.use(handleErrMidleware())
 
   app.listen(finalPort, () => {
     logger.info(`Api levantada en el puerto: ${finalPort}`)
