@@ -328,10 +328,10 @@ const consultarListaRecibidas = async (req, res, next) => {
 // Enviamos invitación empresa externa
 const enviarInvitacion = async (req, res, next) => {
     try {
-        const { emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo } = req.body
+        const { emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo, monto_solicitado, plazo } = req.body
         if (!emp_id || !nombre_empresa || !tax_id || !nombre_contacto || !telefono || !email_corporativo) return next(boom.badRequest('Bad request. Some parameters are missing. Check your request.'))
 
-        const nuevaSolicitud = await guardarSolicitudCreditoExterno(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo);
+        const nuevaSolicitud = await guardarSolicitudCreditoExterno(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo, monto_solicitado, plazo);
 
         const _empreaa = await companiesService.getEmpresa(emp_id)
         // console.log(_empreaa?.[0]?.emp_razon_social);
@@ -532,7 +532,9 @@ const asignarSolicitudCreditoExterno = async (tax_id, emp_id) => {
 
                 const data = {
                     id_proveedor: pendiente.emp_id,
-                    id_cliente: emp_id
+                    id_cliente: emp_id,
+                    plazo: pendiente.plazo,
+                    monto_solicitado: pendiente.monto_solicitado,
                 }
                 // Asignamos solicitud
                 const nuevaSolicitud = await guardaRelacionCompradorVendedor(data);

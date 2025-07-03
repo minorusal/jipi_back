@@ -144,7 +144,10 @@ const enviaCorreoReferenciasExternas = async (id_certification_referencia_comerc
 }
 
 const enviarEmailRegistrosSemanal = async (registros, total_registros) => {
+    const fileMethod = `file: src/controllers/api/certification.js - method: enviarEmailRegistrosSemanal`
     try {
+        logger.info(`${fileMethod}`)
+
         const globalConfig = await utilitiesService.getParametros()
         let correos_reporte_semanal = await globalConfig.find(item => item.nombre === 'correos_reporte_semanal').valor
         correos_reporte_semanal = JSON.parse(correos_reporte_semanal);
@@ -250,15 +253,19 @@ const enviarEmailRegistrosSemanal = async (registros, total_registros) => {
         }
 
         const info = await transporter.sendMail(mailOptions)
+        logger.info(info)
         console.log({info})
         return info
     } catch (error) {
+        logger.error(`${error}`)
         console.log(error)
     }
 }
 
 const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
-    try {
+  const fileMethod = `file: src/controllers/api/certification.js - method: enviarEmailSaldoEmpresas`
+  try {
+        logger.info(`${fileMethod}`)
         const globalConfig = await utilitiesService.getParametros()
         let correos_reporte_semanal = await globalConfig.find(item => item.nombre === 'correos_reporte_semanal').valor
         correos_reporte_semanal = JSON.parse(correos_reporte_semanal);
@@ -350,7 +357,7 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 </body>
 </html>
         `
-
+        const envLabel = process.env.NODE_ENV === 'production' ? 'Productivo' : 'Desarrollo'
         const mailOptions = {
           from: `"credibusiness" <${email_sender_encuesta}>`,
           to: correos_reporte_semanal,
@@ -359,9 +366,11 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
         }
 
         const info = await transporter.sendMail(mailOptions)
+        logger.info(info)
         console.log({info})
         return info
     } catch (error) {
+        logger.error(`${error}`)
         console.log(error)
     }
 }
@@ -533,7 +542,7 @@ const startCronJobs = () => {
     })
 
     // Nota: La libreria de cron no sabe que en México se quitó el horario de verano
-    cron.schedule('0 12 * * 1', async () => {
+    cron.schedule('40 15 * * 1', async () => {
         try {
             logger.info('Cron que envia correo semanal de estadisticas de saldo ocupado por empresa')
             const saldo_empresas = await solicitudCreditoService.getSaldoEmpresasResporte();

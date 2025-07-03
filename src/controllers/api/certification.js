@@ -2937,8 +2937,8 @@ const getScoreApalancamientoFromSummary = async (
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
     const [
-      estadoBalanceAnterior,
-      estadoBalancePrevioAnterior
+      [estadoBalanceAnterior],
+      [estadoBalancePrevioAnterior]
     ] = await Promise.all([
       certificationService.getEstadoBalanceData(id_certification, 'anterior'),
       certificationService.getEstadoBalanceData(id_certification, 'previo_anterior')
