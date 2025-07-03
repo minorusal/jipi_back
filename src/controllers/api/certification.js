@@ -251,7 +251,34 @@ async function obtenerDemandas(nombre) {
     logger.error(`Error saving bloc response: ${e.message}`)
   }
 
-  return response.data
+  // Normalize and filter demandas by type and date
+  const results = response.data?.results || {}
+  let demandas = []
+  Object.values(results).forEach(arr => {
+    if (Array.isArray(arr)) {
+      demandas = demandas.concat(
+        arr.map(item => ({
+          ...item,
+          tipo_proceso: item.tipo_proceso || item.tipo,
+          fecha: item.fecha
+        }))
+      )
+    }
+  })
+
+  const haceUnAño = new Date()
+  haceUnAño.setFullYear(haceUnAño.getFullYear() - 1)
+
+  const filtered = demandas.filter(d => {
+    const tipo = (d.tipo_proceso || '').toLowerCase()
+    const fecha = new Date(d.fecha)
+    return (
+      fecha >= haceUnAño &&
+      (tipo.includes('mercantil') || tipo.includes('penal'))
+    )
+  })
+
+  return { data: { demandas: filtered } }
 }
 
 const duplicateRegister = async (body, certificacion_id) => {
