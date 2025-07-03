@@ -9208,6 +9208,11 @@ const updateInformacionContacto = async (req, res, next) => {
 
     const referencia_valida = await validacionesReferenciasComercialesValidas(body, empresa_referencia_comercial)
     logger.info(`${fileMethod} | La referencia es valida: ${JSON.stringify(referencia_valida)}`)
+    await certificationService.actualizaReferenciaValida(
+      referencia_valida,
+      datos_empresa_contacto.id_referencia,
+      ip_cliente
+    )
     const [reporte_credito_fecha] = await certificationService.getFechaReporteCredito(id_certification)
     const [reporte_credito_descriptivo] = await certificationService.getDataReporteCreditoDescriptivo(id_certification)
     if (!reporte_credito_fecha && !reporte_credito_descriptivo) {
@@ -9222,7 +9227,6 @@ const updateInformacionContacto = async (req, res, next) => {
     const fechaHoy = new Date()
     const diferenciaMs = fechaHoy - fechaInicio
     const diasTranscurridos = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24))
-    await certificationService.actualizaReferenciaValida(referencia_valida, datos_empresa_contacto.id_referencia, ip_cliente)
     logger.info(`${fileMethod} | Dias Transcurridos desde laultima generacion de reporte de credito: ${JSON.stringify(diasTranscurridos)}`)
 
     const dias_tolerancia_generar_reporte = JSON.parse(await globalConfig.find(item => item.nombre === 'dias_tolerancia_generar_reporte').valor)
