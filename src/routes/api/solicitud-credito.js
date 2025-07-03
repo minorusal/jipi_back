@@ -18,7 +18,8 @@ const {
     enviarInvitacion,
     enviarInvitacionSimple,
     reenviarSolicitudCredito,
-    reenviarSolicitudCreditoInterna
+    reenviarSolicitudCreditoInterna,
+    updateMontoPlazoOtorgado
 } = require('../../controllers/api/solicitud-credito')
 
 // router.post('/', consultarCreditos )
@@ -172,6 +173,7 @@ router.get('/recibidas/:idEmpresa', consultarListaRecibidas)
 router.post('/invitacion', enviarInvitacion)
 router.post('/reenviar-solicitud', reenviarSolicitudCredito)
 router.post('/reenviar-solicitud-interna', reenviarSolicitudCreditoInterna);
+router.patch('/update-MontoPlazoOtorgado', updateMontoPlazoOtorgado);
 
 
 module.exports = router

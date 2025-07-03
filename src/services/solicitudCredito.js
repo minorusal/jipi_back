@@ -197,6 +197,8 @@ class SolicituCreditoService {
     sol.id_solicitud_credito,
     sol.id_cliente,
     sol.id_proveedor,
+    sol.plazo_otorgado,
+    sol.monto_otorgado,
     emp.emp_rfc,
     emp.emp_website,
     emp.emp_razon_social,
@@ -228,6 +230,8 @@ SELECT
     NULL AS id_solicitud_credito,
     NULL AS id_cliente,
     NULL AS id_proveedor,
+    NULL AS plazo_otorgado,
+    NULL AS monto_otorgado,
     sce.tax_id AS emp_rfc,
     NULL AS emp_website,
     sce.nombre_empresa AS emp_razon_social,
@@ -385,6 +389,28 @@ AND NOT EXISTS (
       RIGHT JOIN CREDITOS_PLATAFORMA AS cp ON cp.id_empresa = ec.emp_id
       LEFT JOIN empresa AS e ON e.emp_id = cp.id_empresa OR e.emp_id = ec.emp_id
       LEFT JOIN cat_denominacion AS cd ON cd.id = e.denominacion;
+    `;
+
+    const result = await mysqlLib.query(queryString)
+    return result
+  }
+
+  async update_MontoPlazoOtorgado({
+    id_solicitud_credito,
+    id_proveedor,
+    id_cliente,
+    monto_otorgado,
+    plazo_otorgado})
+    {
+    const queryString = `
+      UPDATE solicitud_credito
+      SET 
+        monto_otorgado = ${monto_otorgado},
+        plazo_otorgado = ${plazo_otorgado}
+      WHERE 
+        id_solicitud_credito = ${id_solicitud_credito}
+        AND id_proveedor = ${id_proveedor}
+        AND id_cliente = ${id_cliente};
     `;
 
     const result = await mysqlLib.query(queryString)

@@ -5826,6 +5826,7 @@ WHERE
         COUNT(certification.id_certification) AS "clientes_evaluados",
         AVG(reporte_credito.score) AS "calificacion_promedio",
         SUM(reporte_credito.monto_sugerido) AS "saldo_recomendado",
+        SUM(solicitud_credito.monto_otorgado) AS "monto_otorgado",
         ROUND(AVG(reporte_credito.plazo)) AS "plazo_recomendado",
         (
             SELECT

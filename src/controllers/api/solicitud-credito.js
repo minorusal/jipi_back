@@ -2,7 +2,7 @@
 
 
 const boom = require('boom')
-const { obtenerCodigosPromociones, getEnviadas, getEnviadasExternas, getRecibidas, actualizarSaldoCodigosPromocion, obtenerSaldoCodigosMayorCero, obtenerSaldoCodigos, obtenerSaldo, actualizarSaldo, guardarSolicitudCreditoExterno, obtenerSolitudesCreditoExternasPendientes, actualizarEstatusSolicitudCreditoExterno, getSCE } = require('../../services/solicitudCredito')
+const { obtenerCodigosPromociones, getEnviadas, getEnviadasExternas, getRecibidas, actualizarSaldoCodigosPromocion, obtenerSaldoCodigosMayorCero, obtenerSaldoCodigos, obtenerSaldo, actualizarSaldo, guardarSolicitudCreditoExterno, obtenerSolitudesCreditoExternasPendientes, actualizarEstatusSolicitudCreditoExterno, getSCE, update_MontoPlazoOtorgado } = require('../../services/solicitudCredito')
 
 const { guardaRelacionCompradorVendedor } = require('../../services/certification')
 const { globalAuth: { keyCipher } } = require('../../config')
@@ -676,6 +676,20 @@ const reenviarSolicitudCreditoInterna = async (req, res, next) => {
   }
 };
 
+const updateMontoPlazoOtorgado = async (req, res, next) => {
+    const fileMethod = `file: src/controllers/api/solicitud-credito.js - method: updateMontoPlazoOtorgado`;
+    try {
+
+        logger.info(`${fileMethod} - La solicitud de credito a buscar es: ${JSON.stringify(req.body)}`)
+        
+        await update_MontoPlazoOtorgado(req.body);
+        
+        res.status(200).json({mensaje: "Información actualizada con éxito."});
+        
+    } catch (error) {
+        console.log(err);
+    }
+}
 
 module.exports = {
     consultarCreditos,
@@ -691,5 +705,6 @@ module.exports = {
     getCodigos,
     asignarCodigos,
     reenviarSolicitudCredito,
-    reenviarSolicitudCreditoInterna
+    reenviarSolicitudCreditoInterna,
+    updateMontoPlazoOtorgado
 }
