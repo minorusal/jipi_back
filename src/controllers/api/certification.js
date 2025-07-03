@@ -2655,15 +2655,24 @@ const getControlanteScoreFromSummary = async (
       !respuestaDemandas.data?.demandas ||
       respuestaDemandas.data.demandas.length === 0
 
+    const isBlocValueEmpty = v => {
+      if (v == null) return true
+      if (Array.isArray(v)) return v.length === 0
+      if (typeof v === 'object') {
+        const values = Object.values(v)
+        if (values.length === 0) return true
+        return values.every(isBlocValueEmpty)
+      }
+      return false
+    }
+
     const sinBlocInfo = !blocData ||
       [
         blocData.bloc_sat69b,
         blocData.bloc_ofac,
         blocData.bloc_concursos_mercantiles,
         blocData.bloc_proveedores_contratistas
-      ].every(v =>
-        v == null || (Array.isArray(v) ? v.length === 0 : Object.keys(v).length === 0)
-      )
+      ].every(isBlocValueEmpty)
 
     const reglasConfiguradas =
       Array.isArray(parametrosAlgoritmo?.influenciaControlanteScore)
