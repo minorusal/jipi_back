@@ -271,12 +271,12 @@ AND NOT EXISTS (
     return result
   }
 
-  async guardarSolicitudCreditoExterno(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo) {
+  async guardarSolicitudCreditoExterno(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo, monto_solicitado, plazo) {
 
     //console.log('Obtener Saldo ', id_emp);
     const queryString = `
-        INSERT INTO solicitud_credito_externos(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo, created_at)
-        VALUES(${emp_id}, '${nombre_empresa}', '${tax_id}', '${nombre_contacto}', '${telefono}', '${email_corporativo}', NOW());
+        INSERT INTO solicitud_credito_externos(emp_id, nombre_empresa, tax_id, nombre_contacto, telefono, email_corporativo, created_at, monto_solicitado, plazo)
+        VALUES(${emp_id}, '${nombre_empresa}', '${tax_id}', '${nombre_contacto}', '${telefono}', '${email_corporativo}', NOW(), ${monto_solicitado}, ${plazo});
       `;
 
     console.log(queryString);
@@ -298,7 +298,9 @@ AND NOT EXISTS (
             telefono,
             email_corporativo,
             estatus,
-            created_at
+            created_at,
+            monto_solicitado,
+            plazo
         FROM solicitud_credito_externos WHERE tax_id = '${tax_id}' AND estatus = 'enviado';
       `;
 
