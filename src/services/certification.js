@@ -2907,8 +2907,12 @@ WHERE cer.certificacion_id = (
       linea_credito,
       plazo
     } = empresa_cliente
+    const porcDeuda = Number(porcentaje_deuda) || 0
+    const diasAtrasoNum = Number(dias_atraso) || 0
+    const lineaCreditoNum = Number(linea_credito) || 0
+    const plazoNum = Number(plazo) || 0
     const queryString = `
-      INSERT INTO certification_empresa_cliente_contacto 
+      INSERT INTO certification_empresa_cliente_contacto
         (
         id_referencia_comercial,
         calificacion_referencia,
@@ -2916,14 +2920,14 @@ WHERE cer.certificacion_id = (
         dias_atraso,
         linea_credito,
         plazo
-      ) 
-      VALUES 
+      )
+      VALUES
         (${id_referencia_comercial},
         '${calificacion_referencia}',
-        ${porcentaje_deuda},
-        ${dias_atraso},
-        ${linea_credito},
-        ${plazo});
+        ${porcDeuda},
+        ${diasAtrasoNum},
+        ${lineaCreditoNum},
+        ${plazoNum});
     `
     const { result } = await mysqlLib.query(queryString)
     return result
