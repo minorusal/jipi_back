@@ -11,8 +11,7 @@ const {
   createCertification,
   payCertification,
   certificateMyCompanyForTest,
-  validacionBlocSchema,
-  guardaReferenciasComercialesSchema
+  validacionBlocSchema
 } = require('../../utils/schemas/certification')
 const validation = require('../../utils/middlewares/validationHandler')
 const decryptMiddleware = require('../../utils/middlewares/cipherMiddleware')
@@ -823,7 +822,7 @@ router.post('/guardaMercadoObjetivo', /*decryptMiddleware, authMiddleware,*/ cer
  *                     created:
  *                       type: boolean
  *                       example: true
- *                     referenciasComerciales:
+ *                     partidasFinancieras:
  *                       type: object
  *                       properties:
  *                         id_certification:
@@ -885,15 +884,8 @@ router.post('/guardaMercadoObjetivo', /*decryptMiddleware, authMiddleware,*/ cer
  *                                   plazo:
  *                                     type: integer
  *                                     example: 30
- *       '400':
- *         description: "Se requieren referencias comerciales"
  */
-router.post(
-  '/guardaReferenciasComerciales',
-  /*decryptMiddleware, authMiddleware,*/
-  validation(guardaReferenciasComercialesSchema),
-  certificationController.guardaReferenciasComerciales
-);
+router.post('/guardaReferenciasComerciales', /*decryptMiddleware, authMiddleware,*/ certificationController.guardaReferenciasComerciales);
 
 /**
  * @swagger
