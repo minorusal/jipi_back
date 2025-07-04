@@ -6280,6 +6280,10 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (num && parseInt(num, 10) <= 16) {
             titulo += ' score'
           }
+          let tituloHtml = titulo
+          if (key === '_15_rotacion_ctas_x_cobrar') {
+            tituloHtml = `<a href="#rotacion_ctas_table">${titulo}</a>`
+          }
           if (skipV2) {
             return `
             <div class="table-section" style="margin-bottom: 10px;">
@@ -6327,7 +6331,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           }
           let tableHtml = `
             <div class="table-section" style="margin-bottom: 10px;">
-            <h3 style="font-size: 8px;">${titulo}</h3>
+            <h3 style="font-size: 8px;">${tituloHtml}</h3>
             <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
               <tbody>
                 ${rows.join('')}
@@ -7035,7 +7039,7 @@ ${JSON.stringify(info_email_error, null, 2)}
           return `
             <div class="table-section" style="page-break-inside: avoid; break-inside: avoid;">
             <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: auto; margin: 0 0 10px 0; margin-left: 0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; page-break-inside: avoid; break-inside: avoid;">
-              <caption>${label} (tabla: ${table})</caption>
+              <caption${label === '15. Rotación ctas x cobrar' ? ' id="rotacion_ctas_table"' : ''}>${label} (tabla: ${table})</caption>
               <thead style="background-color: #003366; color: #fff;">
                 ${header}
               </thead>
