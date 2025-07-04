@@ -68,7 +68,7 @@ class MySequelize {
   }
 
   query (queryStr, params = []) {
-    const options = Array.isArray(params) && params.length > 0 ? { replacements: params } : undefined
+    const options = { replacements: Array.isArray(params) ? params : [] }
     return new Promise((resolve, reject) => {
       this.sequelize.query(queryStr, options)
         .then(res => {
