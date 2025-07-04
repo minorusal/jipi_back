@@ -67,9 +67,10 @@ class MySequelize {
     })
   }
 
-  query (queryStr) {
+  query (queryStr, params = []) {
+    const options = Array.isArray(params) && params.length > 0 ? { replacements: params } : undefined
     return new Promise((resolve, reject) => {
-      this.sequelize.query(queryStr)
+      this.sequelize.query(queryStr, options)
         .then(res => {
           const result = this.normalizeQueryResult(queryStr, res)
 
@@ -82,7 +83,7 @@ class MySequelize {
               .then(() => {
                 debug('Hosts desbloqueados correctamente');
                 // Reintentar la conexión después de limpiar
-                return this.sequelize.query(queryStr);
+                return this.sequelize.query(queryStr, options);
               })
               .then(res => {
                 const result = this.normalizeQueryResult(queryStr, res)
