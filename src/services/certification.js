@@ -4710,7 +4710,9 @@ WHERE cer.certificacion_id = (
     const queryString = `
     SELECT id_certification
     FROM certification
-    WHERE id_empresa = ${id_empresa} AND estatus_certificacion = 'inicial';
+    WHERE id_empresa = ${id_empresa} AND estatus_certificacion = 'inicial'
+    ORDER BY id_certification DESC
+    LIMIT 1;
   `
     const { result } = await mysqlLib.query(queryString)
     return result
