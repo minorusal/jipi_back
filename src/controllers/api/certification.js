@@ -3244,6 +3244,11 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
 ) => {
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreRotacionCtasXCobrasScoreFromSummary`
+  // Evaluar ambos indicadores (DSO y DIO) por separado.
+  // Obtener el score de cada uno con base en los parámetros dinámicos.
+  // NO se deben sumar los scores.
+  // Debe seleccionarse y retornarse el score más alto (más positivo) entre los dos.
+  // Esta lógica es para evitar castigos excesivos si al menos uno de los indicadores es favorable.
   try {
     let noDso = false
     let noDio = false
@@ -3619,6 +3624,13 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
     const formatNum = n => isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
     let rotScoreDio = null
     let rotScoreDso = null
+    let bestScoreDio = null
+    let bestScoreDso = null
+    // Evaluar ambos indicadores (DSO y DIO) por separado.
+    // Obtener el score de cada uno con base en los parámetros dinámicos.
+    // NO se deben sumar los scores.
+    // Debe seleccionarse y retornarse el score más alto (más positivo) entre los dos.
+    // Esta lógica es para evitar castigos excesivos si al menos uno de los indicadores es favorable.
 
     if (!noDio) {
       for (const r of rotacionRules) {
@@ -3627,15 +3639,26 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
         const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
         const limInf = formatNum(inf)
         const limSup = formatNum(sup)
+        const candidateScore = Number(r.v1)
         if (dio >= inf && dio <= sup) {
-          rotScoreDio = r
-          lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(r.v1)}`)
-          break
+          if (bestScoreDio == null || candidateScore > bestScoreDio) {
+            bestScoreDio = candidateScore
+            rotScoreDio = r
+          }
         }
+        if (dio < inf) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
+        else if (dio > sup) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
+      }
+      if (rotScoreDio) {
+        const sup = rotScoreDio.limite_superior == null || isNaN(Number(rotScoreDio.limite_superior)) ? Infinity : Number(rotScoreDio.limite_superior)
+        const inf = rotScoreDio.limite_inferior == null || isNaN(Number(rotScoreDio.limite_inferior)) ? -Infinity : Number(rotScoreDio.limite_inferior)
+        lines.push(`DIO = ${formatNum(dio)} entra en rango [${formatNum(inf)} a ${formatNum(sup)}] → Score: ${bestScoreDio}`)
       }
     }
     if (!rotScoreDio) {
       rotScoreDio = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en inventarios')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
+      if (noDio) lines.push('DIO sin datos suficientes, se aplica regla de no reportar saldo en inventarios.')
+      bestScoreDio = Number(rotScoreDio?.v1)
     }
 
     if (!noDso) {
@@ -3645,22 +3668,33 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
         const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
         const limInf = formatNum(inf)
         const limSup = formatNum(sup)
+        const candidateScore = Number(r.v1)
         if (dso >= inf && dso <= sup) {
-          rotScoreDso = r
-          lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(r.v1)}`)
-          break
+          if (bestScoreDso == null || candidateScore > bestScoreDso) {
+            bestScoreDso = candidateScore
+            rotScoreDso = r
+          }
         }
+        if (dso < inf) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
+        else if (dso > sup) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
+      }
+      if (rotScoreDso) {
+        const sup = rotScoreDso.limite_superior == null || isNaN(Number(rotScoreDso.limite_superior)) ? Infinity : Number(rotScoreDso.limite_superior)
+        const inf = rotScoreDso.limite_inferior == null || isNaN(Number(rotScoreDso.limite_inferior)) ? -Infinity : Number(rotScoreDso.limite_inferior)
+        lines.push(`DSO = ${formatNum(dso)} entra en rango [${formatNum(inf)} a ${formatNum(sup)}] → Score: ${bestScoreDso}`)
       }
     }
     if (!rotScoreDso) {
       rotScoreDso = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en clientes')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
+      if (noDso) lines.push('DSO sin datos suficientes, se aplica regla de no reportar saldo en clientes.')
+      bestScoreDso = Number(rotScoreDso?.v1)
     }
 
     if (!rotScoreDio || !rotScoreDso) return { error: true }
 
-    const scoreDio = Number(rotScoreDio.v1)
-    const scoreDso = Number(rotScoreDso.v1)
-    const score = scoreDio + scoreDso
+    const scoreDio = bestScoreDio != null ? bestScoreDio : Number(rotScoreDio.v1)
+    const scoreDso = bestScoreDso != null ? bestScoreDso : Number(rotScoreDso.v1)
+    const score = Math.max(scoreDio, scoreDso)
 
     return {
       score,
