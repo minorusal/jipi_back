@@ -238,7 +238,7 @@ SELECT
     NULL AS emp_logo,
     NULL AS id_certification,
     NULL AS reporte_pdf,
-    NULL AS linea_credito_solicitada,
+    sce.monto_solicitado  AS linea_credito_solicitada,
     NULL AS plazo,
     NULL AS score,
     NULL AS linea_credito_sugerida,

@@ -10104,7 +10104,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
 
     // Agregar mensaje si el contador es 2
-    const mensajeErrorRFC = (mensaje_bloc.message.length > 0) || (mensaje_konesh.mensaje.length > 0)
+    const mensajeErrorRFC = (mensaje_bloc?.message?.length > 0) || (mensaje_konesh?.mensaje?.length > 0)
       ? `
         <div style="
          display: flex;
@@ -11315,19 +11315,19 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     const paisLimpio = limpiarCampo(encabezado.pais)
     logger.info(`${fileMethod} | ${customUuid} | paisLimpio: ${paisLimpio}`)
-    paisLimpio ?
-      `
+    const bloquePais = paisLimpio
+      ? `
         <p
-              style="
-                font-size: 12px;
-                font-weight: 500;
-                margin: 0px !important;
-                margin-bottom: 5px !important;
-              "
-            >
-              {_pais_}
-            </p>
-      `
+          style="
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0px !important;
+            margin-bottom: 5px !important;
+          "
+        >
+          ${_pais_}
+        </p>
+        `
       : '';
 
     const correoLimpio = limpiarCampo(encabezado.correo);
@@ -12120,7 +12120,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     strHTML_paso = strHTML_paso.replace('{_razon_social_}', encabezado.razon_social || '-');
     strHTML_paso = strHTML_paso.replace('{_rfc_}', encabezado.rfc || '-');
-    strHTML_paso = strHTML_paso.replace('{_pais_}', paisLimpio || '-');
+    strHTML_paso = strHTML_paso.replace('{_pais_}', bloquePais || '-');
     strHTML_paso = strHTML_paso.replace('{_direccion_fiscal_}', encabezado.direccion_fiscal || '-');
     strHTML_paso = strHTML_paso.replace('{_telefono_}', encabezado.telefono || '-');
     strHTML_paso = strHTML_paso.replace('{_correo_}', correoLimpio || '-');
@@ -13199,6 +13199,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     // Con Archivo
   } catch (err) {
+    console.log({err})
     logger.info(`${fileMethod} | ${customUuid} | Error general: ${JSON.stringify(err)}`)
     return {
       error: true,
