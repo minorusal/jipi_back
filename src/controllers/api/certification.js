@@ -3284,7 +3284,8 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       rotacionRules = rangosBD.rotacionCtasXCobrarScore || []
     }
 
-    let rotScore = null
+    let rotScoreDio = null
+    let rotScoreDso = null
     let metricUsed = null
     const lines = []
     const formatNum = n =>
@@ -3292,75 +3293,68 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
         ? '-'
         : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
 
-    // Recorremos todos los rangos con DIO primero
+    // Evaluamos rangos para DIO
     if (!noDio) {
       for (const r of rotacionRules) {
-        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue;
-        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior);
-        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior);
-        const limInf = formatNum(inf);
-        const limSup = formatNum(sup);
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior)
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
+        const limInf = formatNum(inf)
+        const limSup = formatNum(sup)
         if (dio >= inf && dio <= sup) {
-          rotScore = r;
-          metricUsed = { tipo: 'DIO', valor: dio };
-          const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
-          lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
-          break;
+          rotScoreDio = r
+          lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1)}`)
+          break
         } else {
           if (dio < inf) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
           else if (dio > sup) lines.push(`DIO = ${formatNum(dio)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
         }
       }
     }
+    if (!rotScoreDio) {
+      const ruleName = noDio ? 'no reportar saldo en inventarios' : 'no reportar saldo en inventarios'
+      rotScoreDio = rotacionRules.find(r => r.nombre?.toLowerCase().includes(ruleName)) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
+      if (noDio) lines.push('DIO sin datos suficientes, se aplica regla de no reportar saldo en inventarios.')
+    }
 
-    // Si no se encontró score con DIO, evaluamos DSO en todos los rangos
-    if (!rotScore && !noDso) {
+    // Evaluamos rangos para DSO
+    if (!noDso) {
       for (const r of rotacionRules) {
-        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue;
-        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior);
-        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior);
-        const limInf = formatNum(inf);
-        const limSup = formatNum(sup);
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior)
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
+        const limInf = formatNum(inf)
+        const limSup = formatNum(sup)
         if (dso >= inf && dso <= sup) {
-          rotScore = r;
-          metricUsed = { tipo: 'DSO', valor: dso };
-          const sc = Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1);
-          lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${sc}`);
-          break;
+          rotScoreDso = r
+          lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(algoritmo_v?.v_alritmo) === 2 ? Number(r.v2) : Number(r.v1)}`)
+          break
         } else {
           if (dso < inf) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por debajo del límite.`)
           else if (dso > sup) lines.push(`DSO = ${formatNum(dso)}: No entra en rango [${limInf} - ${limSup}] porque está por encima del límite.`)
         }
       }
     }
-
-    if (!rotScore) {
-      if (noDso && noDio) {
-        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos'))
-        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DSO y DIO' }
-      } else if (noDso) {
-        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en clientes'))
-        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DSO' }
-      } else if (noDio) {
-        rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en inventarios'))
-        metricUsed = { tipo: null, valor: 'sin datos suficientes para calcular DIO' }
-      }
+    if (!rotScoreDso) {
+      const ruleName = noDso ? 'no reportar saldo en clientes' : 'no reportar saldo en clientes'
+      rotScoreDso = rotacionRules.find(r => r.nombre?.toLowerCase().includes(ruleName)) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
+      if (noDso) lines.push('DSO sin datos suficientes, se aplica regla de no reportar saldo en clientes.')
     }
 
-    if (!rotScore) {
-      rotScore = rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
-      if (!metricUsed) {
-        metricUsed = { tipo: null, valor: 'DIO fuera de todos los rangos definidos' }
-      }
-    }
+    if (!rotScoreDio || !rotScoreDso) return { error: true }
 
-    if (!rotScore) return { error: true }
+    const scoreDio = Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScoreDio.v2) : Number(rotScoreDio.v1)
+    const scoreDso = Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScoreDso.v2) : Number(rotScoreDso.v1)
+    const score = scoreDio + scoreDso
 
-    const score = Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScore.v2) : Number(rotScore.v1)
+    metricUsed = { tipo: 'DIO/DSO', valor: `DIO=${formatNum(dio)}, DSO=${formatNum(dso)}` }
 
     return {
       score,
-      descripcion: rotScore.nombre,
+      scoreDio,
+      scoreDso,
+      descripcionDio: rotScoreDio.nombre,
+      descripcionDso: rotScoreDso.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       ventas_anuales: ventasAnuales.ventas_anuales,
       saldo_inventarios: saldoInventarios.saldo_inventarios,
@@ -3368,8 +3362,12 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       tipo: saldoClienteCuentaXCobrar.tipo,
       dso,
       dio,
-      limite_inferior: rotScore.limite_inferior,
-      limite_superior: rotScore.limite_superior,
+      limite_inferior_dio: rotScoreDio.limite_inferior,
+      limite_superior_dio: rotScoreDio.limite_superior,
+      limite_inferior_dso: rotScoreDso.limite_inferior,
+      limite_superior_dso: rotScoreDso.limite_superior,
+      limite_inferior: rotScoreDio.limite_inferior,
+      limite_superior: rotScoreDio.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
       periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
@@ -3583,8 +3581,6 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
       return { error: true }
     }
 
-    logger.info(`${fileMethod} | ${customUuid} Datos para rotación ID ${id_certification}: ${JSON.stringify({ saldoClienteCuentaXCobrar, ventasAnuales, saldoInventarios, costoVentasAnuales })}`)
-
     if (parseFloat(ventasAnuales.ventas_anuales) === 0) {
       noDso = true
     } else {
@@ -3599,58 +3595,83 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
       dioMayor90 = dio >= 90
     }
 
-    logger.info(`${fileMethod} | ${customUuid} DSO ${dso} DIO ${dio}`)
+    const parametrosAlgoritmo = await algorithmService.getGeneralSummary()
+    let rotacionRules = parametrosAlgoritmo.rotacionCtasXCobrarScore || []
 
-    const getScore = await certificationService.getScoreRotacion(Math.round(dso), Math.round(dio))
-    let rotScore = getScore || null
+    const lines = []
+    const formatNum = n => isNaN(Number(n)) ? '-' : Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 })
+    let rotScoreDio = null
+    let rotScoreDso = null
 
-    if (!rotScore && noDso && noDio) {
-      rotScore = await certificationService.getDefaultRotacionScore()
+    if (!noDio) {
+      for (const r of rotacionRules) {
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior)
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
+        const limInf = formatNum(inf)
+        const limSup = formatNum(sup)
+        if (dio >= inf && dio <= sup) {
+          rotScoreDio = r
+          lines.push(`DIO = ${formatNum(dio)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(r.v1)}`)
+          break
+        }
+      }
+    }
+    if (!rotScoreDio) {
+      rotScoreDio = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en inventarios')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
     }
 
-    if (!rotScore) {
-      logger.warn(`${fileMethod} | ${customUuid} No se ha podido obtener el score de rotacion por cuentas por cobrar: ${JSON.stringify(getScore)}`)
-      return { error: true }
+    if (!noDso) {
+      for (const r of rotacionRules) {
+        if (!r.nombre || r.nombre.toLowerCase().includes('desconocido')) continue
+        const sup = r.limite_superior == null || isNaN(Number(r.limite_superior)) ? Infinity : Number(r.limite_superior)
+        const inf = r.limite_inferior == null || isNaN(Number(r.limite_inferior)) ? -Infinity : Number(r.limite_inferior)
+        const limInf = formatNum(inf)
+        const limSup = formatNum(sup)
+        if (dso >= inf && dso <= sup) {
+          rotScoreDso = r
+          lines.push(`DSO = ${formatNum(dso)} entra en rango [${limInf} a ${limSup}] → Score: ${Number(r.v1)}`)
+          break
+        }
+      }
+    }
+    if (!rotScoreDso) {
+      rotScoreDso = rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar saldo en clientes')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('no reportar ambos')) || rotacionRules.find(r => r.nombre?.toLowerCase().includes('desconocido'))
     }
 
-    logger.info(`${fileMethod} | ${customUuid} La información para el score de rotación de cuentas por cobrar es: ${JSON.stringify({
-      score: rotScore.valor_algoritmo,
-      descripcion: rotScore.nombre,
-      saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
-      tipo: saldoClienteCuentaXCobrar.tipo,
-      dso,
-      dio,
-      limite_inferior: rotScore.limite_inferior,
-      limite_superior: rotScore.limite_superior,
-      periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
-      periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
-      periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
-      dsoMayor90,
-      dioMayor90
-    })}`)
+    if (!rotScoreDio || !rotScoreDso) return { error: true }
 
-    const score = rotScore.valor_algoritmo
+    const scoreDio = Number(rotScoreDio.v1)
+    const scoreDso = Number(rotScoreDso.v1)
+    const score = scoreDio + scoreDso
 
     return {
       score,
-      descripcion: rotScore.nombre,
+      scoreDio,
+      scoreDso,
+      descripcionDio: rotScoreDio.nombre,
+      descripcionDso: rotScoreDso.nombre,
       saldo_cliente_cuenta_x_cobrar: saldoClienteCuentaXCobrar.saldo_cliente_cuenta_x_cobrar,
       tipo: saldoClienteCuentaXCobrar.tipo,
       dso,
       dio,
-      limite_inferior: rotScore.limite_inferior,
-      limite_superior: rotScore.limite_superior,
+      limite_inferior_dio: rotScoreDio.limite_inferior,
+      limite_superior_dio: rotScoreDio.limite_superior,
+      limite_inferior_dso: rotScoreDso.limite_inferior,
+      limite_superior_dso: rotScoreDso.limite_superior,
+      limite_inferior: rotScoreDio.limite_inferior,
+      limite_superior: rotScoreDio.limite_superior,
       periodo_actual: saldoClienteCuentaXCobrar.periodo_actual,
       periodo_anterior: saldoClienteCuentaXCobrar.periodo_anterior,
       periodo_previo_anterior: saldoClienteCuentaXCobrar.periodo_previo_anterior,
       dsoMayor90,
-      dioMayor90
+      dioMayor90,
+      explicacion: lines.join('\n'),
+      metricUsed: { tipo: 'DIO/DSO', valor: `DIO=${formatNum(dio)}, DSO=${formatNum(dso)}` }
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
-    return {
-      error: true
-    }
+    return { error: true }
   }
 }
 
@@ -5029,17 +5050,23 @@ const getAlgoritmoResult = async (req, res, next) => {
       logger.info(`${fileMethod} | ${customUuid} Rotacion de cuentas por cobrar para el algoritmo es: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
 
       reporteCredito._15_rotacion_ctas_x_cobrar = {
-        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.descripcion,
+        descripcion: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : `${rotacion_ctas_x_cobrar.descripcionDio} | ${rotacion_ctas_x_cobrar.descripcionDso}`,
         score: Number(algoritmo_v?.v_alritmo) === 2 ? '0' : rotacion_ctas_x_cobrar.score,
+        score_dio: rotacion_ctas_x_cobrar.scoreDio,
+        score_dso: rotacion_ctas_x_cobrar.scoreDso,
         parametro_dso: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dso,
         parametro_dio: Number(algoritmo_v?.v_alritmo) === 2 ? 'version 2 algoritmo' : rotacion_ctas_x_cobrar.dio,
         ventas_anuales: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.ventas_anuales,
         saldo_inventarios: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.saldo_inventarios,
         costo_ventas_anuales: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.costo_ventas_anuales,
         saldo_cliente_cuenta_x_cobrar: rotacion_ctas_x_cobrar.saldo_cliente_cuenta_x_cobrar,
-        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior,
-        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior,
-        explicacion: rotacion_ctas_x_cobrar.explicacion,
+        limite_inferior_dio: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior_dio,
+        limite_superior_dio: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior_dio,
+        limite_inferior_dso: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior_dso,
+        limite_superior_dso: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior_dso,
+        limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior_dio,
+        limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior_dio == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior_dio,
+        explicacion: `${rotacion_ctas_x_cobrar.explicacion}`,
         metricUsed: rotacion_ctas_x_cobrar.metricUsed
       }
     }
@@ -6111,11 +6138,13 @@ ${JSON.stringify(info_email_error, null, 2)}
             key === '_15_rotacion_ctas_x_cobrar' &&
             val.parametro_dso !== undefined &&
             val.parametro_dio !== undefined &&
-            val.limite_inferior !== undefined &&
-            val.limite_superior !== undefined
+            val.limite_inferior_dio !== undefined &&
+            val.limite_superior_dio !== undefined &&
+            val.limite_inferior_dso !== undefined &&
+            val.limite_superior_dso !== undefined
           ) {
             const etiqueta = labelMap[key] || key.replace(/_/g, ' ')
-            formula = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatDays(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatDays(val.parametro_dio)}\nL\u00EDmite inferior: ${formatDays(val.limite_inferior)}\nL\u00EDmite superior: ${formatDays(val.limite_superior)}`
+            formula = `${etiqueta}:\nDSO = (Saldo clientes ${formatMoney(val.saldo_cliente_cuenta_x_cobrar)} / Ventas anuales ${formatMoney(val.ventas_anuales)}) * 360 = ${formatDays(val.parametro_dso)}\nDIO = (Saldo inventarios ${formatMoney(val.saldo_inventarios)} / Costo ventas anuales ${formatMoney(val.costo_ventas_anuales)}) * 360 = ${formatDays(val.parametro_dio)}\nL\u00EDmite inferior DSO: ${formatDays(val.limite_inferior_dso)}\nL\u00EDmite superior DSO: ${formatDays(val.limite_superior_dso)}\nL\u00EDmite inferior DIO: ${formatDays(val.limite_inferior_dio)}\nL\u00EDmite superior DIO: ${formatDays(val.limite_superior_dio)}`
           } else if (
             [
               '_08_ventas_anuales',
