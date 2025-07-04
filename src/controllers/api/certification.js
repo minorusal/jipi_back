@@ -5916,6 +5916,29 @@ ${JSON.stringify(info_email_error, null, 2)}
         _16_referencias_comerciales: 'cat_resultado_referencias_proveedores_algoritmo'
       }
 
+      const tableIdMap = {
+        _01_pais: 'pais_table',
+        _02_sector_riesgo: 'sector_riesgo_table',
+        _03_capital_contable: 'capital_contable_table',
+        _04_plantilla_laboral: 'plantilla_laboral_table',
+        _05_sector_cliente_final: 'sector_cliente_final_table',
+        _06_tiempo_actividad: 'tiempo_actividad_table',
+        _07_influencia_controlante: 'influencia_controlante_table',
+        _08_ventas_anuales: 'ventas_anuales_table',
+        _09_tipo_cifras: 'tipo_cifras_table',
+        _10_incidencias_legales: 'incidencias_legales_table',
+        _11_evolucion_ventas: 'evolucion_ventas_table',
+        _12_apalancamiento: 'apalancamiento_table',
+        _13_flujo_neto: 'flujo_neto_table',
+        _14_payback: 'payback_table',
+        _15_rotacion_ctas_x_cobrar: 'rotacion_ctas_table',
+        _16_referencias_comerciales: 'referencias_comerciales_table'
+      }
+
+      const sectionIdMap = Object.fromEntries(
+        Object.keys(tableIdMap).map(k => [k, `${tableIdMap[k].replace('_table', '')}_section`])
+      )
+
       const labelMap = {
         _03_capital_contable: 'Capital contable',
         _08_ventas_anuales: 'Ventas anuales',
@@ -6280,10 +6303,9 @@ ${JSON.stringify(info_email_error, null, 2)}
           if (num && parseInt(num, 10) <= 16) {
             titulo += ' score'
           }
-          let tituloHtml = titulo
-          if (key === '_15_rotacion_ctas_x_cobrar') {
-            tituloHtml = `<a href="#rotacion_ctas_table">${titulo}</a>`
-          }
+          const tableId = tableIdMap[key]
+          const sectionId = sectionIdMap[key]
+          let tituloHtml = tableId ? `<a href="#${tableId}">${titulo}</a>` : titulo
           if (skipV2) {
             return `
             <div class="table-section" style="margin-bottom: 10px;">
@@ -6330,8 +6352,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             )
           }
           let tableHtml = `
-            <div class="table-section" style="margin-bottom: 10px;">
+            <div class="table-section" style="margin-bottom: 10px;"${sectionId ? ` id="${sectionId}"` : ''}>
             <h3 style="font-size: 8px;">${tituloHtml}</h3>
+            ${tableId ? `<p style="font-size:8px;"><a href="#${tableId}">Ver tabla de parámetros</a></p>` : ''}
             <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 8px;">
               <tbody>
                 ${rows.join('')}
@@ -7036,10 +7059,12 @@ ${JSON.stringify(info_email_error, null, 2)}
           const header = singleScoreTables.includes(table)
             ? `<tr><th>Opción</th><th>Score</th></tr>`
             : `<tr><th>Opción</th><th>Score V1</th><th>Score V2</th></tr>`
+          const tId = tableIdMap[key]
+          const sId = sectionIdMap[key]
           return `
             <div class="table-section" style="page-break-inside: avoid; break-inside: avoid;">
             <table border="1" cellspacing="0" cellpadding="4" style="border-collapse: collapse; width: auto; margin: 0 0 10px 0; margin-left: 0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; page-break-inside: avoid; break-inside: avoid;">
-              <caption${label === '15. Rotación ctas x cobrar' ? ' id="rotacion_ctas_table"' : ''}>${label} (tabla: ${table})</caption>
+              <caption${tId ? ` id="${tId}"` : ''}>${label} (tabla: ${table})${sId ? ` - <a href="#${sId}">Regresar a score y cálculo</a>` : ''}</caption>
               <thead style="background-color: #003366; color: #fff;">
                 ${header}
               </thead>
