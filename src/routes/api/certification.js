@@ -7,7 +7,13 @@ const certificationController = require('../../controllers/api/certification')
 const multerGuardarPDF = require('../../utils/multerPdf')
 const authMiddleware = require('../../utils/middlewares/authMiddleware') 
 
-const { createCertification, payCertification, certificateMyCompanyForTest, validacionBlocSchema } = require('../../utils/schemas/certification')
+const {
+  createCertification,
+  payCertification,
+  certificateMyCompanyForTest,
+  validacionBlocSchema,
+  guardaReferenciasComercialesSchema
+} = require('../../utils/schemas/certification')
 const validation = require('../../utils/middlewares/validationHandler')
 const decryptMiddleware = require('../../utils/middlewares/cipherMiddleware')
 const creditEvaluationController = require('../../controllers/api/creditEvaluation')
@@ -882,7 +888,12 @@ router.post('/guardaMercadoObjetivo', /*decryptMiddleware, authMiddleware,*/ cer
  *       '400':
  *         description: "Se requieren referencias comerciales"
  */
-router.post('/guardaReferenciasComerciales', /*decryptMiddleware, authMiddleware,*/ certificationController.guardaReferenciasComerciales);
+router.post(
+  '/guardaReferenciasComerciales',
+  /*decryptMiddleware, authMiddleware,*/
+  validation(guardaReferenciasComercialesSchema),
+  certificationController.guardaReferenciasComerciales
+);
 
 /**
  * @swagger

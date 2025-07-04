@@ -61,9 +61,42 @@ const validacionBlocSchema = Joi.object({
   apellido: Joi.string().allow('').optional()
 })
 
+const guardaReferenciasComercialesSchema = Joi.object({
+  id_certification: Joi.number().required(),
+  id_empresa: Joi.number().required(),
+  referencias_comerciales: Joi.array()
+    .items(
+      Joi.object({
+        razon_social: Joi.string().required(),
+        denominacion: Joi.number().required(),
+        rfc: Joi.string().required(),
+        codigo_postal: Joi.string().required(),
+        id_pais: Joi.number().required(),
+        contactos: Joi.array()
+          .items(
+            Joi.object({
+              nombre_contacto: Joi.string().required(),
+              correo_contacto: Joi.string().email().required(),
+              telefono_contacto: Joi.string().required()
+            })
+          )
+          .required(),
+        empresa_cliente: Joi.object({
+          calificacion_referencia: Joi.string().required(),
+          porcentaje_deuda: Joi.number().required(),
+          dias_atraso: Joi.number().required(),
+          linea_credito: Joi.number().required(),
+          plazo: Joi.number().required()
+        }).required()
+      })
+    )
+    .required()
+})
+
 module.exports = {
   createCertification,
   payCertification,
   certificateMyCompanyForTest,
-  validacionBlocSchema
+  validacionBlocSchema,
+  guardaReferenciasComercialesSchema
 }
