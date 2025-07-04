@@ -879,6 +879,8 @@ router.post('/guardaMercadoObjetivo', /*decryptMiddleware, authMiddleware,*/ cer
  *                                   plazo:
  *                                     type: integer
  *                                     example: 30
+ *       '400':
+ *         description: "Se requieren referencias comerciales"
  */
 router.post('/guardaReferenciasComerciales', /*decryptMiddleware, authMiddleware,*/ certificationController.guardaReferenciasComerciales);
 

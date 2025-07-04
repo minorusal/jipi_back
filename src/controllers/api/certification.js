@@ -1468,6 +1468,14 @@ const guardaReferenciasComerciales = async (req, res, next) => {
         boom.badRequest('El formato de referencias comerciales no es válido')
       )
     }
+    if (!referencias_comerciales.length) {
+      logger.warn(
+        `${fileMethod} | referencias_comerciales está vacío`
+      )
+      return next(
+        boom.badRequest('Se requieren referencias comerciales')
+      )
+    }
     let contactos = []
 
     const [empresa_origen] = await companiesService.getEmpresaById(id_empresa)
