@@ -1453,6 +1453,9 @@ const guardaPartidasFinancieras = async (req, res, next) => {
   }
 }
 
+// Guarda o actualiza las referencias comerciales de una certificación.
+// Las referencias ya contestadas se preservan y, en caso de existir,
+// se reasignan al nuevo id_certification proporcionado.
 const guardaReferenciasComerciales = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: guardaReferenciasComerciales`;
   try {
@@ -1480,7 +1483,20 @@ const guardaReferenciasComerciales = async (req, res, next) => {
     }
     logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
-    await certificationService.deleteReferenciasComerciales(id_certification);
+    // Obtenemos las referencias contestadas para preservarlas
+    const referenciasContestadas = await certificationService.getReferenciasComercialesContestadas(id_certification)
+    logger.info(`${fileMethod} | Referencias contestadas a conservar: ${JSON.stringify(referenciasContestadas)}`)
+
+    // Si alguna referencia contestada pertenece a otra certificación,
+    // se actualiza para que quede asociada al id actual
+    for (const ref of referenciasContestadas) {
+      if (ref.id_certification !== id_certification) {
+        await certificationService.actualizaReferenciaComercialIdCertification({ id_certification }, ref.id_certification)
+      }
+    }
+
+    // Se eliminan únicamente las referencias no contestadas
+    await certificationService.deleteReferenciasComercialesNoContestadas(id_certification)
     for (const referencia of referencias_comerciales) {
       const existe = await certificationService.existeReferenciaComercial(
         referencia.id_certification_referencia_comercial

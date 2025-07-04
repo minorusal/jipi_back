@@ -4260,6 +4260,29 @@ WHERE cer.certificacion_id = (
     return result;
   }
 
+  // Elimina únicamente las referencias comerciales no contestadas
+  async deleteReferenciasComercialesNoContestadas(idCertification) {
+    const queryString = `
+    DELETE FROM certification_referencia_comercial
+    WHERE id_certification = ${mysqlLib.escape(idCertification)}
+      AND (contestada <> 'si' OR contestada IS NULL);
+  `;
+    const result = await mysqlLib.query(queryString);
+    return result;
+  }
+
+  // Obtiene las referencias comerciales contestadas para una certificación
+  async getReferenciasComercialesContestadas(idCertification) {
+    const queryString = `
+    SELECT *
+      FROM certification_referencia_comercial
+     WHERE id_certification = ${mysqlLib.escape(idCertification)}
+       AND contestada = 'si';
+  `;
+    const { result } = await mysqlLib.query(queryString);
+    return result;
+  }
+
   async deleteDemandas(id_certification) {
     const queryString = `
     DELETE FROM certification_demandas
