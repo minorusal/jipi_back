@@ -3365,9 +3365,20 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
 
     if (!rotScoreDio || !rotScoreDso) return { error: true }
 
-    const scoreDio = bestScoreDio != null ? bestScoreDio : Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScoreDio.v2) : Number(rotScoreDio.v1)
-    const scoreDso = bestScoreDso != null ? bestScoreDso : Number(algoritmo_v?.v_alritmo) === 2 ? Number(rotScoreDso.v2) : Number(rotScoreDso.v1)
+    const scoreDio =
+      bestScoreDio != null
+        ? bestScoreDio
+        : Number(algoritmo_v?.v_alritmo) === 2
+          ? Number(rotScoreDio.v2)
+          : Number(rotScoreDio.v1)
+    const scoreDso =
+      bestScoreDso != null
+        ? bestScoreDso
+        : Number(algoritmo_v?.v_alritmo) === 2
+          ? Number(rotScoreDso.v2)
+          : Number(rotScoreDso.v1)
     const score = Math.max(scoreDio, scoreDso)
+    const metricScoreUsed = scoreDio >= scoreDso ? 'DIO' : 'DSO'
 
     metricUsed = { tipo: 'DIO/DSO', valor: `DIO=${formatNum(dio)}, DSO=${formatNum(dso)}` }
 
@@ -3396,7 +3407,8 @@ const getScoreRotacionCtasXCobrasScoreFromSummary = async (
       dsoMayor90,
       dioMayor90,
       explicacion: lines.join('\n'),
-      metricUsed
+      metricUsed,
+      metricScoreUsed
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -3695,6 +3707,7 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
     const scoreDio = bestScoreDio != null ? bestScoreDio : Number(rotScoreDio.v1)
     const scoreDso = bestScoreDso != null ? bestScoreDso : Number(rotScoreDso.v1)
     const score = Math.max(scoreDio, scoreDso)
+    const metricScoreUsed = scoreDio >= scoreDso ? 'DIO' : 'DSO'
 
     return {
       score,
@@ -3718,7 +3731,8 @@ const getScoreRotacionCtasXCobrasScore = async (id_certification, customUuid) =>
       dsoMayor90,
       dioMayor90,
       explicacion: lines.join('\n'),
-      metricUsed: { tipo: 'DIO/DSO', valor: `DIO=${formatNum(dio)}, DSO=${formatNum(dso)}` }
+      metricUsed: { tipo: 'DIO/DSO', valor: `DIO=${formatNum(dio)}, DSO=${formatNum(dso)}` },
+      metricScoreUsed
     }
   } catch (error) {
     logger.error(`${fileMethod} | ${customUuid} Error general: ${JSON.stringify(error)}`)
@@ -5095,7 +5109,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         limite_inferior: 'null',
         limite_superior: 'null',
         explicacion: 'Sin información',
-        metricUsed: { tipo: null, valor: '-' }
+        metricUsed: { tipo: null, valor: '-' },
+        metricScoreUsed: null
       }
     } else {
       logger.info(`${fileMethod} | ${customUuid} Rotacion de cuentas por cobrar para el algoritmo es: ${JSON.stringify(rotacion_ctas_x_cobrar)}`)
@@ -5118,7 +5133,8 @@ const getAlgoritmoResult = async (req, res, next) => {
         limite_inferior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_inferior_dio,
         limite_superior: Number(algoritmo_v?.v_alritmo) === 2 ? 0 : rotacion_ctas_x_cobrar.limite_superior_dio == null ? 'null' : rotacion_ctas_x_cobrar.limite_superior_dio,
         explicacion: `${rotacion_ctas_x_cobrar.explicacion}`,
-        metricUsed: rotacion_ctas_x_cobrar.metricUsed
+        metricUsed: rotacion_ctas_x_cobrar.metricUsed,
+        metricScoreUsed: rotacion_ctas_x_cobrar.metricScoreUsed
       }
     }
 
@@ -6300,6 +6316,9 @@ ${JSON.stringify(info_email_error, null, 2)}
             rows.push(`<tr><td>Resultado obtenido</td><td>${resultado}</td></tr>`)
           }
           rows.push(`<tr style="background:#e3f2fd;"><td>Score asignado</td><td style="color:#0a3d8e; font-weight:bold;">${score}</td></tr>`)
+          if (key === '_15_rotacion_ctas_x_cobrar' && val.metricScoreUsed) {
+            rows.push(`<tr><td>Métrica usada para score</td><td>${val.metricScoreUsed}</td></tr>`)
+          }
           rows.push(`<tr><td>Árbol de decisión aplicado</td><td>${version_algoritmo ? `Árbol V${version_algoritmo}` : '-'}</td></tr>`)
           if (key !== '_15_rotacion_ctas_x_cobrar') {
             rows.push(
