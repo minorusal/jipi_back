@@ -2884,17 +2884,14 @@ WHERE cer.certificacion_id = (
   async insertaDireccionReferenciaComercial(referencia_comercial) {
     const { codigo_postal } = referencia_comercial
     const queryString = `
-    INSERT INTO domicilio 
-      (
+    INSERT INTO domicilio (
       domicilio_tipo,
       codigo_postal
-      ) 
-    VALUES 
-      (
+    ) VALUES (
       3,
-      '${codigo_postal}'
-      );`
-    const { result } = await mysqlLib.query(queryString)
+      ?
+    );`
+    const { result } = await mysqlLib.query(queryString, [codigo_postal])
     return result
   }
 
@@ -2912,45 +2909,45 @@ WHERE cer.certificacion_id = (
     const lineaCreditoNum = Number(linea_credito) || 0
     const plazoNum = Number(plazo) || 0
     const queryString = `
-      INSERT INTO certification_empresa_cliente_contacto
-        (
+      INSERT INTO certification_empresa_cliente_contacto (
         id_referencia_comercial,
         calificacion_referencia,
         porcentaje_deuda,
         dias_atraso,
         linea_credito,
         plazo
-      )
-      VALUES
-        (${id_referencia_comercial},
-        '${calificacion_referencia}',
-        ${porcDeuda},
-        ${diasAtrasoNum},
-        ${lineaCreditoNum},
-        ${plazoNum});
-    `
-    const { result } = await mysqlLib.query(queryString)
+      ) VALUES (?, ?, ?, ?, ?, ?);`
+    const params = [
+      id_referencia_comercial,
+      calificacion_referencia,
+      porcDeuda,
+      diasAtrasoNum,
+      lineaCreditoNum,
+      plazoNum
+    ]
+    const { result } = await mysqlLib.query(queryString, params)
     return result
   }
 // 
   async insertaReferenciaComercial(referencias_comerciales, id_certification, id_direccion) {
     const queryString = `
-      INSERT INTO certification_referencia_comercial
-        (id_certification,
+      INSERT INTO certification_referencia_comercial (
+        id_certification,
         razon_social,
         denominacion,
         rfc,
         id_direccion,
-        id_pais)
-      VALUES
-        (${id_certification},
-        '${referencias_comerciales.razon_social}',
-        ${referencias_comerciales.denominacion},
-        '${referencias_comerciales.rfc}',
-        ${id_direccion},
-        ${referencias_comerciales.id_pais});
-    `
-    const { result } = await mysqlLib.query(queryString)
+        id_pais
+      ) VALUES (?, ?, ?, ?, ?, ?);`
+    const params = [
+      id_certification,
+      referencias_comerciales.razon_social,
+      referencias_comerciales.denominacion,
+      referencias_comerciales.rfc,
+      id_direccion,
+      referencias_comerciales.id_pais
+    ]
+    const { result } = await mysqlLib.query(queryString, params)
     return result
   }
 
@@ -2985,31 +2982,32 @@ WHERE cer.certificacion_id = (
 
   async insertaContacto(contacto, estatus, id_certification_referencia_comercial) {
     const queryString = `
-      INSERT INTO certification_contacto 
-        (id_certification_referencia_comercial,
+      INSERT INTO certification_contacto (
+        id_certification_referencia_comercial,
         nombre_contacto,
         correo_contacto,
         telefono_contacto,
-        estatus) 
-      VALUES 
-        (${id_certification_referencia_comercial},
-        '${contacto.nombre_contacto}',
-        '${contacto.correo_contacto}',
-        '${contacto.telefono_contacto}',
-        '${estatus}')
-    `;
-    const { result } = await mysqlLib.query(queryString);
+        estatus
+      ) VALUES (?, ?, ?, ?, ?);
+    `
+    const params = [
+      id_certification_referencia_comercial,
+      contacto.nombre_contacto,
+      contacto.correo_contacto,
+      contacto.telefono_contacto,
+      estatus
+    ]
+    const { result } = await mysqlLib.query(queryString, params)
     return result;
   }
 
   async updateEstatusEmailSend(id) {
     const queryString = `
       UPDATE certification_contacto
-      SET 
-        estatus = 'enviado'
-      WHERE id_certification_contacto = ${id};
-    `;
-    const result = await mysqlLib.query(queryString);
+      SET estatus = 'enviado'
+      WHERE id_certification_contacto = ?;
+    `
+    const { result } = await mysqlLib.query(queryString, [id])
     return result
   }
 
