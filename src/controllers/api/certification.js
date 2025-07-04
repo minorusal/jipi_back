@@ -1435,7 +1435,7 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        partidasFinancieras: body
+        referenciasComerciales: body
       }
     })}`)
 
@@ -1443,7 +1443,7 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        partidasFinancieras: body
+        referenciasComerciales: body
       }
     })
 
@@ -1601,7 +1601,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        partidasFinancieras: body
+        referenciasComerciales: body
       }
     })}`)
 
@@ -1609,7 +1609,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        partidasFinancieras: body
+        referenciasComerciales: body
       }
     })
   } catch (error) {

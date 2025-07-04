@@ -817,7 +817,7 @@ router.post('/guardaMercadoObjetivo', /*decryptMiddleware, authMiddleware,*/ cer
  *                     created:
  *                       type: boolean
  *                       example: true
- *                     partidasFinancieras:
+ *                     referenciasComerciales:
  *                       type: object
  *                       properties:
  *                         id_certification:
