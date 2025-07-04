@@ -1435,7 +1435,7 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        referenciasComerciales: body
+        partidasFinancieras: body
       }
     })}`)
 
@@ -1443,7 +1443,7 @@ const guardaPartidasFinancieras = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        referenciasComerciales: body
+        partidasFinancieras: body
       }
     })
 
@@ -1466,14 +1466,6 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       )
       return next(
         boom.badRequest('El formato de referencias comerciales no es válido')
-      )
-    }
-    if (!referencias_comerciales.length) {
-      logger.warn(
-        `${fileMethod} | referencias_comerciales está vacío`
-      )
-      return next(
-        boom.badRequest('Se requieren referencias comerciales')
       )
     }
     let contactos = []
@@ -1524,8 +1516,8 @@ const guardaReferenciasComerciales = async (req, res, next) => {
           //   await certificationService.updateContacto(referencia.contactos[i], referencia.contactos[i].id_certification_referencia_comercial);
           // }
           if (referencia.contactos[i].id_certification_referencia_comercial == 0) {
-            logger.info('Este contacto no existe, se inserta en la referencia comercial')
-            logger.info(JSON.stringify(referencia.contactos[i]))
+            console.log('Este contacto no existe, se inserta en la referencia comercial')
+            console.log(referencia.contactos[i])
             await certificationService.insertaContacto(referencia.contactos[i], 'enviado', referencia.id_certification_referencia_comercial)
           }
         }
@@ -1601,7 +1593,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        referenciasComerciales: body
+        partidasFinancieras: body
       }
     })}`)
 
@@ -1609,7 +1601,7 @@ const guardaReferenciasComerciales = async (req, res, next) => {
       error: false,
       results: {
         created: true,
-        referenciasComerciales: body
+        partidasFinancieras: body
       }
     })
   } catch (error) {
