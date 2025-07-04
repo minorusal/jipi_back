@@ -17608,25 +17608,46 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     //  Demandas
     // _certification?.demandas
 
-    const totalDemandas = datos_reporte?.demandas?.length || 0;
-    const displayedDemandas = Math.min(totalDemandas, 5);
-    const mensaje = `
+  let mensaje = '';
+  const demandas = datos_reporte?.demandas || [];
+    
+  // Ordenar por fecha descendente
+  const demandasOrdenadas = demandas.sort((a, b) => {
+    const fechaA = a.fecha_demanda ? new Date(a.fecha_demanda) : new Date(0);
+    const fechaB = b.fecha_demanda ? new Date(b.fecha_demanda) : new Date(0);
+    return fechaB.getTime() - fechaA.getTime();
+  });
+  
+  // Fecha de corte: hace 12 meses
+  const hoy = new Date();
+  const fechaCorte = new Date(hoy);
+  fechaCorte.setFullYear(hoy.getFullYear() - 1);
+  
+  // Filtrar demandas válidas dentro de los últimos 12 meses
+  const demandasFiltradas = demandasOrdenadas.filter(d => {
+    const rawFecha = d?.fecha_demanda;
+    if (!rawFecha) return false;
+    const fecha = new Date(rawFecha);
+    if (isNaN(fecha.getTime())) return false;
+    return fecha >= fechaCorte;
+  });
+  
+  // Tomar máximo 5
+  const demandasMostradas = demandasFiltradas.slice(0, 5);
+  
+  // Mensaje
+  if (demandasMostradas.length > 0) {
+    mensaje = `
       <p style="font-size: 13px; font-weight: 600; margin: 10px 0;">
-        Presentamos ${displayedDemandas} demandas de un total de ${totalDemandas}
+        Presentamos ${demandasMostradas.length} demanda(s) de un total de ${demandas.length}, correspondientes a los últimos 12 meses.
       </p>
     `;
+  }
 
-    if (datos_reporte?.demandas) {
-      datos_reporte.demandas.sort((a, b) => {
-        const fechaA = a.fecha_demanda && a.fecha_demanda !== 'undefined' ? new Date(a.fecha_demanda) : new Date(0);
-        const fechaB = b.fecha_demanda && b.fecha_demanda !== 'undefined' ? new Date(b.fecha_demanda) : new Date(0);
-        return fechaB - fechaA; // Orden descendente (más reciente primero)
-      });
-    }
-
-    strHTML_paso = strHTML_paso.replace('{_demandas_}', datos_reporte?.demandas?.slice(0, 5).map(
-      (demanda, i) => (`     
-      ${i == 0 ? mensaje : ''}        
+    // Reemplazo en el HTML (solo si hay demandas)
+strHTML_paso = strHTML_paso.replace('{_demandas_}', demandasMostradas.map(
+  (demanda, i) => (`
+    ${i === 0 ? mensaje : ''}    
       <div
       style="
         background: #ffff;
@@ -18244,7 +18265,11 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     let _mercado_objetivo_importaciones_display_ = 'none';
     let _mercado_objetivo_exportaciones_display_ = 'none';
 
-    if (datos_reporte?.demandas?.length > 0) _demandas_display_ = 'block';
+    //if (datos_reporte?.demandas?.length > 0) _demandas_display_ = 'block';
+
+    if (demandasMostradas.length > 0) {
+      _demandas_display_ = 'block';
+    }
 
     if (datos_reporte?.referenciasComerciales?.length > 0) _referencias_display_ = 'block';
 
