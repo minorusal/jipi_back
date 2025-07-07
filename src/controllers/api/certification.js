@@ -16955,7 +16955,9 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
 
     strHTML_paso = strHTML_paso.replace('{_mercado_obgetivo_}', m_o_p_c)
     strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_COMERCIALES_}', REFERENCIAS_C || '');
-    strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_CONSIDERADAS_}', REFERENCIAS_CONSIDERADAS || '');
+    //strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_CONSIDERADAS_}', REFERENCIAS_CONSIDERADAS || '');
+
+    strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_CONSIDERADAS_}', '');
 
     logger.info(`${fileMethod} | ${customUuid} | Encabezado con HTML: ${JSON.stringify(strHTML_paso)}`)
 
