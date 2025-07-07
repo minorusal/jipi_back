@@ -2984,7 +2984,6 @@ const getScoreApalancamientoFromSummary = async (
   parametrosAlgoritmo,
   customUuid
 ) => {
-  console.log(JSON.stringify(parametrosAlgoritmo.apalancamientoScore))
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreApalancamientoFromSummary`
   try {
@@ -3053,23 +3052,41 @@ const getScoreApalancamientoFromSummary = async (
       return { error: true }
     }
 
-    const apalancamiento =
-      capital !== 0
-        ? parseFloat((pasivo / capital).toFixed(1))
-        : null
+    const deudaReportada = pasivo !== 0
+    const capitalReportado = capital !== 0
+
+    let apalancamiento = null
+    if (deudaReportada && capitalReportado && capital !== 0) {
+      apalancamiento = parseFloat((pasivo / capital).toFixed(1))
+    }
 
     const operacion = `${pasivo} / ${capital}`
 
-    const apalancamientoValido = apalancamiento !== null && !Number.isNaN(apalancamiento)
-
-    const noReportScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
-      a.nombre?.toLowerCase().includes('no report')
+    const versionField = Number(algoritmo_v?.v_alritmo) === 2 ? 'v2' : 'v1'
+    const noCapitalScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
+      a.nombre && a.nombre.toLowerCase().includes('capital') && a.nombre.toLowerCase().includes('no')
+    )
+    const noDeudaScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
+      a.nombre && a.nombre.toLowerCase().includes('deuda') && a.nombre.toLowerCase().includes('no')
+    )
+    const desconocidoScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
+      a.nombre && a.nombre.toLowerCase().includes('desconocido')
     )
 
     let apalScore = null
 
-    if (apalancamientoValido) {
-      const versionField = Number(algoritmo_v?.v_alritmo) === 2 ? 'v2' : 'v1'
+    if (!capitalReportado || !deudaReportada) {
+      const options = []
+      if (!capitalReportado && noCapitalScore) options.push(noCapitalScore)
+      if (!deudaReportada && noDeudaScore) options.push(noDeudaScore)
+      if (options.length > 0) {
+        apalScore = options.reduce((min, curr) =>
+          !min || parseFloat(curr[versionField]) < parseFloat(min[versionField]) ? curr : min
+        )
+      } else {
+        apalScore = desconocidoScore
+      }
+    } else if (apalancamiento !== null && !Number.isNaN(apalancamiento)) {
       const ranges = parametrosAlgoritmo.apalancamientoScore.filter(a => {
         if (a.limite_inferior !== null && a.limite_superior !== null) {
           const inf = parseFloat(a.limite_inferior)
@@ -3083,18 +3100,11 @@ const getScoreApalancamientoFromSummary = async (
         apalScore = ranges.reduce((min, curr) =>
           parseFloat(curr[versionField]) < parseFloat(min[versionField]) ? curr : min
         )
-
-        if (
-          noReportScore &&
-          parseFloat(noReportScore[versionField]) < parseFloat(apalScore[versionField])
-        ) {
-          apalScore = noReportScore
-        }
       } else {
-        apalScore = noReportScore
+        apalScore = desconocidoScore
       }
     } else {
-      apalScore = noReportScore
+      apalScore = desconocidoScore
     }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1
