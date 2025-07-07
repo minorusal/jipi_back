@@ -3062,23 +3062,39 @@ const getScoreApalancamientoFromSummary = async (
 
     const apalancamientoValido = apalancamiento !== null && !Number.isNaN(apalancamiento)
 
+    const noReportScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
+      a.nombre?.toLowerCase().includes('no report')
+    )
+
     let apalScore = null
 
     if (apalancamientoValido) {
-      for (const a of parametrosAlgoritmo.apalancamientoScore) {
+      const versionField = Number(algoritmo_v?.v_alritmo) === 2 ? 'v2' : 'v1'
+      const ranges = parametrosAlgoritmo.apalancamientoScore.filter(a => {
         if (a.limite_inferior !== null && a.limite_superior !== null) {
           const inf = parseFloat(a.limite_inferior)
           const sup = parseFloat(a.limite_superior)
-          if (apalancamiento >= inf && apalancamiento <= sup) {
-            apalScore = a
-            break
-          }
+          return apalancamiento >= inf && apalancamiento <= sup
         }
+        return false
+      })
+
+      if (ranges.length > 0) {
+        apalScore = ranges.reduce((min, curr) =>
+          parseFloat(curr[versionField]) < parseFloat(min[versionField]) ? curr : min
+        )
+
+        if (
+          noReportScore &&
+          parseFloat(noReportScore[versionField]) < parseFloat(apalScore[versionField])
+        ) {
+          apalScore = noReportScore
+        }
+      } else {
+        apalScore = noReportScore
       }
     } else {
-      apalScore = parametrosAlgoritmo.apalancamientoScore.find(a =>
-        a.nombre && a.nombre.toLowerCase().includes('no report')
-      )
+      apalScore = noReportScore
     }
 
     const score = Number(algoritmo_v?.v_alritmo) === 2 ? apalScore.v2 : apalScore.v1
