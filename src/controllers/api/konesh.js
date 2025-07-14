@@ -11,19 +11,6 @@ const { globalAuth: { keyCipher } } = require('../../config')
 
 const DEFAULT_KONESH_TIMEOUT_MS = 15000
 
-let globalConfig = {}
-
-const loadGlobalConfig = async () => {
-  try {
-    globalConfig = await utilitiesService.getParametros()
-  } catch (error) {
-    console.error('Error al cargar la configuración global:', error)
-    throw new Error('Error al cargar la configuración global')
-  }
-}
-
-loadGlobalConfig()
-
 exports.validaListaService = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/konesh.js - method: validaListaService`
   try {
@@ -31,6 +18,8 @@ exports.validaListaService = async (req, res, next) => {
 
     const parsedData = typeof req.decryptedBody === 'string' ? JSON.parse(req.decryptedBody) : req.decryptedBody
     const { rfc, razon_social, idEmpresa, tipo } = parsedData
+
+    const globalConfig = await utilitiesService.getParametros()
 
     let message = []
 
