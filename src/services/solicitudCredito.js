@@ -193,7 +193,7 @@ class SolicituCreditoService {
    async getEnviadas(id_emp, idCliente = 0) {
 
     const queryString = `
-    SELECT
+SELECT
     sol.id_solicitud_credito,
     sol.id_cliente,
     sol.id_proveedor,
@@ -205,7 +205,7 @@ class SolicituCreditoService {
     emp.emp_logo,
     cert.id_certification,
 	 COALESCE(rc.reporte_pdf, rcd.reporte_pdf) AS reporte_pdf,
-    COALESCE(rc.monto_solicitado, rcd.monto_solicitado) AS linea_credito_solicitada,
+    COALESCE(rc.monto_solicitado, rcd.monto_solicitado, sol.monto_solicitado) AS linea_credito_solicitada,
     COALESCE(rc.plazo, rcd.plazo) AS plazo,
     COALESCE(rc.score, '') AS score,
     COALESCE(rc.monto_sugerido , '') AS linea_credito_sugerida,
