@@ -80,73 +80,55 @@ exports.validaListaService = async (req, res, next) => {
 
 
   
-  const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
-  const apiResponse = await callKoneshApi(rfc, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
-  const result = apiResponse.data
-  const konesh_api_des = result ? result.data_konesh : {}
+  const { apiResponse, result } = await executeGenericKoneshRequest(
+    rfc,
+    razon_social,
+    globalConfig,
+    { emp_id: idEmpresa, razon_social_req: razon_social }
+  )
 
   if (apiResponse.errorMessage) {
     logger.error(`Error de comunicación con Konesh: ${apiResponse.errorMessage} - ${fileMethod}`)
     return next(boom.gatewayTimeout(apiResponse.errorMessage))
   }
 
-  if (apiResponse.status === 200 && result) {
+  if (!result) {
+    logger.error(`Ocurrio un error al consumir konesh: ${apiResponse.status} - ${fileMethod}`)
+    return next(boom.badRequest(`Ocurrio un error al consumir konesh: ${apiResponse.status}`))
+  }
 
-      if (konesh_api_des?.transactionResponse01?.[0]?.data04 !== razonSocialUpper) {
-        times_razon_social++
-        message.push('La razón social capturada no corresponde a la razón social del SAT')
-        await koneshService.updateContadorKoneshRazonSocialNoIgual(times_razon_social, idEmpresa)
-        // await koneshService.updateContadorKoneshRazonSocialNoIgual(times, idEmpresa)
-        // const encryptedResponse = await cipher.encryptData(
-        //   JSON.stringify({
-        //     error: true,
-        //     message: "La razón social capturada no corresponde a la razón social del SAT"
-        //   }),
-        //   keyCipher
-        // )
+  const konesh_api_des = result.data_konesh
 
-        // return res.send(encryptedResponse)
-      }
-
-      logger.info(`Respuesta Konesh: ${JSON.stringify(apiResponse.data)} - ${fileMethod}`)
-      logger.info(`Respuesta descifrada Konesh: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
-
-      const save_konesh = await koneshService.saveKonesh(konesh_api_des)
-      logger.info(`Guardado de la informacón de konesh: ${JSON.stringify(save_konesh)} - ${fileMethod}`)
-
-      const update_konesh = await koneshService.updateFlagKonesh(konesh_api_des.transactionResponse01[0].data02, konesh_api_des.transactionResponse01[0].data01)
-      logger.info(`Actualizado de la bandera de konesh: ${JSON.stringify(update_konesh)} - ${fileMethod}`)
-
-      if (konesh_api_des.transactionResponse01[0].data02 == 'false') {
-        logger.info(`Respuesta de servicio: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
-        times++
-        message.push('El RFC es incorrecto')
-        konesh_api_des.error = true
-        konesh_api_des.message = 'El RFC es incorrecto'
-        await koneshService.updateContadorKoneshEstructuraRfc(times, idEmpresa)
-        
-        // const encryptedResponse = await cipher.encryptData(
-        //   JSON.stringify(konesh_api_des),
-        //   keyCipher
-        // )
-
-        // return res.send(encryptedResponse)
-      }
-
+  if (!result.success) {
+    message.push(result.mensaje)
+    if (result.mensaje.toLowerCase().includes('razón social')) {
+      times_razon_social++
+      await koneshService.updateContadorKoneshRazonSocialNoIgual(times_razon_social, idEmpresa)
     } else {
-      logger.error(`Ocurrio un error al consumir konesh: ${apiResponse.status} - ${fileMethod}`)
-      return next(boom.badRequest(`Ocurrio un error al consumir konesh: ${apiResponse.status}`))
+      times++
+      await koneshService.updateContadorKoneshEstructuraRfc(times, idEmpresa)
     }
+  }
 
-    //const estatus_konesh = await koneshService.getEstatusKonesh(rfc)
+  logger.info(`Respuesta Konesh: ${JSON.stringify(apiResponse.data)} - ${fileMethod}`)
+  logger.info(`Respuesta descifrada Konesh: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
 
-    logger.info(`Respuesta de servicio: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
+  const save_konesh = await koneshService.saveKonesh(konesh_api_des)
+  logger.info(`Guardado de la informacón de konesh: ${JSON.stringify(save_konesh)} - ${fileMethod}`)
 
-    const responsePayload = { ...konesh_api_des, error: message.length > 0, message: message.join('. ') }
+  const update_konesh = await koneshService.updateFlagKonesh(
+    konesh_api_des.transactionResponse01[0].data02,
+    konesh_api_des.transactionResponse01[0].data01
+  )
+  logger.info(`Actualizado de la bandera de konesh: ${JSON.stringify(update_konesh)} - ${fileMethod}`)
 
-    const encryptedResponse = await cipher.encryptData(JSON.stringify(responsePayload), keyCipher)
-    
-    return res.send(encryptedResponse)
+  logger.info(`Respuesta de servicio: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
+
+  const responsePayload = { ...konesh_api_des, error: message.length > 0, message: message.join('. ') }
+
+  const encryptedResponse = await cipher.encryptData(JSON.stringify(responsePayload), keyCipher)
+
+  return res.send(encryptedResponse)
 
   } catch (error) {
     console.log(error)
