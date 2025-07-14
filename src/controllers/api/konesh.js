@@ -142,8 +142,6 @@ exports.validaListaService = async (req, res, next) => {
 
     logger.info(`Respuesta de servicio: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
 
-    }
-    
     const responsePayload = { ...konesh_api_des, error: message.length > 0, message: message.join('. ') }
 
     const encryptedResponse = await cipher.encryptData(JSON.stringify(responsePayload), keyCipher)
