@@ -133,6 +133,10 @@ exports.notAllowGenericToken = () => {
 
 exports.notAllowUserToken = () => {
   return async (req, res, next) => {
+    // If payload does not exist, it means no valid token was found, which is the desired state.
+    if (!req.payload) {
+      return next();
+    }
     const { usuId } = req.payload
     if (usuId) return next(boom.unauthorized('Generic token needed. User token not allowed.'))
     return next()

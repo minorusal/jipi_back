@@ -3,9 +3,10 @@
 const express = require('express')
 const router = express.Router()
 const loginCtrl = require('../../controllers/api/auth')
-const { notAllowUserToken, notAllowGenericToken } = require('../../utils/middlewares/globalAuth')
+const { globalAuthMiddleware, notAllowUserToken, notAllowGenericToken } = require('../../utils/middlewares/globalAuth')
 const decryptMiddleware = require('../../utils/middlewares/cipherMiddleware')
 
+router.use(globalAuthMiddleware())
 /**
  * @swagger
  * /api/auth/login:

@@ -340,16 +340,24 @@ exports.getFavoriteCompanies = async (req, res, next) => {
  */
 const buildNewEmpresa = async (objeto) => {
   try {
-    let nuevoObjeto = { ...objeto };
-    delete nuevoObjeto.redes_sociales;
-    const redesSociales = objeto.redes_sociales.split('|');
-    nuevoObjeto.redes_sociales = redesSociales.map(redSocial => {
-      const [nombre, enlace, icono] = redSocial.split('-');
-      return { nombre, enlace, icono };
-    });
+    const nuevoObjeto = { ...objeto };
+
+    if (objeto.redes_sociales && typeof objeto.redes_sociales === 'string') {
+      const redesSociales = objeto.redes_sociales.split('|');
+      nuevoObjeto.redes_sociales = redesSociales.map(redSocial => {
+        const [nombre, enlace, icono] = redSocial.split('-');
+        return { nombre, enlace, icono };
+      });
+    } else {
+      // Si no hay redes sociales o no es un string, se asigna un array vacío
+      nuevoObjeto.redes_sociales = [];
+    }
+
     return nuevoObjeto;
   } catch (error) {
     console.log(error)
+    // En caso de un error inesperado, devolvemos el objeto original sin modificar
+    return objeto;
   }
 }
 
@@ -438,6 +446,11 @@ exports.getCompanyByID = async (req, res, next) => {
     const { params } = req
     const { id } = params
     const [empresaOld] = await companiesService.getEmpresa(id)
+
+    if (!empresaOld) {
+      return next(boom.notFound('No se encontró la empresa'))
+    }
+
     const empresa = await buildNewEmpresa(empresaOld)
 
     if (!empresa) return next(boom.badRequest('No hay empresa'))
@@ -543,6 +556,7 @@ exports.editCompany = async (req, res, next) => {
   debug(`[${req.method}] ${req.originalUrl}`)
   try {
     const body = typeof req.decryptedBody === 'string' ? JSON.parse(req.decryptedBody) : req.decryptedBody
+    console.log('DECRYPTED BODY:', body)
     const { id_usuario } = body
     const { params } = req
     const { id } = params
@@ -551,21 +565,28 @@ exports.editCompany = async (req, res, next) => {
 
     const { rfc, razon_social } = body
 
-    const konesh_api = await callKoneshApi(rfc, globalConfig, { emp_id: id, razon_social_req: razon_social })
-    if (konesh_api.status === 200) {
-      const rfcValid = await descifra_konesh(konesh_api.data.transactionResponse01[0].data02)
-      const razonSat = await descifra_konesh(konesh_api.data.transactionResponse01[0].data04)
+    try {
+      const konesh_api = await callKoneshApi(rfc, globalConfig, { emp_id: id, razon_social_req: razon_social })
 
-      if (rfcValid === 'false') {
-        return next(boom.badRequest('El rfc no es valido'))
-      }
+      if (konesh_api.status === 200) {
+        const rfcValid = await descifra_konesh(konesh_api.data.transactionResponse01[0].data02)
+        const razonSat = await descifra_konesh(konesh_api.data.transactionResponse01[0].data04)
 
-      const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
-      if (razonSat !== razonSocialUpper) {
-        return next(boom.badRequest('La razón social proporcionada no coincide con la registrada en el SAT'))
+        if (rfcValid === 'false') {
+          return next(boom.badRequest('El rfc no es valido'))
+        }
+
+        const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+        if (razonSat !== razonSocialUpper) {
+          return next(boom.badRequest('La razón social proporcionada no coincide con la registrada en el SAT'))
+        }
+      } else {
+        // Si el status no es 200, regresamos un error con el status de la API
+        return next(boom.badGateway(`Error al consultar el servicio de validación: Status ${konesh_api.status}`))
       }
-    } else {
-      return next(boom.badRequest(`Ocurrio un error al consumir konesh: ${konesh_api.status}`))
+    } catch (error) {
+      // Si la llamada a la API falla (ej. timeout), regresamos el error
+      return next(boom.badGateway('El servicio de validación no está disponible', error.message))
     }
 
     const results = await companiesService.editEmpresa(id, body)
@@ -576,26 +597,6 @@ exports.editCompany = async (req, res, next) => {
     } else {
       await companiesService.addEmpresaDetalles(id, body)
     }
-
-
-    const request = {
-      Name: datos_usuario.usuario_nombre,
-      Properties: {
-        company: datos_empresa.empresa_nombre,
-        empresa_investigada: '',
-        empresa_referencia_comercial: '',
-        firstname: datos_usuario.usuario_nombre,
-        country: ''
-      },
-      Action: 'addforce',
-      Email: datos_usuario.usu_email
-    }
-
-    const secretKeyMailjet = await globalConfig.find(item => item.nombre === 'secretKeyMailjet').valor
-    const contactListMailjet = await globalConfig.find(item => item.nombre === 'contactListMailjet').valor
-    const mailjetHeaders = { headers: { "Content-Type": "application/json", "Authorization": `Basic ${secretKeyMailjet}` } }
-    await axios.post(`https://api.mailjet.com/v3/REST/contactslist/${contactListMailjet}/managecontact`, request, mailjetHeaders)
-
 
     const encryptedResponse = await cipher.encryptData(JSON.stringify({
       error: false,

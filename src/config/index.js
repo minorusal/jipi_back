@@ -9,7 +9,7 @@ require('dotenv').config()
 
 // const {  email: { sender: { name } } } = require('./config')
 
-module.exports = {
+const config = {
   mysql: {
     host: process.env.MYSQL_DB_HOST,
     user: process.env.MYSQL_DB_USER,
@@ -107,5 +107,9 @@ module.exports = {
   server: {
     port: process.env.PORT,
     nodeEnv: process.env.NODE_ENV
-  }
+  },
+  dbName: process.env.DB_NAME || 'test',
+  dbPort: process.env.DB_PORT || 3306,
 }
+
+module.exports = config

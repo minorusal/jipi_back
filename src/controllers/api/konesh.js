@@ -40,7 +40,7 @@ exports.validaListaService = async (req, res, next) => {
     let [bad_times_razon_social] = await koneshService.obtenerBanderaIntentosRazonSocial(idEmpresa)
     let times_razon_social = bad_times_razon_social.contador_konesh_razon_social_no_igual 
 
-    if (bad_times.contador_konesh >= 5) {
+    if (times >= 5) {
       message.push('Ha alcanzado el limite de intentos para validar el RFC')
       // const encryptedResponse = await cipher.encryptData(
       //   JSON.stringify({
@@ -79,10 +79,10 @@ exports.validaListaService = async (req, res, next) => {
     logger.info(`Request de endpoint: ${JSON.stringify(parsedData)} -  ${fileMethod}`)
 
 
-  const globalConfig = await utilitiesService.getParametros()
+  
   const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
-  const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razonSocialUpper, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
-
+  const apiResponse = await callKoneshApi(rfc, globalConfig, { emp_id: idEmpresa, razon_social_req: razon_social })
+  const result = apiResponse.data
   const konesh_api_des = result ? result.data_konesh : {}
 
   if (apiResponse.errorMessage) {
@@ -92,7 +92,7 @@ exports.validaListaService = async (req, res, next) => {
 
   if (apiResponse.status === 200 && result) {
 
-      if (konesh_api_des.transactionResponse01[0].data04 !== razonSocialUpper) {
+      if (konesh_api_des?.transactionResponse01?.[0]?.data04 !== razonSocialUpper) {
         times_razon_social++
         message.push('La razón social capturada no corresponde a la razón social del SAT')
         await koneshService.updateContadorKoneshRazonSocialNoIgual(times_razon_social, idEmpresa)
@@ -124,6 +124,7 @@ exports.validaListaService = async (req, res, next) => {
         konesh_api_des.error = true
         konesh_api_des.message = 'El RFC es incorrecto'
         await koneshService.updateContadorKoneshEstructuraRfc(times, idEmpresa)
+        
         // const encryptedResponse = await cipher.encryptData(
         //   JSON.stringify(konesh_api_des),
         //   keyCipher
@@ -141,14 +142,16 @@ exports.validaListaService = async (req, res, next) => {
 
     logger.info(`Respuesta de servicio: ${JSON.stringify(konesh_api_des)} - ${fileMethod}`)
 
-    const encryptedResponse = await cipher.encryptData(
-      JSON.stringify(konesh_api_des),
-      keyCipher
-    )
+    }
+    
+    const responsePayload = { ...konesh_api_des, error: message.length > 0, message: message.join('. ') }
 
+    const encryptedResponse = await cipher.encryptData(JSON.stringify(responsePayload), keyCipher)
+    
     return res.send(encryptedResponse)
 
   } catch (error) {
+    console.log(error)
     logger.error(`Ocurrio un error al consumir konesh: ${apiResponse?.status} - ${fileMethod}`)
     next(error)
   }
@@ -404,7 +407,13 @@ exports.descifra = async (req, res, next) => {
       { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }
     )
 
-    const originalText = decryptedBytes.toString(CryptoJS.enc.Utf8)
+    let originalText
+    try {
+      originalText = decryptedBytes.toString(CryptoJS.enc.Utf8)
+    } catch (e) {
+      logger.error(`descifra: Malformed UTF-8 data when decrypting string: '${encryptedText}'`)
+      originalText = 'Error de codificación'
+    }
     return res.json({ originalText })
 
   } catch (error) {
@@ -439,10 +448,12 @@ exports.cifra = async (req, res, next) => {
 }
 
 exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
+  const fileMethod = `file: src/controllers/api/konesh.js - method: callKoneshApi`;
+  logger.info(`${fileMethod} | Iniciando llamada a Konesh para RFC: ${rfc}`);
   const { emp_id = null, razon_social_req = null } = opts
   const startTs = Date.now()
   const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
-  const textCifrado = await cifra_konesh(rfc)
+  const textCifrado = await cifra_konesh(rfc);
 
   const request = {
     credentials: {
@@ -457,6 +468,7 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
     list: { list: [textCifrado] }
   }
 
+  logger.info(`${fileMethod} | Construyendo request para Konesh: ${JSON.stringify({ ...request, credentials: { ...request.credentials, password: '***' } })}`);
   const timeoutMs = parseInt(globalConfig.find(item => item.nombre === 'konesh_timeout_ms')?.valor) || DEFAULT_KONESH_TIMEOUT_MS
   const axiosConfig = { headers: { 'Content-Type': 'application/json' }, timeout: timeoutMs }
   let response
@@ -464,8 +476,10 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
   let errorMessage = null
 
   try {
+    logger.info(`${fileMethod} | Enviando petición a ${konesh_url_valid_rfc}`);
     response = await axios.post(konesh_url_valid_rfc, request, axiosConfig)
     status = response.status
+    logger.info(`${fileMethod} | Respuesta exitosa de Konesh con status: ${status}`);
     response.errorMessage = null
   } catch (err) {
     if (err.code === 'ECONNABORTED') {
@@ -479,14 +493,15 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
       status = err.response ? err.response.status : null
     }
     response = err.response ? err.response : { status, data: null }
-    response.errorMessage = errorMessage
-    logger.error(`Error calling Konesh: ${errorMessage}`)
+    response.errorMessage = `${errorMessage}. Respuesta de Konesh: ${JSON.stringify(response.data)}`
+    logger.error(`${fileMethod} | Error al llamar a Konesh: ${errorMessage}`)
   }
 
   const responseTime = Date.now() - startTs
 
   try {
     const data = response.data
+    logger.info(`${fileMethod} | Guardando log de la respuesta de Konesh en la base de datos.`);
     await koneshService.saveKoneshResponse({
       emp_id,
       rfc,
@@ -504,17 +519,23 @@ exports.callKoneshApi = async (rfc, globalConfig, opts = {}) => {
       raw_response: data
     })
   } catch (err) {
-    logger.error(`Error saving konesh response log: ${err.message}`)
+    logger.error(`${fileMethod} | Error al guardar el log de respuesta de Konesh: ${err.message}`)
   }
 
+  logger.info(`${fileMethod} | Finalizando llamada a Konesh para RFC: ${rfc}. Duración: ${responseTime}ms`);
   return response
 }
 
 const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts = {}) => {
+  const fileMethod = `file: src/controllers/api/konesh.js - method: executeGenericKoneshRequest`;
+  logger.info(`${fileMethod} | Iniciando para RFC: ${rfc}, Razón Social: ${razon_social}`);
+
   const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
   const apiResponse = await exports.callKoneshApi(rfc, globalConfig, opts)
+  logger.info(`${fileMethod} | Respuesta de callKoneshApi - status: ${apiResponse.status}`);
 
   if (apiResponse.status !== 200) {
+    logger.warn(`${fileMethod} | La API de Konesh devolvió un estado no exitoso: ${apiResponse.status}`);
     return { apiResponse, result: null }
   }
 
@@ -522,9 +543,13 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
   if (!data || !Array.isArray(data.transactionResponse01) || !data.transactionResponse01[0]) {
     if (data && data.result === 'INVALID' && data.stage === 'AUTHENTICATION') {
       apiResponse.errorMessage = data.message
+      logger.error(`${fileMethod} | Error de autenticación con Konesh: ${data.message}`);
     }
+    logger.error(`${fileMethod} | Respuesta de Konesh inválida o inesperada: ${JSON.stringify(data)}`);
     return { apiResponse, result: null }
   }
+
+  logger.info(`${fileMethod} | Descifrando respuesta de Konesh...`);
   const konesh_api_des = {
     transactionResponse01: [{
       data01: await descifra_konesh(data.transactionResponse01[0].data01),
@@ -537,6 +562,7 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
     transactionResponse03: await descifra_konesh(data.transactionResponse03),
     transactionResponse04: await descifra_konesh(data.transactionResponse04)
   }
+  logger.info(`${fileMethod} | Respuesta de Konesh descifrada: ${JSON.stringify(konesh_api_des)}`);
 
   const problematicEntry = Object.entries(konesh_api_des.transactionResponse01[0])
     .find(([, value]) => typeof value === 'string' && value.toLowerCase() === 'false')
@@ -549,28 +575,34 @@ const executeGenericKoneshRequest = async (rfc, razon_social, globalConfig, opts
       detalle: problematicEntry[0],
       data_konesh: konesh_api_des
     }
+    logger.warn(`${fileMethod} | RFC con problemas en el SAT: ${rfc}. Detalle: ${problematicEntry[0]}`);
   } else if (konesh_api_des.transactionResponse01[0].data04 !== razonSocialUpper) {
     result = {
       success: false,
       mensaje: 'La razón social proporcionada no coincide con la registrada en el SAT',
       data_konesh: konesh_api_des
     }
+    logger.warn(`${fileMethod} | Discrepancia en Razón Social. Proporcionada: '${razonSocialUpper}', SAT: '${konesh_api_des.transactionResponse01[0].data04}'`);
   } else {
     result = {
       success: true,
       mensaje: 'RFC y razón social validados correctamente',
       data_konesh: konesh_api_des
     }
+    logger.info(`${fileMethod} | Validación exitosa para RFC: ${rfc}`);
   }
 
   return { apiResponse, result }
 }
 
 exports.genericKoneshRequest = async (req, res, next) => {
+  const fileMethod = `file: src/controllers/api/konesh.js - method: genericKoneshRequest`
   try {
+    logger.info(`${fileMethod} | Inicio de la solicitud genérica a Konesh`)
     const { rfc, razon_social } = req.query
 
     if (!rfc || !razon_social) {
+      logger.warn(`${fileMethod} | Parámetros requeridos faltantes: rfc o razon_social`)
       return next(boom.badRequest('Faltan parámetros requeridos'))
     }
 
@@ -578,29 +610,36 @@ exports.genericKoneshRequest = async (req, res, next) => {
 
     const activa_api_sat = globalConfig.find(item => item.nombre === 'activa_api_sat')?.valor
     if (activa_api_sat !== 'true') {
+      logger.info(`${fileMethod} | La validación con Konesh está desactivada por configuración.`)
       return res.json({ success: true, mensaje: 'El consumo a la API de Konesh está desactivado' })
     }
 
     const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
+    logger.info(`${fileMethod} | Ejecutando consulta a Konesh para RFC: ${rfc}`)
     const { apiResponse, result } = await executeGenericKoneshRequest(rfc, razonSocialUpper, globalConfig)
 
     if (apiResponse.errorMessage) {
+      logger.error(`${fileMethod} | Error en la respuesta de la API de Konesh: ${apiResponse.errorMessage}`)
       return next(boom.gatewayTimeout(apiResponse.errorMessage))
     }
 
     if (!result) {
+      logger.error(`${fileMethod} | No se obtuvo un resultado válido de Konesh. Estado de la API: ${apiResponse.status}`)
       return next(boom.badRequest(`Ocurrio un error al consumir konesh: ${apiResponse.status}`))
     }
 
+    logger.info(`${fileMethod} | Consulta a Konesh exitosa. Resultado: ${JSON.stringify(result)}`)
     return res.json(result)
   } catch (error) {
+    logger.error(`${fileMethod} | Error en el bloque catch: ${error.message}`)
     if (error.code === 'ECONNABORTED') {
+      logger.error(`${fileMethod} | Timeout al conectar con Konesh.`)
       return next(boom.gatewayTimeout('Tiempo de espera agotado al contactar a Konesh'))
     }
     if (error.message === 'Network Error') {
+      logger.error(`${fileMethod} | Error de red al conectar con Konesh.`)
       return next(boom.badGateway('No se pudo conectar al servicio Konesh'))
     }
     next(error)
   }
 }
-

@@ -27,7 +27,7 @@ app.use(express.json({ limit: '100mb' }))
 app.use(compression({ level: 9 }))
 
 const upload = multer();  // Instancia de multer (no hay almacenamiento, solo procesamiento)
- //app.use(upload.none());
+app.use(upload.none());
 
 
 async function checkPort (p) {

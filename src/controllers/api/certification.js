@@ -1456,172 +1456,167 @@ const guardaPartidasFinancieras = async (req, res, next) => {
 // Guarda o actualiza las referencias comerciales de una certificación.
 // Las referencias ya contestadas se preservan y, en caso de existir,
 // se reasignan al nuevo id_certification proporcionado.
+// [COPIAR DESDE AQUÍ]
+// Guarda o actualiza las referencias comerciales de una certificación.
 const guardaReferenciasComerciales = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/certification.js - method: guardaReferenciasComerciales`;
   try {
     const { body } = req;
-    const { id_certification, id_empresa, referencias_comerciales } = body
-    if (!Array.isArray(referencias_comerciales)) {
-      logger.warn(
-        `${fileMethod} | referencias_comerciales no es un arreglo valido: ${JSON.stringify(
-          referencias_comerciales
-        )}`
-      )
-      return next(
-        boom.badRequest('El formato de referencias comerciales no es válido')
-      )
+    const { id_certification, id_empresa, referencias_comerciales: frontEndRefs } = body
+
+    if (!Array.isArray(frontEndRefs)) {
+      logger.warn(`${fileMethod} | referencias_comerciales no es un arreglo valido: ${JSON.stringify(frontEndRefs)}`)
+      return next(boom.badRequest('El formato de referencias comerciales no es válido'))
     }
-    let contactos = []
 
-    const [empresa_origen] = await companiesService.getEmpresaById(id_empresa)
-    logger.info(`${fileMethod} | Se obtiene la empresa origen ${JSON.stringify(empresa_origen)}`)
     const certificacionIniciada = await certificationService.getCertificationByIdCertfication(id_certification)
-
     if (!certificacionIniciada) {
-      logger.warn(`${fileMethod} | No hay certificación iniciada`)
+      logger.warn(`${fileMethod} | No hay certificación iniciada para el id ${id_certification}`)
       return next(boom.badRequest('No hay certificación iniciada'))
     }
-    logger.warn(`${fileMethod} | Se obtiene la certificación a las cuales se van a vincular las referencias comerciales ${JSON.stringify(certificacionIniciada)}`)
 
-    // Obtenemos las referencias contestadas para preservarlas
-    const referenciasContestadas = await certificationService.getReferenciasComercialesContestadas(id_certification)
-    logger.info(`${fileMethod} | Referencias contestadas a conservar: ${JSON.stringify(referenciasContestadas)}`)
+    // --- INICIO REFACTOR: Lógica de Sincronización (Upsert) ---
 
-    // Si alguna referencia contestada pertenece a otra certificación,
-    // se actualiza para que quede asociada al id actual
-    for (const ref of referenciasContestadas) {
-      if (ref.id_certification !== id_certification) {
-        await certificationService.actualizaReferenciaComercialIdCertification({ id_certification }, ref.id_certification)
-      }
+    // 1. Obtener el estado actual de la base de datos
+    const dbRefs = await certificationService.getReferenciasComercialesByIdCertification(id_certification);
+    const frontEndRefIds = new Set(frontEndRefs.filter(ref => ref.id_certification_referencia_comercial).map(ref => ref.id_certification_referencia_comercial));
+
+    // 2. Determinar qué referencias eliminar (las que están en DB pero no en el front y no están contestadas)
+    const refsToDelete = dbRefs.filter(dbRef =>
+      !frontEndRefIds.has(dbRef.id_certification_referencia_comercial) && dbRef.contestada !== 'si'
+    );
+
+    for (const ref of refsToDelete) {
+      logger.info(`${fileMethod} | Eliminando referencia no contestada: ${ref.id_certification_referencia_comercial}`);
+      await certificationService.deleteReferenciaComercialById(ref.id_certification_referencia_comercial);
     }
 
-    // Se eliminan únicamente las referencias no contestadas
-    await certificationService.deleteReferenciasComercialesNoContestadas(id_certification)
-    for (const referencia of referencias_comerciales) {
-      const existe = await certificationService.existeReferenciaComercial(
-        referencia.id_certification_referencia_comercial
-      )
-
-      if (existe) {
-
-        const referenciaRepetida = await certificationService.getReferenciaComercialRepetida(
-          referencia.id_certification_referencia_comercial
-        )
-
-        if (referenciaRepetida[0].contestada == 'si') {
-          continue
+    // Filtramos referencias validas
+    const referencias_comerciales_validas = frontEndRefs.filter(ref => {
+      const camposClave = ['razon_social', 'denominacion', 'rfc', 'id_pais'];
+      return camposClave.some(k => {
+        const v = ref[k];
+        if (typeof v === 'string') {
+          return v.trim() !== '';
         }
-
-        logger.info(`${fileMethod} | Referencia comercial duplicada ${JSON.stringify(referencia)}`)
-        // Si la referencia comercial ya existe, se actualiza data de la referencia comercial
-        // await certificationService.updateReferenciaComercialRepetida(
-        //   referenciaRepetida[0].id_certification_referencia_comercial,
-        //   id_certification,
-        //   referencia
-        // )
-        await certificationService.insertaReferenciaComercial(
-          referencia,
-          id_certification,
-          null
-        )
-
-        for (let i = 0; i < referencia.contactos.length; i++) {
-          // if (referencia.contactos[i].id_certification_referencia_comercial > 0) {
-          //   console.log('Este contacto ya existe, se actualiza')
-          //   console.log(referencia.contactos[i])
-          //   await certificationService.updateContacto(referencia.contactos[i], referencia.contactos[i].id_certification_referencia_comercial);
-          // }
-          if (referencia.contactos[i].id_certification_referencia_comercial == 0) {
-            console.log('Este contacto no existe, se inserta en la referencia comercial')
-            console.log(referencia.contactos[i])
-            await certificationService.insertaContacto(referencia.contactos[i], 'enviado', referencia.id_certification_referencia_comercial)
-          }
+        if (typeof v === 'number') {
+          return v !== 0 && v !== null;
         }
+        return v !== null && v !== undefined && v !== '';
+      });
+    });
+
+    const referenciasContestadas = dbRefs.filter(ref => ref.contestada === 'si');
+    const idsContestadas = new Set(referenciasContestadas.map(ref => ref.id_certification_referencia_comercial));
+
+    // 3. Procesar referencias que vienen del frontend (Insertar o Actualizar)
+    let contactosParaEnviarEmail = [];
+    for (const frontEndRef of referencias_comerciales_validas) {
+
+      // Omitir si la referencia ya está contestada (por ID)
+      if (frontEndRef.id_certification_referencia_comercial && idsContestadas.has(frontEndRef.id_certification_referencia_comercial)) {
+        logger.info(`${fileMethod} | Omitiendo actualización de referencia ya contestada: ${frontEndRef.id_certification_referencia_comercial}`);
+        continue;
       }
 
-      if (!existe) {
-        const direccion = await certificationService.insertaDireccionReferenciaComercial(referencia)
-        const rc = await certificationService.insertaReferenciaComercial(referencia, id_certification, direccion.insertId)
-        if (!rc) {
-          logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(rc)}`)
-          return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(rc)}`))
+      // Nueva verificación: evitar duplicados por datos clave si ya está contestada
+      const yaContestada = await certificationService.existeReferenciaComercialContestadaPorDatos({
+        id_certification,
+        razon_social: frontEndRef.razon_social,
+        denominacion: frontEndRef.denominacion,
+        rfc: frontEndRef.rfc,
+        id_pais: frontEndRef.id_pais
+      })
+      if (yaContestada) {
+        logger.info(`${fileMethod} | Referencia comercial ya contestada, se omite: ${JSON.stringify(frontEndRef)}`)
+        continue;
+      }
+
+      if (frontEndRef.id_certification_referencia_comercial) {
+        // Es una ACTUALIZACIÓN (UPDATE)
+        logger.info(`${fileMethod} | Actualizando referencia existente: ${frontEndRef.id_certification_referencia_comercial}`);
+        await certificationService.updateReferenciaComercial(frontEndRef.id_certification_referencia_comercial, frontEndRef);
+
+        const contactosNuevos = await certificationService.syncContactosForReferencia(frontEndRef.id_certification_referencia_comercial, frontEndRef.contactos);
+
+        // Enriquecer contactos nuevos con datos para el email
+        contactosParaEnviarEmail.push(...contactosNuevos.map(c => ({
+          ...c,
+          empresa_destino: frontEndRef.razon_social
+        })));
+
+      } else {
+        // Es una INSERCIÓN (INSERT)
+        logger.info(`${fileMethod} | Insertando nueva referencia.`);
+        const direccion = await certificationService.insertaDireccionReferenciaComercial(frontEndRef);
+        if (!direccion || !direccion.insertId) {
+          logger.error(`${fileMethod} - Fallo al insertar la dirección para la nueva referencia.`);
+          continue;
         }
 
-        const empresa_cliente = await certificationService.insertaInfoEmpresaCliente(referencia, rc.insertId)
-        logger.info(`${fileMethod} | Se obtiene la empresa cliente ${JSON.stringify(empresa_cliente)}`)
-        if (!empresa_cliente) {
-          logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`)
-          return next(boom.badRequest(`No se insertó la referencia comercial: ${JSON.stringify(empresa_cliente)}`))
+        const nuevaReferencia = await certificationService.insertaReferenciaComercial(frontEndRef, id_certification, direccion.insertId);
+        if (!nuevaReferencia || !nuevaReferencia.insertId) {
+          logger.warn(`${fileMethod} - No se insertó la referencia comercial: ${JSON.stringify(frontEndRef)}`);
+          continue;
         }
 
-        const [empresa_destino] = await companiesService.getEmpresaByIdContacto(rc.insertId)
-        logger.info(`${fileMethod} | Se obtiene la empresa destino ${JSON.stringify(empresa_destino)}`)
-        if (referencia.contactos.length > 0) {
-          for (const contacto of referencia.contactos) {
-            const [empresa] = await certificationService.getIdEmpresaByIdCertification(id_certification)
-            const last_id_certification = await certificationService.getLastIdCertificationCancel(empresa.id_empresa)
+        await certificationService.insertaInfoEmpresaCliente(frontEndRef, nuevaReferencia.insertId);
 
-            const [exist_email] = await certificationService.getEmailEstatusContacto(contacto.correo_contacto, last_id_certification)
-            if (exist_email) {
-              const contactoInsertSi = await certificationService.insertaContacto(contacto, 'enviado', rc.insertId)
-              if (!contactoInsertSi) {
-                logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`)
-                return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertSi)}`))
-              }
-            } else {
-              const contactoInsertNo = await certificationService.insertaContacto(contacto, 'noenviado', rc.insertId)
-              if (!contactoInsertNo) {
-                logger.warn(`${fileMethod} - No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`)
-                return next(boom.badRequest(`No se insertó el contacto: ${JSON.stringify(contactoInsertNo)}`))
-              }
-
-              contactos.push({
+        if (Array.isArray(frontEndRef.contactos)) {
+          for (const contacto of frontEndRef.contactos) {
+            const contactoInsertado = await certificationService.insertaContacto(contacto, 'noenviado', nuevaReferencia.insertId);
+            if (contactoInsertado && contactoInsertado.insertId) {
+              contactosParaEnviarEmail.push({
                 nombre: contacto.nombre_contacto,
                 correo: contacto.correo_contacto,
-                id_contacto: contactoInsertNo.insertId,
-                id_referencia: rc.insertId,
-                id_direccion: direccion.insertId,
-                id_empresa_cliente_contacto: empresa_cliente.insertId,
-                empresa_destino: empresa_destino?.empresa_nombre ?? 'Nombre no disponible',
-                empresa_origen: empresa_origen.empresa_nombre
-              })
+                id_contacto: contactoInsertado.insertId,
+                id_referencia: nuevaReferencia.insertId,
+                empresa_destino: frontEndRef.razon_social,
+              });
             }
           }
         }
       }
     }
-    logger.info(`${fileMethod} - Se envia emails a los siguientes contactos de las referencia comerciales: ${JSON.stringify(contactos)}`)
 
-    const denominaciones = await certificationService.getDenominaciones()
-    logger.info(`${fileMethod} - Denominacion de referencia comercial: ${JSON.stringify(referencias_comerciales[0].denominacion)}`)
-    const denominacion_empresa_var = denominaciones.result.find(item => item.id == referencias_comerciales[0].denominacion)
-    const empresa_var = `${referencias_comerciales[0].razon_social} ${denominacion_empresa_var.denominacion}`
+    // --- FIN REFACTOR ---
 
-    await enviarReferenciasComercialesExternos(certificacionIniciada?.id_empresa, certificacionIniciada?.id_certification, contactos, empresa_var, empresa_origen.empresa_nombre)
-    // if (envioEmail) {
-    //   for (const c of contactos) {
-    //     await certificationService.updateEstatusEmailSend(c.id_contacto)
-    //   }
-    // }
+    logger.info(`${fileMethod} - Se enviarán emails a los siguientes contactos nuevos: ${JSON.stringify(contactosParaEnviarEmail)}`)
 
+    if (contactosParaEnviarEmail.length > 0) {
+      const [empresa_origen] = await companiesService.getEmpresaById(id_empresa)
+      // La lógica para determinar el nombre de la empresa para el email debe ser más robusta
+      // ya que la lista de contactos puede ser mixta (de refs nuevas y actualizadas).
+      // Por ahora, se mantiene una lógica simplificada.
+      const denominaciones = await certificationService.getDenominaciones()
+      const denominacion_empresa_var = denominaciones.result.find(item => item.id == frontEndRefs[0]?.denominacion)
+      const empresa_var = `${frontEndRefs[0]?.razon_social} ${denominacion_empresa_var?.denominacion || ''}`
 
-    logger.info(`${fileMethod} |  Respuesta exitosa que regresara el endpoint ${JSON.stringify({
-      error: false,
-      results: {
-        created: true,
-        partidasFinancieras: body
-      }
-    })}`)
+      await enviarReferenciasComercialesExternos(certificacionIniciada?.id_empresa, id_certification, contactosParaEnviarEmail, empresa_var, empresa_origen.empresa_nombre)
+    }
+
+    // --- FILTRADO EXTREMO PARA RESPUESTA ---
+    const referencias_comerciales_respuesta = Array.isArray(body.referencias_comerciales)
+      ? body.referencias_comerciales.filter(ref => {
+        const camposClave = ['razon_social', 'denominacion', 'rfc', 'id_pais'];
+        return camposClave.some(k => {
+          const v = ref[k];
+          return v !== '' && v !== null && v !== undefined;
+        });
+      })
+      : [];
+    logger.info(`${fileMethod} | Referencias comerciales devueltas: ${JSON.stringify(referencias_comerciales_respuesta)}`);
 
     return res.json({
       error: false,
       results: {
-        created: true,
-        partidasFinancieras: body
+        synced: true,
+        referencias: referencias_comerciales_respuesta
       }
-    })
+    });
+
   } catch (error) {
-    logger.warn(`${fileMethod} | Error general del endpoint ${JSON.stringify(error)}`);
+    logger.warn(`${fileMethod} | Error general del endpoint ${error.stack}`);
     next(error)
   }
 }
@@ -1662,10 +1657,30 @@ const getReferenciaComercialForm = async (req, res, next) => {
       referencias_comerciales.push(referencia)
     }
 
+    /*
     return res.json({
       id_certification,
       referencias_comerciales
     })
+    */
+
+    const referencias_comerciales_filtradas = referencias_comerciales.filter(ref => {
+      const camposClave = ['razon_social', 'denominacion', 'rfc', 'id_pais'];
+      return camposClave.some(k => {
+        const v = ref[k];
+        if (typeof v === 'string') {
+          return v.trim() !== '';
+        }
+        if (typeof v === 'number') {
+          return v !== 0;
+        }
+        return v !== null && v !== undefined && v !== '';
+      });
+    });
+    return res.json({
+      id_certification,
+      referencias_comerciales: referencias_comerciales_filtradas
+    });
 
   } catch (error) {
     next(error)
@@ -2693,8 +2708,8 @@ const getControlanteScoreFromSummary = async (
     const reglasConfiguradas =
       Array.isArray(parametrosAlgoritmo?.influenciaControlanteScore)
         ? parametrosAlgoritmo.influenciaControlanteScore
-            .map(r => r.nombre)
-            .filter(Boolean)
+          .map(r => r.nombre)
+          .filter(Boolean)
         : []
 
     const reglaDesconocido = reglasConfiguradas.find(r =>
@@ -3075,17 +3090,22 @@ const getScoreApalancamientoFromSummary = async (
 
     let apalScore = null
 
-    if (!capitalReportado || !deudaReportada) {
-      const options = []
-      if (!capitalReportado && noCapitalScore) options.push(noCapitalScore)
-      if (!deudaReportada && noDeudaScore) options.push(noDeudaScore)
-      if (options.length > 0) {
-        apalScore = options.reduce((min, curr) =>
-          !min || parseFloat(curr[versionField]) < parseFloat(min[versionField]) ? curr : min
+    if (!capitalReportado && !deudaReportada) {
+      const allScores = parametrosAlgoritmo.apalancamientoScore.filter(
+        s => s[versionField] !== null && s[versionField] !== undefined && s.nombre
+      )
+
+      if (allScores.length > 0) {
+        apalScore = allScores.reduce((min, curr) =>
+          parseFloat(curr[versionField]) < parseFloat(min[versionField]) ? curr : min
         )
       } else {
         apalScore = desconocidoScore
       }
+    } else if (!capitalReportado) {
+      apalScore = noCapitalScore || desconocidoScore
+    } else if (!deudaReportada) {
+      apalScore = noDeudaScore || desconocidoScore
     } else if (apalancamiento !== null && !Number.isNaN(apalancamiento)) {
       const ranges = parametrosAlgoritmo.apalancamientoScore.filter(a => {
         if (a.limite_inferior !== null && a.limite_superior !== null) {
@@ -3130,10 +3150,6 @@ const getScoreApalancamientoFromSummary = async (
     return { error: true }
   }
 }
-
-
-
-
 
 
 const getScoreCajaBancosFromSummary = async (
@@ -3468,80 +3484,83 @@ const getScoreReferenciasComercialesFromSummary = async (
   const fileMethod =
     `file: src/controllers/api/certification.js - method: getScoreReferenciasComercialesFromSummary`
   try {
-    let countBuena = 0
-    let countMala = 0
-    let countRegular = 0
+    const referencias = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification);
+    if (!referencias) return { error: true };
 
-    const referencias = await certificationService.getReferenciasComercialesByIdCertificationScore(id_certification)
-    if (!referencias) return { error: true }
+    const reglas = parametrosAlgoritmo.referenciasProveedoresScore;
+    const scoreField = algoritmo_v === 2 && reglas.find(r => r.id === 1)?.has_v2 ? 'v2' : 'v1';
 
-    // Si no existen referencias contestadas retornar el valor por defecto
+    const reglaSinReferencias = reglas.find(r => r.id === 6);
     if (referencias.length === 0) {
-      const sinReferencia = await certificationService.getResultadoReferenciaById(
-        REFERENCIA_IDS.NINGUNA,
-        algoritmo_v
-      )
-      if (!sinReferencia) return { error: true }
       return {
-        score: sinReferencia.valor_algoritmo,
-        descripcion: sinReferencia.nombre
+        score: parseInt(reglaSinReferencias[scoreField]),
+        descripcion: reglaSinReferencias.nombre,
+      };
+    }
+
+    const punishmentScores = [];
+    let goodRefsCount = 0;
+
+    const reglaMuyMalas = reglas.find(r => r.id === 4);
+    const reglaMalas = reglas.find(r => r.id === 5);
+
+    for (const ref of referencias) {
+      if (ref.calificacion_referencia === 'buena') {
+        goodRefsCount++;
+      } else if (ref.calificacion_referencia === 'mala' || ref.calificacion_referencia === 'regular') {
+        // La regla 4 (muy malas) es específica: >90 días de atraso Y >20% de deuda
+        if (ref.dias_atraso > 90 && ref.porcentaje_deuda > 20) {
+          punishmentScores.push(parseInt(reglaMuyMalas[scoreField]));
+        } else {
+          punishmentScores.push(parseInt(reglaMalas[scoreField]));
+        }
       }
     }
 
-    let porcentaje_deuda = 0
-    let dias_atraso = 0
-
-    for (const referencia of referencias) {
-      const [calificacion] = await certificationService.getCalificacionsReferencias(
-        referencia.id_certification_referencia_comercial
-      )
-      if (!calificacion) return { error: true }
-
-      const calif = String(calificacion.calificacion_referencia || '').toLowerCase()
-      if (calif === 'mala') {
-        countMala++
-        porcentaje_deuda = Math.max(
-          porcentaje_deuda,
-          calificacion.porcentaje_deuda || 0
-        )
-        dias_atraso = Math.max(dias_atraso, calificacion.dias_atraso || 0)
-      } else if (calif === 'buena') countBuena++
-      else if (calif === 'regular') countRegular++
+    // Si hay castigos, se aplica el peor de todos (el valor más bajo)
+    if (punishmentScores.length > 0) {
+      const minScore = Math.min(...punishmentScores);
+      const finalRule = minScore === parseInt(reglaMuyMalas[scoreField]) ? reglaMuyMalas : reglaMalas;
+      return {
+        score: minScore,
+        descripcion: finalRule.nombre,
+      };
     }
 
-    let catalogoId = REFERENCIA_IDS.NINGUNA
-
-    if (
-      countBuena === 0 &&
-      countMala > 0 &&
-      countRegular === 0 &&
-      porcentaje_deuda >= algorithmConstants.ref_malas_porcentaje &&
-      dias_atraso >= algorithmConstants.ref_malas_dias
-    ) {
-      catalogoId = REFERENCIA_IDS.MALAS
-    } else if (countBuena >= 2 && countBuena <= 3 && countMala === 0 && countRegular === 0) {
-      catalogoId = REFERENCIA_IDS.BUENAS_2_3
-    } else if (countBuena >= 4 && countMala === 0 && countRegular === 0) {
-      catalogoId = REFERENCIA_IDS.BUENAS_4
-    } else if (countRegular > 0) {
-      catalogoId = REFERENCIA_IDS.MIXTAS
-    } else if (countBuena === 1 && countMala === 0 && countRegular === 0) {
-      catalogoId = REFERENCIA_IDS.BUENA_1
+    // Si no hay castigos, se califica según las referencias buenas
+    const reglaBuenas4 = reglas.find(r => r.id === 1);
+    const reglaBuenas2_3 = reglas.find(r => r.id === 2);
+    const reglaBuenas1 = reglas.find(r => r.id === 3);
+    
+    if (goodRefsCount >= 4) {
+      return {
+        score: parseInt(reglaBuenas4[scoreField]),
+        descripcion: reglaBuenas4.nombre,
+      };
+    }
+    if (goodRefsCount >= 2) { // Cubre los casos de 2 y 3
+      return {
+        score: parseInt(reglaBuenas2_3[scoreField]),
+        descripcion: reglaBuenas2_3.nombre,
+      };
+    }
+    if (goodRefsCount === 1) {
+      return {
+        score: parseInt(reglaBuenas1[scoreField]),
+        descripcion: reglaBuenas1.nombre,
+      };
     }
 
-    const catalogo = await certificationService.getResultadoReferenciaById(
-      catalogoId,
-      algoritmo_v
-    )
-    if (!catalogo) return { error: true }
-
+    // Si llegamos aquí, es porque hay referencias pero ninguna fue 'buena', 'mala' o 'regular'.
+    // Esto corresponde a la regla 6: "No se obtuvo ningún proveedor..."
     return {
-      score: catalogo.valor_algoritmo,
-      descripcion: catalogo.nombre
-    }
+      score: parseInt(reglaSinReferencias[scoreField]),
+      descripcion: reglaSinReferencias.nombre,
+    };
+
   } catch (error) {
-    logger.error(`${fileMethod} | ${customUuid} Error general: ${error}`)
-    return { error: true }
+    logger.error(`${fileMethod} - ${customUuid} - catch: ${error}`)
+    return { error: true, score: 0 }
   }
 }
 
@@ -6182,9 +6201,9 @@ ${JSON.stringify(info_email_error, null, 2)}
         scores.sumatoria_scors_g45 !== undefined
           ? scores.sumatoria_scors_g45
           : SCORE_KEYS.reduce((acc, key) => {
-              const val = parseFloat(scoresForTable[SCORE_KEY_MAP[key]])
-              return Number.isNaN(val) ? acc : acc + val
-            }, 0)
+            const val = parseFloat(scoresForTable[SCORE_KEY_MAP[key]])
+            return Number.isNaN(val) ? acc : acc + val
+          }, 0)
 
       const scoreLabelMap = {
         _01_pais: '1. País score',
@@ -6369,7 +6388,7 @@ ${JSON.stringify(info_email_error, null, 2)}
             const formulaResultado = val.operacion
               ? val.operacion
               : `Deuda total (periodo contable anterior): ${pasivo} / ` +
-                `Capital contable (periodo contable anterior): ${capital}`
+              `Capital contable (periodo contable anterior): ${capital}`
             rows.push(
               `<tr><td>Fórmula del resultado</td><td>${formulaResultado}</td></tr>`
             )
@@ -9768,7 +9787,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     logger.info(`${fileMethod} | objetivo empresaID: ${JSON.stringify(idEmpresa)}`)
 
-// Quitar
+    // Quitar
     // let consulta_bloc = await consultaBlocLocal(idEmpresa);
 
     // logger.info(`${fileMethod} | consulta_bloc: ${JSON.stringify(consulta_bloc)}`)
@@ -13225,7 +13244,7 @@ const generarReporteInformativoo = async (customUuid, idEmpresa, id_reporte_cred
 
     // Con Archivo
   } catch (err) {
-    console.log({err})
+    console.log({ err })
     logger.info(`${fileMethod} | ${customUuid} | Error general: ${JSON.stringify(err)}`)
     return {
       error: true,
@@ -13315,7 +13334,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
       resumen.empresa_controlante_rfc = accionistaControlante2.rfc || '-'
     }
 
-    logger.info(`${fileMethod} | ${customUuid} | Resumen: ${JSON.stringify(resumen)}`)
+    logger.info(`${fileMethod} | ${customUuid} | Resumen: ${JSON.stringify(datos_reporte?.certificacion?.[0]?.accionistas)}`)
 
     const resultados = {
       linea_credito_solicitada: datos_reporte.monto_solicitado,// reporte_credito?.reporteCredito?.monto_solicitado ?? '-',
@@ -16818,23 +16837,32 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     ` :
       '';
 
-    const alertas_preventivas = soloCompartirInfoEmpresa === 1 ?
+    const accionista = datos_reporte?.certificacion?.[0]?.accionistas || [];
+    logger.info(`${fileMethod} | ${customUuid} | Resumen-accionistas: ${JSON.stringify(accionista)}`)
+
+    const accionistaControlante = accionista.find(a => a.controlante == 1);
+    logger.info(`${fileMethod} | ${customUuid} | Resumen-accionista: ${JSON.stringify(accionistaControlante)}`)
+
+
+
+    const alertas_preventivas_title = soloCompartirInfoEmpresa === 1 || (accionistaControlante &&
+      accionistaControlante.razon_sat_rfc?.trim() === 'La razón social proporcionada no coincide con la registrada en el SAT') ?
       `
       <section style="width: 100%; margin: 0px 0px; margin-top: 60px; page-break-before: always;">
         <div style="display: flex; flex-direction: column;">
-          <h3 style="
-                    font-size: 16px;
-                    font-weight: 700;
-                    color: #0a3d8e;
-                    text-transform: uppercase;
-                    margin: 0px !important;
-                    margin-bottom: 5px !important;
-                    text-transform: uppercase;
-                    
-                  ">
-            ALERTAS PREVENTIVAS DE RESERVA
-          </h3>
-        </div>
+        <h3 style="
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #0a3d8e;
+                  text-transform: uppercase;
+                  margin: 0px !important;
+                  margin-bottom: 5px !important;
+                  text-transform: uppercase;
+                  
+                ">
+          ALERTAS PREVENTIVAS DE RESERVA
+        </h3>
+      </div>
         <div style="display: flex; width: 100%; align-items: center;">
           <hr style="
                     background: #0a3d8e;
@@ -16852,7 +16880,33 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
                   "></div>
         </div>
       </section>
+    ` : '';
 
+    const validacion = accionistaControlante &&
+      accionistaControlante.razon_sat_rfc?.trim() === 'La razón social proporcionada no coincide con la registrada en el SAT'
+      ? `
+        <div style="
+          margin-top: 2rem;
+          margin-bottom: 2rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          border: 4px solid #2ba2af;
+          padding: 10px 15px;
+          background: #f1f8ff;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+          ">
+          <p style="color: #0a3d8e; font-size: 12px; font-weight: bold; margin-top: 10px; text-align: center;">
+            ⚠️ Estimado cliente, le informamos que su comprador notificó un RFC de empresa controlante que no pertenece a la razón social comentada o dicho RFC no está vigente antes SAT por alguna incidencia. Favor de tomar en cuenta este dato para su decisión final.
+          </p>
+        </div>
+      `: '';
+
+
+    const alertas_preventivas = soloCompartirInfoEmpresa === 1 ?
+      `
       <div style="
           margin-top: 2rem;
           margin-bottom: 2rem;
@@ -16968,6 +17022,9 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_emp_vision_}', emp_vision);
 
     strHTML_paso = strHTML_paso.replace('{_ratios_}', ratios_);
+
+    strHTML_paso = strHTML_paso.replace('{_alertas_preventivas_title_}', alertas_preventivas_title);
+    strHTML_paso = strHTML_paso.replace('{_validacion_}', validacion);
     strHTML_paso = strHTML_paso.replace('{_alertas_preventivas_}', alertas_preventivas);
 
     strHTML_paso = strHTML_paso.replace('{_empresas_info_basica_}', empresas_info_basica);
@@ -16983,6 +17040,7 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_COMERCIALES_}', REFERENCIAS_C || '');
     //strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_CONSIDERADAS_}', REFERENCIAS_CONSIDERADAS || '');
 
+    // Deploy
     strHTML_paso = strHTML_paso.replace('{_REFERENCIAS_CONSIDERADAS_}', '');
 
     logger.info(`${fileMethod} | ${customUuid} | Encabezado con HTML: ${JSON.stringify(strHTML_paso)}`)
@@ -17781,45 +17839,45 @@ const generarReporteCredito = async (customUuid, idEmpresa, id_reporte_credito, 
     //  Demandas
     // _certification?.demandas
 
-  let mensaje = '';
-  const demandas = datos_reporte?.demandas || [];
-    
-  // Ordenar por fecha descendente
-  const demandasOrdenadas = demandas.sort((a, b) => {
-    const fechaA = a.fecha_demanda ? new Date(a.fecha_demanda) : new Date(0);
-    const fechaB = b.fecha_demanda ? new Date(b.fecha_demanda) : new Date(0);
-    return fechaB.getTime() - fechaA.getTime();
-  });
-  
-  // Fecha de corte: hace 12 meses
-  const hoy = new Date();
-  const fechaCorte = new Date(hoy);
-  fechaCorte.setFullYear(hoy.getFullYear() - 1);
-  
-  // Filtrar demandas válidas dentro de los últimos 12 meses
-  const demandasFiltradas = demandasOrdenadas.filter(d => {
-    const rawFecha = d?.fecha_demanda;
-    if (!rawFecha) return false;
-    const fecha = new Date(rawFecha);
-    if (isNaN(fecha.getTime())) return false;
-    return fecha >= fechaCorte;
-  });
-  
-  // Tomar máximo 5
-  const demandasMostradas = demandasFiltradas.slice(0, 5);
-  
-  // Mensaje
-  if (demandasMostradas.length > 0) {
-    mensaje = `
+    let mensaje = '';
+    const demandas = datos_reporte?.demandas || [];
+
+    // Ordenar por fecha descendente
+    const demandasOrdenadas = demandas.sort((a, b) => {
+      const fechaA = a.fecha_demanda ? new Date(a.fecha_demanda) : new Date(0);
+      const fechaB = b.fecha_demanda ? new Date(b.fecha_demanda) : new Date(0);
+      return fechaB.getTime() - fechaA.getTime();
+    });
+
+    // Fecha de corte: hace 12 meses
+    const hoy = new Date();
+    const fechaCorte = new Date(hoy);
+    fechaCorte.setFullYear(hoy.getFullYear() - 1);
+
+    // Filtrar demandas válidas dentro de los últimos 12 meses
+    const demandasFiltradas = demandasOrdenadas.filter(d => {
+      const rawFecha = d?.fecha_demanda;
+      if (!rawFecha) return false;
+      const fecha = new Date(rawFecha);
+      if (isNaN(fecha.getTime())) return false;
+      return fecha >= fechaCorte;
+    });
+
+    // Tomar máximo 5
+    const demandasMostradas = demandasFiltradas.slice(0, 5);
+
+    // Mensaje
+    if (demandasMostradas.length > 0) {
+      mensaje = `
       <p style="font-size: 13px; font-weight: 600; margin: 10px 0;">
         Presentamos ${demandasMostradas.length} demanda(s) de un total de ${demandas.length}, correspondientes a los últimos 12 meses.
       </p>
     `;
-  }
+    }
 
     // Reemplazo en el HTML (solo si hay demandas)
-strHTML_paso = strHTML_paso.replace('{_demandas_}', demandasMostradas.map(
-  (demanda, i) => (`
+    strHTML_paso = strHTML_paso.replace('{_demandas_}', demandasMostradas.map(
+      (demanda, i) => (`
     ${i === 0 ? mensaje : ''}    
       <div
       style="

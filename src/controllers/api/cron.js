@@ -11,6 +11,7 @@ const solicitudCreditoService = require('../../services/solicitudCredito')
 const { emailjet: { key, secretKey, sender: { from } } } = require('../../config')
 const mailjet = require('node-mailjet').apiConnect(key, secretKey)
 const nodemailer = require('nodemailer')
+const { sendCreditReportToProviders } = require('./mailjet-controler')
 
 
 const currentDate = () => {
@@ -40,107 +41,110 @@ const calcularDiferenciaHoras = (fechaInicio, fechaFin) => {
 
 const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-const enviaCorreoReferenciasExternas = async (id_certification_referencia_comercial, contacto_referencia_comercial) => {
-    const fileMethod = `file: src/controllers/api/certification.js - method: enviaCorreoReferenciasExternas`
-    try {
-        const globalConfig = await utilitiesService.getParametros()
+const enviaCorreoReferenciasExternas = async () => {
+  const fileMethod = `file: src/controllers/api/cron.js - method: enviaCorreoReferenciasExternas (refactored)`;
+  logger.info(`${fileMethod} | Iniciando job de recordatorios para referencias comerciales.`);
 
-        const [contactos_referencia_comercial] = await certificationService.obtieneCertificacionVigente(id_certification_referencia_comercial)
+  try {
+    const referenciasParaRecordatorio = await certificationService.getReferenciasParaRecordatorio();
 
-        if (!contactos_referencia_comercial) {
-            logger.warn(`${fileMethod} | No se encontró certificación vigente para la referencia comercial: ${id_certification_referencia_comercial}`)
-            return false
-        }
-
-        const informacion_hash_result = await certificationService.obtenerUltimoHashCertification(contactos_referencia_comercial.id_certification)
-        const informacion_hash = Array.isArray(informacion_hash_result) ? informacion_hash_result[0] : informacion_hash_result
-
-        if (!informacion_hash) {
-            logger.warn(`${fileMethod} | No se encontró hash para la certificación: ${contactos_referencia_comercial.id_certification}`)
-            return false
-        }
-
-        const {
-            certification_id,
-            emp_id,
-            hash,
-            id_contacto,
-            id_direccion,
-            id_empresa_cliente_contacto,
-        } = informacion_hash
-
-        const {
-            id_certification_contacto,
-            nombre_contacto,
-            correo_contacto, } = contacto_referencia_comercial
-
-        const regex_email = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-
-        if (!regex_email.test(correo_contacto)) {
-            logger.warn(`${fileMethod} | El correo no cumple con el formato adecuado : ${JSON.stringify(correo_contacto)}`)
-            return false
-        }
-
-        await certificationService.insertExternalReference(hash, emp_id, certification_id, correo_contacto, nombre_contacto, id_contacto, id_certification_referencia_comercial, id_direccion, id_empresa_cliente_contacto)
-        const url_credibusiness_web = await globalConfig.find(item => item.nombre === 'url_credibusiness_web').valor
-        const link = `${url_credibusiness_web}/#/referencias-comerciales?hash=${hash}`
-        const [empresa] = await certificationService.getCompanyByID(emp_id)
-        const [empresa_envia] = await certificationService.getCompanyByID(id_empresa_cliente_contacto)
-
-        const request_email = {
-            Messages: [
-                {
-                    From: {
-                        Email: 'mkt@credibusiness.site',
-                        Name: 'credibusiness'
-                    },
-                    To: [
-                        {
-                            Email: correo_contacto,
-                            Name: nombre_contacto
-                        }
-                    ],
-                    TemplateID: 6279989,
-                    TemplateLanguage: true,
-                    Variables: {
-                        link: link,
-                        empresa: empresa?.empresa_nombre || '',
-                        empresa_envia: empresa_envia?.empresa_nombre || ''
-                    }
-                }
-            ]
-        }
-
-        const envio_email = await mailjet
-            .post('send', { version: 'v3.1' })
-            .request(request_email)
-
-        const result_mailjet = envio_email.body
-        logger.info(`${fileMethod} | Respuesta de envio de correo a referencia comercial: ${JSON.stringify(result_mailjet)}`)
-
-        const message_href = result_mailjet.Messages[0].To[0].MessageHref
-        const message_id = result_mailjet.Messages[0].To[0].MessageID
-        logger.info(`${fileMethod} | Inicia petición par asaber estatus de reenvio de correo : ${JSON.stringify(result_mailjet)}`)
-        await esperar(50000)
-        const response_status_mailjet = await axios.get(message_href, {
-            auth: {
-                username: key,
-                password: secretKey
-            }
-        })
-
-        const result_estatus_envio = response_status_mailjet.data
-        logger.info(`${fileMethod} | Respuesta del estatus del correo: ${JSON.stringify(result_estatus_envio)}`)
-
-        let consulta_estatus_envio = result_estatus_envio.Data[0].Status
-
-        if (consulta_estatus_envio == 'sent') consulta_estatus_envio = 'resent'
-
-        await certificationService.actualizaEstatusContactoReenvio(id_certification_contacto, message_id, consulta_estatus_envio, currentDate())
-
-    } catch (error) {
-        console.log(error)
+    if (!referenciasParaRecordatorio || referenciasParaRecordatorio.length === 0) {
+      logger.info(`${fileMethod} | No hay referencias comerciales que necesiten un recordatorio en este momento.`);
+      return;
     }
+
+    logger.info(`${fileMethod} | Se encontraron ${referenciasParaRecordatorio.length} referencias para procesar.`);
+
+    for (const referencia of referenciasParaRecordatorio) {
+      try {
+        // Validar que el ID de referencia existe y es válido
+        if (!referencia.id_certification_referencia_comercial) {
+          logger.warn(`${fileMethod} | Referencia sin ID válido: ${JSON.stringify(referencia)}. Saltando.`);
+          continue;
+        }
+        
+        const contactos = await certificationService.getContactos(referencia.id_certification_referencia_comercial);
+        if (!contactos || contactos.length === 0) {
+          logger.info(`${fileMethod} | No se encontraron contactos para la referencia ${referencia.id_certification_referencia_comercial}. Saltando.`);
+          continue;
+        }
+
+        // Validar que el ID de certificación existe
+        if (!referencia.id_certification) {
+          logger.warn(`${fileMethod} | Referencia sin ID de certificación válido: ${JSON.stringify(referencia)}. Saltando.`);
+          continue;
+        }
+        
+        const informacion_hash = await certificationService.obtenerUltimoHashCertification(referencia.id_certification);
+        if (!informacion_hash) {
+            logger.warn(`${fileMethod} | No se encontró hash para la certificación: ${referencia.id_certification}. Saltando referencia.`);
+            continue;
+        }
+        
+        const { hash, emp_id, id_empresa_cliente_contacto } = informacion_hash;
+        
+        // Validar que los datos del hash son válidos
+        if (!hash || !emp_id || !id_empresa_cliente_contacto) {
+          logger.warn(`${fileMethod} | Datos de hash incompletos para certificación ${referencia.id_certification}: ${JSON.stringify(informacion_hash)}. Saltando.`);
+          continue;
+        }
+        const globalConfig = await utilitiesService.getParametros();
+        const urlConfig = globalConfig.find(item => item.nombre === 'url_credibusiness_web');
+        if (!urlConfig || !urlConfig.valor) {
+          logger.warn(`${fileMethod} | No se encontró configuración de URL para credibusiness_web. Saltando referencia.`);
+          continue;
+        }
+        const url_credibusiness_web = urlConfig.valor;
+        const link = `${url_credibusiness_web}/#/referencias-comerciales?hash=${hash}`;
+        
+        const [empresa] = await certificationService.getCompanyByID(emp_id);
+        const [empresa_envia] = await certificationService.getCompanyByID(id_empresa_cliente_contacto);
+
+
+        for (const contacto of contactos) {
+          const ahora = new Date();
+          const fechaUltimoRecordatorio = contacto.fecha_ultimo_recordatorio ? new Date(contacto.fecha_ultimo_recordatorio) : null;
+          
+          if (fechaUltimoRecordatorio && (ahora - fechaUltimoRecordatorio) < (12 * 60 * 60 * 1000)) {
+            logger.info(`${fileMethod} | Contacto ${contacto.id_certification_contacto} ya recibió un recordatorio en las últimas 12 horas. Saltando.`);
+            continue;
+          }
+
+          const regex_email = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+          if (!regex_email.test(contacto.correo_contacto)) {
+              logger.warn(`${fileMethod} | El correo del contacto ${contacto.id_certification_contacto} no es válido. Saltando.`);
+              continue;
+          }
+
+          logger.info(`${fileMethod} | Enviando recordatorio al contacto ${contacto.id_certification_contacto} (${contacto.correo_contacto})`);
+
+          const request_email = {
+              Messages: [{
+                  From: { Email: 'mkt@credibusiness.site', Name: 'credibusiness' },
+                  To: [{ Email: contacto.correo_contacto, Name: contacto.nombre_contacto }],
+                  TemplateID: 6279989, // ID de la plantilla de recordatorio
+                  TemplateLanguage: true,
+                  Variables: {
+                      link: link,
+                      empresa: empresa?.empresa_nombre || '',
+                      empresa_envia: empresa_envia?.empresa_nombre || ''
+                  }
+              }]
+          };
+
+          const envio_email = await mailjet.post('send', { version: 'v3.1' }).request(request_email);
+          logger.info(`${fileMethod} | Respuesta de Mailjet para contacto ${contacto.id_certification_contacto}: ${JSON.stringify(envio_email.body)}`);
+
+          await certificationService.updateFechaRecordatorio(contacto.id_certification_contacto);
+        }
+      } catch (error) {
+        logger.error(`${fileMethod} | Error procesando la referencia ${referencia.id_certification_referencia_comercial}: ${error.message} - ${error.stack}`);
+        // Continuamos con la siguiente referencia
+      }
+    }
+  } catch (error) {
+    logger.error(`${fileMethod} | Error fatal en el job de recordatorios: ${error.message} - ${error.stack}`);
+  }
 }
 
 const enviarEmailRegistrosSemanal = async (registros, total_registros) => {
@@ -376,6 +380,20 @@ const enviarEmailSaldoEmpresas = async (saldo_empresas) => {
 }
 
 const startCronJobs = () => {
+    const fileMethod = `file: src/controllers/api/cron.js - method: startCronJobs`
+    logger.info(`${fileMethod} | Iniciando cron jobs`)
+
+    // Cron job para enviar recordatorios de referencias comerciales (cada hora)
+    cron.schedule('0 * * * *', async () => {
+        logger.info(`${fileMethod} | CRON: Iniciando job de recordatorios para referencias comerciales...`);
+        try {
+            await enviaCorreoReferenciasExternas();
+            logger.info(`${fileMethod} | CRON: Job de recordatorios para referencias comerciales finalizado.`);
+        } catch (error) {
+            logger.error(`${fileMethod} | CRON: Error en el job de recordatorios para referencias comerciales: ${error.message} - ${error.stack}`);
+        }
+    });
+
     cron.schedule('30 3 * * *', async () => {
         try {
             const regex = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/
@@ -541,8 +559,91 @@ const startCronJobs = () => {
       timezone: 'America/Mexico_City',
     })
 
-    // Nota: La libreria de cron no sabe que en México se quitó el horario de verano
-    cron.schedule('40 15 * * 1', async () => {
+    // cron.schedule('* * * * *', async () => {
+    //     try {
+    //         const globalConfig = await utilitiesService.getParametros()
+    //         logger.info('Inicia proceso ')
+    //     } catch (error) {
+    //         logger.error(`Error en el cron que verifica los días que tarda una referencia comercial : ${JSON.stringify(error)}`)
+    //     }
+    // })
+
+    // TODO: Pendiente de liberar a Producción
+    // Cron job para enviar lista de clientes pendientes a proveedores con lógica de periodicidad
+    // Cada lunes durante el primer mes, luego solo el primer lunes de cada mes
+    /*
+    cron.schedule('0 9 * * 1', async () => { // Ejecuta todos los lunes a las 9:00 AM
+        const fileMethod = `file: src/controllers/api/cron.js - CRON: sendCreditReportToProviders`;
+        
+        try {
+            // Obtener fecha de activación del sistema (guardar en BD o config)
+            const globalConfig = await utilitiesService.getParametros();
+            let fechaActivacion = await globalConfig.find(item => item.nombre === 'fecha_activacion_creditos_pendientes');
+            
+            // Si no existe la fecha de activación, crearla ahora
+            if (!fechaActivacion) {
+                const fechaActual = new Date();
+                // Aquí deberías guardar la fecha en la BD, por ahora usamos la fecha actual
+                logger.info(`${fileMethod} | Primera ejecución - estableciendo fecha de activación: ${fechaActual.toISOString()}`);
+                fechaActivacion = { valor: fechaActual.toISOString() };
+            }
+            
+            const fechaActivacionDate = new Date(fechaActivacion.valor);
+            const fechaActual = new Date();
+            
+            // Calcular diferencia en meses
+            const mesesTranscurridos = (fechaActual.getFullYear() - fechaActivacionDate.getFullYear()) * 12 + 
+                                     (fechaActual.getMonth() - fechaActivacionDate.getMonth());
+            
+            // Verificar si es el primer lunes del mes (después del primer mes)
+            const esPrimerLunesDelMes = fechaActual.getDate() <= 7;
+            
+            // Lógica de ejecución
+            let debeEjecutar = false;
+            
+            if (mesesTranscurridos < 1) {
+                // Primer mes: ejecutar todos los lunes
+                debeEjecutar = true;
+                logger.info(`${fileMethod} | Primer mes - ejecutando (mes ${mesesTranscurridos + 1})`);
+            } else if (esPrimerLunesDelMes) {
+                // Después del primer mes: solo el primer lunes
+                debeEjecutar = true;
+                logger.info(`${fileMethod} | Después del primer mes - ejecutando primer lunes del mes`);
+            } else {
+                logger.info(`${fileMethod} | No es momento de ejecutar (mes ${mesesTranscurridos + 1}, primer lunes: ${esPrimerLunesDelMes})`);
+            }
+            
+            if (debeEjecutar) {
+                logger.info(`${fileMethod} | Iniciando envío de lista de clientes pendientes a proveedores...`);
+                const resultado = await sendCreditReportToProviders();
+                logger.info(`${fileMethod} | Resultado: ${JSON.stringify(resultado)}`);
+            }
+            
+        } catch (error) {
+            logger.error(`${fileMethod} | Error: ${error.message} - ${error.stack}`);
+        }
+    });
+    */
+
+
+
+
+    // Cron job para enviar lista de clientes pendientes a proveedores cada 2 minutos (NUEVO)
+  //cron.schedule('*/2 * * * *', async () => {
+  //  const fileMethod = `file: src/controllers/api/cron.js - CRON: sendCreditReportToProviders`;
+  //  logger.info(`${fileMethod} | Iniciando envío de lista de clientes pendientes a proveedores...`);
+  //  try {
+  //      const resultado = await sendCreditReportToProviders();
+  //      logger.info(`${fileMethod} | Resultado: ${JSON.stringify(resultado)}`);
+  //  } catch (error) {
+  //      logger.error(`${fileMethod} | Error: ${error.message} - ${error.stack}`);
+  //  }
+  //});
+
+}
+
+// Nota: La libreria de cron no sabe que en México se quitó el horario de verano
+    cron.schedule('5 10 * * 1', async () => {
         try {
             logger.info('Cron que envia correo semanal de estadisticas de saldo ocupado por empresa')
             const saldo_empresas = await solicitudCreditoService.getSaldoEmpresasResporte();
@@ -554,17 +655,13 @@ const startCronJobs = () => {
     {
       scheduled: true,
       timezone: 'America/Mexico_City',
-    }
-  )
-
-    // cron.schedule('* * * * *', async () => {
-    //     try {
-    //         const globalConfig = await utilitiesService.getParametros()
-    //         logger.info('Inicia proceso ')
-    //     } catch (error) {
-    //         logger.error(`Error en el cron que verifica los días que tarda una referencia comercial : ${JSON.stringify(error)}`)
-    //     }
-    // })
-}
+    })
 
 module.exports = { startCronJobs }
+
+// Ejecutamos manualmente el cron para enviar el correo de prueba
+/*
+console.log('🚀 ===== Email de prueba =====');
+sendCreditReportToProviders();
+console.log('🚀 ===== Termino Email de prueba =====');
+*/

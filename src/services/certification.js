@@ -4262,13 +4262,9 @@ WHERE cer.certificacion_id = (
 
   // Elimina únicamente las referencias comerciales no contestadas
   async deleteReferenciasComercialesNoContestadas(idCertification) {
-    const queryString = `
-    DELETE FROM certification_referencia_comercial
-    WHERE id_certification = ${mysqlLib.escape(idCertification)}
-      AND (contestada <> 'si' OR contestada IS NULL);
-  `;
-    const result = await mysqlLib.query(queryString);
-    return result;
+    const query = `DELETE FROM certification_referencia_comercial WHERE id_certification = ${idCertification} AND contestada != 'si';`
+    const { result } = await mysqlLib.query(query)
+    return result
   }
 
   // Obtiene las referencias comerciales contestadas para una certificación
@@ -6201,6 +6197,145 @@ WHERE
 
     const { result } = await mysqlLib.query(queryString)
     return result
+  }
+
+  // Busca si ya existe una referencia comercial contestada con los mismos datos clave (ignorando mayúsculas/minúsculas y espacios)
+  async existeReferenciaComercialContestadaPorDatos({ id_certification, razon_social, denominacion, rfc, id_pais }) {
+    const queryString = `
+      SELECT *
+        FROM certification_referencia_comercial
+       WHERE id_certification = ${mysqlLib.escape(id_certification)}
+         AND LOWER(TRIM(razon_social)) = LOWER(TRIM(${mysqlLib.escape(razon_social)}))
+         AND denominacion = ${mysqlLib.escape(denominacion)}
+         AND LOWER(TRIM(rfc)) = LOWER(TRIM(${mysqlLib.escape(rfc)}))
+         AND id_pais = ${mysqlLib.escape(id_pais)}
+         AND contestada = 'si'
+      ;
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return Array.isArray(result) && result.length > 0
+  }
+
+  // Busca si ya existe una referencia comercial (contestada o no) con los mismos datos clave (ignorando mayúsculas/minúsculas y espacios)
+  async existeReferenciaComercialPorDatos({ id_certification, razon_social, denominacion, rfc, id_pais }) {
+    const queryString = `
+      SELECT *
+        FROM certification_referencia_comercial
+       WHERE id_certification = ${mysqlLib.escape(id_certification)}
+         AND LOWER(TRIM(razon_social)) = LOWER(TRIM(${mysqlLib.escape(razon_social)}))
+         AND denominacion = ${mysqlLib.escape(denominacion)}
+         AND LOWER(TRIM(rfc)) = LOWER(TRIM(${mysqlLib.escape(rfc)}))
+         AND id_pais = ${mysqlLib.escape(id_pais)}
+      LIMIT 1;
+    `
+    const { result } = await mysqlLib.query(queryString)
+    return Array.isArray(result) && result.length > 0
+  }
+
+  async deleteReferenciaComercialById (id_referencia) {
+    const fileMethod = `file: src/services/certification.js - method: deleteReferenciaComercialById`
+    try {
+      // Primero, eliminar contactos asociados
+      await mysqlLib.query(`DELETE FROM certification_contacto WHERE id_certification_referencia_comercial = ${mysqlLib.escape(id_referencia)}`);
+      // Luego, eliminar la referencia
+      await mysqlLib.query(`DELETE FROM certification_referencia_comercial WHERE id_certification_referencia_comercial = ${mysqlLib.escape(id_referencia)}`);
+      logger.info(`${fileMethod} | Referencia ${id_referencia} y sus contactos eliminados.`);
+      return true;
+    } catch (error) {
+      logger.error(`${fileMethod} | Error al eliminar referencia ${id_referencia}: ${error.message}`);
+      return false;
+    }
+  }
+
+  async updateReferenciaComercial (id_referencia, data) {
+    const query = `UPDATE certification_referencia_comercial SET
+      razon_social = ${mysqlLib.escape(data.razon_social)},
+      denominacion = ${mysqlLib.escape(data.denominacion)},
+      rfc = ${mysqlLib.escape(data.rfc)},
+      id_pais = ${mysqlLib.escape(data.id_pais)}
+      WHERE id_certification_referencia_comercial = ${mysqlLib.escape(id_referencia)};`
+    const { result } = await mysqlLib.query(query)
+    return result
+  }
+
+  async syncContactosForReferencia (id_referencia, contactosFrontEnd) {
+    const fileMethod = 'file: src/services/certification.js - method: syncContactosForReferencia'
+    try {
+      const contactosDB = await getContactos(id_referencia);
+      const idContactosDB = new Set(contactosDB.map(c => c.id_certification_contacto));
+      const idContactosFrontEnd = new Set(contactosFrontEnd.filter(c => c.id_certification_contacto).map(c => c.id_certification_contacto));
+
+      // Eliminar contactos que no vienen del front-end
+      const contactosAEliminar = contactosDB.filter(c => !idContactosFrontEnd.has(c.id_certification_contacto));
+      for (const contacto of contactosAEliminar) {
+          await mysqlLib.query(`DELETE FROM certification_contacto WHERE id_certification_contacto = ${mysqlLib.escape(contacto.id_certification_contacto)}`);
+      }
+      
+      const nuevosContactosParaEmail = [];
+      // Actualizar o insertar contactos
+      for (const contacto of contactosFrontEnd) {
+        if (contacto.id_certification_contacto) {
+          // Actualizar
+          await updateContacto(contacto, contacto.id_certification_contacto);
+        } else {
+          // Insertar
+          const nuevoContacto = await insertaContacto(contacto, 'noenviado', id_referencia);
+          nuevosContactosParaEmail.push({
+            nombre: contacto.nombre_contacto,
+            correo: contacto.correo_contacto,
+            id_contacto: nuevoContacto.insertId,
+            id_referencia: id_referencia,
+          });
+        }
+      }
+      return nuevosContactosParaEmail;
+    } catch (error) {
+      logger.error(`${fileMethod} | Error: ${error.message}`);
+      return [];
+    }
+  }
+
+  async getContactos (id_certification) {
+    const query = `SELECT * FROM certification_contacto WHERE id_certification_referencia_comercial = ${id_certification}`
+    const { result } = await mysqlLib.query(query)
+    return result
+  }
+
+  async getReferenciasParaRecordatorio () {
+    const fileMethod = `file: src/services/certification.js - method: getReferenciasParaRecordatorio`
+    try {
+      const query = `
+        SELECT
+            crc.id_certification_referencia_comercial,
+            crc.id_certification
+        FROM 
+            certification_referencia_comercial crc
+        WHERE
+            (crc.contestada IS NULL OR crc.contestada != 'si')
+            AND crc.created_at >= DATE_SUB(NOW(), INTERVAL 72 HOUR);
+      `;
+      const { result } = await mysqlLib.query(query);
+      return result;
+    } catch (error) {
+      logger.error(`${fileMethod} | Error al obtener referencias para recordatorio: ${error.message}`);
+      return [];
+    }
+  }
+
+  async updateFechaRecordatorio (id_contacto) {
+    const fileMethod = `file: src/services/certification.js - method: updateFechaRecordatorio`
+    try {
+      const query = `
+        UPDATE certification_contacto
+        SET fecha_ultimo_recordatorio = NOW()
+        WHERE id_certification_contacto = ${mysqlLib.escape(id_contacto)};
+      `;
+      await mysqlLib.query(query);
+      return true;
+    } catch (error) {
+      logger.error(`${fileMethod} | Error al actualizar fecha de recordatorio para contacto ${id_contacto}: ${error.message}`);
+      return false;
+    }
   }
 
 }

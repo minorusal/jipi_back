@@ -4,6 +4,8 @@ const { mysql: { host, port, user, password, database } } = require('../config')
 const { Sequelize } = require('sequelize')
 const debug = require('debug')('old-api:mysql-lib')
 const { exec } = require('child_process')  // Importamos exec para ejecutar comandos del sistema
+const fs = require('fs')
+const path = require('path')
 
 class MySequelize {
   constructor () {
@@ -24,10 +26,39 @@ class MySequelize {
           },
           logging: false
         })
+      
+      this.models = {}
+      this.loadModels()
 
       MySequelize.instance = this
     }
     return MySequelize.instance
+  }
+
+  loadModels() {
+    const modelsDir = path.join(__dirname, '../models/api');
+    fs.readdirSync(modelsDir)
+      .filter(file => file.indexOf('.') !== 0 && file.slice(-3) === '.js')
+      .forEach(file => {
+        try {
+            const modelDefinition = require(path.join(modelsDir, file));
+            // Asegurarse de que el export es una función antes de llamarla
+            if (typeof modelDefinition === 'function') {
+                const model = modelDefinition(this.sequelize, Sequelize.DataTypes);
+                this.models[model.name] = model;
+            } else {
+                debug(`El archivo ${file} no exporta una función de modelo de Sequelize.`);
+            }
+        } catch (error) {
+            debug(`Error al cargar el modelo ${file}:`, error);
+        }
+      });
+
+    Object.keys(this.models).forEach(modelName => {
+      if (this.models[modelName].associate) {
+        this.models[modelName].associate(this.models);
+      }
+    });
   }
 
   // Nueva función para ejecutar flush-hosts

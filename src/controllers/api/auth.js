@@ -33,270 +33,138 @@ const loadGlobalConfig = async () => {
 
 loadGlobalConfig()
 
+/**
+ * @description Valida las credenciales del usuario, incluyendo el caso de la contraseña maestra.
+ * @param {string} password - La contraseña proporcionada por el usuario.
+ * @param {object} user - El objeto de usuario de la base de datos.
+ * @param {string} masterPassword - La contraseña maestra para bypass.
+ * @returns {Promise<boolean>} Verdadero si la contraseña es válida.
+ */
+const validateCredentials = async (password, user, masterPassword) => {
+  if (password === masterPassword) {
+    logger.info(`Bypass de autenticación con contraseña maestra para el usuario: ${user.usu_email}`);
+    return true;
+  }
+  return bcrypt.compare(password.trim(), user.usu_psw);
+};
+
+/**
+ * @description Maneja la lógica específica para el primer inicio de sesión de un usuario.
+ * @param {object} user - El objeto de usuario de la base de datos.
+ */
+const handleFirstLogin = async (user) => {
+  const fileMethod = `file: src/controllers/api/auth.js - method: handleFirstLogin`;
+  const tokenValid = await verifyToken(user.token);
+  logger.info(`Token de registro: ${JSON.stringify(user.token)} - Resultado de validación: ${JSON.stringify(tokenValid)} - ${fileMethod}`);
+
+  if (tokenValid.message && tokenValid.message !== 'jwt expired') {
+    // Cualquier error que no sea de expiración detiene el flujo.
+    throw boom.unauthorized(`Error al validar token de registro: ${tokenValid.message}`);
+  }
+
+  if (user.estatus_registro.includes('noconfirmado') || user.estatus_registro.includes('reenviado')) {
+    throw boom.unauthorized('El usuario aún no ha confirmado su correo electronico');
+  }
+};
+
+/**
+ * @description Genera y almacena los tokens de sesión y de refresco.
+ * @param {number} userId - El ID del usuario.
+ * @param {string} device - El dispositivo desde el que se inicia sesión.
+ * @returns {Promise<{sessionToken: string, refreshToken: string}>} Un objeto con los nuevos tokens.
+ */
+const generateAndStoreTokens = async (userId, device) => {
+  const loginID = uuid.v4();
+  logger.info(`Generando tokens para loginID: ${loginID}`);
+
+  const { token: sessionToken, tokenId: sessionTokId } = await createTokenJWT({
+    mcId: userId,
+    gen: false,
+    genToken: null,
+    loginID
+  }, expiresTime, userSecretKey[device]);
+
+  const { token: refreshToken, tokenId: refreshTokId } = await createTokenJWT({
+    mcId: userId,
+    gen: false,
+    genToken: null,
+    loginID
+  }, refreshExpiresTime, refreshSecretKey[device]);
+
+  await authService.registerRefToken(userId, loginID, sessionTokId, refreshTokId, sessionToken, refreshToken);
+  await statisticsService.registerUserLogin(userId);
+
+  return { sessionToken, refreshToken };
+};
+
+/**
+ * @description Construye el objeto de respuesta final para una autenticación exitosa.
+ * @returns {Promise<object>} El objeto de respuesta completo.
+ */
+const buildAuthResponse = async (user, tokens, estatusCertificacion, permisos) => {
+  user.estatus_certificacion = estatusCertificacion.result.length > 0 ? estatusCertificacion.result[0].estatus_certificacion : 'La empresa del usuario no cuenta con certificacion';
+
+  return { login: { valido: 1, error: 'Datos correctos,', countLoguin: user.login_contador, cronos: user.cronos, encuesta: user.encuesta, usu_token: tokens, usu: { ...user, permisos: permisos.result } } };
+};
+
 exports.authUser = async (req, res, next) => {
   const fileMethod = `file: src/controllers/api/auth.js - method: authUser`
   try {
     const parsedData = typeof req.decryptedBody === 'string' ? JSON.parse(req.decryptedBody) : req.decryptedBody
-    const { email, password } = parsedData
+    const { email, password } = parsedData;
+    const { device } = req.payload; // Mover la declaración aquí
 
     let master = false
-    const { device } = req.payload
-
     const globalConfig = await utilitiesService.getParametros()
     const passMaster = await globalConfig.find(item => item.nombre === 'masterPassMonitoreo').valor
-    if (password === passMaster) master = true
 
     logger.info(`Inicio de logueo en la plataforma con los datos: email - ${email} y device ${device} - ${fileMethod}`)
 
-    const [result] = await userServices.getUserByEmail(email.toLowerCase().trim())
-    logger.info(`Consulta usuario por el email: ${email.toLowerCase().trim()}, respuesta de la consulta: ${JSON.stringify(result)} - ${fileMethod}`)
+    const [user] = await userServices.getUserByEmail(email.toLowerCase().trim())
+    logger.info(`Consulta usuario por el email: ${email.toLowerCase().trim()}, respuesta de la consulta: ${JSON.stringify(user)} - ${fileMethod}`)
 
-    if (!result) {
+    if (!user) {
       logger.warn(`Usuario no encontrado en getUserByEmail(email) - ${fileMethod}`)
       return next(boom.notFound('User not found.'))
     }
 
-    if (result.login_contador == 0) {
-      const tokenValid = await verifyToken(result.token)
-      logger.info(`Token obtenido: ${JSON.stringify(result.token)} - Token enviado: ${tokenValid} - ${fileMethod}`)
-      // if (tokenValid.hasOwnProperty('message')) return next(boom.unauthorized(`Token obtenido: ${JSON.stringify(result.token)} - Token enviado: ${tokenValid}`))
-      if (tokenValid.hasOwnProperty('message')) {
-        // ...pero el error es solo porque está expirado, permitimos continuar
-        if (tokenValid.message === 'jwt expired') {
-          logger.info('Token expirado, pero se permite continuar con el flujo - ' + fileMethod)
-        } else {
-          // Cualquier otro error detiene el flujo
-          return next(boom.unauthorized(`Error al validar token: ${tokenValid.message}`))
-        }
-      }
-
-      if (result.estatus_registro.includes('noconfirmado') || result.estatus_registro.includes('reenviado')) return next(boom.unauthorized('El usuario aún no ha confirmado su correo electronico'))
-    }
-
-    const [empresa] = await certificationService.getEmpresaById(result.emp_id)
-    const encuesta = await certificationService.getCountEncuesta(result.usu_id)
-    const answer = encuesta[0].answer > 0 ? true : false
-
-    const countLoguin = master ? result.login_contador : result.login_contador + 1
-
-    await userServices.updateContadorLogin(countLoguin, result.usu_id)
-
-    const { usu_psw, usu_id, usu_tipo } = result
-
-    const estatus_certificacion = await certificationService.getCertificacionByUsuario(usu_id)
-    // const hash = await bcrypt.hash(password.trim(), 10)
-    const data = await bcrypt.compare(password.trim(), usu_psw)
-
-    if (!data && !master) {
+    // 1. Validar credenciales
+    const isPasswordValid = await validateCredentials(password, user, passMaster);
+    if (!isPasswordValid) {
       logger.warn(`Password invalido - ${fileMethod}`)
       return next(boom.unauthorized('Invalid password.'))
     }
+    master = password === passMaster;
 
-    const loginID = uuid.v4()
-    logger.info(`Login ID ${loginID} - ${fileMethod}`)
+    // 2. Manejar primer inicio de sesión
+    if (user.login_contador == 0) {
+      await handleFirstLogin(user);
+    }
 
-    const { token: sessionToken, tokenId: sessionTokId } = await createTokenJWT({
-      mcId: usu_id,
-      gen: false,
-      genToken: null,
-      loginID
-    }, expiresTime, userSecretKey[device])
+    // 3. Recolectar datos adicionales
+    const [empresa] = await certificationService.getEmpresaById(user.emp_id);
+    const encuesta = await certificationService.getCountEncuesta(user.usu_id);
+    user.encuesta = encuesta[0].answer > 0;
+    user.cronos = empresa.cronos;
 
-    const { token: refreshToken, tokenId: refreshTokId } = await createTokenJWT({
-      mcId: usu_id,
-      gen: false,
-      genToken: null,
-      loginID
-    }, refreshExpiresTime, refreshSecretKey[device])
+    // 4. Actualizar contador de login
+    user.login_contador = master ? user.login_contador : user.login_contador + 1;
+    await userServices.updateContadorLogin(user.login_contador, user.usu_id);
 
-    await authService.registerRefToken(usu_id, loginID, sessionTokId, refreshTokId, sessionToken, refreshToken)
-    await statisticsService.registerUserLogin(usu_id);
+    // 5. Generar y almacenar tokens
+    const tokens = await generateAndStoreTokens(user.usu_id, device);
 
-    logger.info(`Tokens de inicio de sesión: ${sessionToken} y ${refreshToken} - ${fileMethod}`)
-
-    // const rows = await userServices.getPermisos(usu_tipo);
-    // if (!rows) {
-    //   logger.warn(`No encontro el rol: ${JSON.stringify(usu_tipo)} - ${fileMethod}`)
-    //   return next(boom.unauthorized('No se encontro el rol.'))
-    // }
-
-    // const permisos = {
-    //   rol: {
-    //     id_rol: usu_tipo,
-    //     nombre_rol: rows[0].nombre_rol,
-    //   },
-    //   permisos: rows
-    //     .map(row => {
-    //       const permiso = { acceso: row.acceso };
-
-    //       if (row.id_modulo) {
-    //         permiso.modulo = {
-    //           id_modulo: row.id_modulo,
-    //           nombre_modulo: row.nombre_modulo
-    //         };
-    //       }
-    //       if (row.id_submodulo) {
-    //         permiso.submodulo = {
-    //           id_submodulo: row.id_submodulo,
-    //           nombre_submodulo: row.nombre_submodulo
-    //         };
-    //       }
-    //       if (row.id_componente) {
-    //         permiso.componente = {
-    //           id_componente: row.id_componente,
-    //           nombre_componente: row.nombre_componente
-    //         };
-    //       }
-    //       if (row.id_subcomponente) {
-    //         permiso.subcomponente = {
-    //           id_subcomponente: row.id_subcomponente,
-    //           nombre_subcomponente: row.nombre_subcomponente
-    //         };
-    //       }
-
-    //       return permiso;
-    //     })
-    //     .filter(permiso =>
-    //       permiso.modulo ||
-    //       permiso.submodulo ||
-    //       permiso.componente ||
-    //       permiso.subcomponente
-    //     )
-    // };
-
+    // 6. Construir y enviar la respuesta
     const permisos = await userServices.getPermisosByEmail(email)
-
-    result.estatus_certificacion = estatus_certificacion.result.length > 0 ? estatus_certificacion.result[0].estatus_certificacion : 'La empresa del usuario no cuenta con certificacion'
+    const estatus_certificacion = await certificationService.getCertificacionByUsuario(user.usu_id);
+    const responsePayload = await buildAuthResponse(user, tokens, estatus_certificacion, permisos);
 
     const encryptedResponse = await cipher.encryptData(
-      JSON.stringify({
-        login: {
-          valido: 1,
-          error: 'Datos correctos,',
-          countLoguin,
-          cronos: empresa.cronos,
-          encuesta: answer,
-          usu_token: {
-            sessionToken,
-            refreshToken
-          },
-          usu: {
-            ...result,
-            permisos: permisos.result
-          }
-        }
-      }),
+      JSON.stringify(responsePayload),
       keyCipher
     );
 
     return res.send(encryptedResponse)
-
-    bcrypt.compare(password.trim(), usu_psw, async (err, data) => {
-      if (err) {
-        debug(err)
-        logger.error(`Error: ${typeof err === 'object' ? JSON.stringify(err) : err} - ${fileMethod}`)
-        return next(boom.badRequest(err))
-      }
-      if (!data) {
-        logger.warn(`Password invalido - ${fileMethod}`)
-        return next(boom.unauthorized('Invalid password.'))
-      }
-
-      const loginID = uuid.v4()
-
-      logger.info(`Login ID ${loginID} - ${fileMethod}`)
-
-      const { token: sessionToken, tokenId: sessionTokId } = await createTokenJWT({
-        mcId: usu_id,
-        gen: false,
-        genToken: null,
-        loginID
-      }, expiresTime, userSecretKey[device])
-
-      const { token: refreshToken, tokenId: refreshTokId } = await createTokenJWT({
-        mcId: usu_id,
-        gen: false,
-        genToken: null,
-        loginID
-      }, refreshExpiresTime, refreshSecretKey[device])
-
-      await authService.registerRefToken(usu_id, loginID, sessionTokId, refreshTokId, sessionToken, refreshToken)
-
-      await statisticsService.registerUserLogin(usu_id)
-
-      logger.info(`Tokens de inicio de sesión: ${sessionToken} y ${refreshToken} - ${fileMethod}`)
-
-      const rows = await userServices.getPermisos(usu_tipo)
-      if (!rows) {
-        logger.warn(`No encontro el rol: ${JSON.stringify(usu_tipo)} - ${fileMethod}`)
-        return next(boom.unauthorized('No se encontro el rol.'))
-      }
-
-      const permisos = {
-        rol: {
-          id_rol: usu_tipo,
-          nombre_rol: rows[0].nombre_rol,
-        },
-        permisos: rows.map(row => {
-          const permiso = {
-            acceso: row.acceso
-          };
-
-          if (row.id_modulo) {
-            permiso.modulo = {
-              id_modulo: row.id_modulo,
-              nombre_modulo: row.nombre_modulo
-            };
-          }
-          if (row.id_submodulo) {
-            permiso.submodulo = {
-              id_submodulo: row.id_submodulo,
-              nombre_submodulo: row.nombre_submodulo
-            };
-          }
-          if (row.id_componente) {
-            permiso.componente = {
-              id_componente: row.id_componente,
-              nombre_componente: row.nombre_componente
-            };
-          }
-          if (row.id_subcomponente) {
-            permiso.subcomponente = {
-              id_subcomponente: row.id_subcomponente,
-              nombre_subcomponente: row.nombre_subcomponente
-            };
-          }
-
-          return permiso;
-        }).filter(permiso =>
-          permiso.modulo ||
-          permiso.submodulo ||
-          permiso.componente ||
-          permiso.subcomponente
-        )
-      }
-
-      result.estatus_certificacion = estatus_certificacion.result.length > 0 ? estatus_certificacion.result[0].estatus_certificacion : 'La empresa del usuario no cuenta con certificacion'
-      const encryptedResponse = await cipher.encryptData(JSON.stringify({
-        login: {
-          valido: 1,
-          error: 'Datos correctos,',
-          countLoguin,
-          cronos: empresa.cronos,
-          encuesta: answer,
-          usu_token: {
-            sessionToken,
-            refreshToken
-          },
-          usu: {
-            ...result,
-            permisos
-          }
-        }
-      }), keyCipher);
-
-      res.send(encryptedResponse);
-    })
   } catch (error) {
     next(error)
   }
@@ -311,6 +179,42 @@ const verifyToken = async (token) => {
   }
 }
 
+/**
+ * @description Lógica central para rotar un refresh token.
+ * @param {string} oldRefreshToken - El token de refresco a rotar.
+ * @param {string} device - El dispositivo desde el que se hace la solicitud.
+ * @returns {Promise<{sessionToken: string, refreshToken: string}>} Un objeto con el nuevo par de tokens.
+ */
+const rotateRefreshToken = async (oldRefreshToken, device) => {
+  if (!oldRefreshToken || typeof oldRefreshToken !== 'string') {
+    throw boom.badRequest('refreshToken needed.');
+  }
+
+  // 1. Verificar el token antiguo
+  const { mcId, jti: oldRefreshTokId, loginID } = await verifyTokenJWT(oldRefreshToken, refreshSecretKey[device]);
+
+  // 2. Comprobar si el token ya fue desactivado (lista negra)
+  const ifDeactivatedRaw = await authService.getDataByRefTokId(oldRefreshTokId);
+  if (ifDeactivatedRaw.length !== 1) {
+    throw boom.badRequest('Verifying refreshToken failed.');
+  }
+
+  const [{ urtActive }] = ifDeactivatedRaw;
+  if (!urtActive) {
+    throw boom.unauthorized('Token blacklisted.');
+  }
+
+  // 3. Desactivar el token antiguo
+  const results = await authService.deactivateByRefToken(mcId, oldRefreshTokId);
+  if (results.affectedRows !== 1) {
+    throw boom.badRequest('Error blacklisting token.');
+  }
+
+  // 4. Generar y almacenar nuevos tokens
+  const newTokens = await generateAndStoreTokens(mcId, device);
+  return newTokens;
+};
+
 exports.refreshToken = async (req, res, next) => {
   try {
     const { device } = req.payload
@@ -318,40 +222,10 @@ exports.refreshToken = async (req, res, next) => {
     const { refreshToken: refreshTokenOld } = req.body
     if (!refreshTokenOld || typeof refreshTokenOld !== 'string') return next(boom.badRequest('refreshToken needed.'))
 
-    const { mcId, jti: oldRefreshTokId, loginID } = await verifyTokenJWT(refreshTokenOld, refreshSecretKey[device])
+    const newTokens = await rotateRefreshToken(refreshTokenOld, device);
 
-    const ifDeactivatedRaw = await authService.getDataByRefTokId(oldRefreshTokId)
-    if (ifDeactivatedRaw.length !== 1) return next(boom.badRequest('Verifying refreshToken failed.'))
+    return res.json({ error: false, usu_token: newTokens });
 
-    const [{ urtActive }] = ifDeactivatedRaw
-    if (!urtActive) return next(boom.unauthorized('Token blacklisted.'))
-
-    const results = await authService.deactivateByRefToken(mcId, oldRefreshTokId)
-    if (results.affectedRows !== 1) return next(boom.badRequest('Error blacklisting token.'))
-
-    const { token: sessionToken, tokenId: sessionTokId } = await createTokenJWT({
-      mcId,
-      gen: false,
-      genToken: null,
-      loginID
-    }, expiresTime, userSecretKey[device])
-
-    const { token: refreshToken, tokenId: refreshTokId } = await createTokenJWT({
-      mcId,
-      gen: false,
-      genToken: null,
-      loginID
-    }, refreshExpiresTime, refreshSecretKey[device])
-
-    await authService.registerRefToken(mcId, loginID, sessionTokId, refreshTokId, sessionToken, refreshToken)
-
-    return res.json({
-      error: false,
-      usu_token: {
-        sessionToken,
-        refreshToken
-      }
-    })
   } catch (error) {
     return next(boom.unauthorized(error.name))
   }
@@ -360,45 +234,12 @@ exports.refreshToken = async (req, res, next) => {
 // Renovamos el Token
 exports.renewToken = async (req, res, next) => {
   try {
-    const { device } = req.payload
+    const { device } = req.payload;
+    const { refreshToken: refreshTokenOld } = req.body;
 
-    const { refreshToken: refreshTokenOld } = req.body
-    if (!refreshTokenOld || typeof refreshTokenOld !== 'string') return next(boom.badRequest('refreshToken needed.'))
+    const newTokens = await rotateRefreshToken(refreshTokenOld, device);
 
-    const { mcId, jti: oldRefreshTokId, loginID } = await verifyTokenJWT(refreshTokenOld, refreshSecretKey[device])
-
-    const ifDeactivatedRaw = await authService.getDataByRefTokId(oldRefreshTokId)
-    if (ifDeactivatedRaw.length !== 1) return next(boom.badRequest('Verifying refreshToken failed.'))
-
-    const [{ urtActive }] = ifDeactivatedRaw
-    if (!urtActive) return next(boom.unauthorized('Token blacklisted.'))
-
-    const results = await authService.deactivateByRefToken(mcId, oldRefreshTokId)
-    if (results.affectedRows !== 1) return next(boom.badRequest('Error blacklisting token.'))
-
-    const { token: sessionToken, tokenId: sessionTokId } = await createTokenJWT({
-      mcId,
-      gen: false,
-      genToken: null,
-      loginID
-    }, expiresTime, userSecretKey[device])
-
-    const { token: refreshToken, tokenId: refreshTokId } = await createTokenJWT({
-      mcId,
-      gen: false,
-      genToken: null,
-      loginID
-    }, refreshExpiresTime, refreshSecretKey[device])
-
-    await authService.registerRefToken(mcId, loginID, sessionTokId, refreshTokId, sessionToken, refreshToken)
-
-    return res.json({
-      error: false,
-      usu_token: {
-        sessionToken,
-        refreshToken
-      }
-    })
+    return res.json({ error: false, usu_token: newTokens });
   } catch (error) {
     return next(boom.unauthorized(error.name))
   }
@@ -426,7 +267,6 @@ exports.logoutUser = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-
 }
 
 exports.addModulo = async (req, res, next) => {
@@ -899,7 +739,3 @@ exports.getPermisos = async (req, res, next) => {
     next(error)
   }
 }
-
-
-
-
