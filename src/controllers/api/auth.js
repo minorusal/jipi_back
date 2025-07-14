@@ -527,10 +527,15 @@ exports.encuestaLogin = async (req, res, next) => {
       Email: usuario_registrado.usu_email
     }
 
-    const secretKeyMailjet = await globalConfig.find(item => item.nombre === 'secretKeyMailjet').valor
-    const contactListMailjet = await globalConfig.find(item => item.nombre === 'contactListMailjet').valor
-    const mailjetHeaders = { headers: { "Content-Type": "application/json", "Authorization": `Basic ${secretKeyMailjet}` } }
-    const res_mailjet = await axios.post(`https://api.mailjet.com/v3/REST/contactslist/${contactListMailjet}/managecontact`, request, mailjetHeaders)
+    let res_mailjet
+    try {
+      const secretKeyMailjet = await globalConfig.find(item => item.nombre === 'secretKeyMailjet').valor
+      const contactListMailjet = await globalConfig.find(item => item.nombre === 'contactListMailjet').valor
+      const mailjetHeaders = { headers: { 'Content-Type': 'application/json', Authorization: `Basic ${secretKeyMailjet}` } }
+      res_mailjet = await axios.post(`https://api.mailjet.com/v3/REST/contactslist/${contactListMailjet}/managecontact`, request, mailjetHeaders)
+    } catch (mailjetError) {
+      logger.error(`Error al enviar datos a Mailjet: ${JSON.stringify(mailjetError)} - ${fileMethod}`)
+    }
 
     info_email.nombre = survey.nombre_completo
     info_email.telefono_empresa = survey.telefono_empresa
@@ -550,7 +555,7 @@ exports.encuestaLogin = async (req, res, next) => {
 
     return res.json({
       save,
-      contacto: res_mailjet.data,
+      contacto: res_mailjet && res_mailjet.data ? res_mailjet.data : null,
       directivos: directivos_send.body
     })
 
