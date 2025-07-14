@@ -166,83 +166,34 @@ exports.validaRfcKonesh = async ({ rfc, razon_social, idEmpresa, tipo, keyCipher
   }
 
   const globalConfig = await utilitiesService.getParametros()
-  const konesh_url_valid_rfc = globalConfig.find(item => item.nombre === 'konesh_url_valid_rfc').valor
-  const textCifrado = await cifra_konesh(rfc)
 
-  const request = {
-    credentials: {
-      usuario: globalConfig.find(item => item.nombre === 'konesh_usuario').valor,
-      token: globalConfig.find(item => item.nombre === 'konesh_token').valor,
-      password: globalConfig.find(item => item.nombre === 'konesh_password').valor,
-      cuenta: globalConfig.find(item => item.nombre === 'konesh_cuenta').valor,
-    },
-    issuer: {
-      rfc: globalConfig.find(item => item.nombre === 'konesh_issuer').valor,
-    },
-    list: {
-      list: [textCifrado]
-    }
+  const { apiResponse, result } = await executeGenericKoneshRequest(
+    rfc,
+    razon_social,
+    globalConfig,
+    { emp_id: idEmpresa, razon_social_req: razon_social }
+  )
+
+  if (apiResponse.errorMessage) {
+    return { error: true, message: apiResponse.errorMessage }
   }
 
-  const headers = { headers: { "Content-Type": "application/json" } }
-  const startTs = Date.now()
-  const konesh_api = await axios.post(konesh_url_valid_rfc, request, headers)
-  const responseTime = Date.now() - startTs
+  if (!result) {
+    return { error: true, message: `Ocurrio un error al consumir konesh: ${apiResponse.status}` }
+  }
 
-  const data = konesh_api.data
+  const konesh_api_des = result.data_konesh
 
-  const razonDesencriptada = await descifra_konesh(data.transactionResponse01[0].data04)
-
-  const razonSocialUpper = razon_social ? razon_social.toUpperCase() : razon_social
-  if (razonDesencriptada !== razonSocialUpper) {
+  if (!result.success) {
     times++
     await koneshService.updateContadorKonesh(times, idEmpresa)
-    return {
-      error: true,
-      message: "La razón social capturada no corresponde a la razón social del SAT"
-    }
-  }
-
-  const konesh_api_des = {
-    transactionResponse01: [
-      {
-        data01: await descifra_konesh(data.transactionResponse01[0].data01),
-        data02: await descifra_konesh(data.transactionResponse01[0].data02),
-        data03: await descifra_konesh(data.transactionResponse01[0].data03),
-        data04: razonDesencriptada,
-        data05: await descifra_konesh(data.transactionResponse01[0].data05),
-      }
-    ],
-    transactionResponse02: await descifra_konesh(data.transactionResponse02),
-    transactionResponse03: await descifra_konesh(data.transactionResponse03),
-    transactionResponse04: await descifra_konesh(data.transactionResponse04),
-  }
-
-  try {
-    await koneshService.saveKoneshResponse({
-      emp_id: idEmpresa,
-      rfc,
-      razon_social_req: razon_social,
-      request_ts: new Date(startTs).toISOString().slice(0, 19).replace('T', ' '),
-      response_time_ms: responseTime,
-      http_status: konesh_api.status,
-      konesh_status: konesh_api_des.transactionResponse01?.[0]?.data02 || null,
-      error_message: null,
-      name_sat: konesh_api_des.transactionResponse01?.[0]?.data04 || null,
-      postal_code: konesh_api_des.transactionResponse01?.[0]?.data05 || null,
-      transaction_id: konesh_api_des.transactionResponse02 || null,
-      transaction_date: konesh_api_des.transactionResponse03 || null,
-      node: konesh_api_des.transactionResponse04 || null,
-      raw_response: data
-    })
-  } catch (err) {
-    logger.error(`Error saving konesh response log: ${err.message}`)
+    return { error: true, message: result.mensaje }
   }
 
   await koneshService.saveKonesh(konesh_api_des)
 
-  const razonCorrecta = await descifra_konesh(data.transactionResponse01[0].data02)
-  const rfcCorrecto = await descifra_konesh(data.transactionResponse01[0].data01)
+  const razonCorrecta = await descifra_konesh(konesh_api_des.transactionResponse01[0].data02)
+  const rfcCorrecto = await descifra_konesh(konesh_api_des.transactionResponse01[0].data01)
 
   await koneshService.updateFlagKonesh(razonCorrecta, rfcCorrecto)
 
